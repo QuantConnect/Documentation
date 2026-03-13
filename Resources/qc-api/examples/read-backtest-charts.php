@@ -40,39 +40,42 @@ for attempt in range(10):
 if result['success']:
     chart = result['chart']
     series_items = list(chart['series'].items())
-    # Create a subplot for each series
-    fig, axes = plt.subplots(len(series_items), 1, figsize=(12, 4 * len(series_items)), sharex=True)
-    if len(series_items) == 1:
-        axes = [axes]
-    for ax, (series_name, series_data) in zip(axes, series_items):
-        values = series_data['values']
-        timestamps = [datetime.utcfromtimestamp(point[0]) for point in values]
-        # Check if the data is OHLC (5 elements: timestamp, open, high, low, close)
-        is_ohlc = len(values[0]) == 5
-        if is_ohlc:
-            # Plot candlestick chart using matplotlib bar and vlines
-            dates = mdates.date2num(timestamps)
-            # Calculate bar width as 60% of the average interval between points
-            bar_width = (dates[-1] - dates[0]) / len(dates) * 0.6
-            for i, point in enumerate(values):
-                _, o, h, l, c = point
-                color = 'green' if c >= o else 'red'
-                # Draw the high-low wick
-                ax.vlines(dates[i], l, h, color=color, linewidth=0.8)
-                # Draw the open-close body
-                ax.bar(dates[i], abs(c - o) or 0.01, bottom=min(o, c),
-                       width=bar_width, color=color, edgecolor=color)
-            ax.xaxis_date()
-            ax.set_ylabel("Price")
-        else:
-            # Plot line chart for simple [timestamp, value] data
-            y_values = [point[1] for point in values]
-            ax.plot(timestamps, y_values)
-            ax.set_ylabel("Value")
-        ax.set_title(series_name)
-        ax.tick_params(axis='x', rotation=45)
-    fig.suptitle(chart_name, fontsize=14)
-    plt.tight_layout()
-    plt.savefig("backtest_chart.png")
-    plt.show()</pre>
+    if not series_items:
+        print("No series data available in the chart.")
+    else:
+        # Create a subplot for each series
+        fig, axes = plt.subplots(len(series_items), 1, figsize=(12, 4 * len(series_items)), sharex=True)
+        if len(series_items) == 1:
+            axes = [axes]
+        for ax, (series_name, series_data) in zip(axes, series_items):
+            values = series_data['values']
+            timestamps = [datetime.utcfromtimestamp(point[0]) for point in values]
+            # Check if the data is OHLC (5 elements: timestamp, open, high, low, close)
+            is_ohlc = len(values[0]) == 5
+            if is_ohlc:
+                # Plot candlestick chart using matplotlib bar and vlines
+                dates = mdates.date2num(timestamps)
+                # Calculate bar width as 60% of the average interval between points
+                bar_width = (dates[-1] - dates[0]) / len(dates) * 0.6
+                for i, point in enumerate(values):
+                    _, o, h, l, c = point
+                    color = 'green' if c >= o else 'red'
+                    # Draw the high-low wick
+                    ax.vlines(dates[i], l, h, color=color, linewidth=0.8)
+                    # Draw the open-close body
+                    ax.bar(dates[i], abs(c - o) or 0.01, bottom=min(o, c),
+                           width=bar_width, color=color, edgecolor=color)
+                ax.xaxis_date()
+                ax.set_ylabel("Price")
+            else:
+                # Plot line chart for simple [timestamp, value] data
+                y_values = [point[1] for point in values]
+                ax.plot(timestamps, y_values)
+                ax.set_ylabel("Value")
+            ax.set_title(series_name)
+            ax.tick_params(axis='x', rotation=45)
+        fig.suptitle(chart_name, fontsize=14)
+        plt.tight_layout()
+        plt.savefig("backtest_chart.png")
+        plt.show()</pre>
 </div>
