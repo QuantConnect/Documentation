@@ -2,7 +2,7 @@
 
 <p>These history requests return the prices and open interest of the Option contracts. They don't provide the implied volatility or Greeks. To get the implied volaility and Greeks, call the <code class="csharp">OptionChain</code><code class="python">option_chain</code> method or create some <a href='<?=$indicatorLink?>'>indicators</a>.</p>
 
-<p>Before you request historical data, call the <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> method with a <code class='python'>datetime</code><code class='csharp'>DateTime </code> to reduce the risk of <a href='/docs/v2/writing-algorithms/key-concepts/glossary#17-look-ahead-bias'>look-ahead bias</a>.</p>
+<p>Before you request historical data, call the <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> method with a <code class='python'>datetime</code><code class='csharp'>DateTime </code> to reduce the risk of <a href='/docs/v2/writing-algorithms/key-concepts/glossary#18-look-ahead-bias'>look-ahead bias</a>.</p>
 <div class='section-example-container'>
     <pre class='csharp'>qb.SetStartDate(startDate);</pre>
     <pre class='python'>qb.set_start_date(start_date)</pre>

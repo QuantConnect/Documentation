@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("annual standard deviation");
-?>
+<? include(DOCS_RESOURCES."/glossary/annual standard deviation.php"); ?>

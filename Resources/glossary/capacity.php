@@ -1,0 +1,1 @@
+<p>The maximum amount of money an algorithm can trade before its performance degrades from market impact. Capacity is determined by the liquidity of the assets the algorithm trades and the size of positions it takes.</p>

@@ -1,0 +1,1 @@
+<p>The interest rate an investor can expect to earn on an investment that carries zero risk, such as the interest paid on a 10-year highly rated government treasury note. The risk-free rate serves as a baseline for evaluating the performance of risky investments.</p>

@@ -1,5 +1,5 @@
 <p>The following table describes the default runtime statistics:</p>
-<? include(DOCS_RESOURCES."/glossary.php"); ?>
+<?php include(DOCS_RESOURCES."/glossary.php"); ?>
 
 <table class='qc-table table'>
   <thead>
@@ -11,35 +11,35 @@
   <tbody>
   <tr>
     <td>Equity</td>
-    <td><?=$definitionByTerm['equity']?></td>
+    <td><?=getGlossaryDefinition('equity')?></td>
   </tr>
   <tr>
     <td>Fees</td>
-    <td><?=$definitionByTerm['total fees']?></td>
+    <td><?=getGlossaryDefinition('total fees')?></td>
   </tr>
   <tr>
     <td>Holdings</td>
-    <td><?=$definitionByTerm['holdings']?></td>
+    <td><?=getGlossaryDefinition('holdings')?></td>
   </tr>
   <tr>
     <td>Net Profit</td>
-    <td><?=$definitionByTerm['net profit']['Dollar-value']?></td>
+    <td><?=getGlossaryDefinition('net profit', 'Dollar-value')?></td>
   </tr>
   <tr>
     <td>PSR</td>
-    <td><?=$definitionByTerm['Probabilistic Sharpe ratio']?></td>
+    <td><?=getGlossaryDefinition('Probabilistic Sharpe ratio')?></td>
   </tr>
   <tr>
     <td>Return</td>
-    <td><?=$definitionByTerm['net profit']['Percent']?></td>
+    <td><?=getGlossaryDefinition('net profit', 'Percent')?></td>
   </tr>
   <tr>
     <td>Unrealized</td>
-    <td><?=$definitionByTerm['unrealized']?></td>
+    <td><?=getGlossaryDefinition('unrealized')?></td>
   </tr>
   <tr>
     <td>Volume</td>
-    <td><?=$definitionByTerm['volume']?></td>
-  </tr>    
+    <td><?=getGlossaryDefinition('volume')?></td>
+  </tr>
 </tbody>
 </table>
