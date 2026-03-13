@@ -5,10 +5,29 @@
 
 <p>
   The following algorithm produces the following portfolio margin plot.
-  When the initial trades fill, the orders consume available cash before borrowing anything available from the margin. 
+  When the initial trades fill, the orders consume available cash before borrowing anything available from the margin.
   Consuming available cash first avoids interest charges on the margin-loan and avoids margin calls during market downturns.
   This results in a relatively steady line hovering on 50% as there is no free cash to purchase with, but only the remaining 50% margin.
 </p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+# Buy and hold an equal-weighted portfolio at 100% exposure.
+class EqualWeightedFullExposureAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2014, 1, 1)
+        self.set_end_date(2016, 1, 1)
+        self.set_cash(100000)
+        self.symbols = [self.add_equity(t, Resolution.DAILY).symbol for t in ["SPY", "QQQ", "AAPL"]]
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            weight = 1.0 / len(self.symbols)
+            for symbol in self.symbols:
+                self.set_holdings(symbol, weight)</pre>
+</div>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-equal-weighted-50-percent.png' class='docs-image' alt='Portfolio margin chart that stays fixed at 50%'>
 
 
@@ -17,4 +36,23 @@
   The following portfolio margin plot shows the results.
   This version only consumes 16% of the available margin for each security, leaving a substantial amount of cash free. As the portfolio value grows, the fraction of the margin that this cash represents shrinks, showing an upward trending plot as the holdings of AAPL grow in value.
 </p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+# Buy and hold an equal-weighted portfolio at 50% exposure.
+class EqualWeightedHalfExposureAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2014, 1, 1)
+        self.set_end_date(2016, 1, 1)
+        self.set_cash(100000)
+        self.symbols = [self.add_equity(t, Resolution.DAILY).symbol for t in ["SPY", "QQQ", "AAPL"]]
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            weight = 0.5 / len(self.symbols)
+            for symbol in self.symbols:
+                self.set_holdings(symbol, weight)</pre>
+</div>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-equal-weighted.png' class='docs-image' alt='Portfolio margin chart trending up throughout the backtest'>

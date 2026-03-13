@@ -6,6 +6,39 @@
   In the following image, the gray area represents the underlying Equity and the blue area represents the put Option contract.
   The algorithm buys SPY on 10/07/2013, buys the put Option contract on 01/02/2014, and then exercises the contract on 06/21/2014.
 </p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+# Buy SPY, then buy a put Option to hedge and reduce margin usage.
+class BuyingPutOptionsMarginAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2013, 10, 7)
+        self.set_end_date(2014, 7, 1)
+        self.set_cash(100000)
+        equity = self.add_equity("SPY", Resolution.MINUTE)
+        self._equity_symbol = equity.symbol
+        option = self.add_option("SPY", Resolution.MINUTE)
+        option.set_filter(lambda u: u.strikes(-5, 5).expiration(150, 200))
+        self._put_contract = None
+
+    def on_data(self, data: Slice):
+        # Buy SPY on the first trading day.
+        if not self.portfolio[self._equity_symbol].invested:
+            self.set_holdings(self._equity_symbol, 1)
+            return
+
+        # After a few months, buy a protective put.
+        if self._put_contract is None and self.time &gt; datetime(2014, 1, 1):
+            for chain in data.option_chains.values():
+                puts = [c for c in chain if c.right == OptionRight.PUT]
+                if not puts:
+                    continue
+                contract = sorted(puts, key=lambda c: abs(c.strike - c.underlying_last_price))[0]
+                self.market_order(contract.symbol, 1)
+                self._put_contract = contract.symbol</pre>
+</div>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-buying-put-example.png' class='docs-image' alt='Portfolio margin chart of hedging an SPY position by buying put Options'>
 
 <h4>Buying Options Spreads</h4>
@@ -99,4 +132,21 @@ class SleepyTanAlligator(QCAlgorithm):
   The algorithm buys 500% exposure to the EURUSD pair on 01/02/2018 and holds it until the end of the backtest.
   The portfolio margin chart shows that only 10% of the available margin is used to enter the trade since 500% / 50 = 10%.
 </p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+# Buy EURUSD at 500% exposure to demonstrate Forex margin usage.
+class ForexMarginAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2018, 10, 1)
+        self.set_cash(100000)
+        self._symbol = self.add_forex("EURUSD", Resolution.DAILY, Market.OANDA).symbol
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            self.set_holdings(self._symbol, 5)</pre>
+</div>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-forex.png' class='docs-image' alt='Portfolio margin chart of buying a forex pair with 10% margin'>
