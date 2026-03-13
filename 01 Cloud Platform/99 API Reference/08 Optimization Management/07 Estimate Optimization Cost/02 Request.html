@@ -9,25 +9,25 @@ Project, compile, and optimization parameters for estimating the execution time 
 </tr>
 </thead>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Id of the project to optimize.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> Id of the project to optimize.</td>
 </tr>
 <tr>
-<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Name of the optimization.</td>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: Mia First Optimization Job</sub></i></code> <br/> Name of the optimization.</td>
 </tr>
 <tr>
-<td width="20%">target</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">target</td> <td> <code>string Enum</code> <br/> Target statistic of the optimization to minimize or maximize. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
-<td width="20%">targetTo</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
+<td width="20%">targetTo</td> <td> <code>string Enum</code> <br/> Target extremum of the optimization. Options : ['min', 'max']</td>
 </tr>
 <tr>
-<td width="20%">targetValue</td> <td> <code>number</code> <br/> Desired value for the optimization target statistic.</td>
+<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Desired value for the optimization target statistic.</td>
 </tr>
 <tr>
-<td width="20%">strategy</td> <td> <code>string Enum</code> <br/> /. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
+<td width="20%">strategy</td> <td> <code>string Enum</code> <br/> Optimization strategy. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
 </tr>
 <tr>
-<td width="20%">compileId</td> <td> <code>string</code> <br/> Optimization compile Id.</td>
+<td width="20%">compileId</td> <td> <code>string<br/><i><sub>example: 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8</sub></i></code> <br/> Optimization compile Id.</td>
 </tr>
 <tr>
 <td width="20%">parameters</td> <td> <code>OptimizationParameter Array<br/><i><sub>required</sub></i></code> <br/> Optimization parameters.</td>
@@ -40,27 +40,27 @@ Project, compile, and optimization parameters for estimating the execution time 
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "projectId": 0,
-  "name": "string",
+  "projectId": 23456789,
+  "name": "Mia First Optimization Job",
   "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
   "targetTo": "min",
-  "targetValue": 0,
+  "targetValue": 1,
   "strategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy",
-  "compileId": "string",
+  "compileId": "5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8",
   "parameters": [
     {
-      "name": "string",
-      "min": 0,
-      "max": 0,
-      "step": 0,
-      "minStep": 0
+      "name": "rsi_period",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "minStep": 1
     }
   ],
   "constraints": [
     {
       "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
       "operator": "LessOrEqual",
-      "targetValue": 0
+      "targetValue": 1
     }
   ]
 }</pre>
@@ -74,14 +74,14 @@ Project, compile, and optimization parameters for estimating the execution time 
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationTargetStatistic</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">OptimizationConstraint</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationTargetStatistic": "TotalPerformance.PortfolioStatistics.SharpeRatio"
+  "OptimizationConstraint": "TotalPerformance.PortfolioStatistics.SharpeRatio"
 }</pre>
 </div>
 </td>
@@ -93,14 +93,14 @@ Project, compile, and optimization parameters for estimating the execution time 
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationTargetTo</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
+<td width="20%">OptimizationConstraint</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationTargetTo": "min"
+  "OptimizationConstraint": "min"
 }</pre>
 </div>
 </td>
@@ -112,14 +112,14 @@ Project, compile, and optimization parameters for estimating the execution time 
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationStrategy</td> <td> <code>string Enum</code> <br/> /. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
+<td width="20%">OptimizationConstraint</td> <td> <code>string Enum</code> <br/> /. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationStrategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy"
+  "OptimizationConstraint": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy"
 }</pre>
 </div>
 </td>
@@ -131,30 +131,30 @@ Project, compile, and optimization parameters for estimating the execution time 
 </tr>
 </thead>
 <tr>
-<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Name of optimization parameter.</td>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: rsi_period</sub></i></code> <br/> Name of optimization parameter.</td>
 </tr>
 <tr>
-<td width="20%">min</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
+<td width="20%">min</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 10</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
 </tr>
 <tr>
-<td width="20%">max</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
+<td width="20%">max</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 20</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
 </tr>
 <tr>
-<td width="20%">step</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Movement, should be positive.</td>
+<td width="20%">step</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 1</sub></i></code> <br/> Movement, should be positive.</td>
 </tr>
 <tr>
-<td width="20%">minStep</td> <td> <code>number</code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
+<td width="20%">minStep</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "name": "string",
-  "min": 0,
-  "max": 0,
-  "step": 0,
-  "minStep": 0
+  "name": "rsi_period",
+  "min": 10,
+  "max": 20,
+  "step": 1,
+  "minStep": 1
 }</pre>
 </div>
 </td>
@@ -166,13 +166,13 @@ Project, compile, and optimization parameters for estimating the execution time 
 </tr>
 </thead>
 <tr>
-<td width="20%">target</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">target</td> <td> <code>string Enum</code> <br/> The target statistic to track. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
 <td width="20%">operator</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> The target comparison operation. Options : ['LessOrEqual', 'Less', 'GreaterOrEqual', 'Greater', 'NotEqual', 'Equals']</td>
 </tr>
 <tr>
-<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> The threshold value for the target constraint.</td>
+<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 1</sub></i></code> <br/> The threshold value for the target constraint.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -181,7 +181,7 @@ Project, compile, and optimization parameters for estimating the execution time 
 {
   "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
   "operator": "LessOrEqual",
-  "targetValue": 0
+  "targetValue": 1
 }</pre>
 </div>
 </td>

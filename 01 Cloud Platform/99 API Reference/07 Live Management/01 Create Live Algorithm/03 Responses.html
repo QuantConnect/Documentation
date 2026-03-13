@@ -17,13 +17,13 @@ The <code>/live/create</code> API provides a response in the following format:
 <td width="20%">source</td> <td> <code>string</code> <br/> Source of the API call.</td>
 </tr>
 <tr>
-<td width="20%">deployId</td> <td> <code>string</code> <br/> Id of the live deployment.</td>
+<td width="20%">deployId</td> <td> <code>string<br/><i><sub>example: L-141106d80de1da9a9f85ea07c06bf7b6</sub></i></code> <br/> Id of the live deployment.</td>
 </tr>
 <tr>
-<td width="20%">versionId</td> <td> <code>integer</code> <br/> Id of the LEAN version deployed.</td>
+<td width="20%">versionId</td> <td> <code>integer<br/><i><sub>example: 17202</sub></i></code> <br/> Id of the LEAN version deployed.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer</code> <br/> Id of the project deployed.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>example: 24058693</sub></i></code> <br/> Id of the project deployed.</td>
 </tr>
 <tr>
 <td width="20%">live</td> <td> <code>LiveAlgorithm object</code> <br/> Live algorithm instance result from the QuantConnect Rest API.</td>
@@ -41,25 +41,28 @@ The <code>/live/create</code> API provides a response in the following format:
 {
   "responseCode": "string",
   "source": "string",
-  "deployId": "string",
-  "versionId": 0,
-  "projectId": 0,
+  "deployId": "L-141106d80de1da9a9f85ea07c06bf7b6",
+  "versionId": 17202,
+  "projectId": 24058693,
   "live": {
     "message": "string",
-    "deployId": "string",
+    "deployId": "L-sdf86b7045bb83203e79d2aa6150b321",
     "status": "DeployError",
     "cloneId": 0,
     "launched": "2021-11-26T15:18:27.693Z",
     "stopped": "2021-11-26T15:18:27.693Z",
+    "description": "string",
+    "projectName": "string",
     "brokerage": "string",
     "securityTypes": "string",
-    "datacenter": "string",
+    "datacenter": "NY7",
     "isPublicStreaming": true,
+    "success": true,
     "public": true,
     "files": [
       {
         "id": 0,
-        "projectId": 0,
+        "projectId": 23456789,
         "name": "string",
         "content": "string",
         "modified": "2021-11-26T15:18:27.693Z",
@@ -68,14 +71,14 @@ The <code>/live/create</code> API provides a response in the following format:
       }
     ],
     "runtimeStatistics": {
-      "Equity": "string",
-      "Fees": "string",
-      "Holdings": "string",
-      "Net Profit": "string",
-      "Probabilistic Sharpe Ratio": "string",
-      "Return": "string",
-      "Unrealized": "string",
-      "Volume": "string"
+      "Equity": "$100.00",
+      "Fees": "-$100.00",
+      "Holdings": "$100.00",
+      "Net Profit": "$100.00",
+      "Probabilistic Sharpe Ratio": "50.00%",
+      "Return": "50.00%",
+      "Unrealized": "$100.00",
+      "Volume": "$100.00"
     },
     "charts": {
       "name": "string"
@@ -99,7 +102,7 @@ The <code>/live/create</code> API provides a response in the following format:
 <td width="20%">message</td> <td> <code>string</code> <br/> Error message.</td>
 </tr>
 <tr>
-<td width="20%">deployId</td> <td> <code>string</code> <br/> Unique live algorithm deployment identifier (similar to a backtest id).</td>
+<td width="20%">deployId</td> <td> <code>string<br/><i><sub>example: L-sdf86b7045bb83203e79d2aa6150b321</sub></i></code> <br/> Unique live algorithm deployment identifier (similar to a backtest id).</td>
 </tr>
 <tr>
 <td width="20%">status</td> <td> <code>string Enum</code> <br/> State of the live deployment. Options : ['DeployError', 'InQueue', 'Running', 'Stopped', 'Liquidated', 'Deleted', 'Completed', 'RuntimeError', 'Invalid', 'LoggingIn', 'Initializing', 'History']</td>
@@ -114,16 +117,25 @@ The <code>/live/create</code> API provides a response in the following format:
 <td width="20%">stopped</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was stopped in UTC, null if its still running.</td>
 </tr>
 <tr>
+<td width="20%">description</td> <td> <code>string</code> <br/> Project description.</td>
+</tr>
+<tr>
+<td width="20%">projectName</td> <td> <code>string</code> <br/> Project name.</td>
+</tr>
+<tr>
 <td width="20%">brokerage</td> <td> <code>string</code> <br/> Brokerage.</td>
 </tr>
 <tr>
 <td width="20%">securityTypes</td> <td> <code>string</code> <br/> Security types detected in the algorithm.</td>
 </tr>
 <tr>
-<td width="20%">datacenter</td> <td> <code>string</code> <br/> Name of the datacenter where the algorithm is physically located.</td>
+<td width="20%">datacenter</td> <td> <code>string<br/><i><sub>example: NY7</sub></i></code> <br/> Name of the datacenter where the algorithm is physically located.</td>
 </tr>
 <tr>
 <td width="20%">isPublicStreaming</td> <td> <code>boolean</code> <br/> Flag to indicate if public streaming is enabled.</td>
+</tr>
+<tr>
+<td width="20%">success</td> <td> <code>boolean</code> <br/> Response success.</td>
 </tr>
 <tr>
 <td width="20%">public</td> <td> <code>boolean</code> <br/> Flag to indicate if the algorithm is public.</td>
@@ -132,7 +144,7 @@ The <code>/live/create</code> API provides a response in the following format:
 <td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files present in the project that contains the algorithm.</td>
 </tr>
 <tr>
-<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> /.</td>
+<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.</td>
 </tr>
 <tr>
 <td width="20%">charts</td> <td> <code>ChartSummary object</code> <br/> Contains the names of all charts.</td>
@@ -143,20 +155,23 @@ The <code>/live/create</code> API provides a response in the following format:
 <div class="cli section-example-container"><pre>
 {
   "message": "string",
-  "deployId": "string",
+  "deployId": "L-sdf86b7045bb83203e79d2aa6150b321",
   "status": "DeployError",
   "cloneId": 0,
   "launched": "2021-11-26T15:18:27.693Z",
   "stopped": "2021-11-26T15:18:27.693Z",
+  "description": "string",
+  "projectName": "string",
   "brokerage": "string",
   "securityTypes": "string",
-  "datacenter": "string",
+  "datacenter": "NY7",
   "isPublicStreaming": true,
+  "success": true,
   "public": true,
   "files": [
     {
       "id": 0,
-      "projectId": 0,
+      "projectId": 23456789,
       "name": "string",
       "content": "string",
       "modified": "2021-11-26T15:18:27.693Z",
@@ -165,14 +180,14 @@ The <code>/live/create</code> API provides a response in the following format:
     }
   ],
   "runtimeStatistics": {
-    "Equity": "string",
-    "Fees": "string",
-    "Holdings": "string",
-    "Net Profit": "string",
-    "Probabilistic Sharpe Ratio": "string",
-    "Return": "string",
-    "Unrealized": "string",
-    "Volume": "string"
+    "Equity": "$100.00",
+    "Fees": "-$100.00",
+    "Holdings": "$100.00",
+    "Net Profit": "$100.00",
+    "Probabilistic Sharpe Ratio": "50.00%",
+    "Return": "50.00%",
+    "Unrealized": "$100.00",
+    "Volume": "$100.00"
   },
   "charts": {
     "name": "string"
@@ -191,7 +206,7 @@ The <code>/live/create</code> API provides a response in the following format:
 <td width="20%">id</td> <td> <code>integer</code> <br/> ID of the project file. This can also be null.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer</code> <br/> ID of the project.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>example: 23456789</sub></i></code> <br/> ID of the project.</td>
 </tr>
 <tr>
 <td width="20%">name</td> <td> <code>string</code> <br/> Name of a project file.</td>
@@ -214,7 +229,7 @@ The <code>/live/create</code> API provides a response in the following format:
 <div class="cli section-example-container"><pre>
 {
   "id": 0,
-  "projectId": 0,
+  "projectId": 23456789,
   "name": "string",
   "content": "string",
   "modified": "2021-11-26T15:18:27.693Z",
@@ -231,42 +246,42 @@ The <code>/live/create</code> API provides a response in the following format:
 </tr>
 </thead>
 <tr>
-<td width="20%">Equity</td> <td> <code>string</code> <br/> Total portfolio value.</td>
+<td width="20%">Equity</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total portfolio value.</td>
 </tr>
 <tr>
-<td width="20%">Fees</td> <td> <code>string</code> <br/> Transaction fee.</td>
+<td width="20%">Fees</td> <td> <code>string<br/><i><sub>example: -$100.00</sub></i></code> <br/> Transaction fee.</td>
 </tr>
 <tr>
-<td width="20%">Holdings</td> <td> <code>string</code> <br/> Equity value of security holdings.</td>
+<td width="20%">Holdings</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Equity value of security holdings.</td>
 </tr>
 <tr>
-<td width="20%">Net Profit</td> <td> <code>string</code> <br/> Net profit.</td>
+<td width="20%">Net Profit</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Net profit.</td>
 </tr>
 <tr>
-<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string</code> <br/> Probabilistic Sharpe Ratio.</td>
+<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Probabilistic Sharpe Ratio.</td>
 </tr>
 <tr>
-<td width="20%">Return</td> <td> <code>string</code> <br/> Return.</td>
+<td width="20%">Return</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Return.</td>
 </tr>
 <tr>
-<td width="20%">Unrealized</td> <td> <code>string</code> <br/> Unrealized profit/loss.</td>
+<td width="20%">Unrealized</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Unrealized profit/loss.</td>
 </tr>
 <tr>
-<td width="20%">Volume</td> <td> <code>string</code> <br/> Total transaction volume.</td>
+<td width="20%">Volume</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total transaction volume.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "Equity": "string",
-  "Fees": "string",
-  "Holdings": "string",
-  "Net Profit": "string",
-  "Probabilistic Sharpe Ratio": "string",
-  "Return": "string",
-  "Unrealized": "string",
-  "Volume": "string"
+  "Equity": "$100.00",
+  "Fees": "-$100.00",
+  "Holdings": "$100.00",
+  "Net Profit": "$100.00",
+  "Probabilistic Sharpe Ratio": "50.00%",
+  "Return": "50.00%",
+  "Unrealized": "$100.00",
+  "Volume": "$100.00"
 }</pre>
 </div>
 </td>
