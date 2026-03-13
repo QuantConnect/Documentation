@@ -84,6 +84,6 @@ if result['success']:
             ax.tick_params(axis='x', rotation=45)
         fig.suptitle(chart_name, fontsize=14)
         plt.tight_layout()
-        plt.savefig("backtest_chart.png")
+        plt.savefig(f"{project_id}-{backtest_id}-{chart_name.replace(' ', '_')}.png")
         plt.show()</pre>
 </div>
