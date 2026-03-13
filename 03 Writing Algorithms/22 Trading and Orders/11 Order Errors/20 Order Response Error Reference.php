@@ -275,7 +275,7 @@ if quantity >= lot_size:
 
 
 <h4>Exceeds Shortable Quantity</h4>
-<p>The <code class='csharp'>OrderResponseErrorCode.ExceedsShortableQuantity</code><code class='python'>OrderResponseErrorCode.EXCEEDS_SHORTABLE_QUANTITY</code> (-31) error occurs when you place an order to short a security but the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a> of the brokerage model states there isn't enough shares to borrow. The following algorithm demonstrates this error by using a custom shortable provider that limits shorts to 10 shares and then trying to short 12 shares:</p>
+<p>The <code class='csharp'>OrderResponseErrorCode.ExceedsShortableQuantity</code><code class='python'>OrderResponseErrorCode.EXCEEDS_SHORTABLE_QUANTITY</code> (-31) error occurs when you place an order to short a security but the <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts'>shortable provider</a> of the brokerage model states there isn't enough shares to borrow. The following algorithm demonstrates this error by using a custom shortable provider that limits shorts to 10 shares and then trying to short 12 shares.</p>
 
 <div class="section-example-container testable">
 	<pre class="csharp">// Demonstrate ExceedsShortableQuantity error with a custom shortable provider.
