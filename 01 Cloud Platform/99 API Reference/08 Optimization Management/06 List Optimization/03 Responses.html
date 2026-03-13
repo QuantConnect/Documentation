@@ -26,15 +26,16 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 {
   "optimizations": [
     {
-      "optimizationId": "string",
-      "projectId": 0,
+      "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+      "projectId": 23456789,
       "name": "string",
       "status": ,
       "nodeType": "O2-8",
+      "extremum": "min",
       "criterion": {
         "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
         "extremum": "min",
-        "targetValue": 0
+        "targetValue": 1
       },
       "created": "2021-11-26T15:18:27.693Z",
       "psr": 0,
@@ -45,11 +46,11 @@ The <code>/optimizations/list</code> API provides a response in the following fo
       "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
       "parameters": [
         {
-          "name": "string",
-          "min": 0,
-          "max": 0,
-          "step": 0,
-          "minStep": 0
+          "name": "rsi_period",
+          "min": 10,
+          "max": 20,
+          "step": 1,
+          "minStep": 1
         }
       ]
     }
@@ -69,10 +70,10 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">optimizationId</td> <td> <code>string</code> <br/> Id of the optimization job.</td>
+<td width="20%">optimizationId</td> <td> <code>string<br/><i><sub>example: O-401d3d40b5a0e9f8c46c954a303f3ddd</sub></i></code> <br/> Id of the optimization job.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer</code> <br/> Id of the project the optimization belongs to.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>example: 23456789</sub></i></code> <br/> Id of the project the optimization belongs to.</td>
 </tr>
 <tr>
 <td width="20%">name</td> <td> <code>string</code> <br/> Name of the optimization.</td>
@@ -84,7 +85,10 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 <td width="20%">nodeType</td> <td> <code>string Enum</code> <br/> Optimization node types available in QuantConnect Cloud. Options : ['O2-8', 'O4-12', 'O8-16']</td>
 </tr>
 <tr>
-<td width="20%">criterion</td> <td> <code>OptimizationTarget object</code> <br/> /.</td>
+<td width="20%">extremum</td> <td> <code>string Enum</code> <br/> Defines the direction of optimization. Options : ['min', 'max']</td>
+</tr>
+<tr>
+<td width="20%">criterion</td> <td> <code>OptimizationTarget object</code> <br/> Optimization statistical target.</td>
 </tr>
 <tr>
 <td width="20%">created</td> <td> <code>string($date-time)</code> <br/> Date and time of when this optimization was created.</td>
@@ -115,15 +119,16 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "optimizationId": "string",
-  "projectId": 0,
+  "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+  "projectId": 23456789,
   "name": "string",
   "status": ,
   "nodeType": "O2-8",
+  "extremum": "min",
   "criterion": {
     "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
     "extremum": "min",
-    "targetValue": 0
+    "targetValue": 1
   },
   "created": "2021-11-26T15:18:27.693Z",
   "psr": 0,
@@ -134,11 +139,11 @@ The <code>/optimizations/list</code> API provides a response in the following fo
   "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
   "parameters": [
     {
-      "name": "string",
-      "min": 0,
-      "max": 0,
-      "step": 0,
-      "minStep": 0
+      "name": "rsi_period",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "minStep": 1
     }
   ]
 }</pre>
@@ -148,70 +153,18 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>OptimizationStatus</code> Model - Status of the optimization job.</th>
-</tr>
-</thead>
-<table class="table qc-table">
-<thead>
-<tr>
 <th colspan="2"><code>OptimizationNodeType</code> Model - Optimization node types available in QuantConnect Cloud.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationNodeType</td> <td> <code>string Enum</code> <br/> Optimization node types available in QuantConnect Cloud. Options : ['O2-8', 'O4-12', 'O8-16']</td>
+<td width="20%">OptimizationParameter</td> <td> <code>string Enum</code> <br/> Optimization node types available in QuantConnect Cloud. Options : ['O2-8', 'O4-12', 'O8-16']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationNodeType": "O2-8"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OptimizationTarget</code> Model</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">target</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
-</tr>
-<tr>
-<td width="20%">extremum</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
-</tr>
-<tr>
-<td width="20%">targetValue</td> <td> <code>number</code> <br/> Desired value for the optimization target statistic.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
-  "extremum": "min",
-  "targetValue": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OptimizationTargetStatistic</code> Model</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OptimizationTargetStatistic</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OptimizationTargetStatistic": "TotalPerformance.PortfolioStatistics.SharpeRatio"
+  "OptimizationParameter": "O2-8"
 }</pre>
 </div>
 </td>
@@ -223,14 +176,60 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationTargetTo</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
+<td width="20%">OptimizationParameter</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationTargetTo": "min"
+  "OptimizationParameter": "min"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OptimizationTarget</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">target</td> <td> <code>string Enum</code> <br/> The target statistic to track. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+</tr>
+<tr>
+<td width="20%">extremum</td> <td> <code>string Enum</code> <br/> Defines the direction of optimization. Options : ['min', 'max']</td>
+</tr>
+<tr>
+<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Desired value for the optimization target statistic.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
+  "extremum": "min",
+  "targetValue": 1
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OptimizationTargetStatistic</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">OptimizationParameter</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "OptimizationParameter": "TotalPerformance.PortfolioStatistics.SharpeRatio"
 }</pre>
 </div>
 </td>
@@ -242,30 +241,30 @@ The <code>/optimizations/list</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Name of optimization parameter.</td>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: rsi_period</sub></i></code> <br/> Name of optimization parameter.</td>
 </tr>
 <tr>
-<td width="20%">min</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
+<td width="20%">min</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 10</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
 </tr>
 <tr>
-<td width="20%">max</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
+<td width="20%">max</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 20</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
 </tr>
 <tr>
-<td width="20%">step</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Movement, should be positive.</td>
+<td width="20%">step</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 1</sub></i></code> <br/> Movement, should be positive.</td>
 </tr>
 <tr>
-<td width="20%">minStep</td> <td> <code>number</code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
+<td width="20%">minStep</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "name": "string",
-  "min": 0,
-  "max": 0,
-  "step": 0,
-  "minStep": 0
+  "name": "rsi_period",
+  "min": 10,
+  "max": 20,
+  "step": 1,
+  "minStep": 1
 }</pre>
 </div>
 </td>

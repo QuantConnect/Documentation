@@ -9,16 +9,16 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </tr>
 </thead>
 <tr>
-<td width="20%">versionId</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.</td>
+<td width="20%">versionId</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: -1</sub></i></code> <br/> The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Project Id.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> Project Id.</td>
 </tr>
 <tr>
-<td width="20%">compileId</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Compile Id.</td>
+<td width="20%">compileId</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: 5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8</sub></i></code> <br/> Compile Id.</td>
 </tr>
 <tr>
-<td width="20%">nodeId</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Id of the node that will run the algorithm.</td>
+<td width="20%">nodeId</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: LN-c54129e1b4f667613d3f34542b787771</sub></i></code> <br/> Id of the node that will run the algorithm.</td>
 </tr>
 <tr>
 <td width="20%">brokerage</td> <td> <code>object<br/><i><sub>required</sub></i></code> <br/> Brokerage configuration for the live algorithm.</td>
@@ -31,27 +31,74 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "versionId": "string",
-  "projectId": 0,
-  "compileId": "string",
-  "nodeId": "string",
+  "versionId": "-1",
+  "projectId": 23456789,
+  "compileId": "5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8",
+  "nodeId": "LN-c54129e1b4f667613d3f34542b787771",
   "brokerage": {
-    "id": "QuantConnectBrokerage",
-    "holdings": [
-      {
-        "symbolId": "SPY R735QTJ8XC9X",
-        "symbol": "SPY",
-        "quantity": 10,
-        "averagePrice": 680.64
-      }
-    ],
-    "cash": [
-      {
-        "amount": 0,
-        "currency": "USD"
-      }
-    ]
+  "QuantConnectBrokerageSettings": object,
+  "InteractiveBrokersBrokerageSettings": object,
+  "TradierBrokerageSettings": object,
+  "BitfinexSettings": object,
+  "CoinbaseBrokerageSettings": {
+{
+      "id": "CoinbaseBrokerage",
+      "coinbase-api-name": "string",
+      "coinbase-api-private-key": "string"
+    },
   },
+  "BinanceBrokerageSettings": {
+{
+      "id": "BinanceBrokerage",
+      "binance-exchange-name": "Binance",
+      "binance-api-key": "string",
+      "binance-api-secret": "string",
+      "binance-use-testnet": "live"
+    },
+  },
+  "BinanceUSBrokerageSettings": {
+{
+      "id": "BinanceBrokerage",
+      "binance-exchange-name": "BinanceUS",
+      "binanceus-api-key": "string",
+      "binanceus-api-secret": "string"
+    },
+  },
+  "BinanceUSDMFuturesBrokerageSettings": {
+{
+      "id": "BinanceBrokerage",
+      "binance-exchange-name": "Binance-USDM-Futures",
+      "binance-api-key": "string",
+      "binance-api-secret": "string"
+    },
+  },
+  "BinanceCOINFuturesBrokerageSettings": {
+{
+      "id": "BinanceBrokerage",
+      "binance-exchange-name": "Binance-COIN-Futures",
+      "binance-api-key": "string",
+      "binance-api-secret": "string"
+    },
+  },
+  "TradingTechnologiesBrokerageSettings": object,
+  "KrakenSettings": object,
+  "BybitBrokerageSettings": {
+{
+      "id": "BybitBrokerage",
+      "bybit-api-key": "string",
+      "bybit-api-secret": "string",
+      "bybit-vip-level": "VIP0"
+    },
+  },
+  "OandaSettings": object,
+  "WolverineSettings": object,
+  "CharlesSchwabSettings": object,
+  "RBIBrokerageSettings": object,
+  "TerminalLinkSettings": object,
+  "TradeStationSettings": object,
+  "TastytradeSettings": object,
+  "AlpacaBrokerageSettings": object,
+},
   "dataProviders": 
 }</pre>
 </div>
@@ -67,10 +114,10 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">id</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> Id of the module. Options : ['QuantConnectBrokerage']</td>
 </tr>
 <tr>
-<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array<br/><i><sub>required</sub></i></code> <br/> List of holdings for the brokerage.</td>
 </tr>
 <tr>
-<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+<td width="20%">cash</td> <td> <code>CashAmount Array<br/><i><sub>required</sub></i></code> <br/> List of cash amount.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -80,8 +127,8 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "id": "QuantConnectBrokerage",
   "holdings": [
     {
-      "symbolId": "string",
-      "symbol": "string",
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
       "quantity": 0,
       "averagePrice": 0
     }
@@ -196,12 +243,6 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>CoinbaseBrokerageSettings</code> Model - Settings for using Coinbase Advanced Trade as the brokerage for a live algorithm.</th>
-</tr>
-</thead>
-<table class="table qc-table">
-<thead>
-<tr>
 <th colspan="2"><code>CoinbaseBrokerageAndDataProviderSettings</code> Model</th>
 </tr>
 </thead>
@@ -227,12 +268,6 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </td>
 </tr>
 </table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>BinanceBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
-</tr>
-</thead>
-<table class="table qc-table">
 <thead>
 <tr>
 <th colspan="2"><code>BinanceBrokerageAndDataProviderSettings</code> Model</th>
@@ -270,12 +305,6 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BinanceUSBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
-</tr>
-</thead>
-<table class="table qc-table">
-<thead>
-<tr>
 <th colspan="2"><code>BinanceUSBrokerageAndDataProviderSettings</code> Model</th>
 </tr>
 </thead>
@@ -307,12 +336,6 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BinanceUSDMFuturesBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
-</tr>
-</thead>
-<table class="table qc-table">
-<thead>
-<tr>
 <th colspan="2"><code>BinanceUSDMFuturesBrokerageAndDataProviderSettings</code> Model</th>
 </tr>
 </thead>
@@ -342,12 +365,6 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </td>
 </tr>
 </table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>BinanceCOINFuturesBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
-</tr>
-</thead>
-<table class="table qc-table">
 <thead>
 <tr>
 <th colspan="2"><code>BinanceCOINFuturesBrokerageAndDataProviderSettings</code> Model</th>
@@ -468,12 +485,6 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BybitBrokerageSettings</code> Model - Settings for using Bybit as the brokerage for a live algorithm.</th>
-</tr>
-</thead>
-<table class="table qc-table">
-<thead>
-<tr>
 <th colspan="2"><code>BybitBrokerageAndDataProviderSettings</code> Model</th>
 </tr>
 </thead>
@@ -570,8 +581,8 @@ Project, compile, and brokerage login information for deploying a live algorithm
   ],
   "holdings": [
     {
-      "symbolId": "string",
-      "symbol": "string",
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
       "quantity": 0,
       "averagePrice": 0
     }
@@ -640,8 +651,8 @@ Project, compile, and brokerage login information for deploying a live algorithm
   ],
   "holdings": [
     {
-      "symbolId": "string",
-      "symbol": "string",
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
       "quantity": 0,
       "averagePrice": 0
     }
@@ -715,8 +726,8 @@ Project, compile, and brokerage login information for deploying a live algorithm
   ],
   "holdings": [
     {
-      "symbolId": "string",
-      "symbol": "string",
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
       "quantity": 0,
       "averagePrice": 0
     }
@@ -821,10 +832,10 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </tr>
 </thead>
 <tr>
-<td width="20%">symbolId</td> <td> <code>string</code> <br/> Symbol Id of the holding.</td>
+<td width="20%">symbolId</td> <td> <code>string<br/><i><sub>example: BTCUSD 2XR</sub></i></code> <br/> Symbol Id of the holding.</td>
 </tr>
 <tr>
-<td width="20%">symbol</td> <td> <code>string</code> <br/> Symbol ticker of the holding.</td>
+<td width="20%">symbol</td> <td> <code>string<br/><i><sub>example: BTCUSD</sub></i></code> <br/> Symbol ticker of the holding.</td>
 </tr>
 <tr>
 <td width="20%">quantity</td> <td> <code>number</code> <br/> Quantity of the Symbol you hold.</td>
@@ -837,8 +848,8 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "symbolId": "string",
-  "symbol": "string",
+  "symbolId": "BTCUSD 2XR",
+  "symbol": "BTCUSD",
   "quantity": 0,
   "averagePrice": 0
 }</pre>
@@ -852,10 +863,10 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </tr>
 </thead>
 <tr>
-<td width="20%">amount</td> <td> <code>number</code> <br/> The amount of cash.</td>
+<td width="20%">amount</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> The amount of cash.</td>
 </tr>
 <tr>
-<td width="20%">currency</td> <td> <code>string</code> <br/> The currency in which the cash amount is denominated.</td>
+<td width="20%">currency</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> The currency in which the cash amount is denominated.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>

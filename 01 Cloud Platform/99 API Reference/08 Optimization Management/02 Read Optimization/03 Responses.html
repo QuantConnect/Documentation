@@ -25,17 +25,18 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 <div class="cli section-example-container"><pre>
 {
   "optimization": {
-    "optimizationId": "string",
-    "snapshotId": 0,
-    "projectId": 0,
+    "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+    "snapshotId": 24013333,
+    "projectId": 23456789,
     "name": "string",
+    "extremum": "min",
     "status": ,
     "nodeType": "O2-8",
-    "parallelNodes": 0,
+    "parallelNodes": 4,
     "criterion": {
       "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
       "extremum": "min",
-      "targetValue": 0
+      "targetValue": 1
     },
     "runtimeStatistics": {
       "Completed": "string",
@@ -51,16 +52,16 @@ The <code>/optimizations/read</code> API provides a response in the following fo
       {
         "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
         "operator": "LessOrEqual",
-        "targetValue": 0
+        "targetValue": 1
       }
     ],
     "parameters": [
       {
-        "name": "string",
-        "min": 0,
-        "max": 0,
-        "step": 0,
-        "minStep": 0
+        "name": "rsi_period",
+        "min": 10,
+        "max": 20,
+        "step": 1,
+        "minStep": 1
       }
     ],
     "backtests": {
@@ -83,7 +84,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
     "strategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy",
     "requested": "2021-11-26T15:18:27.693Z",
     "optimizationTarget": "TotalPerformance.PortfolioStatistics.SharpeRatio",
-    "targetValue": 0,
+    "targetValue": 1,
     "gridLayout": [
       {
         "chartName": "string",
@@ -91,7 +92,10 @@ The <code>/optimizations/read</code> API provides a response in the following fo
         "height": 0,
         "row": 0,
         "column": 0,
-        "sort": 0
+        "sort": 0,
+        "definition": [
+          "string"
+        ]
       }
     ],
     "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
@@ -112,78 +116,82 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">optimizationId</td> <td> <code>string</code> <br/> Id of the optimization.</td>
+<td width="20%">optimizationId</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: O-401d3d40b5a0e9f8c46c954a303f3ddd</sub></i></code> <br/> Id of the optimization.</td>
 </tr>
 <tr>
-<td width="20%">snapshotId</td> <td> <code>integer</code> <br/> Snapshot Id of this optimization.</td>
+<td width="20%">snapshotId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 24013333</sub></i></code> <br/> Snapshot Id of this optimization.</td>
 </tr>
 <tr>
-<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Id of the project the optimization belongs to.</td>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> Id of the project the optimization belongs to.</td>
 </tr>
 <tr>
-<td width="20%">name</td> <td> <code>string</code> <br/> Name of the optimization.</td>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Name of the optimization.</td>
 </tr>
 <tr>
-<td width="20%">status</td> <td> <code>OptimizationStatus object</code> <br/> Status of the optimization.</td>
+<td width="20%">extremum</td> <td> <code>string Enum</code> <br/> Defines the direction of optimization. Options : ['min', 'max']</td>
+</tr>
+<tr>
+<td width="20%">status</td> <td> <code>OptimizationStatus object<br/><i><sub>required</sub></i></code> <br/> Status of the optimization.</td>
 </tr>
 <tr>
 <td width="20%">nodeType</td> <td> <code>string Enum</code> <br/> Optimization node types available in QuantConnect Cloud. Options : ['O2-8', 'O4-12', 'O8-16']</td>
 </tr>
 <tr>
-<td width="20%">parallelNodes</td> <td> <code>integer</code> <br/> Number of parallel nodes for the optimization.</td>
+<td width="20%">parallelNodes</td> <td> <code>integer<br/><i><sub>example: 4</sub></i></code> <br/> Number of parallel nodes for the optimization.</td>
 </tr>
 <tr>
-<td width="20%">criterion</td> <td> <code>OptimizationTarget object</code> <br/> /.</td>
+<td width="20%">criterion</td> <td> <code>OptimizationTarget object<br/><i><sub>required</sub></i></code> <br/> Optimization statistical target.</td>
 </tr>
 <tr>
-<td width="20%">runtimeStatistics</td> <td> <code>OptimizationRuntimeStatistics object</code> <br/> /.</td>
+<td width="20%">runtimeStatistics</td> <td> <code>OptimizationRuntimeStatistics object</code> <br/> Dictionary representing a runtime banner/updating statistics for the optimization.</td>
 </tr>
 <tr>
 <td width="20%">constraints</td> <td> <code>OptimizationConstraint Array</code> <br/> Optimization constraints.</td>
 </tr>
 <tr>
-<td width="20%">parameters</td> <td> <code>OptimizationParameter Array</code> <br/> Optimization parameters.</td>
+<td width="20%">parameters</td> <td> <code>OptimizationParameter Array<br/><i><sub>required</sub></i></code> <br/> Optimization parameters.</td>
 </tr>
 <tr>
 <td width="20%">backtests</td> <td> <code>OptimizationBacktest object</code> <br/> Dictionary of optimization backtests.</td>
 </tr>
 <tr>
-<td width="20%">strategy</td> <td> <code>string Enum</code> <br/> /. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
+<td width="20%">strategy</td> <td> <code>string Enum</code> <br/> Optimization strategy. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
 </tr>
 <tr>
 <td width="20%">requested</td> <td> <code>string($date-time)</code> <br/> Optimization requested date and time.</td>
 </tr>
 <tr>
-<td width="20%">optimizationTarget</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">optimizationTarget</td> <td> <code>string Enum</code> <br/> Statistic to be optimized. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
-<td width="20%">targetValue</td> <td> <code>number</code> <br/> Desired value for the optimization target statistic.</td>
+<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Desired value for the optimization target statistic.</td>
 </tr>
 <tr>
 <td width="20%">gridLayout</td> <td> <code>GridChart Array</code> <br/> List with grid charts representing the grid layout.</td>
 </tr>
 <tr>
-<td width="20%">outOfSampleMaxEndDate</td> <td> <code>string($date-time)</code> <br/> End date of out of sample data.</td>
+<td width="20%">outOfSampleMaxEndDate</td> <td> <code>string($date-time)<br/><i><sub>required</sub></i></code> <br/> End date of out of sample data.</td>
 </tr>
 <tr>
-<td width="20%">outOfSampleDays</td> <td> <code>integer</code> <br/> Number of days of out of sample days.</td>
+<td width="20%">outOfSampleDays</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Number of days of out of sample days.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "optimizationId": "string",
-  "snapshotId": 0,
-  "projectId": 0,
+  "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+  "snapshotId": 24013333,
+  "projectId": 23456789,
   "name": "string",
+  "extremum": "min",
   "status": ,
   "nodeType": "O2-8",
-  "parallelNodes": 0,
+  "parallelNodes": 4,
   "criterion": {
     "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
     "extremum": "min",
-    "targetValue": 0
+    "targetValue": 1
   },
   "runtimeStatistics": {
     "Completed": "string",
@@ -199,16 +207,16 @@ The <code>/optimizations/read</code> API provides a response in the following fo
     {
       "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
       "operator": "LessOrEqual",
-      "targetValue": 0
+      "targetValue": 1
     }
   ],
   "parameters": [
     {
-      "name": "string",
-      "min": 0,
-      "max": 0,
-      "step": 0,
-      "minStep": 0
+      "name": "rsi_period",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "minStep": 1
     }
   ],
   "backtests": {
@@ -231,7 +239,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
   "strategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy",
   "requested": "2021-11-26T15:18:27.693Z",
   "optimizationTarget": "TotalPerformance.PortfolioStatistics.SharpeRatio",
-  "targetValue": 0,
+  "targetValue": 1,
   "gridLayout": [
     {
       "chartName": "string",
@@ -239,7 +247,10 @@ The <code>/optimizations/read</code> API provides a response in the following fo
       "height": 0,
       "row": 0,
       "column": 0,
-      "sort": 0
+      "sort": 0,
+      "definition": [
+        "string"
+      ]
     }
   ],
   "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
@@ -251,24 +262,37 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>OptimizationStatus</code> Model - Status of the optimization job.</th>
-</tr>
-</thead>
-<table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OptimizationNodeType</code> Model - Optimization node types available in QuantConnect Cloud.</th>
+<th colspan="2"><code>OptimizationTargetTo</code> Model</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationNodeType</td> <td> <code>string Enum</code> <br/> Optimization node types available in QuantConnect Cloud. Options : ['O2-8', 'O4-12', 'O8-16']</td>
+<td width="20%">GridChart</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationNodeType": "O2-8"
+  "GridChart": "min"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OptimizationNodeType</code> Model - Optimization node types available in QuantConnect Cloud.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">GridChart</td> <td> <code>string Enum</code> <br/> Optimization node types available in QuantConnect Cloud. Options : ['O2-8', 'O4-12', 'O8-16']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "GridChart": "O2-8"
 }</pre>
 </div>
 </td>
@@ -280,13 +304,13 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">target</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">target</td> <td> <code>string Enum</code> <br/> The target statistic to track. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
-<td width="20%">extremum</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
+<td width="20%">extremum</td> <td> <code>string Enum</code> <br/> Defines the direction of optimization. Options : ['min', 'max']</td>
 </tr>
 <tr>
-<td width="20%">targetValue</td> <td> <code>number</code> <br/> Desired value for the optimization target statistic.</td>
+<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Desired value for the optimization target statistic.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -295,7 +319,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 {
   "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
   "extremum": "min",
-  "targetValue": 0
+  "targetValue": 1
 }</pre>
 </div>
 </td>
@@ -307,33 +331,14 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationTargetStatistic</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">GridChart</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationTargetStatistic": "TotalPerformance.PortfolioStatistics.SharpeRatio"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OptimizationTargetTo</code> Model</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OptimizationTargetTo</td> <td> <code>string Enum</code> <br/> /. Options : ['min', 'max']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OptimizationTargetTo": "min"
+  "GridChart": "TotalPerformance.PortfolioStatistics.SharpeRatio"
 }</pre>
 </div>
 </td>
@@ -392,13 +397,13 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">target</td> <td> <code>string Enum</code> <br/> /. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
+<td width="20%">target</td> <td> <code>string Enum</code> <br/> The target statistic to track. Options : ['TotalPerformance.PortfolioStatistics.SharpeRatio', 'TotalPerformance.PortfolioStatistics.CompoundingAnnualReturn', 'TotalPerformance.PortfolioStatistics.ProbabilisticSharpeRatio', 'TotalPerformance.PortfolioStatistics.Drawdown']</td>
 </tr>
 <tr>
 <td width="20%">operator</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> The target comparison operation. Options : ['LessOrEqual', 'Less', 'GreaterOrEqual', 'Greater', 'NotEqual', 'Equals']</td>
 </tr>
 <tr>
-<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> The threshold value for the target constraint.</td>
+<td width="20%">targetValue</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 1</sub></i></code> <br/> The threshold value for the target constraint.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -407,7 +412,7 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 {
   "target": "TotalPerformance.PortfolioStatistics.SharpeRatio",
   "operator": "LessOrEqual",
-  "targetValue": 0
+  "targetValue": 1
 }</pre>
 </div>
 </td>
@@ -419,30 +424,30 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Name of optimization parameter.</td>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: rsi_period</sub></i></code> <br/> Name of optimization parameter.</td>
 </tr>
 <tr>
-<td width="20%">min</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
+<td width="20%">min</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 10</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
 </tr>
 <tr>
-<td width="20%">max</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
+<td width="20%">max</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 20</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
 </tr>
 <tr>
-<td width="20%">step</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Movement, should be positive.</td>
+<td width="20%">step</td> <td> <code>number<br/><i><sub>required</sub></i><br/><i><sub>example: 1</sub></i></code> <br/> Movement, should be positive.</td>
 </tr>
 <tr>
-<td width="20%">minStep</td> <td> <code>number</code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
+<td width="20%">minStep</td> <td> <code>number<br/><i><sub>example: 1</sub></i></code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "name": "string",
-  "min": 0,
-  "max": 0,
-  "step": 0,
-  "minStep": 0
+  "name": "rsi_period",
+  "min": 10,
+  "max": 20,
+  "step": 1,
+  "minStep": 1
 }</pre>
 </div>
 </td>
@@ -517,14 +522,14 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">OptimizationStrategy</td> <td> <code>string Enum</code> <br/> /. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
+<td width="20%">value</td> <td> <code>string Enum</code> <br/> /. Options : ['QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy']</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "OptimizationStrategy": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy"
+  "value": "QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy"
 }</pre>
 </div>
 </td>
@@ -536,22 +541,25 @@ The <code>/optimizations/read</code> API provides a response in the following fo
 </tr>
 </thead>
 <tr>
-<td width="20%">chartName</td> <td> <code>string</code> <br/> The chart name.</td>
+<td width="20%">chartName</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> The chart name.</td>
 </tr>
 <tr>
-<td width="20%">width</td> <td> <code>integer</code> <br/> Width of the chart.</td>
+<td width="20%">width</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Width of the chart.</td>
 </tr>
 <tr>
-<td width="20%">height</td> <td> <code>integer</code> <br/> Height of the chart.</td>
+<td width="20%">height</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Height of the chart.</td>
 </tr>
 <tr>
-<td width="20%">row</td> <td> <code>integer</code> <br/> Number of rows of the chart.</td>
+<td width="20%">row</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Number of rows of the chart.</td>
 </tr>
 <tr>
-<td width="20%">column</td> <td> <code>integer</code> <br/> Number of columns of the chart.</td>
+<td width="20%">column</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Number of columns of the chart.</td>
 </tr>
 <tr>
 <td width="20%">sort</td> <td> <code>integer</code> <br/> Sort of the chart.</td>
+</tr>
+<tr>
+<td width="20%">definition</td> <td> <code>string Array</code> <br/> The chart definition labels.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -563,7 +571,10 @@ The <code>/optimizations/read</code> API provides a response in the following fo
   "height": 0,
   "row": 0,
   "column": 0,
-  "sort": 0
+  "sort": 0,
+  "definition": [
+    "string"
+  ]
 }</pre>
 </div>
 </td>
