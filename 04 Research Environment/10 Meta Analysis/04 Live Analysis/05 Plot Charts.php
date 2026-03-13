@@ -1,48 +1,41 @@
 <p>Follow these steps to plot the equity curve, benchmark, and drawdown of a live algorithm:</p>
 
 <ol>
-    <li>Define some helper methods to get the live algorithm charts.</li>
+    <li>Define the project Id and read the "Strategy Equity", "Drawdown", and "Benchmark" charts.</li>
     <div class="section-example-container">
-	    <pre class="python">import pytz
-from time import sleep
+	    <pre class="python">from time import sleep, time
 
-def eastern_time(unix_timestamp):
-    return unix_timestamp.replace(tzinfo=pytz.utc).astimezone(pytz.timezone('US/Eastern')).replace(tzinfo=None)
+project_id = 23034953
 
-def series(
-        project_id, chart_name, series_name, start=0, end=int(datetime.now().timestamp()),
-        count=999999999, selector=lambda x: x.y):
+def read_chart(project_id, chart_name, start=0, end=int(time()), count=500):
     # Retry up to 10 times if the chart data is still loading
     for attempt in range(10):
         result = api.read_live_chart(project_id, chart_name, start, end, count)
-        if hasattr(result, 'status') and result.status == 'loading':
+        if result.status == 'loading':
             print(f"Chart data is loading... (attempt {attempt + 1}/10)")
             sleep(10)
             continue
         break
-    return pd.Series({
-        eastern_time(value.time): selector(value)
-        for value in result.chart.series[series_name].values
-    })</pre>
-	</div>
+    return result.chart
 
-	<li>Define the project Id.</li>
-    <div class="section-example-container">
-	    <pre class="python">project_id = 23034953</pre>
+strategy_equity = read_chart(project_id, 'Strategy Equity')
+drawdown_chart = read_chart(project_id, 'Drawdown')
+benchmark_chart = read_chart(project_id, 'Benchmark')</pre>
 	</div>
 	<p>The process to get your project Id depends on if you use the <a href='/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#14-Get-Project-Id'>Local Platform</a>, or <a href='/docs/v2/lean-cli/projects/project-management#07-Get-Project-Id'>CLI</a>.</p>
-	
-    <li>Get the "Equity", "Return", "Equity Drawdown", and "Benchmark" time series data.</li>
-    <div class="section-example-container">
-	    <pre class="python">equity = series(project_id, 'Strategy Equity', 'Equity', selector=lambda x: x.close)
-returns = series(project_id, 'Strategy Equity', 'Return')
-drawdown = series(project_id, 'Drawdown', 'Equity Drawdown')
-benchmark = series(project_id, 'Benchmark', 'Benchmark')</pre>
-	</div>
 
-    <li>Create a <code>pandas.DataFrame</code> from the series values.</li>
+    <li>Extract the series and create a <code>pandas.DataFrame</code>.</li>
     <div class="section-example-container">
-        <pre class="python">df = pd.DataFrame({"Equity": equity, "Return": returns, "Drawdown": drawdown, "Benchmark": benchmark}).ffill()</pre>
+        <pre class="python">def to_series(chart, series_name, selector=lambda x: x.y):
+    return pd.Series({v.time: selector(v) for v in chart.series[series_name].values})
+
+df = pd.DataFrame({
+    "Equity": to_series(strategy_equity, 'Equity', selector=lambda x: x.close), 
+    "Return": to_series(strategy_equity, 'Return'), 
+    "Drawdown": to_series(drawdown_chart, 'Equity Drawdown'), 
+    "Benchmark": to_series(benchmark_chart, 'Benchmark')
+}).ffill()
+df.index = df.index.tz_localize('UTC').tz_convert('US/Eastern').tz_localize(None)</pre>
     </div>
 
     <li>Plot the performance chart.</li>
