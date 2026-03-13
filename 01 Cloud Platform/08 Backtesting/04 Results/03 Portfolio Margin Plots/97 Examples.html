@@ -14,6 +14,47 @@
   In the following image, the blue area represents a short position in a call Option contract and the gray area represents a long position in a call Option contract.
   The algorithm forms a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bear-call-spread'>bear call spread</a> one leg at a time, shorting an in-the-money contract on 02/03/2023 and then longing an out-of-the-money contract on 02/14/2023.
 </p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+class HyperActiveOrangeHippopotamus(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 2, 3)
+        self.set_end_date(2023, 3, 3)
+        self.set_cash(100000)
+        option = self.add_option("GOOG", Resolution.MINUTE)
+        self.symbol = option.symbol
+        option.set_filter(lambda universe: universe.strikes(-10, 10).expiration(30, 45))
+
+        self.itm_call = None
+        self.otm_call = None
+
+    def on_data(self, data: Slice):
+        # Get the OptionChain.
+        chain = data.option_chains.get(self.symbol, None)
+        if not chain: return
+
+        if self.itm_call is None:
+            # Get the furthest expiry date of the contracts.
+            expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
+            # Select the ITM call with the lowest strike.
+            itm_calls = [c for c in chain if c.expiry == expiry and c.right == OptionRight.CALL and c.strike &lt; chain.underlying.price]
+            if len(itm_calls) == 0: return
+            self.itm_call = sorted(itm_calls, key=lambda x: x.strike)[0]
+            # Sell an ITM call.
+            self.market_order(self.itm_call.symbol, -1)
+
+        if self.otm_call is None and self.time.day &gt; 13:
+            # Select the OTM call with the highest strike.
+            otm_calls = [c for c in chain if c.expiry == self.itm_call.expiry and c.right == OptionRight.CALL and c.strike &gt; chain.underlying.price and c.strike &gt; self.itm_call.strike]
+            if len(otm_calls) == 0: return
+            self.otm_call = sorted(otm_calls, key=lambda x: x.strike)[-1]
+            # Buy an OTM call.
+            self.market_order(self.otm_call.symbol, 1)</pre>
+</div>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-bear-call-spread-example-1.png' class='docs-image' alt='Portfolio margin chart of stepping into a bear class spread on leg at a time'>
 
 <h4>Buying Futures</h4>
@@ -21,9 +62,34 @@
   The following algorithm demonstrates that Futures have a fixed, USD-denominated margin requirement.
   In the following image, the blue area represents the percentage of the available margin that the Futures contract uses.
   The algorithm buys the contract on 10/02/2023 and holds it until the end of the backtest.
-  As the total portfolio value decreases during the last two week in the backtest, the amount of available margin in the portfolio decreases. 
+  As the total portfolio value decreases during the last two week in the backtest, the amount of available margin in the portfolio decreases.
   However, the USD amount of margin used by the Futures contract is constant, so the proportion of portfolio margin used by the contract increases at the same time.
 </p>
+<div class="section-example-container testable">
+	<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+class SleepyTanAlligator(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 10, 1)
+        self.set_end_date(2023, 11, 1)
+        self.set_cash(100000)
+        self.future = self.add_future(Futures.Indices.SP_500_E_MINI)
+        self.symbol = self.future.symbol
+        self.future.set_filter(0, 182)
+
+    def on_data(self, data: Slice):
+        if not self.portfolio.invested:
+            for continuous_contract_symbol, chain in data.futures_chains.items():
+                contract = sorted(chain, key=lambda contract: contract.open_interest, reverse=True)[0]
+                self.market_order(contract.symbol, 1)
+
+    def on_end_of_day(self, symbol) -&gt; None:
+        self.plot("Margin", "MarginRemaining", self.portfolio.margin_remaining)
+        self.plot("Margin", "TotalMarginUsed", self.portfolio.total_margin_used)</pre>
+</div>
 <img src='https://cdn.quantconnect.com/i/tu/portfolio-margin-fixed-futures-margin-example.png' class='docs-image' alt='Portfolio margin chart of buying a futures contract'>
 
 <h4>Buying Forex</h4>
