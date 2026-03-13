@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("equity");
-?>
+<? include(DOCS_RESOURCES."/glossary/equity.php"); ?>

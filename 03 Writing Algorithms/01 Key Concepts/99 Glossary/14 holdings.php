@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("holdings");
-?>
+<? include(DOCS_RESOURCES."/glossary/holdings.php"); ?>

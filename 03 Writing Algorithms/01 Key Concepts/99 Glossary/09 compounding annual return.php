@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("compounding annual return");
-?>
+<? include(DOCS_RESOURCES."/glossary/compounding annual return.php"); ?>

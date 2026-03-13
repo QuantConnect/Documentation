@@ -1,8 +1,6 @@
 <p>The top of the backtest report displays  statistics to summarize your algorithm's performance. The following table describes the key statistics in the report:</p>
 
-<?php
-include(DOCS_RESOURCES."/glossary.php");
-?>
+<?php include(DOCS_RESOURCES."/glossary.php"); ?>
 
 <table class='table qc-table'>
     <thead>
@@ -22,7 +20,7 @@ include(DOCS_RESOURCES."/glossary.php");
         </tr>
         <tr>
             <td>CAGR</td>
-            <td><?=$definitionByTerm['compounding annual return']?></td>
+            <td><?=getGlossaryDefinition('compounding annual return')?></td>
         </tr>
         <tr>
             <td>Markets</td>
@@ -34,23 +32,23 @@ include(DOCS_RESOURCES."/glossary.php");
         </tr>
         <tr>
             <td>Drawdown</td>
-            <td><?=$definitionByTerm['drawdown']?></td>
+            <td><?=getGlossaryDefinition('drawdown')?></td>
         </tr>
         <tr>
             <td>Probabilistic SR</td>
-            <td><?=$definitionByTerm['Probabilistic Sharpe ratio']?></td>
+            <td><?=getGlossaryDefinition('Probabilistic Sharpe ratio')?></td>
         </tr>
         <tr>
             <td>Sharpe Ratio</td>
-            <td><?=$definitionByTerm['Sharpe ratio']?></td>
+            <td><?=getGlossaryDefinition('Sharpe ratio')?></td>
         </tr>
         <tr>
             <td>Information Ratio</td>
-            <td><?=$definitionByTerm['information ratio']?></td>
+            <td><?=getGlossaryDefinition('information ratio')?></td>
         </tr>
         <tr>
             <td>Strategy Capacity</td>
-            <td><?=$definitionByTerm['capacity']?></td>
+            <td><?=getGlossaryDefinition('capacity')?></td>
         </tr>
     </tbody>
 </table>

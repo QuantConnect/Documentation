@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("average win");
-?>
+<? include(DOCS_RESOURCES."/glossary/average win.php"); ?>

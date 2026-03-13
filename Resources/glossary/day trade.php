@@ -1,0 +1,1 @@
+<p>Buying and selling the same asset within one trading day. In the US Equity market, the Financial Industry Regulatory Authority (FINRA) monitors day trading activity and enforces the pattern day trader rule.</p>

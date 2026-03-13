@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("day trade");
-?>
+<? include(DOCS_RESOURCES."/glossary/day trade.php"); ?>

@@ -1,0 +1,18 @@
+<p>The volatility of an Option's underlying asset that, when input into an Options pricing model, returns a theoretical value equal to the current market price of the Option.</p>
+
+<p>An initial estimate can be calculated as</p>
+
+$$
+\sigma \approx \frac{P}{S} \sqrt{\frac{2\pi}{T}}
+$$
+
+<p>where $P$ is the Option price, $S$ is the underlying asset price, and $T$ is the time to expiration in years. For more information, see <a rel='nofollow' target='_blank' href='https://doi.org/10.2307/2328140'>Brenner and Subrahmanyam (1988)</a>.</p>
+
+<?php if (!empty($includeScript)) { ?>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\(','\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<?php } ?>

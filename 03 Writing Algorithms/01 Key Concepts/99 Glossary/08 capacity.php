@@ -1,4 +1,1 @@
-<? 
-include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("capacity");
-?>
+<? include(DOCS_RESOURCES."/glossary/capacity.php"); ?>
