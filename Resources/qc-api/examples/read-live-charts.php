@@ -37,7 +37,9 @@ for attempt in range(10):
 # If the request was successful, extract and plot the chart data
 if result['success']:
     chart = result['chart']
-    series_items = list(chart['series'].items())
+    # Filter to series with plottable list data points
+    series_items = [(name, data) for name, data in chart['series'].items()
+                    if data['values'] and isinstance(data['values'][0], list)]
     if not series_items:
         print("No series data available in the chart.")
     else:
@@ -47,15 +49,19 @@ if result['success']:
             axes = [axes]
         for ax, (series_name, series_data) in zip(axes, series_items):
             values = series_data['values']
-            timestamps = [datetime.utcfromtimestamp(point[0]) for point in values]
             # Check if the data is OHLC (5 elements: timestamp, open, high, low, close)
             is_ohlc = len(values[0]) == 5
             if is_ohlc:
-                # Plot candlestick chart using matplotlib bar and vlines
+                # Filter out data points with None values
+                valid = [p for p in values if None not in p[1:]]
+                if not valid:
+                    ax.set_title(f"{series_name} (no valid data)")
+                    continue
+                timestamps = [datetime.utcfromtimestamp(p[0]) for p in valid]
                 dates = mdates.date2num(timestamps)
                 # Calculate bar width as 60% of the average interval between points
                 bar_width = (dates[-1] - dates[0]) / len(dates) * 0.6
-                for i, point in enumerate(values):
+                for i, point in enumerate(valid):
                     _, o, h, l, c = point
                     color = 'green' if c >= o else 'red'
                     # Draw the high-low wick
@@ -66,8 +72,10 @@ if result['success']:
                 ax.xaxis_date()
                 ax.set_ylabel("Price")
             else:
-                # Plot line chart for simple [timestamp, value] data
-                y_values = [point[1] for point in values]
+                # Filter out data points with None values
+                valid = [p for p in values if p[1] is not None]
+                timestamps = [datetime.utcfromtimestamp(p[0]) for p in valid]
+                y_values = [p[1] for p in valid]
                 ax.plot(timestamps, y_values)
                 ax.set_ylabel("Value")
             ax.set_title(series_name)
