@@ -59,7 +59,7 @@ def _convert_special_characters(text: str) -> str:
     return pattern.sub(replacer, text)
 
 def _parse_content(content):
-    content = content.replace("\/", "/") \
+    content = content.replace("\\/", "/") \
                             .replace("->", "-&gt;") \
                             .replace("=>", "=&gt;") \
                             .replace("=<", "=&lt;") \
