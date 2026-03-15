@@ -501,28 +501,19 @@ async def main():
 
         # Run all checks concurrently with progress bar
         done = 0
-        last_filled = -1
-        is_tty = sys.stdout.isatty()
         for coro in asyncio.as_completed(tasks):
             await coro
             done += 1
-            filled = int(CONCURRENCY * done / count)
-            if filled != last_filled or done < count:
-                last_filled = filled
+            if done % CONCURRENCY == 0 or done == count:
+                filled = int(CONCURRENCY * done / count)
                 bar = "#" * filled + "-" * (CONCURRENCY - filled)
-                if is_tty:
-                    print(f"\r  [{bar}] {done}/{count} ({done/count:.1%})", end="", flush=True)
-                else:
-                    print(f"  [{bar}] {done}/{count} ({done/count:.1%})")
-        if is_tty:
-            print()  # newline after progress bar
+                print(f"\r  [{bar}] {done}/{count} ({done/count:.1%})", end="", flush=True)
 
     # Check resource redirects
-    print(f"Now check {len(resource_files)} RESOURCE redirection.")
+    print(f"\nNow check {len(resource_files)} RESOURCE redirection.")
     _check_resources(resource_files, results)
 
-    elapsed = time.perf_counter() - start
-    print(f"Finished in {elapsed:.2f}s")
+    print(f"Finished in {time.perf_counter() - start:.2f}s")
 
     # Separate into errors and warnings based on SEVERITY config
     error_count = 0
