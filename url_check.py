@@ -208,7 +208,7 @@ def _get_all_urls(doc_files: list[str]) -> dict[str, list[str]]:
             for seg in segments:
                 raw_url = seg.split('"')[0]
 
-                if "{" in raw_url or "}" in raw_url:
+                if "{" in raw_url or "}" in raw_url or "$" in raw_url:
                     continue
 
                 if not raw_url or raw_url.isspace():
