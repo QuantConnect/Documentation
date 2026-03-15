@@ -4,22 +4,22 @@ on:
   schedule:
     - cron:  "0 10 * * 1-5" # Runs at 10:00 UTC on Mon, Tue, Wed, Thu and Fri. (see https://crontab.guru)
   workflow_dispatch:  # Run on manual trigger
-    
+
 jobs:
-  build:
+  check-urls:
     runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '10.0.x'
+      - name: Install dependencies
+        run: pip install aiohttp
 
-      - name: Build and run the url tester csproj
-        run: |
-          cd "URL Test"
-          dotnet build /p:Configuration=Release /v:quiet /p:WarningLevel=1 URLTest.csproj
-          dotnet run bin/Debug/net10.0/process.dll
+      - name: Run URL checker
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python url_check.py --create-issue
