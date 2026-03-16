@@ -9,32 +9,34 @@ os.makedirs(dir, exist_ok=True)
 
 # Get glossary terms from Resources/glossary/ directory in alphabetical order
 glossary_dir = 'Resources/glossary'
-files = sorted([f for f in os.listdir(glossary_dir) if f.endswith('.php')], key=str.lower)
+files = sorted([f for f in os.listdir(glossary_dir) if f.endswith('.html') and f != 'include-mathjax.html'], key=str.lower)
+
+mathjax = open(f"{glossary_dir}/include-mathjax.html", "r", encoding="utf-8").read()
 
 keys = {}
 lower_keys = {}
 i = 2
 
+proper_nouns = {'sharpe', 'sortino', 'treynor', 'pearson', 'probabilistic'}
 for f in files:
-    term = f.replace('.php', '')
-    keys[term] = i
-    lower_keys[term.replace('-', ' ').lower()] = i
+    term = f.replace('.html', '')
+    words = term.replace('-', ' ').split()
+    display_name = ' '.join(w.capitalize() if w in proper_nouns else w for w in words)
+    keys[term] = (i, display_name)
+    lower_keys[display_name.lower()] = i
     i += 1
 
 # Write the glossary pages
-for term, n in keys.items():
-    with open(f"{dir}/{n:02} {term}.php", "w", encoding="utf-8") as php:
-        php.write(f'''<? include(DOCS_RESOURCES."/glossary/{term}.php"); ?>''')
+for term, (n, display_name) in keys.items():
+    content = open(f"{glossary_dir}/{term}.html", "r", encoding="utf-8").read()
+    with open(f"{dir}/{n:02} {display_name}.html", "w", encoding="utf-8") as html:
+        html.write(content)
 
-with open(f"{dir}/01 Introduction.php", "w", encoding="utf-8") as php:
-    php.write("""<p>This page defines terms in QuantConnect products and documentation.</p>
+with open(f"{dir}/01 Introduction.html", "w", encoding="utf-8") as html:
+    html.write(f"{mathjax}\n<p>This page defines terms in QuantConnect products and documentation.</p>")
 
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\\\(','\\\\)']]}});
-</script>
-<script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>""")
+with open(f"01 Cloud Platform/11 Optimization/03 Objectives/01 Introduction.html", "w", encoding="utf-8") as html:
+    html.write(f"{mathjax}\n<p>An optimization objective is the performance metric that's used to compare the backtest performance of different parameter values. The optimizer currently supports the compound annual growth rate (CAGR), drawdown, Sharpe ratio, and Probabilistic Sharpe ratio (PSR) as optimization objectives. When the optimization job finishes, the results page displays the value of the objective with respect to the parameter values.</p>")
 
 with open(f"{dir}/metadata.json", "w", encoding="utf-8") as json:
     json.write('''{

@@ -1,0 +1,1 @@
+<p>The practice of making decisions using information that would not be available until some time in the future. Look-ahead bias invalidates backtest results because the algorithm uses data it would not have access to in live trading.</p>

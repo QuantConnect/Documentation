@@ -1,0 +1,1 @@
+<p>The amount of profit a portfolio would capture if it liquidated all open positions and paid the fees for transacting and crossing the spread. Unrealized profit becomes realized profit when the positions are closed.</p>

@@ -1,7 +1,7 @@
 <?php
 function getGlossaryDefinition($term, $qualifier = null)
 {
-    $path = DOCS_RESOURCES . "/glossary/" . $term . ".php";
+    $path = DOCS_RESOURCES . "/glossary/" . strtolower(str_replace(' ', '-', $term)) . ".html";
     $content = file_get_contents($path);
 
     if ($qualifier) {
