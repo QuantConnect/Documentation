@@ -1,84 +1,214 @@
-<p>The following example shows how to plot the daily closing price of SPY with a scatter plot:</p>
+<p>The following example demonstrates the <code>Line</code>, <code>Scatter</code>, <code>Candle</code>, <code>Bar</code>, <code>StackedArea</code>, and <code>Treemap</code> series types. The algorithm trades a three-asset portfolio and plots EMA crossover signals, candlestick prices, volume bars, portfolio allocation as a stacked area, and sales volume as a treemap.</p>
 
 <div class="section-example-container testable">
-	<pre class="csharp">public class ChartingDemoAlgorithm : QCAlgorithm
+	<pre class="csharp">public class AllSeriesTypesAlgorithm : QCAlgorithm
 {
-    private ExponentialMovingAverage _emaFast;
-    private ExponentialMovingAverage _emaSlow;
+    private Symbol[] _symbols;
+    private Dictionary&lt;Symbol, ExponentialMovingAverage&gt; _emaFast = new();
+    private Dictionary&lt;Symbol, ExponentialMovingAverage&gt; _emaSlow = new();
+
     public override void Initialize()
     {
-        SetStartDate(2024, 9, 1);
+        SetStartDate(2024, 1, 1);
         SetEndDate(2024, 12, 31);
+        SetCash(100000);
         Settings.AutomaticIndicatorWarmUp = true;
-        var symbol = AddEquity("MSFT", Resolution.Daily).Symbol;
-        _emaFast = EMA(symbol, 10);
-        _emaSlow = EMA(symbol, 50);
-        var chart = new Chart("Price");
-        AddChart(chart);
-        chart.AddSeries(new Series("CROSS UP", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle));
-        chart.AddSeries(new Series("CROSS DOWN", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.TriangleDown));
-        chart.AddSeries(new Series("EMA FAST", SeriesType.Line, "$", Color.Orange));
-        chart.AddSeries(new Series("EMA SLOW", SeriesType.Line, "$", Color.Blue));
-        chart = new Chart("Volume");
-        AddChart(chart);
-        chart.AddSeries(new Series("Volume", SeriesType.Bar, "", Color.Gray));
-        chart = new Chart("Candlestick");
-        AddChart(chart);
-        chart.AddSeries(new CandlestickSeries("MSFT", "$"));
+
+        var tickers = new[] { "AAPL", "MSFT", "GOOG" };
+        _symbols = new Symbol[tickers.Length];
+        for (var i = 0; i &lt; tickers.Length; i++)
+        {
+            _symbols[i] = AddEquity(tickers[i], Resolution.Daily).Symbol;
+            _emaFast[_symbols[i]] = EMA(_symbols[i], 10);
+            _emaSlow[_symbols[i]] = EMA(_symbols[i], 50);
+        }
+
+        // Line and Scatter chart: EMA values with crossover markers.
+        var priceChart = new Chart("EMA Crossover");
+        AddChart(priceChart);
+        priceChart.AddSeries(new Series("EMA Fast", SeriesType.Line, "$", Color.Orange));
+        priceChart.AddSeries(new Series("EMA Slow", SeriesType.Line, "$", Color.Blue));
+        priceChart.AddSeries(new Series("Cross Up", SeriesType.Scatter, "$",
+            Color.Green, ScatterMarkerSymbol.Triangle));
+        priceChart.AddSeries(new Series("Cross Down", SeriesType.Scatter, "$",
+            Color.Red, ScatterMarkerSymbol.TriangleDown));
+
+        // Bar chart: daily volume.
+        var volumeChart = new Chart("Volume");
+        AddChart(volumeChart);
+        volumeChart.AddSeries(new Series("Volume", SeriesType.Bar, "", Color.Gray));
+
+        // Candlestick chart: daily OHLC for the first symbol.
+        var candleChart = new Chart("Candlestick");
+        AddChart(candleChart);
+        candleChart.AddSeries(new CandlestickSeries(_symbols[0].Value, "$"));
+
+        // Stacked area chart: portfolio allocation by asset over time.
+        var allocationChart = new Chart("Allocation");
+        AddChart(allocationChart);
+        foreach (var symbol in _symbols)
+        {
+            allocationChart.AddSeries(new Series(symbol.Value, SeriesType.StackedArea, "%"));
+        }
+
+        // Treemap chart: total sales volume per asset.
+        var treemapChart = new Chart("Sales Volume");
+        AddChart(treemapChart);
+        foreach (var symbol in _symbols)
+        {
+            treemapChart.AddSeries(new Series(symbol.Value, SeriesType.Treemap, "$"));
+        }
+
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Trade on EMA crossovers for the first symbol.
+        var symbol = _symbols[0];
+        if (!_emaFast[symbol].IsReady) return;
+
+        if (_emaFast[symbol] &gt; _emaSlow[symbol] &amp;&amp;
+            _emaFast[symbol][1] &lt; _emaSlow[symbol][1])
+        {
+            SetHoldings(symbol, 0.4m);
+            SetHoldings(_symbols[1], 0.3m);
+            SetHoldings(_symbols[2], 0.3m);
+        }
+        else if (_emaFast[symbol] &lt; _emaSlow[symbol] &amp;&amp;
+            _emaFast[symbol][1] &gt; _emaSlow[symbol][1])
+        {
+            Liquidate();
+        }
     }
 
     public override void OnEndOfDay(Symbol symbol)
     {
+        if (symbol != _symbols[0]) return;
+
+        // Plot EMA line and scatter crossover markers.
+        Plot("EMA Crossover", "EMA Fast", _emaFast[symbol]);
+        Plot("EMA Crossover", "EMA Slow", _emaSlow[symbol]);
+        if (_emaFast[symbol].IsReady &amp;&amp; _emaFast[symbol][1] != 0)
+        {
+            if (_emaFast[symbol] &gt; _emaSlow[symbol] &amp;&amp;
+                _emaFast[symbol][1] &lt; _emaSlow[symbol][1])
+                Plot("EMA Crossover", "Cross Up", Securities[symbol].Price);
+            else if (_emaFast[symbol] &lt; _emaSlow[symbol] &amp;&amp;
+                _emaFast[symbol][1] &gt; _emaSlow[symbol][1])
+                Plot("EMA Crossover", "Cross Down", Securities[symbol].Price);
+        }
+
+        // Plot candlestick and volume bar.
         var data = (TradeBar)Securities[symbol].GetLastData();
         if (data != null)
         {
-            Plot("Candlestick", "MSFT", data);
+            Plot("Candlestick", symbol.Value, data);
             Plot("Volume", "Volume", data.Volume);
         }
-        Plot("Price", "EMA FAST", _emaFast);
-        Plot("Price", "EMA SLOW", _emaSlow);
-        if (_emaFast &gt; _emaSlow && _emaFast[1] &lt; _emaSlow[1])
-            Plot("Price", "CROSS UP", Securities[symbol].Price);
-        else if (_emaFast &lt; _emaSlow && _emaFast[1] &gt; _emaSlow[1])
-            Plot("Price", "CROSS DOWN", Securities[symbol].Price);
+
+        // Plot allocation and treemap.
+        var totalValue = Portfolio.TotalPortfolioValue;
+        if (totalValue &gt; 0)
+        {
+            foreach (var s in _symbols)
+            {
+                var weight = 100m * Portfolio[s].HoldingsValue / totalValue;
+                Plot("Allocation", s.Value, weight);
+                Plot("Sales Volume", s.Value, Portfolio[s].TotalSaleVolume);
+            }
+        }
     }
 }</pre>
-	<pre class="python">class ChartingDemoAlgorithm(QCAlgorithm):
+	<pre class="python">class AllSeriesTypesAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.set_start_date(2024, 9, 1)
+        self.set_start_date(2024, 1, 1)
         self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
         self.settings.automatic_indicator_warm_up = True
-        symbol = self.add_equity("MSFT", Resolution.DAILY).symbol
-        self.ema_fast = self.ema(symbol, 10)
-        self.ema_slow = self.ema(symbol, 50)
-        chart = Chart("Price")
-        self.add_chart(chart)
-        chart.add_series(Series("CROSS UP", SeriesType.SCATTER, "$", Color.GREEN, ScatterMarkerSymbol.TRIANGLE))
-        chart.add_series(Series("CROSS DOWN", SeriesType.SCATTER, "$", Color.RED, ScatterMarkerSymbol.TRIANGLE_DOWN))
-        chart.add_series(Series("EMA FAST", SeriesType.LINE, "$", Color.ORANGE))
-        chart.add_series(Series("EMA SLOW", SeriesType.LINE, "$", Color.BLUE))
-        chart = Chart("Volume")
-        self.add_chart(chart)
-        chart.add_series(Series("Volume", SeriesType.BAR, "", Color.GRAY))
-        chart = Chart("Candlestick")
-        self.add_chart(chart)
-        chart.add_series(CandlestickSeries("MSFT", "$"))
-            
+
+        tickers = ["AAPL", "MSFT", "GOOG"]
+        self._symbols = []
+        self._ema_fast = {}
+        self._ema_slow = {}
+        for ticker in tickers:
+            symbol = self.add_equity(ticker, Resolution.DAILY).symbol
+            self._symbols.append(symbol)
+            self._ema_fast[symbol] = self.ema(symbol, 10)
+            self._ema_slow[symbol] = self.ema(symbol, 50)
+
+        # Line and Scatter chart: EMA values with crossover markers.
+        price_chart = Chart("EMA Crossover")
+        self.add_chart(price_chart)
+        price_chart.add_series(Series("EMA Fast", SeriesType.LINE, "$", Color.ORANGE))
+        price_chart.add_series(Series("EMA Slow", SeriesType.LINE, "$", Color.BLUE))
+        price_chart.add_series(Series("Cross Up", SeriesType.SCATTER, "$",
+            Color.GREEN, ScatterMarkerSymbol.TRIANGLE))
+        price_chart.add_series(Series("Cross Down", SeriesType.SCATTER, "$",
+            Color.RED, ScatterMarkerSymbol.TRIANGLE_DOWN))
+
+        # Bar chart: daily volume.
+        volume_chart = Chart("Volume")
+        self.add_chart(volume_chart)
+        volume_chart.add_series(Series("Volume", SeriesType.BAR, "", Color.GRAY))
+
+        # Candlestick chart: daily OHLC for the first symbol.
+        candle_chart = Chart("Candlestick")
+        self.add_chart(candle_chart)
+        candle_chart.add_series(CandlestickSeries(self._symbols[0].value, "$"))
+
+        # Stacked area chart: portfolio allocation by asset over time.
+        allocation_chart = Chart("Allocation")
+        self.add_chart(allocation_chart)
+        for symbol in self._symbols:
+            allocation_chart.add_series(Series(symbol.value, SeriesType.STACKED_AREA, "%"))
+
+        # Treemap chart: total sales volume per asset.
+        treemap_chart = Chart("Sales Volume")
+        self.add_chart(treemap_chart)
+        for symbol in self._symbols:
+            treemap_chart.add_series(Series(symbol.value, SeriesType.TREEMAP, "$"))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Trade on EMA crossovers for the first symbol.
+        symbol = self._symbols[0]
+        if not self._ema_fast[symbol].is_ready:
+            return
+
+        if (self._ema_fast[symbol].current.value &gt; self._ema_slow[symbol].current.value and
+                self._ema_fast[symbol][1] &lt; self._ema_slow[symbol][1]):
+            self.set_holdings(symbol, 0.4)
+            self.set_holdings(self._symbols[1], 0.3)
+            self.set_holdings(self._symbols[2], 0.3)
+        elif (self._ema_fast[symbol].current.value &lt; self._ema_slow[symbol].current.value and
+                self._ema_fast[symbol][1] &gt; self._ema_slow[symbol][1]):
+            self.liquidate()
+
     def on_end_of_day(self, symbol: Symbol) -&gt; None:
+        if symbol != self._symbols[0]:
+            return
+
+        # Plot EMA line and scatter crossover markers.
+        self.plot("EMA Crossover", "EMA Fast", self._ema_fast[symbol].current.value)
+        self.plot("EMA Crossover", "EMA Slow", self._ema_slow[symbol].current.value)
+        if self._ema_fast[symbol].is_ready and self._ema_fast[symbol][1] != 0:
+            if (self._ema_fast[symbol].current.value &gt; self._ema_slow[symbol].current.value and
+                    self._ema_fast[symbol][1] &lt; self._ema_slow[symbol][1]):
+                self.plot("EMA Crossover", "Cross Up", self.securities[symbol].price)
+            elif (self._ema_fast[symbol].current.value &lt; self._ema_slow[symbol].current.value and
+                    self._ema_fast[symbol][1] &gt; self._ema_slow[symbol][1]):
+                self.plot("EMA Crossover", "Cross Down", self.securities[symbol].price)
+
+        # Plot candlestick and volume bar.
         data = self.securities[symbol].get_last_data()
         if data:
-            self.plot("Candlestick", "MSFT", data)
+            self.plot("Candlestick", symbol.value, data)
             self.plot("Volume", "Volume", data.volume)
-        self.plot("Price", "EMA FAST", self.ema_fast.current.value)
-        self.plot("Price", "EMA SLOW", self.ema_slow.current.value)
-        if (self.ema_fast &gt; self.ema_slow and self.ema_fast[1] &lt; self.ema_slow[1]):
-            self.plot("Price", "CROSS UP", self.securities[symbol].price)
-        elif (self.ema_fast &lt; self.ema_slow and self.ema_fast[1] &gt; self.ema_slow[1]):
-            self.plot("Price", "CROSS DOWN", self.securities[symbol].price)</pre>
+
+        # Plot allocation and treemap.
+        total_value = self.portfolio.total_portfolio_value
+        if total_value &gt; 0:
+            for s in self._symbols:
+                weight = 100 * self.portfolio[s].holdings_value / total_value
+                self.plot("Allocation", s.value, weight)
+                self.plot("Sales Volume", s.value, self.portfolio[s].total_sale_volume)</pre>
 </div>
-
-<img src="https://cdn.quantconnect.com/i/tu/msft-ema-cross-plus-scatter-chart.png" class="docs-image" alt="Time series of MSFT closing price during 2021.">
-<img src="https://cdn.quantconnect.com/i/tu/msft-candlestick-chart.png" class="docs-image" alt="Time series of MSFT candlesticks during 2021.">
-<img src="https://cdn.quantconnect.com/i/tu/msft-volume-bar-chart.png" class="docs-image" alt="Time series of MSFT volume during 2021.">
-
-<p>To see a full example, clone and run the preceding algorithm. The charts above show sample output from the algorithm.</p>
