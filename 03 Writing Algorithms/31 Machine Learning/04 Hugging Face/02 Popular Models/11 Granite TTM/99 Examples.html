@@ -2,14 +2,14 @@
  The following examples demonstrate usage of the Granite TTM model.
 </p>
 <h4>
- Example 1: Price Forecasting
+ Example 1: Price Prediction
 </h4>
 <p>
  The following algorithm selects the most liquid assets at the beginning of each month.
   Once a quarter, it gets the trailing prices for all the assets in the universe and then forecasts the future price path using Granite TTM.
-  It compares the forecasted return to a threshold to decide position direction and weight.
+  It compares the forecasted return to the current price and allocates the portfolio based on forecast direction.
 </p>
-<div class="section-example-container skip-test">
+<div class="section-example-container testable">
  <pre class="python">import torch
 import numpy as np
 from transformers import set_seed
@@ -33,7 +33,7 @@ class GraniteTTMAlgorithm(QCAlgorithm):
 
         set_seed(1, True)
 
-        # Load the pre-trained model.
+        # Load the pre-trained Granite TTM model.
         self._model = TinyTimeMixerForPrediction.from_pretrained(
             "ibm-granite/granite-timeseries-ttm-r1"
         )
@@ -105,7 +105,7 @@ class GraniteTTMAlgorithm(QCAlgorithm):
 
             # Calculate the expected return from the forecast.
             current_price = prices.iloc[-1]
-            forecasted_end_price = forecast[-1]
+            forecasted_end_price = float(forecast[-1])
             expected_return = (
                 (forecasted_end_price - current_price) / current_price
             )
@@ -115,8 +115,8 @@ class GraniteTTMAlgorithm(QCAlgorithm):
             return
 
         # Allocate portfolio based on forecast direction.
-        long_assets = {s: v for s, v in signals.items() if v &gt; 0}
-        short_assets = {s: v for s, v in signals.items() if v &lt;= 0}
+        long_assets = [s for s, v in signals.items() if v &gt; 0]
+        short_assets = [s for s, v in signals.items() if v &lt;= 0]
 
         targets = []
         if long_assets:

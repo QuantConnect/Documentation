@@ -9,17 +9,16 @@
   Once a quarter, it gets the trailing year of prices for all the assets in the universe and then forecasts the price paths over the upcoming quarter using Moirai.
   It then uses the SciPy package to find the weights that maximize the future Sharpe ratio of the portfolio and rebalances the portfolio to those weights.
 </p>
-<div class="section-example-container skip-test">
+<div class="section-example-container testable">
  <pre class="python">import torch
 import numpy as np
 from scipy.optimize import minimize
-from einops import rearrange
 from transformers import set_seed
 from uni2ts.model.moirai import MoiraiForecast, MoiraiModule
 from gluonts.dataset.pandas import PandasDataset
 # endregion
 
-class MoiraiTimeSeriesAlgorithm(QCAlgorithm):
+class MoiraiAlgorithm(QCAlgorithm):
     """
     This algorithm demonstrates how to use the Moirai time series
     forecasting model. It forecasts the future equity curves of the
@@ -36,13 +35,14 @@ class MoiraiTimeSeriesAlgorithm(QCAlgorithm):
 
         set_seed(1, True)
 
-        # Load the pre-trained model.
+        # Load the pre-trained Moirai model.
         self._device = "cuda" if torch.cuda.is_available() else "cpu"
+        self._prediction_length = 63  # ~3 months of trading days
         self._model = MoiraiForecast(
             module=MoiraiModule.from_pretrained(
                 "Salesforce/moirai-1.0-R-small"
             ),
-            prediction_length=63,  # ~3 months of trading days
+            prediction_length=self._prediction_length,
             context_length=252,
             patch_size="auto",
             num_samples=20,
@@ -58,11 +58,9 @@ class MoiraiTimeSeriesAlgorithm(QCAlgorithm):
             )
         )
 
-        # Define some trading parameters.
         self._lookback_period = timedelta(
             365 * self.get_parameter('lookback_years', 1)
         )
-        self._prediction_length = 63  # ~3 months of trading days
 
         # Schedule rebalances.
         self._last_rebalance = datetime.min
@@ -82,27 +80,21 @@ class MoiraiTimeSeriesAlgorithm(QCAlgorithm):
         portfolio_std = np.sqrt(
             np.dot(weights.T, np.dot(cov_matrix, weights))
         )
-        sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_std
-        return -sharpe_ratio
+        return -(portfolio_return - risk_free_rate) / portfolio_std
 
     def _optimize_portfolio(self, equity_curves):
         returns = equity_curves.pct_change().dropna()
         num_assets = returns.shape[1]
-        initial_guess = num_assets * [1. / num_assets]
         result = minimize(
             self._sharpe_ratio,
-            initial_guess,
+            num_assets * [1. / num_assets],
             args=(
                 returns,
-                self.risk_free_interest_rate_model.get_interest_rate(
-                    self.time
-                )
+                self.risk_free_interest_rate_model.get_interest_rate(self.time)
             ),
             method='SLSQP',
             bounds=tuple((0, 1) for _ in range(num_assets)),
-            constraints=(
-                {'type': 'eq', 'fun': lambda w: np.sum(w) - 1}
-            )
+            constraints=({'type': 'eq', 'fun': lambda w: np.sum(w) - 1})
         )
         return result.x
 
@@ -120,32 +112,25 @@ class MoiraiTimeSeriesAlgorithm(QCAlgorithm):
             symbols, self._lookback_period
         )['close'].unstack(0)
 
-        # Create a GluonTS dataset for each symbol.
+        # Create a GluonTS dataset and generate forecasts.
         forecasts = {}
+        predictor = self._model.create_predictor(batch_size=len(symbols))
         for symbol in symbols:
             prices = history[symbol].dropna()
             if len(prices) &lt; 60:
                 continue
-
-            # Prepare the dataset.
             df = prices.to_frame('target')
             df.index = pd.to_datetime(df.index)
-            df.index.freq = 'B'  # Business day frequency
             ds = PandasDataset(df, target='target')
-
-            # Generate forecasts.
-            predictor = self._model.create_predictor(batch_size=1)
-            forecast_it = predictor.predict(ds)
-            for forecast in forecast_it:
+            for forecast in predictor.predict(ds):
+                # Take the median over samples.
                 forecasts[symbol] = np.median(forecast.samples, axis=0)
 
         if len(forecasts) &lt; 2:
             return
 
-        # Build a DataFrame of forecasted equity curves.
+        # Build forecasted equity curves and find optimal weights.
         forecasts_df = pd.DataFrame(forecasts)
-
-        # Find optimal weights.
         optimal_weights = self._optimize_portfolio(forecasts_df)
 
         # Rebalance.

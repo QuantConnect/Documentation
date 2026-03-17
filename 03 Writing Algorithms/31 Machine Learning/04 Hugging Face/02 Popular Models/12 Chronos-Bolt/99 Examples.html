@@ -8,9 +8,9 @@
  The following algorithm selects the most liquid assets at the beginning of each month.
   Once a quarter, it gets the trailing year of prices for all the assets in the universe and then forecasts the price paths over the upcoming quarter using Chronos-Bolt.
   It then uses the SciPy package to find the weights that maximize the future Sharpe ratio of the portfolio and rebalances the portfolio to those weights.
-  Chronos-Bolt is faster than the original Chronos-T5 models because it directly generates quantile forecasts instead of sampling.
+  Chronos-Bolt is a faster variant of Chronos-T5 that directly generates quantile forecasts.
 </p>
-<div class="section-example-container skip-test">
+<div class="section-example-container testable">
  <pre class="python">import torch
 import numpy as np
 from scipy.optimize import minimize
@@ -114,21 +114,22 @@ class ChronosBoltAlgorithm(QCAlgorithm):
             symbols, self._lookback_period
         )['close'].unstack(0)
 
-        # Forecast the future equity curves.
-        # Chronos-Bolt directly outputs quantile forecasts.
-        quantile_forecasts = self._pipeline.predict_quantiles(
+        # Forecast the future equity curves using Chronos-Bolt.
+        # predict() returns (num_series, num_samples, prediction_length).
+        all_forecasts = self._pipeline.predict(
             [
                 torch.tensor(history[symbol].dropna())
                 for symbol in symbols
             ],
-            self._prediction_length,
-            [0.1, 0.5, 0.9]  # 10th, 50th, 90th percentiles
+            self._prediction_length
         )
 
-        # Take the median forecast (index 1) for each asset.
+        # Take the median forecast for each asset.
         forecasts_df = pd.DataFrame(
             {
-                symbol: quantile_forecasts[i, :, 1].numpy()
+                symbol: np.quantile(
+                    all_forecasts[i].numpy(), 0.5, axis=0
+                )
                 for i, symbol in enumerate(symbols)
             }
         )

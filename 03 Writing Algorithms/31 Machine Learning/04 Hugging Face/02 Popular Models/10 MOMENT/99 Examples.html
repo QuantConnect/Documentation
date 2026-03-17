@@ -2,21 +2,21 @@
  The following examples demonstrate usage of the MOMENT model.
 </p>
 <h4>
- Example 1: Price Forecasting
+ Example 1: Price Prediction
 </h4>
 <p>
  The following algorithm selects the most liquid assets at the beginning of each month.
   Once a quarter, it gets the trailing prices for all the assets in the universe and then forecasts the future price path using MOMENT.
   It compares the forecasted price to the current price and goes long assets with a positive forecast and short assets with a negative forecast.
 </p>
-<div class="section-example-container skip-test">
+<div class="section-example-container testable">
  <pre class="python">import torch
 import numpy as np
 from transformers import set_seed
 from momentfm import MOMENTPipeline
 # endregion
 
-class MomentTimeSeriesAlgorithm(QCAlgorithm):
+class MomentAlgorithm(QCAlgorithm):
     """
     This algorithm demonstrates how to use the MOMENT time series
     foundation model. It forecasts future prices for the 5 most
@@ -33,7 +33,7 @@ class MomentTimeSeriesAlgorithm(QCAlgorithm):
 
         set_seed(1, True)
 
-        # Load the pre-trained model.
+        # Load the pre-trained MOMENT model.
         self._model = MOMENTPipeline.from_pretrained(
             "AutonLab/MOMENT-1-large",
             model_kwargs={"task_name": "forecasting", "forecast_horizon": 63}
@@ -82,9 +82,10 @@ class MomentTimeSeriesAlgorithm(QCAlgorithm):
                 continue
 
             # MOMENT expects input of shape (batch, n_channels, seq_len).
-            # Use the last 512 observations as context.
             context = prices.values[-512:]
-            input_tensor = torch.tensor(context).float().unsqueeze(0).unsqueeze(0)
+            input_tensor = torch.tensor(
+                context
+            ).float().unsqueeze(0).unsqueeze(0)
 
             # Generate forecasts.
             with torch.no_grad():
@@ -95,15 +96,17 @@ class MomentTimeSeriesAlgorithm(QCAlgorithm):
             # Calculate the expected return from the forecast.
             current_price = prices.iloc[-1]
             forecasted_end_price = forecast[-1]
-            expected_return = (forecasted_end_price - current_price) / current_price
+            expected_return = (
+                (forecasted_end_price - current_price) / current_price
+            )
             signals[symbol] = expected_return
 
         if not signals:
             return
 
         # Allocate portfolio based on forecast direction.
-        long_assets = {s: v for s, v in signals.items() if v &gt; 0}
-        short_assets = {s: v for s, v in signals.items() if v &lt;= 0}
+        long_assets = [s for s, v in signals.items() if v &gt; 0]
+        short_assets = [s for s, v in signals.items() if v &lt;= 0]
 
         targets = []
         if long_assets:
