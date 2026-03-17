@@ -1,0 +1,119 @@
+<p>
+ The following examples demonstrate usage of Hugging Face text generation models.
+</p>
+<h4>
+ Example 1: GPT-2 Market Condition Classifier
+</h4>
+<p>
+ The following algorithm uses GPT-2 to classify market conditions based on recent price data.
+  At the beginning of each month, it calculates trailing returns, volatility, and momentum for the universe of the 5 most liquid assets.
+  It then prompts GPT-2 to complete a structured market analysis template and parses the generated text to determine position sizing.
+</p>
+<div class="section-example-container skip-test">
+ <pre class="python">from transformers import pipeline, set_seed
+
+class GPT2MarketAnalysisAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+
+        self.settings.min_absolute_portfolio_target_percentage = 0
+
+        set_seed(1, True)
+
+        # Load the text generation pipeline with GPT-2.
+        self._generator = pipeline(
+            "text-generation",
+            model="openai-community/gpt2"
+        )
+
+        # Define the universe.
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self.universe_settings.resolution = Resolution.DAILY
+        self._universe = self.add_universe(
+            self.universe.top(
+                self.get_parameter('universe_size', 5)
+            )
+        )
+
+        self._last_rebalance = datetime.min
+        self.schedule.on(
+            self.date_rules.month_start(spy, 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+        self.set_warm_up(timedelta(31))
+
+    def _trade(self):
+        if self.is_warming_up:
+            return
+        if self.time - self._last_rebalance &lt; timedelta(25):
+            return
+        self._last_rebalance = self.time
+
+        symbols = list(self._universe.selected)
+        if not symbols:
+            return
+
+        # Get trailing 60-day price data.
+        history = self.history(
+            symbols, 60, Resolution.DAILY
+        )['close'].unstack(0)
+
+        scores = {}
+        for symbol in symbols:
+            prices = history[symbol].dropna()
+            if len(prices) &lt; 20:
+                continue
+
+            # Calculate features.
+            returns_20d = (prices.iloc[-1] / prices.iloc[-20] - 1) * 100
+            volatility = prices.pct_change().std() * np.sqrt(252) * 100
+
+            # Create a structured prompt.
+            prompt = (
+                f"Stock analysis: 20-day return {returns_20d:.1f}%, "
+                f"annualized volatility {volatility:.1f}%. "
+                f"Market outlook:"
+            )
+
+            # Generate text.
+            result = self._generator(
+                prompt, max_new_tokens=30, num_return_sequences=1,
+                do_sample=True, temperature=0.7
+            )
+            generated = result[0]['generated_text'].lower()
+
+            # Parse sentiment from generated text.
+            bullish_words = ['bullish', 'growth', 'strong', 'positive', 'upward', 'buy', 'rally']
+            bearish_words = ['bearish', 'decline', 'weak', 'negative', 'downward', 'sell', 'crash']
+
+            bull_count = sum(1 for w in bullish_words if w in generated)
+            bear_count = sum(1 for w in bearish_words if w in generated)
+
+            # Combine model signal with momentum.
+            momentum_signal = 1 if returns_20d &gt; 0 else -1
+            model_signal = bull_count - bear_count
+            scores[symbol] = momentum_signal + model_signal * 0.5
+
+        if not scores:
+            return
+
+        # Normalize scores to portfolio weights.
+        total = sum(abs(v) for v in scores.values())
+        if total == 0:
+            return
+        weights = {s: v / total for s, v in scores.items()}
+
+        # Rebalance.
+        self.set_holdings(
+            [
+                PortfolioTarget(symbol, weight)
+                for symbol, weight in weights.items()
+            ],
+            True
+        )</pre>
+</div>

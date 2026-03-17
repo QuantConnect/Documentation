@@ -1,0 +1,160 @@
+<p>
+ The following examples demonstrate usage of the Moirai model.
+</p>
+<h4>
+ Example 1: Price Prediction
+</h4>
+<p>
+ The following algorithm selects the most liquid assets at the beginning of each month.
+  Once a quarter, it gets the trailing year of prices for all the assets in the universe and then forecasts the price paths over the upcoming quarter using Moirai.
+  It then uses the SciPy package to find the weights that maximize the future Sharpe ratio of the portfolio and rebalances the portfolio to those weights.
+</p>
+<div class="section-example-container skip-test">
+ <pre class="python">import torch
+import numpy as np
+from scipy.optimize import minimize
+from einops import rearrange
+from transformers import set_seed
+from uni2ts.model.moirai import MoiraiForecast, MoiraiModule
+from gluonts.dataset.pandas import PandasDataset
+# endregion
+
+class MoiraiTimeSeriesAlgorithm(QCAlgorithm):
+    """
+    This algorithm demonstrates how to use the Moirai time series
+    forecasting model. It forecasts the future equity curves of the
+    5 most liquid assets, then finds portfolio weights that maximize
+    the future Sharpe ratio. The portfolio is rebalanced quarterly.
+    """
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+
+        self.settings.min_absolute_portfolio_target_percentage = 0
+
+        set_seed(1, True)
+
+        # Load the pre-trained model.
+        self._device = "cuda" if torch.cuda.is_available() else "cpu"
+        self._model = MoiraiForecast(
+            module=MoiraiModule.from_pretrained(
+                "Salesforce/moirai-1.0-R-small"
+            ),
+            prediction_length=63,  # ~3 months of trading days
+            context_length=252,
+            patch_size="auto",
+            num_samples=20,
+        )
+
+        # Define the universe.
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self.universe_settings.resolution = Resolution.DAILY
+        self._universe = self.add_universe(
+            self.universe.top(
+                self.get_parameter('universe_size', 5)
+            )
+        )
+
+        # Define some trading parameters.
+        self._lookback_period = timedelta(
+            365 * self.get_parameter('lookback_years', 1)
+        )
+        self._prediction_length = 63  # ~3 months of trading days
+
+        # Schedule rebalances.
+        self._last_rebalance = datetime.min
+        self.schedule.on(
+            self.date_rules.month_start(spy, 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+        self.set_warmup(timedelta(31))
+
+    def _sharpe_ratio(
+            self, weights, returns, risk_free_rate,
+            trading_days_per_year=252):
+        mean_returns = returns.mean() * trading_days_per_year
+        cov_matrix = returns.cov() * trading_days_per_year
+        portfolio_return = np.sum(mean_returns * weights)
+        portfolio_std = np.sqrt(
+            np.dot(weights.T, np.dot(cov_matrix, weights))
+        )
+        sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_std
+        return -sharpe_ratio
+
+    def _optimize_portfolio(self, equity_curves):
+        returns = equity_curves.pct_change().dropna()
+        num_assets = returns.shape[1]
+        initial_guess = num_assets * [1. / num_assets]
+        result = minimize(
+            self._sharpe_ratio,
+            initial_guess,
+            args=(
+                returns,
+                self.risk_free_interest_rate_model.get_interest_rate(
+                    self.time
+                )
+            ),
+            method='SLSQP',
+            bounds=tuple((0, 1) for _ in range(num_assets)),
+            constraints=(
+                {'type': 'eq', 'fun': lambda w: np.sum(w) - 1}
+            )
+        )
+        return result.x
+
+    def _trade(self):
+        if self.is_warming_up:
+            return
+        if self.time - self._last_rebalance &lt; timedelta(80):
+            return
+        self._last_rebalance = self.time
+
+        symbols = list(self._universe.selected)
+
+        # Get historical prices.
+        history = self.history(
+            symbols, self._lookback_period
+        )['close'].unstack(0)
+
+        # Create a GluonTS dataset for each symbol.
+        forecasts = {}
+        for symbol in symbols:
+            prices = history[symbol].dropna()
+            if len(prices) &lt; 60:
+                continue
+
+            # Prepare the dataset.
+            df = prices.to_frame('target')
+            df.index = pd.to_datetime(df.index)
+            df.index.freq = 'B'  # Business day frequency
+            ds = PandasDataset(df, target='target')
+
+            # Generate forecasts.
+            predictor = self._model.create_predictor(batch_size=1)
+            forecast_it = predictor.predict(ds)
+            for forecast in forecast_it:
+                forecasts[symbol] = np.median(forecast.samples, axis=0)
+
+        if len(forecasts) &lt; 2:
+            return
+
+        # Build a DataFrame of forecasted equity curves.
+        forecasts_df = pd.DataFrame(forecasts)
+
+        # Find optimal weights.
+        optimal_weights = self._optimize_portfolio(forecasts_df)
+
+        # Rebalance.
+        tradable_symbols = list(forecasts.keys())
+        self.set_holdings(
+            [
+                PortfolioTarget(symbol, optimal_weights[i])
+                for i, symbol in enumerate(tradable_symbols)
+            ],
+            True
+        )</pre>
+</div>

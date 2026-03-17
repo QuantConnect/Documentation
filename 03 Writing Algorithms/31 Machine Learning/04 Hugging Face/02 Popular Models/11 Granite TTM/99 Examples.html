@@ -1,0 +1,132 @@
+<p>
+ The following examples demonstrate usage of the Granite TTM model.
+</p>
+<h4>
+ Example 1: Price Forecasting
+</h4>
+<p>
+ The following algorithm selects the most liquid assets at the beginning of each month.
+  Once a quarter, it gets the trailing prices for all the assets in the universe and then forecasts the future price path using Granite TTM.
+  It compares the forecasted return to a threshold to decide position direction and weight.
+</p>
+<div class="section-example-container skip-test">
+ <pre class="python">import torch
+import numpy as np
+from transformers import set_seed
+from tsfm_public import TinyTimeMixerForPrediction
+# endregion
+
+class GraniteTTMAlgorithm(QCAlgorithm):
+    """
+    This algorithm demonstrates how to use the Granite TTM time series
+    forecasting model. It forecasts future prices for the 5 most
+    liquid assets, then allocates the portfolio based on the
+    expected direction and magnitude of each forecast.
+    """
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+
+        self.settings.min_absolute_portfolio_target_percentage = 0
+
+        set_seed(1, True)
+
+        # Load the pre-trained model.
+        self._model = TinyTimeMixerForPrediction.from_pretrained(
+            "ibm-granite/granite-timeseries-ttm-r1"
+        )
+        self._model.eval()
+
+        # Define the universe.
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self.universe_settings.resolution = Resolution.DAILY
+        self._universe = self.add_universe(
+            self.universe.top(
+                self.get_parameter('universe_size', 5)
+            )
+        )
+
+        self._lookback_period = timedelta(365)
+
+        # Schedule rebalances.
+        self._last_rebalance = datetime.min
+        self.schedule.on(
+            self.date_rules.month_start(spy, 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+        self.set_warmup(timedelta(31))
+
+    def _trade(self):
+        if self.is_warming_up:
+            return
+        if self.time - self._last_rebalance &lt; timedelta(80):
+            return
+        self._last_rebalance = self.time
+
+        symbols = list(self._universe.selected)
+
+        # Get historical prices.
+        history = self.history(
+            symbols, self._lookback_period
+        )['close'].unstack(0)
+
+        signals = {}
+        for symbol in symbols:
+            prices = history[symbol].dropna()
+            if len(prices) &lt; 512:
+                continue
+
+            # Normalize the price series.
+            price_values = prices.values[-512:]
+            mean_price = price_values.mean()
+            std_price = price_values.std()
+            if std_price == 0:
+                continue
+            normalized = (price_values - mean_price) / std_price
+
+            # TTM expects input of shape (batch, seq_len, n_channels).
+            input_tensor = torch.tensor(
+                normalized
+            ).float().unsqueeze(0).unsqueeze(-1)
+
+            # Generate forecasts.
+            with torch.no_grad():
+                output = self._model(input_tensor)
+
+            # Denormalize the forecast.
+            forecast = (
+                output.prediction_outputs.squeeze().numpy()
+                * std_price + mean_price
+            )
+
+            # Calculate the expected return from the forecast.
+            current_price = prices.iloc[-1]
+            forecasted_end_price = forecast[-1]
+            expected_return = (
+                (forecasted_end_price - current_price) / current_price
+            )
+            signals[symbol] = expected_return
+
+        if not signals:
+            return
+
+        # Allocate portfolio based on forecast direction.
+        long_assets = {s: v for s, v in signals.items() if v &gt; 0}
+        short_assets = {s: v for s, v in signals.items() if v &lt;= 0}
+
+        targets = []
+        if long_assets:
+            long_weight = 0.8 / len(long_assets)
+            for symbol in long_assets:
+                targets.append(PortfolioTarget(symbol, long_weight))
+        if short_assets:
+            short_weight = -0.2 / len(short_assets)
+            for symbol in short_assets:
+                targets.append(PortfolioTarget(symbol, short_weight))
+
+        self.set_holdings(targets, True)</pre>
+</div>

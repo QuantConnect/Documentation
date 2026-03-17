@@ -1,0 +1,147 @@
+<p>
+ The following examples demonstrate usage of the Chronos-Bolt model.
+</p>
+<h4>
+ Example 1: Price Prediction
+</h4>
+<p>
+ The following algorithm selects the most liquid assets at the beginning of each month.
+  Once a quarter, it gets the trailing year of prices for all the assets in the universe and then forecasts the price paths over the upcoming quarter using Chronos-Bolt.
+  It then uses the SciPy package to find the weights that maximize the future Sharpe ratio of the portfolio and rebalances the portfolio to those weights.
+  Chronos-Bolt is faster than the original Chronos-T5 models because it directly generates quantile forecasts instead of sampling.
+</p>
+<div class="section-example-container skip-test">
+ <pre class="python">import torch
+import numpy as np
+from scipy.optimize import minimize
+from chronos import ChronosBoltPipeline
+from transformers import set_seed
+# endregion
+
+class ChronosBoltAlgorithm(QCAlgorithm):
+    """
+    This algorithm demonstrates how to use the Chronos-Bolt time
+    series forecasting model. It forecasts the future equity curves
+    of the 5 most liquid assets, then finds portfolio weights that
+    maximize the future Sharpe ratio. The portfolio is rebalanced
+    every 3 months.
+    """
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+
+        self.settings.min_absolute_portfolio_target_percentage = 0
+
+        set_seed(1, True)
+
+        # Load the pre-trained Chronos-Bolt model.
+        self._pipeline = ChronosBoltPipeline.from_pretrained(
+            "autogluon/chronos-bolt-base",
+            device_map="cuda" if torch.cuda.is_available() else "cpu",
+            torch_dtype=torch.bfloat16,
+        )
+
+        # Define the universe.
+        spy = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        self.universe_settings.schedule.on(self.date_rules.month_start(spy))
+        self.universe_settings.resolution = Resolution.DAILY
+        self._universe = self.add_universe(
+            self.universe.top(
+                self.get_parameter('universe_size', 5)
+            )
+        )
+
+        self._lookback_period = timedelta(
+            365 * self.get_parameter('lookback_years', 1)
+        )
+        self._prediction_length = 3 * 21  # Three months of trading days
+
+        # Schedule rebalances.
+        self._last_rebalance = datetime.min
+        self.schedule.on(
+            self.date_rules.month_start(spy, 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+        self.set_warmup(timedelta(31))
+
+    def _sharpe_ratio(
+            self, weights, returns, risk_free_rate,
+            trading_days_per_year=252):
+        mean_returns = returns.mean() * trading_days_per_year
+        cov_matrix = returns.cov() * trading_days_per_year
+        portfolio_return = np.sum(mean_returns * weights)
+        portfolio_std = np.sqrt(
+            np.dot(weights.T, np.dot(cov_matrix, weights))
+        )
+        sharpe_ratio = (portfolio_return - risk_free_rate) / portfolio_std
+        return -sharpe_ratio
+
+    def _optimize_portfolio(self, equity_curves):
+        returns = equity_curves.pct_change().dropna()
+        num_assets = returns.shape[1]
+        initial_guess = num_assets * [1. / num_assets]
+        result = minimize(
+            self._sharpe_ratio,
+            initial_guess,
+            args=(
+                returns,
+                self.risk_free_interest_rate_model.get_interest_rate(
+                    self.time
+                )
+            ),
+            method='SLSQP',
+            bounds=tuple((0, 1) for _ in range(num_assets)),
+            constraints=(
+                {'type': 'eq', 'fun': lambda w: np.sum(w) - 1}
+            )
+        )
+        return result.x
+
+    def _trade(self):
+        if self.is_warming_up:
+            return
+        if self.time - self._last_rebalance &lt; timedelta(80):
+            return
+        self._last_rebalance = self.time
+
+        symbols = list(self._universe.selected)
+
+        # Get historical equity curves.
+        history = self.history(
+            symbols, self._lookback_period
+        )['close'].unstack(0)
+
+        # Forecast the future equity curves.
+        # Chronos-Bolt directly outputs quantile forecasts.
+        quantile_forecasts = self._pipeline.predict_quantiles(
+            [
+                torch.tensor(history[symbol].dropna())
+                for symbol in symbols
+            ],
+            self._prediction_length,
+            [0.1, 0.5, 0.9]  # 10th, 50th, 90th percentiles
+        )
+
+        # Take the median forecast (index 1) for each asset.
+        forecasts_df = pd.DataFrame(
+            {
+                symbol: quantile_forecasts[i, :, 1].numpy()
+                for i, symbol in enumerate(symbols)
+            }
+        )
+
+        # Find the weights that maximize the forward Sharpe ratio.
+        optimal_weights = self._optimize_portfolio(forecasts_df)
+
+        # Rebalance the portfolio.
+        self.set_holdings(
+            [
+                PortfolioTarget(symbol, optimal_weights[i])
+                for i, symbol in enumerate(symbols)
+            ],
+            True
+        )</pre>
+</div>

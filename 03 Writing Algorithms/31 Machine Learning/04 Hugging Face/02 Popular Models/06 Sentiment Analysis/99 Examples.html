@@ -1,0 +1,112 @@
+<p>
+ The following examples demonstrate usage of Hugging Face sentiment analysis models.
+</p>
+<h4>
+ Example 1: News Sentiment Trading
+</h4>
+<p>
+ The following algorithm selects the most volatile asset at the beginning of each month.
+  It gets the <a href="/datasets/tiingo-news-feed">Tiingo News</a> articles that were released for the asset over the previous 10 days and then feeds them into a sentiment analysis model.
+  It aggregates the sentiment scores of all the news releases.
+  If the aggregated sentiment is positive, it enters a long position for the month.
+  If it's negative, it enters a short position.
+  You can replace the model name with any of the sentiment analysis models listed on the introduction page.
+</p>
+<div class="section-example-container skip-test">
+ <pre class="python">from transformers import pipeline, set_seed
+
+class SentimentAnalysisModelAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start("SPY"))
+        self._universe = self.add_universe(
+            lambda fundamental: [
+                self.history(
+                    [f.symbol for f in sorted(
+                        fundamental, key=lambda f: f.dollar_volume
+                    )[-10:]],
+                    timedelta(365), Resolution.DAILY
+                )['close'].unstack(0).pct_change().iloc[1:].std().idxmax()
+            ]
+        )
+
+        set_seed(1, True)
+
+        # Load the sentiment analysis pipeline.
+        # Replace the model name with any supported sentiment model.
+        self._sentiment_pipeline = pipeline(
+            "text-classification",
+            model="mrm8488/distilroberta-finetuned-financial-news-sentiment-analysis"
+        )
+
+        self._last_rebalance_time = datetime.min
+        self.set_warm_up(30, Resolution.DAILY)
+
+    def on_warmup_finished(self):
+        self._trade()
+        self.schedule.on(
+            self.date_rules.month_start("SPY", 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+
+    def on_securities_changed(self, changes):
+        for security in changes.removed_securities:
+            self.remove_security(security.dataset_symbol)
+        for security in changes.added_securities:
+            security.dataset_symbol = self.add_data(
+                TiingoNews, security.symbol
+            ).symbol
+
+    def _trade(self):
+        if (self.is_warming_up or
+            self.time - self._last_rebalance_time &lt; timedelta(14)):
+            return
+
+        # Get the target security.
+        security = self.securities[list(self._universe.selected)[0]]
+
+        # Get the latest news articles.
+        articles = self.history[TiingoNews](
+            security.dataset_symbol, 10, Resolution.DAILY
+        )
+        article_text = [
+            article.description for article in articles
+            if article.description
+        ]
+        if not article_text:
+            return
+
+        # Run sentiment analysis on each article.
+        # Truncate long articles to the model's max length.
+        results = self._sentiment_pipeline(
+            article_text, truncation=True, max_length=512
+        )
+
+        # Aggregate sentiment scores.
+        positive_score = 0
+        negative_score = 0
+        for result in results:
+            label = result['label'].lower()
+            score = result['score']
+            if 'pos' in label:
+                positive_score += score
+            elif 'neg' in label:
+                negative_score += score
+
+        self.plot("Sentiment", "Positive", positive_score)
+        self.plot("Sentiment", "Negative", negative_score)
+
+        # Rebalance based on sentiment.
+        weight = 1 if positive_score &gt; negative_score else -0.25
+        self.set_holdings(
+            security.symbol, weight,
+            liquidate_existing_holdings=True
+        )
+        self._last_rebalance_time = self.time</pre>
+</div>
