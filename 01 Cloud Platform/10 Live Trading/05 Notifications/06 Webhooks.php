@@ -57,7 +57,7 @@
         </tr>
         <tr>
             <td><code>OrderEvents</code></td>
-            <td><code>OrderEvent Array</code><br/>Collection of order events since the last notification. See the Order Event Schema table below for the schema of each object.</td>
+            <td><code>OrderEvent Array</code><br/>Collection of order events since the last notification. For the conceptual model, see <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/orders#03-Responses'>OrderEvent in the API Reference</a>. The webhook serialization differs from the API response. See the Order Event Schema table below for the webhook-specific schema.</td>
         </tr>
         <tr>
             <td><code>Portfolio</code></td>
