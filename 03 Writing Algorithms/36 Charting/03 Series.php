@@ -105,7 +105,49 @@ Series(name, type, unit, color, symbol)
 <h4>Types</h4>
 
 <p>The <code>SeriesType</code> enumeration has the following members:</p>
-<div data-tree="QuantConnect.SeriesType" data-fields="Line,Scatter,Candle,Bar,LINE,SCATTER,CANDLE,BAR"></div>
+<div data-tree="QuantConnect.SeriesType" data-fields="Line,Scatter,Candle,Bar,StackedArea,Treemap,LINE,SCATTER,CANDLE,BAR,STACKED_AREA,TREEMAP"></div>
+
+<p>A <code>Line</code> series connects plotted values with a continuous line. This is the default series type.</p>
+<div class="section-example-container">
+    <pre class="csharp">chart.AddSeries(new Series("EMA", SeriesType.Line, "$", Color.Orange));</pre>
+    <pre class="python">chart.add_series(Series("EMA", SeriesType.LINE, "$", Color.ORANGE))</pre>
+</div>
+
+<p>A <code>Scatter</code> series plots individual data points without connecting lines. Use the <code>ScatterMarkerSymbol</code> parameter to set the marker shape.</p>
+<div class="section-example-container">
+    <pre class="csharp">chart.AddSeries(new Series("Signal", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle));</pre>
+    <pre class="python">chart.add_series(Series("Signal", SeriesType.SCATTER, "$", Color.GREEN, ScatterMarkerSymbol.TRIANGLE))</pre>
+</div>
+
+<p>A <code>Candle</code> series displays OHLC data as candlesticks. Use the <code>CandlestickSeries</code> helper class and plot a <code>TradeBar</code> to populate all four values.</p>
+<div class="section-example-container">
+    <pre class="csharp">chart.AddSeries(new CandlestickSeries("SPY", "$"));</pre>
+    <pre class="python">chart.add_series(CandlestickSeries("SPY", "$"))</pre>
+</div>
+
+<p>A <code>Bar</code> series draws vertical bars for each plotted value, which is useful for volume or count data.</p>
+<div class="section-example-container">
+    <pre class="csharp">chart.AddSeries(new Series("Volume", SeriesType.Bar, "", Color.Gray));</pre>
+    <pre class="python">chart.add_series(Series("Volume", SeriesType.BAR, "", Color.GRAY))</pre>
+</div>
+
+<p>To create a <code>StackedArea</code> chart, add multiple series to the same chart. Each series contributes an area band that stacks on top of the others.</p>
+<div class="section-example-container">
+    <pre class="csharp">chart.AddSeries(new Series("Stocks", SeriesType.StackedArea, "%"));
+chart.AddSeries(new Series("Bonds", SeriesType.StackedArea, "%"));</pre>
+    <pre class="python">chart.add_series(Series("Stocks", SeriesType.STACKED_AREA, "%"))
+chart.add_series(Series("Bonds", SeriesType.STACKED_AREA, "%"))</pre>
+</div>
+
+<p>To create a <code>Treemap</code> chart, add multiple series to the same chart. Each series becomes a tile and its plotted value determines the tile size.</p>
+<div class="section-example-container">
+    <pre class="csharp">chart.AddSeries(new Series("SPY", SeriesType.Treemap, "$"));
+chart.AddSeries(new Series("AAPL", SeriesType.Treemap, "$"));</pre>
+    <pre class="python">chart.add_series(Series("SPY", SeriesType.TREEMAP, "$"))
+chart.add_series(Series("AAPL", SeriesType.TREEMAP, "$"))</pre>
+</div>
+
+<p>For a full example that demonstrates all series types, see <a href='/docs/v2/writing-algorithms/charting#99-Examples'>Examples</a>.</p>
 
 <h4>Index</h4>
 
