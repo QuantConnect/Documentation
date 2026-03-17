@@ -20,37 +20,35 @@
 import joblib
 
 class XGBoostExampleAlgorithm(QCAlgorithm):
-  
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Request SPY data for model training, prediction and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
-        # 2-year data to train the model.
+        # Use the session rolling window to cache 2-year daily data for training.
         training_length = 252*2
-        self.training_data = RollingWindow(training_length)
-        # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
-        for trade_bar in history:
-            self.training_data.add(trade_bar.close)
+        self.securities[self._symbol].session.size = training_length
+        self.set_warm_up(training_length, Resolution.DAILY)
 
         # Retrieve already trained model from object store to use immediately.
         self._model_key = "xgboost-example-model"
         if self.live_mode and self.object_store.contains_key(self._model_key):
             file_name = self.object_store.get_file_path(self._model_key)
             self.model = joblib.load(file_name)
-        else:
+
+    def on_warmup_finished(self) -&gt; None:
+        if not hasattr(self, 'model'):
             # Train the model to use the prediction right away.
             self.train(self.my_training_method)
-            
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
-        
+
     def get_features_and_labels(self, n_steps=5) -&gt; None:
         # Train and predict the partial-differencing data, which is more stationary while more variance remaining.
-        close_prices = np.array(list(self.training_data)[::-1])
+        close_prices = np.array([x.close for x in self.securities[self._symbol].session][::-1])
         df = (np.roll(close_prices, -1) - close_prices) * 0.5 + close_prices * 0.5
         df = df[:-1]
 
@@ -87,8 +85,8 @@ class XGBoostExampleAlgorithm(QCAlgorithm):
         self.model = xgb.train(params, d_matrix, num_boost_round=2)
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.symbol in slice.bars:
-            self.training_data.add(slice.bars[self.symbol].close)
+        if self.is_warming_up or self._symbol not in slice.bars:
+            return
 
         # Get prediction by the updated features.
         new_d_matrix = self.get_features_and_labels()
@@ -97,10 +95,10 @@ class XGBoostExampleAlgorithm(QCAlgorithm):
 
         # If the predicted direction is going upward, buy SPY.
         if float(prediction[-1]) &gt; float(prediction[-2]):
-            self.set_holdings(self.symbol, 1)
+            self.set_holdings(self._symbol, 1)
         # If the predicted direction is going downward, sell SPY.
-        else:            
-            self.set_holdings(self.symbol, -1)
+        else:
+            self.set_holdings(self._symbol, -1)
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.

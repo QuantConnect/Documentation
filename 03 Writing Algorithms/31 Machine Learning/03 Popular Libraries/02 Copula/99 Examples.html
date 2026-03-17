@@ -13,6 +13,7 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 12, 3)
         self.set_end_date(2024, 12, 4)
         self.set_cash(100000000)
+        self.settings.seed_initial_prices = True
         self.add_security_initializer(self.custom_security_initializer)
 
         # Request spx and ndx data for option pricing and selection.
@@ -46,8 +47,6 @@ class CopulaOptionTradingAlgorithm(QCAlgorithm):
         )
 
     def custom_security_initializer(self, security: Security) -&gt; None:
-        # Seed the last price for the initial filtering on option contracts using the price data.
-        security.set_market_price(self.get_last_known_price(security))
         # Allow infinite margin to start the option positions.
         security.set_buying_power_model(NullBuyingPowerModel())
 

@@ -26,15 +26,12 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Request SPY data for model training, prediction and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
-        # 2-year data to train the model.
+        # Use the session rolling window to cache 2-year daily data for training.
         training_length = 252*2
-        self.training_data = RollingWindow(training_length)
-        # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
-        for trade_bar in history:
-            self.training_data.add(trade_bar.close)
+        self.securities[self._symbol].session.size = training_length
+        self.set_warm_up(training_length, Resolution.DAILY)
 
         # Retrieve already trained model from object store to use immediately.
         self._model_key = 'pytorch-example-model'
@@ -45,14 +42,15 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         else:
             device = 'cuda' if torch.cuda.is_available() else 'cpu'
             self.model = NeuralNetwork().to(device)
-            # Train the model to use the prediction right away.
-            self.train(self.my_training_method)
-            
+
+    def on_warmup_finished(self) -&gt; None:
+        # Train the model to use the prediction right away.
+        self.train(self.my_training_method)
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
-        
+
     def get_features_and_labels(self, n_steps=5) -&gt; None:
-        close_prices = list(self.training_data)[::-1]
+        close_prices = [x.close for x in self.securities[self._symbol].session][::-1]
 
         # Stack the data for 5-day OHLCV data per each sample to train with.
         features = []
@@ -74,7 +72,7 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         loss_fn = nn.MSELoss()
         learning_rate = 0.001
         optimizer = torch.optim.SGD(self.model.parameters(), lr=learning_rate)
-        
+
         # Create a for-loop to train for preset number of epoch.
         epochs = 5
         for t in range(epochs):
@@ -84,30 +82,30 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
                 pred = self.model(feature)
                 real = torch.from_numpy(np.array(label).flatten()).float()
                 loss = loss_fn(pred, real)
-            
+
                 # Perform backpropagation.
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.symbol in slice.bars:
-            self.training_data.add(slice.bars[self.symbol].close)
+        if self.is_warming_up or self._symbol not in slice.bars:
+            return
 
-            # Get prediction by the updated features.
-            features, __ = self.get_features_and_labels()
-            prediction = self.model(features[-1].reshape(1, -1))
-            if isinstance(prediction, np.ndarray):
-                prediction = float(prediction[-1])  # No need for detach() on NumPy arrays
-            elif isinstance(prediction, torch.Tensor):
-                prediction = float(prediction.detach().numpy()[-1])
-            
-            # If the predicted direction is going upward, buy SPY.
-            if prediction &gt; slice.bars[self.symbol].price:
-                self.set_holdings(self.symbol, 1)
-            # If the predicted direction is going downward, sell SPY.
-            elif prediction &lt; slice.bars[self.symbol].price:            
-                self.set_holdings(self.symbol, -1)
+        # Get prediction by the updated features.
+        features, __ = self.get_features_and_labels()
+        prediction = self.model(features[-1].reshape(1, -1))
+        if isinstance(prediction, np.ndarray):
+            prediction = float(prediction[-1])  # No need for detach() on NumPy arrays
+        elif isinstance(prediction, torch.Tensor):
+            prediction = float(prediction.detach().numpy()[-1])
+
+        # If the predicted direction is going upward, buy SPY.
+        if prediction &gt; slice.bars[self._symbol].price:
+            self.set_holdings(self._symbol, 1)
+        # If the predicted direction is going downward, sell SPY.
+        elif prediction &lt; slice.bars[self._symbol].price:
+            self.set_holdings(self._symbol, -1)
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.

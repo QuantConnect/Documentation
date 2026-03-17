@@ -26,14 +26,14 @@ class KerasExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)  # Set Strategy Cash
         # Request SPY data for model training, prediction and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
         # Retrieve already trained model from object store to use immediately.
         model_key = "model.keras"
         if self.object_store.contains_key(model_key):
             file_name = self.object_store.get_file_path(model_key)
             self.model = load_model(file_name)
-        
+
         # Create a MLP model otherwise to predict price movement.
         else:
             self.model = Sequential([Dense(10, input_shape=(5,5), activation='relu'),
@@ -44,22 +44,20 @@ class KerasExampleAlgorithm(QCAlgorithm):
                     optimizer=Adam(),
                     metrics=['mae', 'mse'])
 
-        # 2-year data to train the model.
+        # Use the session rolling window to cache 2-year daily data for training.
         training_length = 252*2
-        self.training_data = RollingWindow(training_length)
-        # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
-        for trade_bar in history:
-            self.training_data.add(trade_bar)
+        self.securities[self._symbol].session.size = training_length
+        self.set_warm_up(training_length, Resolution.DAILY)
 
+    def on_warmup_finished(self) -&gt; None:
         # Train the model to use the prediction right away.
         self.train(self.my_training_method)
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), self.my_training_method)
-            
+
     def get_features_and_labels(self, n_steps=5) -&gt; tuple[float, float]:
         # Train and predict the return data, which is more normalized and stationary.
-        training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])
+        training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.securities[self._symbol].session)[::-1])
         daily_pct_change = training_df.pct_change().dropna()
 
         # Stack the data for 5-day OHLCV data per each sample to train with.
@@ -80,8 +78,8 @@ class KerasExampleAlgorithm(QCAlgorithm):
         self.model.fit(features, labels, epochs=5)
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.symbol in slice.bars:
-            self.training_data.add(slice.bars[self.symbol])
+        if self.is_warming_up or self._symbol not in slice.bars:
+            return
 
         # Get prediction by the updated features.
         features, _ = self.get_features_and_labels()
@@ -90,10 +88,10 @@ class KerasExampleAlgorithm(QCAlgorithm):
 
         # If the predicted direction is going upward, buy SPY.
         if prediction &gt; 0:
-            self.set_holdings(self.symbol, 1)
+            self.set_holdings(self._symbol, 1)
         # If the predicted direction is going downward, sell SPY.
-        elif prediction &lt; 0:            
-            self.set_holdings(self.symbol, -1)
+        elif prediction &lt; 0:
+            self.set_holdings(self._symbol, -1)
 
     def on_end_of_algorithm(self):
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.

@@ -25,15 +25,12 @@ class HmmlearnExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Request SPY data for model training, prediction and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
-        # 2-year data to train the model.
+        # Use the session rolling window to cache 2-year daily data for training.
         training_length = 252*2
-        self.training_data = RollingWindow(training_length)
-        # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
-        for trade_bar in history:
-            self.training_data.add(trade_bar.close)
+        self.securities[self._symbol].session.size = training_length
+        self.set_warm_up(training_length, Resolution.DAILY)
 
         # Retrieve already trained model from object store to use immediately.
         if self.object_store.contains_key("model.hmm"):
@@ -43,17 +40,18 @@ class HmmlearnExampleAlgorithm(QCAlgorithm):
         else:
             self.model = hmm.GaussianHMM(n_components=2, covariance_type="full", n_iter=100)
 
+    def on_warmup_finished(self) -&gt; None:
         # Train the model to use the prediction right away.
         self.train(self.my_training_method)
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
-        
+
     def get_features(self) -&gt; None:
         # Train and predict the return data, which is more normalized and stationary.
-        training_df = np.array(list(self.training_data)[::-1])
-        daily_pct_change = (np.roll(training_df, 1) - training_df) / training_df
+        training_df = np.array([x.close for x in self.securities[self._symbol].session][::-1])
+        daily_pct_change = np.diff(training_df) / training_df[:-1]
 
-        return daily_pct_change[1:].reshape(-1, 1)
+        return daily_pct_change.reshape(-1, 1)
 
     def my_training_method(self) -&gt; None:
         # Prepare the processed training data.
@@ -62,8 +60,8 @@ class HmmlearnExampleAlgorithm(QCAlgorithm):
         self.model.fit(features)
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.symbol in slice.bars:
-            self.training_data.add(slice.bars[self.symbol].close)
+        if self.is_warming_up or self._symbol not in slice.bars:
+            return
 
         # Get prediction by the updated features.
         new_feature = self.get_features()
@@ -72,10 +70,10 @@ class HmmlearnExampleAlgorithm(QCAlgorithm):
 
         # If the predicted direction is going upward, buy SPY.
         if prediction == 1:
-            self.set_holdings(self.symbol, 1)
+            self.set_holdings(self._symbol, 1)
         # If the predicted direction is going downward, liquidate.
-        else:            
-            self.liquidate(self.symbol)
+        else:
+            self.liquidate(self._symbol)
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
