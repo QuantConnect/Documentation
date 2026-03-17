@@ -36,9 +36,9 @@ def my_training_method(self):
         return tf.reduce_mean(tf.square(target_y - predicted_y))
 
     # Train the model.
-    optimizer = tf.keras.optimizers.adam(learning_rate=self.learning_rate)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
     for i in range(self.epochs):
-        with tf.gradient_tape() as t:
+        with tf.GradientTape() as t:
             loss = loss_mse(labels, self.model(features))
 
         jac = t.gradient(loss, self.model.trainable_weights)

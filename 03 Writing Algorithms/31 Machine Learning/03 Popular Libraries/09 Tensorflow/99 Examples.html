@@ -24,7 +24,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Request SPY data for model training, prediction and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
         # Hyperparameter to create the MLP model.
         num_factors = 5
@@ -42,14 +42,12 @@ class TensorFlowAlgorithm(QCAlgorithm):
             tf.keras.layers.Dense(1)
         ])
 
-        # 2-year data to train the model.
+        # Use the session rolling window to cache 2-year daily data for training.
         training_length = 500
-        self.training_data = RollingWindow(training_length)
-        # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
-        for trade_bar in history:
-            self.training_data.add(trade_bar.close)
+        self.securities[self._symbol].session.size = training_length
+        self.set_warm_up(training_length, Resolution.DAILY)
 
+    def on_warmup_finished(self) -&gt; None:
         # Train the model to use the prediction right away.
         self.train(self.my_training_method)
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
@@ -59,7 +57,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         lookback_series = []
 
         # Train and predict the N differencing data, which is more normalized and stationary.
-        data = pd.Series(list(self.training_data)[::-1])
+        data = pd.Series([x.close for x in self.securities[self._symbol].session][::-1])
         for i in range(1, lookback + 1):
             df = data.diff(i)[lookback:-1]
             df.name = f"close-{i}"
@@ -87,14 +85,13 @@ class TensorFlowAlgorithm(QCAlgorithm):
             optimizer.apply_gradients(zip(jac, self.model.trainable_weights))
 
     def on_data(self, data) -&gt; None:
-        if data.bars.contains_key(self.symbol):
-            self.training_data.add(data.bars[self.symbol].close)
+        if self.is_warming_up or not data.bars.contains_key(self._symbol):
+            return
 
-            # Get prediction by the updated features.
-            new_features, __ = self.get_features_and_labels()
-            prediction = self.model(new_features)
-            prediction = float(prediction.numpy()[-1])
+        # Get prediction by the updated features.
+        new_features, __ = self.get_features_and_labels()
+        prediction = float(self.model(new_features).numpy().flatten()[-1])
 
-            # If the predicted direction is going upward, buy SPY, else sell.
-            self.set_holdings(self.symbol, 1 if prediction &gt; 0 else -1)</pre>
+        # If the predicted direction is going upward, buy SPY, else sell.
+        self.set_holdings(self._symbol, 1 if prediction &gt; 0 else -1)</pre>
 </div>
