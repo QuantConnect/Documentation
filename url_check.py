@@ -402,13 +402,17 @@ async def _check_url(
 def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list[str]], results: dict[str, list[str]]):
     """Validate that a #section anchor corresponds to a real file in the repo."""
     after_v2 = url.split("docs/v2/", 1)[1]
-    expected = _apply_replacements(after_v2.replace("/", os.sep).replace("-", " ").replace("#", os.sep)).lower()
+    expected_raw = after_v2.replace("/", os.sep).replace("-", " ").replace("#", os.sep).lower()
+    expected = _apply_replacements(expected_raw)
 
     section = url.split("#", 1)[1]
-    section_name = _apply_replacements(section.replace("-", " "))
+    section_name_raw = section.replace("-", " ")
+    section_name = _apply_replacements(section_name_raw)
 
-    # Look up files matching the section name
+    # Look up files matching the section name (try with replacements first, then raw)
     candidates = file_index.get(section_name.lower(), [])
+    if not candidates:
+        candidates = file_index.get(section_name_raw.lower(), [])
 
     if not candidates:
         results["missing_section"].append(_fmt(f'No Section "{section_name}" was found', url, files))
@@ -428,7 +432,7 @@ def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list
         )
         section_part = Path(numbered[-1]).stem
         full = f"{non_numbered_path}{os.sep}{section_part}".lower()
-        if full == expected:
+        if full == expected or full == expected_raw:
             found = True
             break
 
