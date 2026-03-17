@@ -402,8 +402,9 @@ async def _check_url(
 def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list[str]], results: dict[str, list[str]]):
     """Validate that a #section anchor corresponds to a real file in the repo."""
     after_v2 = url.split("docs/v2/", 1)[1]
-    expected_raw = after_v2.replace("/", os.sep).replace("-", " ").replace("#", os.sep).lower()
-    expected = _apply_replacements(expected_raw)
+    expected_no_lower = after_v2.replace("/", os.sep).replace("-", " ").replace("#", os.sep)
+    expected = _apply_replacements(expected_no_lower).lower()
+    expected_raw = expected_no_lower.lower()
 
     section = url.split("#", 1)[1]
     section_name_raw = section.replace("-", " ")
