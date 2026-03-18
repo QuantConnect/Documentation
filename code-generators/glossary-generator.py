@@ -1,45 +1,37 @@
 import os
+import re
 from glob import iglob
+from itertools import chain
 from shutil import rmtree
 
-dir = '03 Writing Algorithms/01 Key Concepts/99 Glossary'
-if os.path.exists(dir):
-    rmtree(dir)
-os.makedirs(dir, exist_ok=True)
+output_dir = '03 Writing Algorithms/01 Key Concepts/99 Glossary'
+if os.path.exists(output_dir):
+    rmtree(output_dir)
+os.makedirs(output_dir, exist_ok=True)
 
-# Get glossary terms from Resources/glossary/ directory in alphabetical order
 glossary_dir = 'Resources/glossary'
-files = sorted([f for f in os.listdir(glossary_dir) if f.endswith('.html') and f != 'include-mathjax.html'], key=str.lower)
-
-mathjax = open(f"{glossary_dir}/include-mathjax.html", "r", encoding="utf-8").read()
-
-keys = {}
-lower_keys = {}
-i = 2
+files = sorted([f for f in os.listdir(glossary_dir) if f.endswith('.html')], key=str.lower)
 
 proper_nouns = {'sharpe', 'sortino', 'treynor', 'pearson', 'probabilistic'}
-for f in files:
-    term = f.replace('.html', '')
+
+def display_name(term):
     words = term.replace('-', ' ').split()
-    display_name = ' '.join(w.capitalize() if w in proper_nouns else w for w in words)
-    keys[term] = (i, display_name)
-    lower_keys[display_name.lower()] = i
-    i += 1
+    return ' '.join(w.capitalize() if w in proper_nouns else w for w in words)
 
-# Write the glossary pages
-for term, (n, display_name) in keys.items():
-    content = open(f"{glossary_dir}/{term}.html", "r", encoding="utf-8").read()
-    with open(f"{dir}/{n:02} {display_name}.html", "w", encoding="utf-8") as html:
-        html.write(content)
+# Write glossary pages and build the anchor-link lookup in one pass
+lower_keys = {}
+for n, f in enumerate(files, start=2):
+    term = f.removesuffix('.html')
+    name = display_name(term)
+    lower_keys[name.lower()] = n
+    with open(f"{output_dir}/{n:02} {name}.php", "w", encoding="utf-8") as php:
+        php.write(f'<? include(DOCS_RESOURCES."/glossary/{term}.html"); ?>')
 
-with open(f"{dir}/01 Introduction.html", "w", encoding="utf-8") as html:
-    html.write(f"{mathjax}\n<p>This page defines terms in QuantConnect products and documentation.</p>")
+with open(f"{output_dir}/01 Introduction.php", "w", encoding="utf-8") as php:
+    php.write('<?php include(DOCS_RESOURCES."/_mathjax.html"); ?>\n<p>This page defines terms in QuantConnect products and documentation.</p>')
 
-with open(f"01 Cloud Platform/11 Optimization/03 Objectives/01 Introduction.html", "w", encoding="utf-8") as html:
-    html.write(f"{mathjax}\n<p>An optimization objective is the performance metric that's used to compare the backtest performance of different parameter values. The optimizer currently supports the compound annual growth rate (CAGR), drawdown, Sharpe ratio, and Probabilistic Sharpe ratio (PSR) as optimization objectives. When the optimization job finishes, the results page displays the value of the objective with respect to the parameter values.</p>")
-
-with open(f"{dir}/metadata.json", "w", encoding="utf-8") as json:
-    json.write('''{
+with open(f"{output_dir}/metadata.json", "w", encoding="utf-8") as f:
+    f.write('''{
     "type": "metadata",
     "values": {
         "description": "This page defines terms in QuantConnect products and documentation.",
@@ -52,26 +44,24 @@ with open(f"{dir}/metadata.json", "w", encoding="utf-8") as json:
     }
 }''')
 
-# Search and replace all links
-quotation = "'"
-double_quotation = "\""
-for root_dir in ["01 Cloud Platform/", "02 Local Platform/", "03 Writing Algorithms/", "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/", "Resources/"]:
-    for filename in list(iglob(root_dir + "**/*.html", recursive=True)) + \
-                    list(iglob(root_dir + "**/*.php", recursive=True)) + \
-                    list(iglob(root_dir + "**/*.json", recursive=True)):
-        filename = filename.replace("\\", os.path.sep).replace("/", os.path.sep)
-        content = open(filename, 'r', encoding="utf-8").read()
+# Update all glossary anchor links to reflect current page numbering
+def fix_anchor(m):
+    slug = m.group(1)
+    n = lower_keys[slug.replace('-', ' ').lower()]
+    return f"glossary#{n:02}-{slug}"
 
-        if "glossary#" in content:
-            content = [x if k == 0 else x[2:] for k, x in enumerate(content.split("glossary#"))]
-            items = [x.split(quotation)[0].split(double_quotation)[0].replace("-", " ").strip() for x in content[1:]]
-            page_no = [lower_keys[item.lower()] for item in items]
+root_dirs = ["01 Cloud Platform/", "02 Local Platform/", "03 Writing Algorithms/",
+             "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/", "Resources/"]
 
-            new_content = ""
-            for k, text in enumerate(content):
-                if k > 0:
-                    new_content += f"glossary#{page_no[k-1]:02}"
-                new_content += text
-
-            with open(filename, 'w', encoding="utf-8") as file:
-                file.write(new_content)
+for filename in chain.from_iterable(
+    iglob(root_dir + f"**/*.{ext}", recursive=True)
+    for root_dir in root_dirs
+    for ext in ("html", "php", "json")
+):
+    filename = os.path.normpath(filename)
+    content = open(filename, 'r', encoding="utf-8", errors='replace').read()
+    if "glossary#" not in content:
+        continue
+    new_content = re.sub(r"glossary#\d+-([\w-]+)", fix_anchor, content)
+    with open(filename, 'w', encoding="utf-8") as f:
+        f.write(new_content)

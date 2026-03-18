@@ -1,4 +1,5 @@
 <?php
+if (!function_exists('getGlossaryDefinition')) :
 function getGlossaryDefinition($term, $qualifier = null)
 {
     $path = DOCS_RESOURCES . "/glossary/" . strtolower(str_replace(' ', '-', $term)) . ".html";
@@ -12,4 +13,5 @@ function getGlossaryDefinition($term, $qualifier = null)
     preg_match('/<p>(.*?)<\/p>/s', $content, $matches);
     return isset($matches[1]) ? trim($matches[1]) : '';
 }
+endif;
 ?>
