@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/glossary/out-of-the-money-amount.html"); ?>

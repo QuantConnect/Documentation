@@ -1,0 +1,129 @@
+<p>
+ The following examples demonstrate usage of Hugging Face fill-mask models for feature extraction.
+</p>
+<h4>
+ Example 1: Embedding-Based News Similarity
+</h4>
+<p>
+ The following algorithm selects a volatile asset at the beginning of each month.
+  It uses a fill-mask model to extract embeddings from <a href="/datasets/tiingo-news-feed">Tiingo News</a> articles.
+  It then compares the average embedding of recent news to a reference "bullish" and "bearish" embedding.
+  If the recent news is more similar to the bullish reference, it enters a long position.
+  You can replace the model name with any of the fill-mask models listed on the introduction page.
+</p>
+<div class="section-example-container testable">
+ <pre class="python">import torch
+import numpy as np
+from transformers import AutoTokenizer, AutoModel, set_seed
+
+class FillMaskEmbeddingAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.schedule.on(self.date_rules.month_start("SPY"))
+        self._universe = self.add_universe(
+            lambda fundamental: [
+                self.history(
+                    [f.symbol for f in sorted(
+                        fundamental, key=lambda f: f.dollar_volume
+                    )[-10:]],
+                    timedelta(365), Resolution.DAILY
+                )['close'].unstack(0).pct_change().iloc[1:].std().idxmax()
+            ]
+        )
+
+        set_seed(1, True)
+
+        # Load the model and tokenizer.
+        # Replace with any fill-mask model (e.g., google-bert/bert-base-uncased).
+        model_name = "distilbert/distilbert-base-uncased"
+        self._tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self._model = AutoModel.from_pretrained(model_name)
+        self._model.eval()
+
+        # Create reference embeddings for bullish/bearish text.
+        self._bullish_embedding = self._get_embedding(
+            "Stock prices surged on strong earnings and revenue growth."
+        )
+        self._bearish_embedding = self._get_embedding(
+            "Stock prices plunged on weak earnings and declining revenue."
+        )
+
+        self._last_rebalance_time = datetime.min
+        self.set_warm_up(30, Resolution.DAILY)
+
+    def on_warmup_finished(self):
+        self._trade()
+        self.schedule.on(
+            self.date_rules.month_start("SPY", 1),
+            self.time_rules.midnight,
+            self._trade
+        )
+
+    def on_securities_changed(self, changes):
+        for security in changes.removed_securities:
+            self.remove_security(security.dataset_symbol)
+        for security in changes.added_securities:
+            security.dataset_symbol = self.add_data(
+                TiingoNews, security.symbol
+            ).symbol
+
+    def _get_embedding(self, text):
+        """Extract the [CLS] token embedding from the model."""
+        inputs = self._tokenizer(
+            text, return_tensors="pt", truncation=True, max_length=512
+        )
+        with torch.no_grad():
+            outputs = self._model(**inputs)
+        # Use the [CLS] token (first token) embedding.
+        return outputs.last_hidden_state[:, 0, :].squeeze().numpy()
+
+    def _cosine_similarity(self, a, b):
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+    def _trade(self):
+        if (self.is_warming_up or
+            self.time - self._last_rebalance_time &lt; timedelta(14)):
+            return
+
+        # Get the target security.
+        security = self.securities[list(self._universe.selected)[0]]
+
+        # Get the latest news articles.
+        articles = self.history[TiingoNews](
+            security.dataset_symbol, 10, Resolution.DAILY
+        )
+        article_text = [
+            article.description for article in articles
+            if article.description
+        ]
+        if not article_text:
+            return
+
+        # Get embeddings for each article and average them.
+        embeddings = [self._get_embedding(text) for text in article_text]
+        avg_embedding = np.mean(embeddings, axis=0)
+
+        # Compare to reference embeddings.
+        bullish_sim = self._cosine_similarity(
+            avg_embedding, self._bullish_embedding
+        )
+        bearish_sim = self._cosine_similarity(
+            avg_embedding, self._bearish_embedding
+        )
+
+        self.plot("Similarity", "Bullish", bullish_sim)
+        self.plot("Similarity", "Bearish", bearish_sim)
+
+        # Rebalance based on similarity.
+        weight = 1 if bullish_sim &gt; bearish_sim else -0.25
+        self.set_holdings(
+            security.symbol, weight,
+            liquidate_existing_holdings=True
+        )
+        self._last_rebalance_time = self.time</pre>
+</div>
