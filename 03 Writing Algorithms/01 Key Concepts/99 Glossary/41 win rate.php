@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/glossary/win-rate.html"); ?>

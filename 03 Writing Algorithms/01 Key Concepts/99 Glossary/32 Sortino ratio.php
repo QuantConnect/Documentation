@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/glossary/sortino-ratio.html"); ?>

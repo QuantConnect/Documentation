@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/glossary/annual-standard-deviation.html"); ?>
