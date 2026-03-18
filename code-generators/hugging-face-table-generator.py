@@ -34,9 +34,28 @@ Repo: openai-community/gpt2. Revisions ['607a30d783dfa663caf39e06633721c8d4cfcd7
 Repo: yiyanghkust/finbert-tone. Revisions ['4921590d3c0c3832c0efea24c8381ce0bda7844b']'''
 
 EXAMPLES = {
+    'chronos-bolt' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-bolt',
     'chronos-t5' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/chronos-t5',
     'distilbert-base-cased-distilled-squad' : '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/distilbert',
-    'finbert': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/finbert'
+    'finbert': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/finbert',
+    # Sentiment analysis models
+    'FinancialBERT-Sentiment-Analysis': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'sentiment-analysis-for-stock': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'finance-sentiment-fr': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'twitter-roberta-base-sentiment': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'distilroberta-finetuned-financial-news': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'deberta-v3-base-finetuned-finance': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'distilroberta-finetuned-financial-text': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'sec-bert-finetuned': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    'FinTwitBERT': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/sentiment-analysis',
+    # Fill-mask models
+    'bert-base-uncased': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/fill-mask',
+    'roberta-base': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/fill-mask',
+    'deberta-base': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/fill-mask',
+    # Text generation models
+    'gpt2': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/text-generation',
+    'gemma-7b': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/text-generation',
+    'DeepSeek-R1-Distill': '/docs/v2/writing-algorithms/machine-learning/hugging-face/popular-models/text-generation',
 }
 
 def __to_row(line):
