@@ -1,5 +1,5 @@
 <p>The following table describes the default runtime statistics:</p>
-<?php include(DOCS_RESOURCES."/glossary.php"); ?>
+<?php include_once(DOCS_RESOURCES."/glossary.php"); ?>
 
 <table class='qc-table table'>
   <thead>

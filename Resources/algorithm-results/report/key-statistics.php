@@ -1,6 +1,6 @@
 <p>The top of the backtest report displays  statistics to summarize your algorithm's performance. The following table describes the key statistics in the report:</p>
 
-<?php include(DOCS_RESOURCES."/glossary.php"); ?>
+<?php include_once(DOCS_RESOURCES."/glossary.php"); ?>
 
 <table class='table qc-table'>
     <thead>
