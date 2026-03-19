@@ -66,7 +66,13 @@ def __to_row(line):
 
 def __get_category(url):
     content = get(f"https://huggingface.co/{url}").text
-    start = content.find('<span>', content.find('models?pipeline_tag=')) + 6
+    pipeline_tag_pos = content.find('models?pipeline_tag=')
+    if pipeline_tag_pos == -1:
+        return ''
+    span_start = content.find('<span>', pipeline_tag_pos)
+    if span_start == -1:
+        return ''
+    start = span_start + 6
     return content[start:content.find('</span>', start)]
 
 def __get_example(url):
