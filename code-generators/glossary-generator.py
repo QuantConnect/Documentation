@@ -25,10 +25,7 @@ for n, f in enumerate(files, start=2):
     name = display_name(term)
     lower_keys[name.lower()] = n
     with open(f"{output_dir}/{n:02} {name}.php", "w", encoding="utf-8") as php:
-        php.write(f'<? include(DOCS_RESOURCES."/glossary/{term}.html"); ?>')
-
-with open(f"{output_dir}/01 Introduction.php", "w", encoding="utf-8") as php:
-    php.write('<?php include(DOCS_RESOURCES."/_mathjax.html"); ?>\n<p>This page defines terms in QuantConnect products and documentation.</p>')
+        php.write(f'<? include(DOCS_RESOURCES."/glossary/{term}.html"); ?>\n<? include(DOCS_RESOURCES."/_mathjax.html"); ?>')
 
 with open(f"{output_dir}/metadata.json", "w", encoding="utf-8") as f:
     f.write('''{

@@ -1,6 +1,5 @@
 <?php include(DOCS_RESOURCES."/glossary/drawdown.html"); ?>
-
-
+<? include(DOCS_RESOURCES."/_mathjax.html"); ?>
 <p>The following image illustrates how the max drawdown is calculated:</p>
 
 <img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/largest-drawdown-chart-1.png" alt="An equity curve that has the drawdown periods highlighted">
