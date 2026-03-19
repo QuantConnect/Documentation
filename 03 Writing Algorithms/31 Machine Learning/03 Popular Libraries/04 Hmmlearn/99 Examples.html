@@ -33,8 +33,9 @@ class HmmlearnExampleAlgorithm(QCAlgorithm):
         self.set_warm_up(training_length, Resolution.DAILY)
 
         # Retrieve already trained model from object store to use immediately.
-        if self.object_store.contains_key("model.hmm"):
-            file_name = self.object_store.get_file_path("model.hmm")
+        self._model_key = f"{self.project_id}/model.hmm"
+        if self.object_store.contains_key(self._model_key):
+            file_name = self.object_store.get_file_path(self._model_key)
             self.model = joblib.load(file_name)
         # Create a 2-regime model otherwise to predict different variance regime markets.
         else:
@@ -77,7 +78,6 @@ class HmmlearnExampleAlgorithm(QCAlgorithm):
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
-        model_key = "model.hmm"
-        file_name = self.object_store.get_file_path(model_key)
+        file_name = self.object_store.get_file_path(self._model_key)
         joblib.dump(self.model, file_name)</pre>
 </div>

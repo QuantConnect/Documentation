@@ -38,8 +38,8 @@ class GPlearnExampleAlgorithm(QCAlgorithm):
             self.training_data.add(trade_bar.close)
 
         # Retrieve already trained model from object store to use immediately.
-        transformer_model_key = "Transformer"
-        regressor_model_key = "Regressor"
+        transformer_model_key = f"{self.project_id}/Transformer"
+        regressor_model_key = f"{self.project_id}/Regressor"
         if self.object_store.contains_key(transformer_model_key) and self.object_store.contains_key(regressor_model_key):
             transformer_file_name = self.object_store.get_file_path(transformer_model_key)
             regressor_file_name = self.object_store.get_file_path(regressor_model_key)
@@ -108,8 +108,8 @@ class GPlearnExampleAlgorithm(QCAlgorithm):
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
-        transformer_model_key = "Transformer"
-        regressor_model_key = "Regressor"
+        transformer_model_key = f"{self.project_id}/Transformer"
+        regressor_model_key = f"{self.project_id}/Regressor"
         transformer_file_name = self.object_store.get_file_path(transformer_model_key)
         regressor_file_name = self.object_store.get_file_path(regressor_model_key)
         joblib.dump(self.gp_transformer, transformer_file_name)

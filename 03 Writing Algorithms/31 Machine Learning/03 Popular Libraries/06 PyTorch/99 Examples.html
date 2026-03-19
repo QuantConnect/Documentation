@@ -34,7 +34,7 @@ class PyTorchExampleAlgorithm(QCAlgorithm):
         self.set_warm_up(training_length, Resolution.DAILY)
 
         # Retrieve already trained model from object store to use immediately.
-        self._model_key = 'pytorch-example-model'
+        self._model_key = f"{self.project_id}/pytorch-example-model"
         if self.live_mode and self.object_store.contains_key(self._model_key):
             file_name = self.object_store.get_file_path(self._model_key)
             self.model = joblib.load(file_name)
