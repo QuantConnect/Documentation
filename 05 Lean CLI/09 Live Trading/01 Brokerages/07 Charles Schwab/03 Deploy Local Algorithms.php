@@ -3,7 +3,7 @@ $brokerageName = "Charles Schwab";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter your QuantConnect Login ID to proceed with Auth0 authentication.
+<li>Enter your Charles Schwab Login ID to proceed with Auth0 authentication.
 
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
