@@ -65,14 +65,13 @@ plt.show()
 r2 = gp_regressor.score(new_X_test, y_test)
 print(f"The explained variance of the GP model: {r2*100:.2f}%")
 
-# Predict the label of the testing set data.
-y_hat = predict(np.array(X_test))
-
 # Store the model in the object store to allow accessing the model in the next research session or in the algorithm for trading.
 transformer_key = "transformer"
 regressor_key = "regressor"
 transformer_file = qb.object_store.get_file_path(transformer_key)
 regressor_file = qb.object_store.get_file_path(regressor_key)
 joblib.dump(gp_transformer, transformer_file)
-joblib.dump(gp_regressor, regressor_file)</pre>
+joblib.dump(gp_regressor, regressor_file)
+qb.object_store.save(transformer_key)
+qb.object_store.save(regressor_key)</pre>
 </div>
