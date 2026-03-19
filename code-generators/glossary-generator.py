@@ -1,37 +1,43 @@
 import os
-import re
 from glob import iglob
-from itertools import chain
 from shutil import rmtree
 
-output_dir = '03 Writing Algorithms/01 Key Concepts/99 Glossary'
-if os.path.exists(output_dir):
-    rmtree(output_dir)
-os.makedirs(output_dir, exist_ok=True)
+dir = '03 Writing Algorithms/01 Key Concepts/99 Glossary'
+if os.path.exists(dir):
+    rmtree(dir)
+os.makedirs(dir, exist_ok=True)
 
-glossary_dir = 'Resources/glossary'
-files = sorted([f for f in os.listdir(glossary_dir) if f.endswith('.html')], key=str.lower)
-
-proper_nouns = {'sharpe', 'sortino', 'treynor', 'pearson', 'probabilistic'}
-
-def display_name(term):
-    words = term.replace('-', ' ').split()
-    return ' '.join(w.capitalize() if w in proper_nouns else w for w in words)
-
-# Write glossary pages and build the anchor-link lookup in one pass
+# Get items in the dict
+source = open("Resources/glossary.php", 'r', encoding="utf-8").readlines()
+active = True
+keys = {}
 lower_keys = {}
-for n, f in enumerate(files, start=2):
-    term = f.removesuffix('.html')
-    name = display_name(term)
-    lower_keys[name.lower()] = n
-    with open(f"{output_dir}/{n:02} {name}.php", "w", encoding="utf-8") as php:
-        php.write(f'<? include(DOCS_RESOURCES."/glossary/{term}.html"); ?>')
+quotation = "'"
+double_quotation = "\""
+i = 2
 
-with open(f"{output_dir}/01 Introduction.php", "w", encoding="utf-8") as php:
-    php.write('<?php include(DOCS_RESOURCES."/_mathjax.html"); ?>\n<p>This page defines terms in QuantConnect products and documentation.</p>')
+for line in source:
+    if ");" in line:
+        active = False
+    
+    if active and "=>" in line:
+        keys[line.split("=>")[0].strip()] = i
+        lower_keys[line.split("=>")[0].strip().replace('-', ' ').replace(quotation, '').replace(double_quotation, '').lower()] = i
+        i += 1
 
-with open(f"{output_dir}/metadata.json", "w", encoding="utf-8") as f:
-    f.write('''{
+# Write the glossary pages
+for key, n in keys.items():
+    with open(f"{dir}/{n:02} {key.replace(quotation, '').replace(double_quotation, '')}.php", "w", encoding="utf-8") as php:
+        php.write(f'''<? 
+include(DOCS_RESOURCES."/glossary.php");
+$getGlossaryTermHTML({key});
+?>''')
+
+with open(f"{dir}/01 Introduction.php", "w", encoding="utf-8") as php:       
+    php.write('<p>This page defines terms in QuantConnect products and documentation.</p>')
+
+with open(f"{dir}/metadata.json", "w", encoding="utf-8") as json:       
+    json.write('''{
     "type": "metadata",
     "values": {
         "description": "This page defines terms in QuantConnect products and documentation.",
@@ -44,24 +50,24 @@ with open(f"{output_dir}/metadata.json", "w", encoding="utf-8") as f:
     }
 }''')
 
-# Update all glossary anchor links to reflect current page numbering
-def fix_anchor(m):
-    slug = m.group(1)
-    n = lower_keys[slug.replace('-', ' ').lower()]
-    return f"glossary#{n:02}-{slug}"
-
-root_dirs = ["01 Cloud Platform/", "02 Local Platform/", "03 Writing Algorithms/",
-             "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/", "Resources/"]
-
-for filename in chain.from_iterable(
-    iglob(root_dir + f"**/*.{ext}", recursive=True)
-    for root_dir in root_dirs
-    for ext in ("html", "php", "json")
-):
-    filename = os.path.normpath(filename)
-    content = open(filename, 'r', encoding="utf-8", errors='replace').read()
-    if "glossary#" not in content:
-        continue
-    new_content = re.sub(r"glossary#\d+-([\w-]+)", fix_anchor, content)
-    with open(filename, 'w', encoding="utf-8") as f:
-        f.write(new_content)
+# Search and replace all links
+for root_dir in ["01 Cloud Platform/", "02 Local Platform/", "03 Writing Algorithms/", "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/", "Resources/"]:
+    for filename in list(iglob(root_dir + "**/*.html", recursive=True)) + \
+                    list(iglob(root_dir + "**/*.php", recursive=True)) + \
+                    list(iglob(root_dir + "**/*.json", recursive=True)):
+        filename = filename.replace("\\", os.path.sep).replace("/", os.path.sep)
+        content = open(filename, 'r', encoding="utf-8").read()
+        
+        if "glossary#" in content:
+            content = [x if k == 0 else x[2:] for k, x in enumerate(content.split("glossary#"))]
+            items = [x.split(quotation)[0].split(double_quotation)[0].replace("-", " ").strip() for x in content[1:]]
+            page_no = [lower_keys[item.lower()] for item in items]
+            
+            new_content = ""
+            for k, text in enumerate(content):
+                if k > 0:
+                    new_content += f"glossary#{page_no[k-1]:02}"
+                new_content += text
+            
+            with open(filename, 'w', encoding="utf-8") as file:
+                file.write(new_content)

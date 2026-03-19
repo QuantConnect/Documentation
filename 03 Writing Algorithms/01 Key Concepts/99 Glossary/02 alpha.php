@@ -1,1 +1,4 @@
-<? include(DOCS_RESOURCES."/glossary/alpha.html"); ?>
+<? 
+include(DOCS_RESOURCES."/glossary.php");
+$getGlossaryTermHTML("alpha");
+?>

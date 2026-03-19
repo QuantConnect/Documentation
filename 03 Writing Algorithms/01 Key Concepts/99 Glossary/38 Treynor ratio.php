@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/glossary/treynor-ratio.html"); ?>

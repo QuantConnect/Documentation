@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/glossary/look-ahead-bias.html"); ?>

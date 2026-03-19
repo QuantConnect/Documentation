@@ -1,1 +1,4 @@
-<? include(DOCS_RESOURCES."/glossary/average-loss.html"); ?>
+<? 
+include(DOCS_RESOURCES."/glossary.php");
+$getGlossaryTermHTML("average loss");
+?>

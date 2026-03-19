@@ -1,1 +1,4 @@
-<? include(DOCS_RESOURCES."/glossary/annual-variance.html"); ?>
+<? 
+include(DOCS_RESOURCES."/glossary.php");
+$getGlossaryTermHTML("annual variance");
+?>

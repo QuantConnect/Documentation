@@ -1,1 +1,4 @@
-<? include(DOCS_RESOURCES."/glossary/drawdown.html"); ?>
+<? 
+include(DOCS_RESOURCES."/glossary.php");
+$getGlossaryTermHTML("drawdown");
+?>

@@ -1,4 +1,4 @@
 <? 
 include(DOCS_RESOURCES."/glossary.php");
-$getGlossaryTermHTML("capacity");
+$getGlossaryTermHTML("loss rate");
 ?>

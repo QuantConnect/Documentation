@@ -1,1 +1,4 @@
-<? include(DOCS_RESOURCES."/glossary/expectancy.html"); ?>
+<? 
+include(DOCS_RESOURCES."/glossary.php");
+$getGlossaryTermHTML("expectancy");
+?>
