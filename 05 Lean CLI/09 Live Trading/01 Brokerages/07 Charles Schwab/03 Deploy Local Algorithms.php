@@ -3,11 +3,11 @@ $brokerageName = "Charles Schwab";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>If your project is local-only project, LEAN CLI will prompt you to enter the ID of any cloud project of your organization to proceed with authentication, see <a href=https://www.quantconnect.com/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id</a>Get Project ID</a> for more information.</li>
+<li>Enter your Charles Schwab Login ID to proceed with Auth0 authentication.
 
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Please enter any cloud project ID to proceed with Auth0 authentication:
+Please enter your Login ID to proceed with Auth0 authentication:
 </pre>
 </div>
 </li>
@@ -15,9 +15,9 @@ Please enter any cloud project ID to proceed with Auth0 authentication:
 
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Please enter any cloud project ID to proceed with Auth0 authentication: &lt;projectId&gt;
+Please enter your Login ID to proceed with Auth0 authentication: &lt;loginId&gt;
 Please open the following URL in your browser to authorize the LEAN CLI.
-https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&projectId=&lt;projectId&gt;
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&projectId=&lt;projectId&gt;&userId=&lt;loginId&gt;
 Will sleep 5 seconds and retry fetching authorization...
 </pre>
 </div>
