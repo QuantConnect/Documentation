@@ -3,9 +3,17 @@
 
 <?
 $content = file_get_contents('https://s3.us-east-1.amazonaws.com/cdn.quantconnect.com/docs/i/change-log.json');
-$changesByDate = array_reverse(json_decode($content, true));
+$content = mb_convert_encoding($content, 'UTF-8', 'UTF-8');
+$decoded = json_decode($content, true);
+if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
+    return;
+}
+$changesByDate = array_reverse($decoded);
 foreach ($changesByDate as $date => $changes) {
-    $changes = json_decode($changes, true);
+    if (is_string($changes)) {
+        $changes = mb_convert_encoding($changes, 'UTF-8', 'UTF-8');
+        $changes = json_decode($changes, true);
+    }
     if (empty($changes)) {
       continue;
     }
