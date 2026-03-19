@@ -29,9 +29,9 @@ class KerasExampleAlgorithm(QCAlgorithm):
         self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
         # Retrieve already trained model from object store to use immediately.
-        model_key = "model.keras"
-        if self.object_store.contains_key(model_key):
-            file_name = self.object_store.get_file_path(model_key)
+        self._model_key = f"{self.project_id}/model.keras"
+        if self.object_store.contains_key(self._model_key):
+            file_name = self.object_store.get_file_path(self._model_key)
             self.model = load_model(file_name)
 
         # Create a MLP model otherwise to predict price movement.
@@ -95,7 +95,6 @@ class KerasExampleAlgorithm(QCAlgorithm):
 
     def on_end_of_algorithm(self):
         # Store the model to object store to retrieve it in other instances in case the algorithm stops.
-        model_key = "model.keras"
-        file_name = self.object_store.get_file_path(model_key)
+        file_name = self.object_store.get_file_path(self._model_key)
         self.model.save(file_name)</pre>
 </div>
