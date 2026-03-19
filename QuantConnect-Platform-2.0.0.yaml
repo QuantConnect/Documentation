@@ -1897,6 +1897,47 @@ components:
           items:
             $ref: '#/components/schemas/Trade'
       description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
+    ResultsAnalysisContext:
+      type: object
+      properties:
+        sample:
+          type: object
+          description: A representative sample value produced by the analysis.
+    ResultsAnalysisRepeatedContext:
+      allOf:
+        - $ref: '#/components/schemas/ResultsAnalysisContext'
+        - type: object
+          properties:
+            occurrences:
+              type: integer
+              description: The total number of matching occurrences found by the analysis.
+    ResultsAnalysisAggregateContext:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/ResultsAnalysisContext'
+          - $ref: '#/components/schemas/ResultsAnalysisRepeatedContext'
+        description: The individual contexts aggregated together.
+    AnalysisResult:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the analysis that produced this result.
+        issue:
+          type: string
+          description: A short description of why the analysis was triggered.
+        context:
+          oneOf:
+            - $ref: '#/components/schemas/ResultsAnalysisContext'
+            - $ref: '#/components/schemas/ResultsAnalysisRepeatedContext'
+            - $ref: '#/components/schemas/ResultsAnalysisAggregateContext'
+          description: Diagnostic context carrying sample data about the detected issue.
+        solutions:
+          type: array
+          items:
+            type: string
+          description: Human-readable suggestions for resolving the detected issue.
     BacktestOrdersResponse:
       type: object
       properties:
@@ -2145,6 +2186,12 @@ components:
           type: integer
           nullable: true
           description: Number of days of out of sample days.
+        analysisResults:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+            description: List of diagnostic analysis results for the backtest.
       description: Results object class. Results are exhaust from backtest or live algorithms running in LEAN.
     BacktestSummaryResult:
       type: object
