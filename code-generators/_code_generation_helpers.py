@@ -29,6 +29,25 @@ def get_all_indicators() -> list[str]:
 def get_text_content(url: str) -> str:
     return urlopen(url).read().decode('utf-8')
 
+LEAN_CLI_README = 'https://raw.githubusercontent.com/QuantConnect/lean-cli/master/README.md'
+
+def get_lean_cli_command_names() -> set:
+    """Fetch the set of LEAN CLI command names from the repository README."""
+    return set(get_lean_cli_commands().keys())
+
+def get_lean_cli_commands() -> dict:
+    """Fetch LEAN CLI commands and their descriptions from the repository README.
+    Returns a dict mapping command name to its short description."""
+    source = get_text_content(LEAN_CLI_README)
+    commands = {}
+    lines = source.split('\n')
+    for i, line in enumerate(lines):
+        if line.startswith('### '):
+            name = line[5:-1]
+            desc = lines[i + 2] if i + 2 < len(lines) else ''
+            commands[name] = desc.rstrip('.')
+    return commands
+
 def get_json_content(url: str) -> List:
     content = get_text_content(url) \
         .replace("null", "None").replace("true", "True").replace("false", "False")

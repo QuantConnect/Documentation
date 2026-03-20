@@ -2,7 +2,7 @@ from json import dumps
 from pathlib import Path
 from re import sub, finditer, findall
 from os import remove
-from _code_generation_helpers import get_text_content, generate_landing_page
+from _code_generation_helpers import get_text_content, generate_landing_page, LEAN_CLI_README
 ROOT = Path("05 Lean CLI/99 API Reference")
 H3_INTRODUCTION = '01 Introduction.html'
 H3_OPTIONS = '04 Options.html'
@@ -24,7 +24,7 @@ def __get_commands_from_readme():
     index = 0
     current_key = ''
 
-    source = get_text_content(f'https://raw.githubusercontent.com/QuantConnect/lean-cli/master/README.md')
+    source = get_text_content(LEAN_CLI_README)
 
     for line in source.split('\n'):
         if line.startswith('###'):
