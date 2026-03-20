@@ -9,7 +9,101 @@
     The following example defines a <code>PortfolioAllocator</code> class with testable methods and runs unit tests in the <code>initialize</code> method when backtesting.
 </p>
 
-<div class="section-example-container">
+<div class="section-example-container testable">
+    <pre class="csharp">public class PortfolioAllocator
+{
+    private readonly string[] _targetSymbols;
+
+    public PortfolioAllocator(string[] targetSymbols)
+    {
+        _targetSymbols = targetSymbols;
+    }
+
+    public Dictionary&lt;string, decimal&gt; CalculateWeights()
+    {
+        // Calculate equal weights for all symbols.
+        var weight = 1m / _targetSymbols.Length;
+        return _targetSymbols.ToDictionary(s =&gt; s, s =&gt; weight);
+    }
+
+    public bool ShouldRebalance(SecurityPortfolioManager portfolio)
+    {
+        // Determine if the portfolio needs rebalancing.
+        return !portfolio.Invested;
+    }
+}
+
+public class UnitTestAlgorithm : QCAlgorithm
+{
+    private PortfolioAllocator _allocator;
+    private static readonly bool RunUnitTest = true;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 19);
+        SetCash(100000);
+
+        // Run unit tests before setup (only in backtest mode).
+        if (RunUnitTest &amp;&amp; !LiveMode)
+        {
+            RunUnitTests();
+        }
+
+        AddEquity("SPY", Resolution.Minute);
+        AddEquity("BND", Resolution.Minute);
+        AddEquity("AAPL", Resolution.Minute);
+
+        // Initialize testable allocator.
+        _allocator = new PortfolioAllocator(new[] { "SPY", "BND", "AAPL" });
+    }
+
+    private void RunUnitTests()
+    {
+        Debug("=== Running Unit Tests ===");
+
+        // Test 1: Equal weight calculation.
+        var allocator = new PortfolioAllocator(new[] { "SPY", "BND", "AAPL" });
+        var weights = allocator.CalculateWeights();
+
+        if (weights.Count != 3) throw new RegressionTestException("Should have 3 weights");
+        if (Math.Abs(weights["SPY"] - 0.3333m) &gt; 0.001m) throw new RegressionTestException("SPY weight incorrect");
+        if (Math.Abs(weights["BND"] - 0.3333m) &gt; 0.001m) throw new RegressionTestException("BND weight incorrect");
+        if (Math.Abs(weights["AAPL"] - 0.3333m) &gt; 0.001m) throw new RegressionTestException("AAPL weight incorrect");
+        Debug("Test 1 passed: Equal weight calculation");
+
+        // Test 2: Weights sum to 1.0.
+        var totalWeight = weights.Values.Sum();
+        if (Math.Abs(totalWeight - 1.0m) &gt; 0.001m) throw new RegressionTestException($"Weights sum to {totalWeight}, not 1.0");
+        Debug("Test 2 passed: Weights sum to 1.0");
+
+        // Test 3: Single symbol allocation.
+        var singleAllocator = new PortfolioAllocator(new[] { "SPY" });
+        var singleWeights = singleAllocator.CalculateWeights();
+        if (singleWeights["SPY"] != 1.0m) throw new RegressionTestException("Single symbol should have 100% weight");
+        Debug("Test 3 passed: Single symbol allocation");
+
+        // Test 4: Two symbol allocation.
+        var dualAllocator = new PortfolioAllocator(new[] { "SPY", "BND" });
+        var dualWeights = dualAllocator.CalculateWeights();
+        if (Math.Abs(dualWeights["SPY"] - 0.5m) &gt; 0.001m) throw new RegressionTestException("SPY should be 50%");
+        if (Math.Abs(dualWeights["BND"] - 0.5m) &gt; 0.001m) throw new RegressionTestException("BND should be 50%");
+        Debug("Test 4 passed: Two symbol allocation");
+
+        Debug("=== All Unit Tests Passed ===");
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (_allocator.ShouldRebalance(Portfolio))
+        {
+            var weights = _allocator.CalculateWeights();
+            foreach (var kvp in weights)
+            {
+                SetHoldings(kvp.Key, kvp.Value);
+            }
+        }
+    }
+}</pre>
     <pre class="python"># region imports
 from AlgorithmImports import *
 # endregion
