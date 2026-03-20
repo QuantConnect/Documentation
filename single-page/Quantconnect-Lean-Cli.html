@@ -10598,12 +10598,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean data download --data-provider-historical DataBento --data-type Trade --resolution &lt;resolution&gt; --security-type Future --ticker &lt;tickers&gt; --market &lt;market&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --databento-api-key &lt;apiKey&gt;
+    lean data download --data-provider-historical Databento --data-type Trade --resolution &lt;resolution&gt; --security-type Future --ticker &lt;tickers&gt; --market &lt;market&gt; --start &lt;YYYYMMDD&gt; --end &lt;YYYYMMDD&gt; --databento-api-key &lt;apiKey&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean data download --data-provider-historical DataBento --data-type Trade --resolution Daily --security-type Future --ticker ES,ESH6,ESM6,ESU6,ESZ6 --market CME --start 20260101 --end 20260213 --databento-api-key apiKey<your-key></your-key></pre>
+   <pre>$ lean data download --data-provider-historical Databento --data-type Trade --resolution Daily --security-type Future --ticker ES,ESH6,ESM6,ESU6,ESZ6 --market CME --start 20260101 --end 20260213 --databento-api-key apiKey<your-key></your-key></pre>
   </div>
   <p>
    If you provide the canonical symbol (e.g., ES), all contracts for that symbol will be downloaded according to the
@@ -10625,12 +10625,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean research &lt;projectName&gt; --data-provider-historical DataBento --databento-api-key &lt;apiKey&gt;
+    lean research &lt;projectName&gt; --data-provider-historical Databento --databento-api-key &lt;apiKey&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean research "My Project" --data-provider-historical DataBento --databento-api-key apiKey</pre>
+   <pre>$ lean research "My Project" --data-provider-historical Databento --databento-api-key apiKey</pre>
   </div>
   <p>
    Due to performance considerations, you may want to
@@ -10646,18 +10646,18 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
 <html>
  <body>
   <p>
-   To run a local backtest with DataBento data, open a terminal in your
+   To run a local backtest with Databento data, open a terminal in your
    <a href="#3.2">
     organization workspace
    </a>
    and then run
    <code>
-    lean backtest &lt;projectName&gt; --data-provider-historical DataBento --databento-api-key &lt;apiKey&gt;
+    lean backtest &lt;projectName&gt; --data-provider-historical Databento --databento-api-key &lt;apiKey&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean backtest "My Project" --data-provider-historical DataBento --databento-api-key apiKey</pre>
+   <pre>$ lean backtest "My Project" --data-provider-historical Databento --databento-api-key apiKey</pre>
   </div>
   <p>
    Due to performance considerations, you may want to
@@ -10693,12 +10693,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    <li>
     Run
     <code>
-     lean optimize &lt;projectName&gt; --data-provider-historical DataBento --databento-api-key &lt;apiKey&gt;
+     lean optimize &lt;projectName&gt; --data-provider-historical Databento --databento-api-key &lt;apiKey&gt;
     </code>
     .
    </li>
    <div class="cli section-example-container">
-    <pre>$ lean optimize "My Project" --data-provider-historical DataBento --databento-api-key apiKey</pre>
+    <pre>$ lean optimize "My Project" --data-provider-historical Databento --databento-api-key apiKey</pre>
    </div>
    <li>
     Follow
@@ -10748,12 +10748,12 @@ $ lean data download --data-provider-historical Binance --data-type Trade --reso
    </a>
    and then run
    <code>
-    lean live deploy &lt;projectName&gt; --data-provider-historical DataBento --data-provider-live DataBento --databento-api-key &lt;apiKey&gt; --brokerage &lt;brokerageName&gt; &lt;requiredBrokerageOptions&gt;
+    lean live deploy &lt;projectName&gt; --data-provider-historical Databento --data-provider-live Databento --databento-api-key &lt;apiKey&gt; --brokerage &lt;brokerageName&gt; &lt;requiredBrokerageOptions&gt;
    </code>
    .
   </p>
   <div class="cli section-example-container">
-   <pre>$ lean live deploy "My Project" --data-provider-historical DataBento --data-provider-live DataBento --databento-api-key apiKey --brokerage "Paper Trading"</pre>
+   <pre>$ lean live deploy "My Project" --data-provider-historical Databento --data-provider-live Databento --databento-api-key apiKey --brokerage "Paper Trading"</pre>
   </div>
  </body>
 </html>
@@ -21284,7 +21284,7 @@ Enter an option: 13</pre>
     <div class="cli section-example-container">
      <pre>$ lean cloud live "My Project" --push --open
 Please open the following URL in your browser to authorize the LEAN CLI.
-https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&amp;projectId=&lt;projectId&gt;
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&amp;projectId=&lt;projectId&gt;&amp;userId=&lt;loginId&gt;
 Will sleep 5 seconds and retry fetching authorization...
 </pre>
     </div>
@@ -21531,17 +21531,13 @@ Select a brokerage:
     </div>
    </li>
    <li>
-    If your project is local-only project, LEAN CLI will prompt you to enter the ID of any cloud project of your organization to proceed with authentication, see
-    <a href="https://www.quantconnect.com/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id&lt;/a">
-     Get Project ID
-    </a>
-    for more information.
-   </li>
-   <div class="cli section-example-container">
-    <pre>$ lean live "My Project"
-Please enter any cloud project ID to proceed with Auth0 authentication:
+    Enter your Charles Schwab Login ID to proceed with Auth0 authentication.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Please enter your Login ID to proceed with Auth0 authentication:
 </pre>
-   </div>
+    </div>
+   </li>
    <li>
     In the browser window that automatically opens. On the Charles Schwab website, log in, and select your Schwab accounts to link. Click
     <span class="button-name">
@@ -21550,9 +21546,9 @@ Please enter any cloud project ID to proceed with Auth0 authentication:
     to grant QuantConnect access to your account information and authorization.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
-Please enter any cloud project ID to proceed with Auth0 authentication: &lt;projectId&gt;
+Please enter your Login ID to proceed with Auth0 authentication: &lt;loginId&gt;
 Please open the following URL in your browser to authorize the LEAN CLI.
-https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&amp;projectId=&lt;projectId&gt;
+https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=charlesschwab&amp;projectId=&lt;projectId&gt;&amp;userId=&lt;loginId&gt;
 Will sleep 5 seconds and retry fetching authorization...
 </pre>
     </div>
@@ -25688,7 +25684,7 @@ table td:not(:first-child) {
  <body>
   <p>
    You need to
-   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#14-Set-Up-SAPI">
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI">
     set up the Bloomberg SAPI
    </a>
    before you can deploy cloud algorithms with Terminal Link.
@@ -27930,11 +27926,7 @@ To enter multiple options, separate them with comma: 8</pre>
 <html>
  <body>
   <p>
-   For more information about the Samco data provider, see
-   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/samco">
-    Samco
-   </a>
-   .
+   For more information about the Samco data provider, see Samco.
   </p>
  </body>
 </html>
@@ -28613,11 +28605,7 @@ Do you have a history API subscription? (true, false): true</pre>
 <html>
  <body>
   <p>
-   For more information about the Zerodha data provider, see
-   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/zerodha">
-    Zerodha
-   </a>
-   .
+   For more information about the Zerodha data provider, see Zerodha.
   </p>
  </body>
 </html>
@@ -31340,7 +31328,7 @@ Successfully generated report to './report.html'
       Probabilistic SR
      </td>
      <td>
-      The probability that the estimated Sharpe ratio of an algorithm is greater than a benchmark (1).
+      The probability that the estimated Sharpe ratio of an algorithm is greater than a benchmark.
      </td>
     </tr>
     <tr>
@@ -31356,7 +31344,7 @@ Successfully generated report to './report.html'
       Information Ratio
      </td>
      <td>
-      The amount of excess return from the risk-free rate per unit of systematic risk.
+      The amount of excess return relative to the benchmark per unit of tracking error.
      </td>
     </tr>
     <tr>
@@ -31364,7 +31352,7 @@ Successfully generated report to './report.html'
       Strategy Capacity
      </td>
      <td>
-      The maximum amount of money an algorithm can trade before its performance degrades from market impact.
+      The maximum amount of money an algorithm can trade before its performance degrades from market impact. Capacity is determined by the liquidity of the assets the algorithm trades and the size of positions it takes.
      </td>
     </tr>
    </tbody>
@@ -31448,7 +31436,7 @@ Successfully generated report to './report.html'
     beta
    </a>
    and
-   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/key-concepts/glossary#28-Sharpe-ratio">
+   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/key-concepts/glossary#31-Sharpe-ratio">
     Sharpe ratio
    </a>
    .
@@ -31789,7 +31777,7 @@ Successfully generated report to './report.html'
     </span>
    </a>
    file in the LEAN GitHub repository. For example, to add the
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/glossary#28-Sharpe-ratio">
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/glossary#31-Sharpe-ratio">
     Sharpe ratio
    </a>
    of your backtest to the custom HTML file, use
@@ -32072,7 +32060,7 @@ parameters--&gt;</pre>
   <p>
    The Lean CLI supports optimizing a project's parameters on your local machine or in the cloud using LEAN's powerful optimization strategies.
     Optimization is helpful when you want to find the best combination of parameters to minimize or maximize a certain statistic, like the algorithm's
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/glossary#28-Sharpe-ratio">
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/glossary#31-Sharpe-ratio">
     Sharpe ratio
    </a>
    or
@@ -34025,7 +34013,7 @@ if __name__ == '__main__':
        <br/>
        dYdX
        <br/>
-       DataBento&gt;
+       Databento&gt;
       </code>
      </td>
      <td>
@@ -34226,6 +34214,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Kraken Verification Tier
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --charles-schwab-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Charles Schwab login ID
      </td>
     </tr>
     <tr>
@@ -35171,6 +35169,40 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    lean cloud live
+   </code>
+   command provides subcommands for managing live trading deployments in the QuantConnect cloud.
+    Use
+   <code>
+    lean cloud live deploy
+   </code>
+   to start a new live deployment,
+   <code>
+    lean cloud live stop
+   </code>
+   to stop a running deployment, and
+   <code>
+    lean cloud live liquidate
+   </code>
+   to stop trading and liquidate all positions.
+  </p>
+  <p>
+   You can also use
+   <code>
+    lean cloud live command
+   </code>
+   to send a custom command to a running live deployment.
+    See the subcommand pages for full details on each operation.
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -35301,6 +35333,31 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a custom command to a running cloud live trading project.
+    Use the
+   <code>
+    --data
+   </code>
+   option to pass a JSON string representing the command.
+    The JSON must include a
+   <code>
+    $type
+   </code>
+   field matching a command class defined in your algorithm.
+  </p>
+  <p>
+   Example usage:
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live command "My Project" --data "{ \"target\": \"BTCUSD\", \"$type\": \"MyCommand\" }"</pre>
+  </div>
  </body>
 </html>
 
@@ -36998,6 +37055,16 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --charles-schwab-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Charles Schwab login ID
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --charles-schwab-account-number &lt;string&gt;
       </code>
      </td>
@@ -37460,6 +37527,27 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Stops live trading for the given cloud project and liquidates all existing positions.
+    The
+   <code>
+    &lt;project&gt;
+   </code>
+   argument accepts either the project name or its numeric ID.
+  </p>
+  <p>
+   If you only want to stop trading without liquidating positions, use
+   <a href="#12/lean-cloud-live-stop">
+    <code>
+     lean cloud live stop
+    </code>
+   </a>
+   instead.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -37575,6 +37663,27 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Stops live trading for the given cloud project without liquidating existing positions.
+    The
+   <code>
+    &lt;project&gt;
+   </code>
+   argument accepts either the project name or its numeric ID.
+  </p>
+  <p>
+   If you want to stop trading and liquidate all positions at the same time, use
+   <a href="#12/lean-cloud-live-liquidate">
+    <code>
+     lean cloud live liquidate
+    </code>
+   </a>
+   instead.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -37689,6 +37798,29 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Deletes the value stored under the given
+   <code>
+    &lt;key&gt;
+   </code>
+   from the organization's cloud Object Store.
+    The key must exactly match an existing entry in the Object Store.
+  </p>
+  <p>
+   To view the keys available in the Object Store, use
+   <a href="#12/lean-cloud-object-store-list">
+    <code>
+     lean cloud object-store list
+    </code>
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
 <h3>Arguments</h3>
 <html>
  <body>
@@ -37799,6 +37931,35 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Downloads one or more values from the organization's cloud Object Store to your local disk.
+    Provide one or more
+   <code>
+    &lt;key&gt;
+   </code>
+   arguments to select which entries to download.
+    By default, files are saved to the current directory.
+    Use the
+   <code>
+    --destination-folder
+   </code>
+   option to specify a different output folder.
+  </p>
+  <p>
+   To view the keys available in the Object Store, use
+   <a href="#12/lean-cloud-object-store-list">
+    <code>
+     lean cloud object-store list
+    </code>
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -37925,6 +38086,24 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Lists all entries under the given
+   <code>
+    &lt;key&gt;
+   </code>
+   in the organization's cloud Object Store.
+    If you omit the
+   <code>
+    &lt;key&gt;
+   </code>
+   argument, the command lists the contents of the root directory.
+  </p>
+ </body>
+</html>
+
 <h3>Arguments</h3>
 <html>
  <body>
@@ -38045,6 +38224,31 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Alias for
+   <a href="#12/lean-cloud-object-store-list">
+    <code>
+     lean cloud object-store list
+    </code>
+   </a>
+   .
+    Lists all entries under the given
+   <code>
+    &lt;key&gt;
+   </code>
+   in the organization's cloud Object Store.
+    If you omit the
+   <code>
+    &lt;key&gt;
+   </code>
+   argument, the command lists the contents of the root directory.
+  </p>
  </body>
 </html>
 
@@ -38171,6 +38375,28 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Displays the properties of the value stored under the given
+   <code>
+    &lt;key&gt;
+   </code>
+   in the organization's cloud Object Store, such as its size and last-modified date.
+  </p>
+  <p>
+   To view all available keys, use
+   <a href="#12/lean-cloud-object-store-list">
+    <code>
+     lean cloud object-store list
+    </code>
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -38244,6 +38470,34 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Uploads a local file to the organization's cloud Object Store under the given
+   <code>
+    &lt;key&gt;
+   </code>
+   .
+    The
+   <code>
+    &lt;path&gt;
+   </code>
+   argument specifies the path to the local file to upload.
+    If an entry with the same key already exists, it is overwritten.
+  </p>
+  <p>
+   To verify the upload, use
+   <a href="#12/lean-cloud-object-store-list">
+    <code>
+     lean cloud object-store list
+    </code>
+   </a>
+   to view all available keys.
+  </p>
  </body>
 </html>
 
@@ -40084,7 +40338,7 @@ if __name__ == '__main__':
        <br/>
        dYdX
        <br/>
-       DataBento&gt;
+       Databento&gt;
       </code>
      </td>
      <td>
@@ -40285,6 +40539,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Kraken Verification Tier
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --charles-schwab-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Charles Schwab login ID
      </td>
     </tr>
     <tr>
@@ -41472,6 +41736,34 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Decrypts the files of the given local project using the specified decryption key.
+    Use the
+   <code>
+    --key
+   </code>
+   option to provide the path to the key file.
+    If you don't provide a key, the CLI uses the key stored in the project's
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   .
+  </p>
+  <p>
+   To encrypt a project, use
+   <a href="#12/lean-encrypt">
+    <code>
+     lean encrypt
+    </code>
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -41640,6 +41932,34 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Encrypts the files of the given local project using the specified encryption key.
+    Use the
+   <code>
+    --key
+   </code>
+   option to provide the path to the key file.
+    If you don't provide a key, the CLI uses the key stored in the project's
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   .
+  </p>
+  <p>
+   To decrypt a project, use
+   <a href="#12/lean-decrypt">
+    <code>
+     lean decrypt
+    </code>
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -42278,6 +42598,56 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    lean live
+   </code>
+   command provides subcommands for managing live trading on your local machine using Docker.
+    Use
+   <code>
+    lean live deploy
+   </code>
+   to start a new local live deployment,
+   <code>
+    lean live stop
+   </code>
+   to stop a running deployment, and
+   <code>
+    lean live liquidate
+   </code>
+   to liquidate positions in a running deployment.
+  </p>
+  <p>
+   You can also interact with a running algorithm using
+   <code>
+    lean live add-security
+   </code>
+   ,
+   <code>
+    lean live submit-order
+   </code>
+   ,
+   <code>
+    lean live cancel-order
+   </code>
+   ,
+   <code>
+    lean live update-order
+   </code>
+   , and
+   <code>
+    lean live command
+   </code>
+   .
+    See the subcommand pages for full details on each operation.
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -42452,6 +42822,36 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a command to a running local live trading algorithm to add a new security subscription.
+    The
+   <code>
+    --ticker
+   </code>
+   ,
+   <code>
+    --market
+   </code>
+   , and
+   <code>
+    --security-type
+   </code>
+   options are required.
+    You can optionally configure the resolution, leverage, fill-forward behavior, and extended market hours flag.
+  </p>
+  <p>
+   The algorithm must already be running via
+   <a href="#12.36">
+    <code>
+     lean live deploy
+    </code>
+   </a>
+   before you use this command.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -42647,6 +43047,27 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a command to a running local live trading algorithm to cancel a specific open order.
+    The
+   <code>
+    --order-id
+   </code>
+   option is required and must match the ID of the order you want to cancel.
+  </p>
+  <p>
+   The algorithm must already be running via
+   <a href="#12.36">
+    <code>
+     lean live deploy
+    </code>
+   </a>
+   before you use this command.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -42778,6 +43199,31 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a custom command to a running local live trading project.
+    Use the
+   <code>
+    --data
+   </code>
+   option to pass a JSON string representing the command.
+    The JSON must include a
+   <code>
+    $type
+   </code>
+   field matching a command class defined in your algorithm.
+  </p>
+  <p>
+   Example usage:
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ lean live command "My Project" --data "{ \"target\": \"BTCUSD\", \"$type\": \"MyCommand\" }"</pre>
+  </div>
  </body>
 </html>
 
@@ -44563,7 +45009,7 @@ if __name__ == '__main__':
        <br/>
        dYdX
        <br/>
-       DataBento&gt;
+       Databento&gt;
       </code>
      </td>
      <td>
@@ -44615,7 +45061,7 @@ if __name__ == '__main__':
        <br/>
        dYdX
        <br/>
-       DataBento&gt;
+       Databento&gt;
       </code>
      </td>
      <td>
@@ -45206,6 +45652,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Kraken Verification Tier
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --charles-schwab-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Charles Schwab login ID
      </td>
     </tr>
     <tr>
@@ -45811,6 +46267,36 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a liquidation command to the latest deployment of the given local live trading project.
+    If you provide the
+   <code>
+    --ticker
+   </code>
+   ,
+   <code>
+    --market
+   </code>
+   , and
+   <code>
+    --security-type
+   </code>
+   options, only the matching symbol is liquidated.
+    If you omit those options, all positions in the portfolio are liquidated.
+  </p>
+  <p>
+   To stop a live deployment without liquidating positions, use
+   <a href="#12/lean-live-stop">
+    <code>
+     lean live stop
+    </code>
+   </a>
+   .
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -45966,6 +46452,27 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Stops a running local live trading project without liquidating existing positions.
+    The
+   <code>
+    &lt;project&gt;
+   </code>
+   argument must be the path to the project directory or algorithm file.
+  </p>
+  <p>
+   If you want to stop the deployment and liquidate all positions at the same time, use
+   <a href="#12/lean-live-liquidate">
+    <code>
+     lean live liquidate
+    </code>
+   </a>
+   instead.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -46091,6 +46598,57 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a command to a running local live trading algorithm to submit a new order.
+    The
+   <code>
+    --ticker
+   </code>
+   ,
+   <code>
+    --market
+   </code>
+   ,
+   <code>
+    --security-type
+   </code>
+   ,
+   <code>
+    --order-type
+   </code>
+   , and
+   <code>
+    --quantity
+   </code>
+   options are required.
+    For limit and stop orders, provide the
+   <code>
+    --limit-price
+   </code>
+   and
+   <code>
+    --stop-price
+   </code>
+   options as applicable.
+    You can attach a
+   <code>
+    --tag
+   </code>
+   to the order for tracking purposes.
+  </p>
+  <p>
+   The algorithm must already be running via
+   <a href="#12.36">
+    <code>
+     lean live deploy
+    </code>
+   </a>
+   before you use this command.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -46296,6 +46854,29 @@ if __name__ == '__main__':
 </html>
 
 <h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Sends a command to a running local live trading algorithm to update an existing order.
+    The
+   <code>
+    --order-id
+   </code>
+   option is required and must match the ID of the order you want to update.
+    You can update the quantity, limit price, stop price, and tag of the order.
+    Provide only the fields you want to change; omitted fields remain unchanged.
+  </p>
+  <p>
+   The algorithm must already be running via
+   <a href="#12.36">
+    <code>
+     lean live deploy
+    </code>
+   </a>
+   before you use this command.
+  </p>
+ </body>
+</html>
 
 <h3>Arguments</h3>
 <html>
@@ -46853,6 +47434,22 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Deletes a value from the local Object Store.
+    To view the available keys, use
+   <a href="#12/lean-object-store-list">
+    <code>
+     lean object-store list
+    </code>
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -46926,6 +47523,22 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Downloads a value from the local Object Store to your local disk.
+    To view the available keys, use
+   <a href="#12/lean-object-store-list">
+    <code>
+     lean object-store list
+    </code>
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -47005,6 +47618,15 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Lists all values stored in the local Object Store.
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -47078,6 +47700,22 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Alias for
+   <a href="#12/lean-object-store-list">
+    <code>
+     lean object-store list
+    </code>
+   </a>
+   .
+    Lists all values stored in the local Object Store.
+  </p>
  </body>
 </html>
 
@@ -47157,6 +47795,24 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Displays the properties of a value stored in the local Object Store, such as its size and last-modified date.
+  </p>
+  <p>
+   To view all available keys, use
+   <a href="#12/lean-object-store-list">
+    <code>
+     lean object-store list
+    </code>
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -47230,6 +47886,22 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Saves a value to the local Object Store.
+    To view the available keys, use
+   <a href="#12/lean-object-store-list">
+    <code>
+     lean object-store list
+    </code>
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -48136,7 +48808,7 @@ if __name__ == '__main__':
        <br/>
        dYdX
        <br/>
-       DataBento&gt;
+       Databento&gt;
       </code>
      </td>
      <td>
@@ -48427,6 +49099,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Kraken Verification Tier
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --charles-schwab-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Charles Schwab login ID
      </td>
     </tr>
     <tr>
@@ -48879,6 +49561,53 @@ if __name__ == '__main__':
  </body>
 </html>
 
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Adds a compute node to a running private cloud cluster.
+    Use the
+   <code>
+    --token
+   </code>
+   ,
+   <code>
+    --master-domain
+   </code>
+   , and
+   <code>
+    --master-port
+   </code>
+   options to connect the node to an existing master server.
+    Use
+   <code>
+    --slave-domain
+   </code>
+   to specify the domain of the node being added.
+    Use
+   <code>
+    --compute
+   </code>
+   to select a compute configuration, and
+   <code>
+    --extra-docker-config
+   </code>
+   to pass additional Docker configuration as a JSON string.
+  </p>
+  <p>
+   Pass
+   <code>
+    --update
+   </code>
+   to pull the latest Docker image before starting, or
+   <code>
+    --stop
+   </code>
+   to stop any existing deployment on this node first.
+  </p>
+ </body>
+</html>
+
 <h3>Options</h3>
 <html>
  <body>
@@ -49052,6 +49781,57 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Starts a new private cloud deployment in a Docker container.
+    Run with
+   <code>
+    --master
+   </code>
+   to start the node as a master server, or
+   <code>
+    --slave
+   </code>
+   to start it as a slave node connected to an existing master.
+    Use
+   <code>
+    --token
+   </code>
+   ,
+   <code>
+    --master-domain
+   </code>
+   , and
+   <code>
+    --master-port
+   </code>
+   to configure the connection between master and slave nodes.
+  </p>
+  <p>
+   Use
+   <code>
+    --compute
+   </code>
+   to select a compute configuration and
+   <code>
+    --extra-docker-config
+   </code>
+   to pass additional Docker configuration as a JSON string.
+    Pass
+   <code>
+    --update
+   </code>
+   to pull the latest Docker image before starting, or
+   <code>
+    --stop
+   </code>
+   to stop any existing deployment first.
+  </p>
  </body>
 </html>
 
@@ -49248,6 +50028,22 @@ if __name__ == '__main__':
    organization
   </a>
   on a paid tier.
+ </body>
+</html>
+
+<h3>Description</h3>
+<html>
+ <body>
+  <p>
+   Stops a running private cloud deployment.
+    To start a private cloud, use
+   <a href="#12/lean-private-cloud-start">
+    <code>
+     lean private-cloud start
+    </code>
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -50516,7 +51312,7 @@ if __name__ == '__main__':
        <br/>
        dYdX
        <br/>
-       DataBento&gt;
+       Databento&gt;
       </code>
      </td>
      <td>
@@ -50717,6 +51513,16 @@ if __name__ == '__main__':
      </td>
      <td>
       Your Kraken Verification Tier
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --charles-schwab-user-name &lt;string&gt;
+      </code>
+     </td>
+     <td>
+      Your Charles Schwab login ID
      </td>
     </tr>
     <tr>
