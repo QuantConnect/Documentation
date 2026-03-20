@@ -1,5 +1,7 @@
 import os
+import sys
 from datetime import datetime as dt
+from importlib import import_module
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
@@ -31,6 +33,134 @@ class ImageGenerator:
             I1.text(xy, line, fill='#000', font=font)
         image.save(f'{outputfile}.png')
         image.close()
+
+CHEAT_SHEET_CATEGORIES = [
+    ('Authentication', [
+        'lean login', 'lean init', 'lean whoami', 'lean logout']),
+    ('Configuration', [
+        'lean config list', 'lean config get', 'lean config set', 'lean config unset']),
+    ('Projects', [
+        'lean project-create', 'lean project-delete', 'lean cloud pull', 'lean cloud push',
+        'lean library add', 'lean library remove']),
+    ('Data', [
+        'lean data download', 'lean data generate']),
+    ('Research', [
+        'lean research']),
+    ('Backtests', [
+        'lean backtest', 'lean cloud backtest', 'lean optimize', 'lean cloud optimize']),
+    ('Live Trading', [
+        'lean live', 'lean live liquidate', 'lean live stop',
+        'lean cloud live', 'lean cloud live liquidate', 'lean cloud live stop',
+        'lean cloud status']),
+    ('Algorithm Results', [
+        'lean logs', 'lean report']),
+]
+
+def generate_cheat_sheet(location):
+    sys.path.insert(0, 'code-generators')
+    cli_generator = import_module('Lean-CLI-API-Reference-Code-Generator')
+    raw_commands = cli_generator.get_raw_commands_from_readme()
+
+    WIDTH, MARGIN = 1200, 50
+    COL_GAP = 40
+    col_width = (WIDTH - 2 * MARGIN - COL_GAP) // 2
+
+    font_path = f'{location}Inter-Bold.ttf'
+    title_font = ImageFont.truetype(font_path, 36)
+    category_font = ImageFont.truetype(font_path, 20)
+    command_font = ImageFont.truetype(font_path, 14)
+
+    BG_COLOR = (247, 247, 246)
+    TITLE_COLOR = (30, 30, 30)
+    CATEGORY_COLOR = (109, 60, 209)
+    COMMAND_COLOR = (50, 50, 50)
+    DESC_COLOR = (120, 120, 120)
+    SEPARATOR_COLOR = (220, 220, 218)
+
+    descriptions = {}
+    for name, lines in raw_commands.items():
+        desc = lines[2] if len(lines) > 2 else ''
+        if desc.endswith('.'):
+            desc = desc[:-1]
+        descriptions[name] = desc
+
+    categories = []
+    for cat_name, cmd_names in CHEAT_SHEET_CATEGORIES:
+        cmds = []
+        for cmd in cmd_names:
+            if cmd in descriptions:
+                cmds.append((cmd, descriptions[cmd]))
+        if cmds:
+            categories.append((cat_name, cmds))
+
+    # Split categories into two columns by total line count
+    left, right = [], []
+    left_lines, right_lines = 0, 0
+    for cat_name, cmds in categories:
+        count = 1 + len(cmds)
+        if left_lines <= right_lines:
+            left.append((cat_name, cmds))
+            left_lines += count
+        else:
+            right.append((cat_name, cmds))
+            right_lines += count
+
+    LINE_H, CAT_GAP, CMD_GAP = 22, 30, 4
+    HEADER_H = 100
+
+    def col_height(col):
+        h = 0
+        for i, (_, cmds) in enumerate(col):
+            if i > 0:
+                h += CAT_GAP
+            h += 30
+            h += len(cmds) * (LINE_H + CMD_GAP)
+        return h
+
+    content_h = max(col_height(left), col_height(right))
+    HEIGHT = HEADER_H + content_h + MARGIN + 40
+
+    image = Image.new('RGBA', (WIDTH, HEIGHT), BG_COLOR)
+    draw = ImageDraw.Draw(image)
+
+    draw.text((MARGIN, MARGIN), "LEAN CLI CHEAT SHEET", fill=TITLE_COLOR, font=title_font)
+    draw.line([(MARGIN, HEADER_H - 10), (WIDTH - MARGIN, HEADER_H - 10)], fill=SEPARATOR_COLOR, width=2)
+
+    def truncate_text(text, font, max_width):
+        if font.getlength(text) <= max_width:
+            return text
+        while font.getlength(text + '...') > max_width and len(text) > 0:
+            text = text[:-1]
+        return text.rstrip() + '...'
+
+    def draw_column(col, x_start, y_start):
+        y = y_start
+        for i, (cat_name, cmds) in enumerate(col):
+            if i > 0:
+                y += CAT_GAP
+            draw.text((x_start, y), cat_name.upper(), fill=CATEGORY_COLOR, font=category_font)
+            y += 30
+            for cmd, desc in cmds:
+                cmd_text = f"{cmd}  —  "
+                cmd_w = command_font.getlength(cmd_text)
+                max_desc_w = col_width - cmd_w
+                desc_truncated = truncate_text(desc, command_font, max_desc_w)
+                draw.text((x_start, y), cmd_text, fill=COMMAND_COLOR, font=command_font)
+                draw.text((x_start + cmd_w, y), desc_truncated, fill=DESC_COLOR, font=command_font)
+                y += LINE_H + CMD_GAP
+        return y
+
+    y_start = HEADER_H
+    draw_column(left, MARGIN, y_start)
+    draw_column(right, MARGIN + col_width + COL_GAP, y_start)
+
+    footer_y = HEIGHT - 30
+    draw.text((MARGIN, footer_y), "quantconnect.com", fill=DESC_COLOR, font=command_font)
+
+    output = Path(f'{location}lean-cli-cheat-sheet.png')
+    image.save(str(output))
+    image.close()
+    print(f'Cheat sheet generated: {output}')
 
 if __name__ == '__main__':
     counter = 0
@@ -73,6 +203,9 @@ if __name__ == '__main__':
 
             with open(f"{dir}/metadata.json", mode='w') as fp:
                 fp.writelines(lines)
+
+    generate_cheat_sheet(location)
+    counter += 1
 
     print(f'{counter} images generated in {dt.now()-now}')
     if missing_metadata:

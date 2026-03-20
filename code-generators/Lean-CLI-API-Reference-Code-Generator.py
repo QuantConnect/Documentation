@@ -19,7 +19,7 @@ TYPE_CONVERSIONS = {
     "FLOAT": "&lt;float&gt;",
 }
 
-def __get_commands_from_readme():
+def get_raw_commands_from_readme():
     commands = {}
     index = 0
     current_key = ''
@@ -36,7 +36,11 @@ def __get_commands_from_readme():
         if current_key:
             commands[current_key].append(line)
 
-    return {key: __convert_command(key, command) for key, command in commands.items() } 
+    return commands
+
+def __get_commands_from_readme():
+    return {key: __convert_command(key, command)
+            for key, command in get_raw_commands_from_readme().items()}
 
 def __convert_command(key, command):
     return {
