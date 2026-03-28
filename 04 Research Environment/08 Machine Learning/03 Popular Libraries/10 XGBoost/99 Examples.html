@@ -1,9 +1,9 @@
-<p>The following examples demonstrate some common practices for using the XGBoost library.</p>
+<p>The following examples demonstrate some common practices for using the xgboost library.</p>
 
 <h4>Example 1: Predict Next Price</h4>
-<p>The following research notebook uses <code>XGBoost</code> machine learning model to predict the next day's close price by the previous 5 days' daily closes.</p>
+<p>The following research notebook uses an <code>xgboost</code> machine learning model to predict the next day's close price by the previous 5 days' daily closes.</p>
 <div class="section-example-container">
-    <pre class="python"># Import the XGBoost library and others.
+    <pre class="python"># Import the xgboost library and others.
 import xgboost as xgb
 from sklearn.model_selection import train_test_split
 import joblib
@@ -16,8 +16,8 @@ history = qb.history(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[sym
 
 # Obtain the daily fractional differencing in close price to be the features and labels.
 df = (history['close'] * 0.5 + history['close'].diff() * 0.5)[1:]
-# We use the previous 5 day returns as the features to be studied.
-# Get the 1-day forward return as the labels for the machine to learn.
+# Use the previous 5 day returns as the features.
+# Get the 1-day forward return as the labels.
 n_steps = 5
 features = []
 labels = []
@@ -31,10 +31,10 @@ labels = np.array(labels)
 X = (features - features.mean()) / features.std()
 y = (labels - labels.mean()) / labels.std()
 
-# Split the data as a training set and test set for validation.
+# Split the data into a training set and test set for validation.
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 
-# Format training set into XGBoost matrix.
+# Format the training set into an XGBoost matrix.
 dtrain = xgb.DMatrix(X_train, label=y_train)
 # Train the model with parameters.
 params = {
@@ -49,11 +49,11 @@ params = {
 }
 model = xgb.train(params, dtrain, num_boost_round=10)
 
-# Format testing set into XGBoost matrix to test it.
+# Format the testing set into an XGBoost matrix.
 dtest = xgb.DMatrix(X_test, label=y_test)
-# Predict with the testing set data.
+# Call the predict method with the testing dataset.
 y_predict = model.predict(dtest)
-# Plot the result.
+# Plot the predicted values against the actual values.
 df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
 df.plot(title='Model Performance: predicted vs actual closing price', figsize=(15, 10))
 plt.show()

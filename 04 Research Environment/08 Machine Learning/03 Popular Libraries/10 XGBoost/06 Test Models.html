@@ -1,17 +1,17 @@
-<p>We then make predictions on the testing data set. We compare our Predicted Values with the Expected Values by plotting both to see if our Model has predictive power.</p>
+<p>You need to <a href="/docs/v2/research-environment/machine-learning/popular-libraries/xgboost#05-Train-Models">build and train the model</a> before you test its performance. If you have trained the model, test it on the out-of-sample data. Follow these steps to test the model:</p>
 
 <ol>
-    <li>Format testing set into XGBoost matrix.</li>
+    <li>Format the testing set into an XGBoost matrix.</li>
     <div class="section-example-container">
         <pre class="python">dtest = xgb.DMatrix(X_test, label=y_test)</pre>
     </div>
 
-    <li>Predict with the testing set data.</li>
+    <li>Call the <code>predict</code> method with the testing dataset.</li>
     <div class="section-example-container">
         <pre class="python">y_predict = model.predict(dtest)</pre>
     </div>
 
-    <li>Plot the result.</li>
+    <li>Plot the predicted values against the actual values to assess the model's predictive power.</li>
     <div class="section-example-container">
         <pre class="python">df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
 df.plot(title='Model Performance: predicted vs actual closing price', figsize=(15, 10))

@@ -1,9 +1,9 @@
-<p>The following examples demonstrate some common practices for using the Tensorflow library.</p>
+<p>The following examples demonstrate some common practices for using the tensorflow library.</p>
 
 <h4>Example 1: Predict Next Return</h4>
-<p>The following research notebook uses <code>Tensorflow</code> machine learning model to predict the next day's return by the previous 5 days' close price differencing.</p>
+<p>The following research notebook uses a <code>tensorflow</code> machine learning model to predict the next day's return by the previous 5 days' close price differencing.</p>
 <div class="section-example-container">
-    <pre class="python"># Import the Tensorflow library and others.
+    <pre class="python"># Import the tensorflow library and others.
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
@@ -27,31 +27,31 @@ X = pd.concat(lookback_series, axis=1).reset_index(drop=True).dropna()
 Y = data['close'].diff(-1)
 Y = Y[lookback:-1].reset_index(drop=True)
 
-# Split the data into training and testing datasets. For example, to use the last third of data to test the model.
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, shuffle=False)
+# Split the data into training and testing datasets. For example, use the last third of data to test the model.
+X_train, X_test, y_train, y_test = train_test_split(X.values, Y.values, test_size=0.33, shuffle=False)
 
-# Set the number of layers, their number of nodes, the number of epoch and the learning rate.
+# Set the number of layers, their number of nodes, the number of epochs, and the learning rate.
 num_factors = X_test.shape[1]
 num_neurons_1 = 10
 num_neurons_2 = 10
 num_neurons_3 = 5
 epochs = 20
 learning_rate = 0.0001
-# Create hidden layers with the set number of layer and their corresponding number of nodes.
-# In this example, we're constructing the model with the in-built Keras API, with Relu activator for non-linear activation of each tensors.
+# Create hidden layers with the set number of layers and their corresponding number of nodes.
+# This example uses the Keras API with ReLU activation for non-linear activation of each tensor.
 model = tf.keras.Sequential([
     tf.keras.layers.Dense(num_neurons_1, activation=tf.nn.relu, input_shape=(num_factors,)),  # input shape required
     tf.keras.layers.Dense(num_neurons_2, activation=tf.nn.relu),
     tf.keras.layers.Dense(num_neurons_3, activation=tf.nn.relu),
     tf.keras.layers.Dense(1)
 ])
-# We're using Adam optimizer in this example. You may also consider others like SGD.
+# This example uses the Adam optimizer. You can also use others like SGD.
 optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)
-# Define the loss function. In the context of numerical regression, we use MSE as our objective function. If you're doing classification, cross entropy would be more suitable.
+# Define the loss function. For numerical regression, use MSE as the objective function. For classification, cross entropy is more suitable.
 def loss_mse(target_y, predicted_y):
     return tf.reduce_mean(tf.square(target_y - predicted_y))
 
-# Iteratively train the model by the set epoch number. The model will train adaptively by the gradient provided by the loss function with the selected optimizer.
+# Iteratively train the model over the set number of epochs. The model trains adaptively using the gradient from the loss function with the selected optimizer.
 for i in range(epochs):
     with tf.GradientTape() as t:
         loss = loss_mse(y_train, model(X_train))
@@ -64,7 +64,7 @@ Training loss = {train_loss.numpy()}. Test loss = {test_loss.numpy()}""")
     jac = t.gradient(loss, model.trainable_weights)
     optimizer.apply_gradients(zip(jac, model.trainable_weights))
 
-# To test the model, we'll setup a method to plot test set predictions ontop of the SPY price.
+# Create a helper function to plot the test set predictions on top of the SPY price.
 def test_model(actual, title, X):
     prediction = model(X).numpy()
     prediction = prediction.reshape(-1, 1)

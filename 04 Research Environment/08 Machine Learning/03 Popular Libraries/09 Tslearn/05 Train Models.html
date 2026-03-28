@@ -1,15 +1,19 @@
-<p>Instead of using real-time comparison, we could apply a technique call Dynamic Time Wrapping (DTW) with Barycenter Averaging (DBA). Intuitively, it is a technique of averaging a few time-series into a single one without losing much of their information. Since not all time-series would move efficiently like in ideal EMH assumption, this would allow similarity analysis of different time-series with sticky lags. Check the technical details from <a href="https://tslearn.readthedocs.io/en/stable/user_guide/dtw.html">tslearn documentation page</a>.</p>
+<p>Instead of using real-time comparison, apply Dynamic Time Warping (DTW) with Barycenter Averaging (DBA). This technique averages multiple time-series into a single one without losing much of their information. Since not all time-series move efficiently as in ideal EMH assumptions, this approach enables similarity analysis of different time-series with sticky lags. Check the technical details from the <a href="https://tslearn.readthedocs.io/en/stable/user_guide/dtw.html">tslearn documentation page</a>.</p>
 
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/dba.png" alt="Dynamic time wraping barycenter averaging visualization">
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/dba.png" alt="Dynamic time warping barycenter averaging visualization">
 
-<p>We then can separate different clusters by KMean after DBA.</p>
+<p>Follow these steps to train the model:</p>
 
-<div class="section-example-container">
-    <pre class="python"># Set up the Time Series KMean model with soft DBA.
-km = TimeSeriesKMeans(n_clusters=6,   # We have 6 main groups
+<ol>
+    <li>Set up the Time Series KMeans model with soft DBA.</li>
+    <div class="section-example-container">
+        <pre class="python">km = TimeSeriesKMeans(n_clusters=6,   # 6 main groups
                       metric="softdtw",  # soft for differentiable
-                      random_state=0)
+                      random_state=0)</pre>
+    </div>
 
-# Fit the model.
-km.fit(standard_close.T)</pre>
-</div>
+    <li>Call the <code>fit</code> method with the prepared data.</li>
+    <div class="section-example-container">
+        <pre class="python">km.fit(standard_close.T)</pre>
+    </div>
+</ol>
