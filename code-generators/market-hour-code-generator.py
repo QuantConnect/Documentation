@@ -73,6 +73,10 @@ for key, entry in entries.items():
     if 'lateOpens' in entry:
         clean['lateOpens'] = entry['lateOpens']
 
+    # Forex: only keep the generic [*] entry (no symbol search)
+    if js_file == 'forex-market-hours.js' and tmp[-1] != '[*]':
+        continue
+
     grouped.setdefault(js_file, {})[key] = clean
 
 # Resolve holiday/earlyClose/lateOpen fallbacks

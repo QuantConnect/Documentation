@@ -239,11 +239,11 @@ function buildSymbolIndex(prefix, names) {
         for (const symbol of symbols) {
             const key = symbolMap[symbol];
             const tmp = key.split('-');
-            const exchange = tmp[1].toUpperCase();
+            var exchange = tmp[1].toUpperCase();
+            if (exchange === 'INTERACTIVEBROKERS') exchange = 'IBKR';
             const name = (names && names[symbol]) || symbol;
             const option = document.createElement('option');
-            option.value = symbol;
-            option.textContent = symbol + ' \u2014 ' + name + ' (' + exchange + ')';
+            option.value = symbol + ' \u2014 ' + name + ' (' + exchange + ')';
             datalist.appendChild(option);
         }
     }
@@ -262,8 +262,16 @@ function renderDefault() {
         const symbolMap = buildSymbolIndex(ID_PREFIX, names);
         const input = document.getElementById(ID_PREFIX + '-symbol-search');
         if (input) {
+            function resolveSymbol(raw) {
+                var s = raw.trim().toUpperCase();
+                // Extract symbol before the dash: "6S — Swiss Franc Futures (CME)" -> "6S"
+                var idx = s.indexOf(' \u2014 ');
+                if (idx > 0) s = s.substring(0, idx).trim();
+                return s;
+            }
+
             input.addEventListener('input', function () {
-                const val = this.value.trim().toUpperCase();
+                const val = resolveSymbol(this.value);
                 if (symbolMap[val]) {
                     render(symbolMap[val], ID_PREFIX, names, false);
                     if (window.history && window.history.replaceState) {
