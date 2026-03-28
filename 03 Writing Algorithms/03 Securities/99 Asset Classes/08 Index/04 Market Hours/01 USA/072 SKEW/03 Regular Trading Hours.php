@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/SKEW/regular-trading-hours.html"); ?>

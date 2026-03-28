@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/nymex/M35/early-closes.html"); ?>

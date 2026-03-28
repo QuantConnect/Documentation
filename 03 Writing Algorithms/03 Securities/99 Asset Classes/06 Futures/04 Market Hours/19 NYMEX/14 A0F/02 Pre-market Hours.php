@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/nymex/A0F/pre-market-hours.html"); ?>

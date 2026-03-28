@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cme/GE/pre-market-hours.html"); ?>

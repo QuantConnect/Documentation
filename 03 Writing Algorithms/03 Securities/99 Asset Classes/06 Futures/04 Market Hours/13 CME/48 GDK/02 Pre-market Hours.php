@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cme/GDK/pre-market-hours.html"); ?>

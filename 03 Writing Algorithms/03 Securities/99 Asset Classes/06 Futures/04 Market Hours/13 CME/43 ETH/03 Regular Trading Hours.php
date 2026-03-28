@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cme/ETH/regular-trading-hours.html"); ?>

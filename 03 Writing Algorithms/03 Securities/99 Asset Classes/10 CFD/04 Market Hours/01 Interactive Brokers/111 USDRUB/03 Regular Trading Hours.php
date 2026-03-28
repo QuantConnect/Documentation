@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/USDRUB/regular-trading-hours.html"); ?>

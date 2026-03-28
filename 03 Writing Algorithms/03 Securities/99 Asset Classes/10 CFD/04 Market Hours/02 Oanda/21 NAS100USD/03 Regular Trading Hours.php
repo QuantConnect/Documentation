@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/NAS100USD/regular-trading-hours.html"); ?>

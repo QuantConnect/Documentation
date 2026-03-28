@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/VIF/regular-trading-hours.html"); ?>

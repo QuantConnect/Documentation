@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/SPGSCI/regular-trading-hours.html"); ?>

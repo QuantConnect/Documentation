@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/usa/generic/holidays.html"); ?>
+<div id="us-equity-holidays"></div>

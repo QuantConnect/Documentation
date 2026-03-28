@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/eurex/DAX/regular-trading-hours.html"); ?>

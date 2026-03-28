@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/usa/generic/early-closes.html"); ?>
+<div id="us-equity-early-closes"></div>

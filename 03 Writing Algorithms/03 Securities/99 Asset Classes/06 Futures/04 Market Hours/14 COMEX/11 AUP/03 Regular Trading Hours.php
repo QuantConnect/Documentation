@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/comex/AUP/regular-trading-hours.html"); ?>

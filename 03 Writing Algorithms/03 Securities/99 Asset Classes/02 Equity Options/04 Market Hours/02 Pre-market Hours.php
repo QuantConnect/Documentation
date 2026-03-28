@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-pre-market-hours.html"); ?>
+<div id="equity-options-pre-market"></div>

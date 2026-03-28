@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cbot/ZS/post-market-hours.html"); ?>

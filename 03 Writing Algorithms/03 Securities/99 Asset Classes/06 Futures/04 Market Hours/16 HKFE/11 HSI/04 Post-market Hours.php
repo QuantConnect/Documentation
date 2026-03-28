@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/hkfe/HSI/post-market-hours.html"); ?>

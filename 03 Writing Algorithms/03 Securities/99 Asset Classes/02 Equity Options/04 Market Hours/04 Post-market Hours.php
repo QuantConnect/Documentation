@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-post-market-hours.html"); ?>
+<div id="equity-options-post-market"></div>

@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/VIX3M/regular-trading-hours.html"); ?>

@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/indexoption/usa/SPX/regular-trading-hours.html"); ?>

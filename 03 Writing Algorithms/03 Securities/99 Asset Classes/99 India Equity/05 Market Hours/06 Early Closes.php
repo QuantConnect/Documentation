@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-early-closes.html"); ?>
+<div id="india-equity-early-closes"></div>

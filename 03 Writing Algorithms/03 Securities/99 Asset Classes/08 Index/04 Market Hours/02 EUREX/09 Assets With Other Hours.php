@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/eurex/generic/assets-with-other-hours.html"); ?>

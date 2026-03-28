@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/HK33HKD/regular-trading-hours.html"); ?>

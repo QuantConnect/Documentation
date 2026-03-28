@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/usa/generic/pre-market-hours.html"); ?>
+<div id="us-equity-pre-market"></div>

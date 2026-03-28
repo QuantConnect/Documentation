@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-late-opens.html"); ?>
+<div id="equity-options-late-opens"></div>

@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/comex/SIL/pre-market-hours.html"); ?>

@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/nyseliffe/generic/regular-trading-hours.html"); ?>

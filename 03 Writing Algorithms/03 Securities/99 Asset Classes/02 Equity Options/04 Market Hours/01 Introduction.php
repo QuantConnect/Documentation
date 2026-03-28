@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/option/usa/generic/introduction.html"); ?>
+<p id="equity-options-description">This page shows the trading hours, holidays, and time zone of the Equity Option market.</p>

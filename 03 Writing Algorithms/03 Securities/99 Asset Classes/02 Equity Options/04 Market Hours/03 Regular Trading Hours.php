@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/option/usa/generic/regular-trading-hours.html"); ?>
+<div id="equity-options-regular"></div>

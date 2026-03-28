@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/sgx/NK/regular-trading-hours.html"); ?>

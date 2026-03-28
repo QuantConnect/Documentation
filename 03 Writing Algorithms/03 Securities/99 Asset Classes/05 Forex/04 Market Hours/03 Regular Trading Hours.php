@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/generic/regular-trading-hours.html"); ?>
+<div id="forex-regular"></div>

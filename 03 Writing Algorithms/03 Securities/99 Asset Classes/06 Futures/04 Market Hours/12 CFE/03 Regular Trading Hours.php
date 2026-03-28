@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cfe/generic/regular-trading-hours.html"); ?>

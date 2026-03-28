@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/usa/generic/introduction.html"); ?>
+<p id="us-equity-description">This page shows the trading hours, holidays, and time zone of the US Equity market.</p>

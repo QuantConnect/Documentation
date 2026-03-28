@@ -1,0 +1,883 @@
+const DATA = {
+  "Forex-oanda-[*]": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [
+      "1/1/2005",
+      "1/1/2010",
+      "1/1/2011",
+      "1/1/2013",
+      "1/1/2016",
+      "1/1/2017",
+      "1/1/2021",
+      "1/1/2023",
+      "1/2/2023",
+      "12/25/2010",
+      "12/25/2012",
+      "12/25/2015",
+      "12/25/2016",
+      "12/25/2020",
+      "12/25/2022",
+      "12/26/2022",
+      "12/24/2023",
+      "12/31/2023"
+    ],
+    "earlyCloses": {
+      "12/30/2005": "17:00:00",
+      "12/29/2005": "17:00:00",
+      "12/31/2007": "17:00:00",
+      "12/31/2008": "17:00:00",
+      "12/31/2009": "17:00:00",
+      "12/31/2010": "17:00:00",
+      "12/30/2011": "17:00:00",
+      "12/31/2012": "14:00:00",
+      "12/31/2013": "14:00:00",
+      "12/31/2014": "14:00:00",
+      "12/31/2015": "14:00:00",
+      "12/30/2016": "14:00:00",
+      "12/29/2017": "17:00:00",
+      "12/24/2018": "17:00:00",
+      "12/31/2018": "17:00:00",
+      "12/24/2019": "17:00:00",
+      "12/31/2019": "17:00:00",
+      "12/24/2020": "17:00:00",
+      "12/31/2020": "17:00:00",
+      "12/31/2021": "17:00:00",
+      "12/24/2024": "17:00:00",
+      "12/31/2024": "17:00:00",
+      "12/24/2025": "17:00:00",
+      "12/31/2025": "17:00:00"
+    },
+    "lateOpens": {
+      "12/25/2018": "17:00:00",
+      "1/1/2019": "17:00:00",
+      "12/25/2019": "17:00:00",
+      "1/1/2020": "17:00:00",
+      "12/25/2023": "17:00:00",
+      "1/1/2024": "17:00:00",
+      "12/25/2024": "17:05:00",
+      "1/1/2025": "17:05:00",
+      "12/25/2025": "17:05:00",
+      "1/1/2026": "17:05:00"
+    }
+  },
+  "Forex-oanda-GBPNZD": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-EURNZD": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-NZDCAD": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-NZDCHF": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-NZDHKD": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-NZDJPY": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-NZDSGD": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  },
+  "Forex-oanda-NZDUSD": {
+    "exchangeTimeZone": "America/New_York",
+    "sunday": [
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      },
+      {
+        "start": "17:03:00",
+        "end": "1.00:00:00",
+        "state": "market"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "12:58:00",
+        "state": "market"
+      },
+      {
+        "start": "13:03:00",
+        "end": "16:58:00",
+        "state": "market"
+      }
+    ],
+    "holidays": [],
+    "earlyCloses": {},
+    "lateOpens": {}
+  }
+};
+
+const NAMES = {
+  "GBPNZD": "oanda",
+  "EURNZD": "oanda",
+  "NZDCAD": "oanda",
+  "NZDCHF": "oanda",
+  "NZDHKD": "oanda",
+  "NZDJPY": "oanda",
+  "NZDSGD": "oanda",
+  "NZDUSD": "oanda"
+};
+
+const DEFAULT_KEY = 'Forex-oanda-[*]';
+const ID_PREFIX = 'forex';

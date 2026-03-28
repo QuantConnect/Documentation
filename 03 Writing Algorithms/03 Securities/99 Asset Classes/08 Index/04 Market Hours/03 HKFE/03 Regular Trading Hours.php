@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/hkfe/generic/regular-trading-hours.html"); ?>

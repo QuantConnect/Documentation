@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/usa/generic/post-market-hours.html"); ?>
+<div id="us-equity-post-market"></div>

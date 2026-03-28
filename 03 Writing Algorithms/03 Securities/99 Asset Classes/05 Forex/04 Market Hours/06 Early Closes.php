@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/generic/early-closes.html"); ?>
+<div id="forex-early-closes"></div>

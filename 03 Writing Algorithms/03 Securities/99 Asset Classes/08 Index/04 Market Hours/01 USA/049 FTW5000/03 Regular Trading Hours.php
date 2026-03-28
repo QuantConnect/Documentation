@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/FTW5000/regular-trading-hours.html"); ?>

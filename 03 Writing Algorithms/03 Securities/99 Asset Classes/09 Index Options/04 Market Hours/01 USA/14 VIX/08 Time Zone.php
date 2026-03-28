@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/indexoption/usa/VIX/time-zone.html"); ?>
