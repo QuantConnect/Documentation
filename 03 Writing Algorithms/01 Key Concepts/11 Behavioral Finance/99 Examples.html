@@ -1,0 +1,480 @@
+<p>
+  The following examples demonstrate algorithmic strategies that exploit behavioral biases. Each example targets a different strategy family and the biases that create its edge.
+</p>
+
+<h4>Example 1: Cross-Sectional Momentum Strategy</h4>
+<p>
+  The following algorithm exploits herd mentality and anchoring bias by going long equities with the strongest trailing 12-month returns (skipping the most recent month to avoid short-term reversal). It rebalances monthly using a fundamental universe to identify the top momentum stocks.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class MomentumBiasAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _selected = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        // Use a universe of liquid US equities.
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse(FundamentalSelection);
+
+        // Rebalance on the first trading day of each month.
+        Schedule.On(
+            DateRules.MonthStart(),
+            TimeRules.AfterMarketOpen("SPY", 30),
+            Rebalance
+        );
+    }
+
+    private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Filter for liquid equities with prices above $5.
+        return fundamental
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 10000000)
+            .OrderByDescending(x =&gt; x.DollarVolume)
+            .Take(500)
+            .Select(x =&gt; x.Symbol);
+    }
+
+    private void Rebalance()
+    {
+        // Calculate trailing 12-month return with a 1-month skip for each security.
+        var momentum = new Dictionary&lt;Symbol, double&gt;();
+
+        foreach (var security in ActiveSecurities.Values)
+        {
+            // Request 13 months of history: 12-month return skipping the most recent month.
+            var history = History&lt;TradeBar&gt;(security.Symbol, 280, Resolution.Daily).ToList();
+            if (history.Count &lt; 252) continue;
+
+            // Skip the most recent 21 trading days (~1 month) to avoid short-term reversal.
+            var endPrice = history[history.Count - 22].Close;
+            var startPrice = history[0].Close;
+            if (startPrice == 0) continue;
+
+            momentum[security.Symbol] = (double)(endPrice / startPrice - 1m);
+        }
+
+        if (momentum.Count == 0) return;
+
+        // Select the top 10% of momentum stocks.
+        var topCount = Math.Max(1, momentum.Count / 10);
+        _selected = momentum
+            .OrderByDescending(x =&gt; x.Value)
+            .Take(topCount)
+            .Select(x =&gt; x.Key)
+            .ToList();
+
+        // Equal-weight the portfolio across the selected stocks.
+        var weight = 1m / _selected.Count();
+        foreach (var symbol in _selected)
+        {
+            SetHoldings(symbol, weight);
+        }
+
+        // Liquidate positions no longer in the selection.
+        foreach (var holding in Portfolio.Values)
+        {
+            if (holding.Invested &amp;&amp; !_selected.Contains(holding.Symbol))
+            {
+                Liquidate(holding.Symbol);
+            }
+        }
+    }
+}</pre>
+<pre class="python">class MomentumBiasAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        # Use a universe of liquid US equities.
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe(self.fundamental_selection)
+
+        # Rebalance on the first trading day of each month.
+        self.schedule.on(
+            self.date_rules.month_start(),
+            self.time_rules.after_market_open("SPY", 30),
+            self.rebalance
+        )
+
+        self.selected = []
+
+    def fundamental_selection(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+        # Filter for liquid equities with prices above $5.
+        filtered = [x for x in fundamental if x.has_fundamental_data and x.price &gt; 5 and x.dollar_volume &gt; 10000000]
+        sorted_by_volume = sorted(filtered, key=lambda x: x.dollar_volume, reverse=True)[:500]
+        return [x.symbol for x in sorted_by_volume]
+
+    def rebalance(self) -&gt; None:
+        # Calculate trailing 12-month return with a 1-month skip for each security.
+        momentum = {}
+
+        for symbol, security in self.active_securities.items():
+            # Request 13 months of history: 12-month return skipping the most recent month.
+            history = self.history[TradeBar](symbol, 280, Resolution.DAILY)
+            history_list = list(history)
+            if len(history_list) &lt; 252:
+                continue
+
+            # Skip the most recent 21 trading days (~1 month) to avoid short-term reversal.
+            end_price = history_list[-22].close
+            start_price = history_list[0].close
+            if start_price == 0:
+                continue
+
+            momentum[symbol] = float(end_price / start_price - 1)
+
+        if not momentum:
+            return
+
+        # Select the top 10% of momentum stocks.
+        top_count = max(1, len(momentum) // 10)
+        sorted_momentum = sorted(momentum.items(), key=lambda x: x[1], reverse=True)[:top_count]
+        self.selected = [x[0] for x in sorted_momentum]
+
+        # Equal-weight the portfolio across the selected stocks.
+        weight = 1.0 / len(self.selected)
+        for symbol in self.selected:
+            self.set_holdings(symbol, weight)
+
+        # Liquidate positions no longer in the selection.
+        for holding in self.portfolio.values():
+            if holding.invested and holding.symbol not in self.selected:
+                self.liquidate(holding.symbol)</pre>
+</div>
+
+<h4>Example 2: Bollinger Band Mean Reversion Strategy</h4>
+<p>
+  The following algorithm exploits overreaction and the disposition effect. It uses Bollinger Bands on SPY to identify overbought and oversold conditions. When the price drops below the lower band, the algorithm enters a long position betting on reversion to the mean. It exits when the price returns to the middle band.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class MeanReversionBiasAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private BollingerBands _bb;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        // Subscribe to SPY daily data.
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        // Create a 20-day Bollinger Band with 2 standard deviations.
+        _bb = BB(_spy, 20, 2m, MovingAverageType.Simple, Resolution.Daily);
+
+        // Warm up the indicator with historical data.
+        SetWarmUp(20, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (IsWarmingUp || !_bb.IsReady) return;
+        if (!slice.Bars.ContainsKey(_spy)) return;
+
+        var price = slice.Bars[_spy].Close;
+
+        if (!Portfolio[_spy].Invested)
+        {
+            // Enter long when price drops below the lower Bollinger Band (oversold / overreaction).
+            if (price &lt; _bb.LowerBand.Current.Value)
+            {
+                SetHoldings(_spy, 1m, tag: $"Enter long at {price:F2} (lower band: {_bb.LowerBand.Current.Value:F2})");
+            }
+        }
+        else if (Portfolio[_spy].IsLong)
+        {
+            // Exit when price reverts to the middle band (mean).
+            if (price &gt;= _bb.MiddleBand.Current.Value)
+            {
+                Liquidate(_spy, tag: $"Exit at {price:F2} (middle band: {_bb.MiddleBand.Current.Value:F2})");
+            }
+        }
+    }
+}</pre>
+<pre class="python">class MeanReversionBiasAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        # Subscribe to SPY daily data.
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        # Create a 20-day Bollinger Band with 2 standard deviations.
+        self.bollinger = self.bb(self.spy, 20, 2, MovingAverageType.SIMPLE, Resolution.DAILY)
+
+        # Warm up the indicator with historical data.
+        self.set_warm_up(20, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self.is_warming_up or not self.bollinger.is_ready:
+            return
+        if self.spy not in slice.bars:
+            return
+
+        price = slice.bars[self.spy].close
+
+        if not self.portfolio[self.spy].invested:
+            # Enter long when price drops below the lower Bollinger Band (oversold / overreaction).
+            if price &lt; self.bollinger.lower_band.current.value:
+                self.set_holdings(self.spy, 1, tag=f"Enter long at {price:.2f} (lower band: {self.bollinger.lower_band.current.value:.2f})")
+        elif self.portfolio[self.spy].is_long:
+            # Exit when price reverts to the middle band (mean).
+            if price &gt;= self.bollinger.middle_band.current.value:
+                self.liquidate(self.spy, tag=f"Exit at {price:.2f} (middle band: {self.bollinger.middle_band.current.value:.2f})")</pre>
+</div>
+
+<h4>Example 3: Fundamental Value Strategy</h4>
+<p>
+  The following algorithm exploits loss aversion and recency bias by screening for undervalued equities using the price-to-earnings ratio. Investors dump stocks with recent poor performance, pushing prices below intrinsic value. The algorithm identifies these opportunities using fundamental data and rebalances quarterly.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class ValueBiasAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _selected = new();
+    private int _lastRebalanceMonth = -1;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        // Use a fundamental universe for value screening.
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse(FundamentalSelection);
+    }
+
+    private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Only rebalance quarterly (January, April, July, October).
+        if (Time.Month != 1 &amp;&amp; Time.Month != 4 &amp;&amp; Time.Month != 7 &amp;&amp; Time.Month != 10)
+        {
+            return Universe.Unchanged;
+        }
+        if (Time.Month == _lastRebalanceMonth) return Universe.Unchanged;
+        _lastRebalanceMonth = Time.Month;
+
+        // Screen for value: liquid stocks with positive earnings and low P/E ratios.
+        var withEarnings = fundamental
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 5000000
+                      &amp;&amp; x.ValuationRatios.PERatio &gt; 0 &amp;&amp; x.ValuationRatios.PERatio &lt; 50
+                      &amp;&amp; x.MarketCap &gt; 1000000000)
+            .ToList();
+
+        if (withEarnings.Count() == 0) return Enumerable.Empty&lt;Symbol&gt;();
+
+        // Select the 20 stocks with the lowest P/E ratio (most undervalued).
+        _selected = withEarnings
+            .OrderBy(x =&gt; x.ValuationRatios.PERatio)
+            .Take(20)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+
+        return _selected;
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Liquidate stocks removed from the universe.
+        foreach (var security in changes.RemovedSecurities)
+        {
+            if (security.Invested)
+            {
+                Liquidate(security.Symbol);
+            }
+        }
+
+        // Equal-weight the portfolio across selected value stocks.
+        if (_selected.Any())
+        {
+            var weight = 1m / _selected.Count();
+            foreach (var symbol in _selected)
+            {
+                SetHoldings(symbol, weight);
+            }
+        }
+    }
+}</pre>
+<pre class="python">class ValueBiasAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        # Use a fundamental universe for value screening.
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe(self.fundamental_selection)
+
+        self.selected = []
+        self.last_rebalance_month = -1
+
+    def fundamental_selection(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+        # Only rebalance quarterly (January, April, July, October).
+        if self.time.month not in [1, 4, 7, 10]:
+            return Universe.UNCHANGED
+        if self.time.month == self.last_rebalance_month:
+            return Universe.UNCHANGED
+        self.last_rebalance_month = self.time.month
+
+        # Screen for value: liquid stocks with positive earnings and low P/E ratios.
+        with_earnings = [x for x in fundamental
+                         if x.has_fundamental_data and x.price &gt; 5 and x.dollar_volume &gt; 5000000
+                         and 0 &lt; x.valuation_ratios.pe_ratio &lt; 50
+                         and x.market_cap &gt; 1e9]
+
+        if not with_earnings:
+            return []
+
+        # Select the 20 stocks with the lowest P/E ratio (most undervalued).
+        sorted_by_pe = sorted(with_earnings, key=lambda x: x.valuation_ratios.pe_ratio)[:20]
+        self.selected = [x.symbol for x in sorted_by_pe]
+        return self.selected
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Liquidate stocks removed from the universe.
+        for security in changes.removed_securities:
+            if security.invested:
+                self.liquidate(security.symbol)
+
+        # Equal-weight the portfolio across selected value stocks.
+        if self.selected:
+            weight = 1.0 / len(self.selected)
+            for symbol in self.selected:
+                self.set_holdings(symbol, weight)</pre>
+</div>
+
+<h4>Example 4: Quality Factor Strategy</h4>
+<p>
+  The following algorithm exploits narrative fallacy and overconfidence by screening for high-quality companies that the market overlooks in favor of more exciting stories. It uses return on equity and debt-to-equity ratio as quality metrics, constructs an equal-weight portfolio, and rebalances quarterly.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class QualityBiasAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _selected = new();
+    private int _lastRebalanceMonth = -1;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        // Use a fundamental universe for quality screening.
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverse(FundamentalSelection);
+    }
+
+    private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
+    {
+        // Only rebalance quarterly (January, April, July, October).
+        if (Time.Month != 1 &amp;&amp; Time.Month != 4 &amp;&amp; Time.Month != 7 &amp;&amp; Time.Month != 10)
+        {
+            return Universe.Unchanged;
+        }
+        if (Time.Month == _lastRebalanceMonth) return Universe.Unchanged;
+        _lastRebalanceMonth = Time.Month;
+
+        // Screen for quality: liquid stocks with high ROE and low debt-to-equity.
+        var quality = fundamental
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 5000000
+                      &amp;&amp; x.OperationRatios.ROE.Value &gt; 0
+                      &amp;&amp; x.OperationRatios.TotalDebtEquityRatio.Value &gt;= 0
+                      &amp;&amp; x.OperationRatios.TotalDebtEquityRatio.Value &lt; 1.5
+                      &amp;&amp; x.MarketCap &gt; 1000000000)
+            .ToList();
+
+        if (quality.Count() == 0) return Enumerable.Empty&lt;Symbol&gt;();
+
+        // Rank by ROE descending (higher ROE = higher quality).
+        _selected = quality
+            .OrderByDescending(x =&gt; x.OperationRatios.ROE.Value)
+            .Take(20)
+            .Select(x =&gt; x.Symbol)
+            .ToList();
+
+        return _selected;
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        // Liquidate stocks removed from the universe.
+        foreach (var security in changes.RemovedSecurities)
+        {
+            if (security.Invested)
+            {
+                Liquidate(security.Symbol);
+            }
+        }
+
+        // Equal-weight the portfolio across selected quality stocks.
+        if (_selected.Any())
+        {
+            var weight = 1m / _selected.Count();
+            foreach (var symbol in _selected)
+            {
+                SetHoldings(symbol, weight);
+            }
+        }
+    }
+}</pre>
+<pre class="python">class QualityBiasAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        # Use a fundamental universe for quality screening.
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe(self.fundamental_selection)
+
+        self.selected = []
+        self.last_rebalance_month = -1
+
+    def fundamental_selection(self, fundamental: list[Fundamental]) -&gt; list[Symbol]:
+        # Only rebalance quarterly (January, April, July, October).
+        if self.time.month not in [1, 4, 7, 10]:
+            return Universe.UNCHANGED
+        if self.time.month == self.last_rebalance_month:
+            return Universe.UNCHANGED
+        self.last_rebalance_month = self.time.month
+
+        # Screen for quality: liquid stocks with high ROE and low debt-to-equity.
+        quality = [x for x in fundamental
+                   if x.has_fundamental_data and x.price &gt; 5 and x.dollar_volume &gt; 5000000
+                   and x.operation_ratios.roe.value &gt; 0
+                   and 0 &lt;= x.operation_ratios.total_debt_equity_ratio.value &lt; 1.5
+                   and x.market_cap &gt; 1e9]
+
+        if not quality:
+            return []
+
+        # Rank by ROE descending (higher ROE = higher quality).
+        sorted_by_roe = sorted(quality, key=lambda x: x.operation_ratios.roe.value, reverse=True)[:20]
+        self.selected = [x.symbol for x in sorted_by_roe]
+        return self.selected
+
+    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
+        # Liquidate stocks removed from the universe.
+        for security in changes.removed_securities:
+            if security.invested:
+                self.liquidate(security.symbol)
+
+        # Equal-weight the portfolio across selected quality stocks.
+        if self.selected:
+            weight = 1.0 / len(self.selected)
+            for symbol in self.selected:
+                self.set_holdings(symbol, weight)</pre>
+</div>
