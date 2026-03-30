@@ -1,19 +1,19 @@
-<p>We visualize the clusters and their corresponding underlying series.</p>
+<p>You need to <a href="/docs/v2/research-environment/machine-learning/popular-libraries/tslearn#05-Train-Models">build and train the model</a> before you test its performance. If you have trained the model, visualize the clusters and their corresponding underlying series. Follow these steps to test the model:</p>
 
 <ol>
-    <li>Predict with the label of the data.</li>
+    <li>Call the <code>predict</code> method with the data to get the cluster labels.</li>
     <div class="section-example-container">
         <pre class="python">labels = km.predict(standard_close.T)</pre>
     </div>
 
-    <li>Create a class to aid plotting.</li>
+    <li>Create a helper function to plot the clusters.</li>
     <div class="section-example-container">
         <pre class="python">def plot_helper(ts):
-    # plot all points of the data set
+    # Plot all points of the data set
     for i in range(ts.shape[0]):
         plt.plot(ts[i, :], "k-", alpha=.2)
-        
-    # plot the given barycenter of them
+
+    # Plot the given barycenter of them
     barycenter = softdtw_barycenter(ts, gamma=1.)
     plt.plot(barycenter, "r-", linewidth=2)</pre>
     </div>
@@ -25,12 +25,12 @@ plt.figure(figsize=(15, 10))
 for i in set(labels):
     # Select the series in the i-th cluster.
     X = standard_close.iloc[:, [n for n, k in enumerate(labels) if k == i]].values
-    
+
     # Plot the series and barycenter-averaged series.
     plt.subplot(len(set(labels)) // 3 + (1 if len(set(labels))%3 != 0 else 0), 3, j)
     plt.title(f"Cluster {i+1}")
     plot_helper(X.T)
-    
+
     j += 1
 
 plt.show()</pre>

@@ -26,19 +26,12 @@
 <p>Follow these steps to prepare the data:</p>
 
 <ol>
-    <li>Obtain the close price and return direction series.</li>
-    <div class="section-example-container">
-        <pre class="python">close = history['close']
-returns = data['close'].pct_change().shift(-1)[lookback*2-1:-1].reset_index(drop=True)
-labels = pd.Series([1 if y > 0 else 0 for y in returns])   # binary class</pre>
-    </div>
-
     <li>Loop through the <code>close</code> Series and collect the features.</li>
     <div class="section-example-container">
         <pre class="python">lookback = 5
 lookback_series = []
 for i in range(1, lookback + 1):
-    df = data['close'].shift(i)[lookback:-1]
+    df = history['close'].shift(i)[lookback:-1]
     df.name = f"close-{i}"
     lookback_series.append(df)
 X = pd.concat(lookback_series, axis=1)
@@ -46,9 +39,16 @@ X = pd.concat(lookback_series, axis=1)
 X = MinMaxScaler().fit_transform(X.T).T[4:]</pre>
     </div>
 
+    <li>Obtain the close price and return direction series.</li>
+    <div class="section-example-container">
+        <pre class="python">close = history['close']
+returns = history['close'].pct_change().shift(-1)[lookback*2-1:-1].reset_index(drop=True)
+labels = pd.Series([1 if y > 0 else 0 for y in returns])   # binary class</pre>
+    </div>
+
     <li>Convert the lists of features and labels into <code>numpy</code> arrays.</li>
     <div class="section-example-container">
-        <pre class="python">X = np.array(features)
+        <pre class="python">X = np.array(X)
 y = np.array(labels)</pre>
     </div>
 
