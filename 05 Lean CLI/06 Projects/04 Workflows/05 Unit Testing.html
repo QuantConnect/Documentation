@@ -1,0 +1,198 @@
+<p>
+    You can't run traditional unit test frameworks with LEAN CLI, but you can use backtests to run unit tests.
+    To unit test your algorithm logic, structure your testable code into separate classes or functions and then run assertions during algorithm initialization.
+</p>
+
+<h4>Example</h4>
+
+<p>
+    The following example defines a <code>PortfolioAllocator</code> class with testable methods and runs unit tests in the <code>initialize</code> method when backtesting.
+</p>
+
+<div class="section-example-container testable">
+    <pre class="csharp">public class PortfolioAllocator
+{
+    private readonly string[] _targetSymbols;
+
+    public PortfolioAllocator(string[] targetSymbols)
+    {
+        _targetSymbols = targetSymbols;
+    }
+
+    public Dictionary&lt;string, decimal&gt; CalculateWeights()
+    {
+        // Calculate equal weights for all symbols.
+        var weight = 1m / _targetSymbols.Length;
+        return _targetSymbols.ToDictionary(s =&gt; s, s =&gt; weight);
+    }
+
+    public bool ShouldRebalance(SecurityPortfolioManager portfolio)
+    {
+        // Determine if the portfolio needs rebalancing.
+        return !portfolio.Invested;
+    }
+}
+
+public class UnitTestAlgorithm : QCAlgorithm
+{
+    private PortfolioAllocator _allocator;
+    private static readonly bool RunUnitTest = true;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 19);
+        SetCash(100000);
+
+        // Run unit tests before setup (only in backtest mode).
+        if (RunUnitTest &amp;&amp; !LiveMode)
+        {
+            RunUnitTests();
+        }
+
+        AddEquity("SPY", Resolution.Minute);
+        AddEquity("BND", Resolution.Minute);
+        AddEquity("AAPL", Resolution.Minute);
+
+        // Initialize testable allocator.
+        _allocator = new PortfolioAllocator(new[] { "SPY", "BND", "AAPL" });
+    }
+
+    private void RunUnitTests()
+    {
+        Debug("=== Running Unit Tests ===");
+
+        // Test 1: Equal weight calculation.
+        var allocator = new PortfolioAllocator(new[] { "SPY", "BND", "AAPL" });
+        var weights = allocator.CalculateWeights();
+
+        if (weights.Count != 3) throw new RegressionTestException("Should have 3 weights");
+        if (Math.Abs(weights["SPY"] - 0.3333m) &gt; 0.001m) throw new RegressionTestException("SPY weight incorrect");
+        if (Math.Abs(weights["BND"] - 0.3333m) &gt; 0.001m) throw new RegressionTestException("BND weight incorrect");
+        if (Math.Abs(weights["AAPL"] - 0.3333m) &gt; 0.001m) throw new RegressionTestException("AAPL weight incorrect");
+        Debug("Test 1 passed: Equal weight calculation");
+
+        // Test 2: Weights sum to 1.0.
+        var totalWeight = weights.Values.Sum();
+        if (Math.Abs(totalWeight - 1.0m) &gt; 0.001m) throw new RegressionTestException($"Weights sum to {totalWeight}, not 1.0");
+        Debug("Test 2 passed: Weights sum to 1.0");
+
+        // Test 3: Single symbol allocation.
+        var singleAllocator = new PortfolioAllocator(new[] { "SPY" });
+        var singleWeights = singleAllocator.CalculateWeights();
+        if (singleWeights["SPY"] != 1.0m) throw new RegressionTestException("Single symbol should have 100% weight");
+        Debug("Test 3 passed: Single symbol allocation");
+
+        // Test 4: Two symbol allocation.
+        var dualAllocator = new PortfolioAllocator(new[] { "SPY", "BND" });
+        var dualWeights = dualAllocator.CalculateWeights();
+        if (Math.Abs(dualWeights["SPY"] - 0.5m) &gt; 0.001m) throw new RegressionTestException("SPY should be 50%");
+        if (Math.Abs(dualWeights["BND"] - 0.5m) &gt; 0.001m) throw new RegressionTestException("BND should be 50%");
+        Debug("Test 4 passed: Two symbol allocation");
+
+        Debug("=== All Unit Tests Passed ===");
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (_allocator.ShouldRebalance(Portfolio))
+        {
+            var weights = _allocator.CalculateWeights();
+            foreach (var kvp in weights)
+            {
+                SetHoldings(kvp.Key, kvp.Value);
+            }
+        }
+    }
+}</pre>
+    <pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+RUN_UNIT_TEST = True
+
+class PortfolioAllocator:
+    """Testable business logic for portfolio allocation."""
+
+    def __init__(self, target_symbols):
+        self.target_symbols = target_symbols
+
+    def calculate_weights(self):
+        """Calculate equal weights for all symbols."""
+        weight = 1.0 / len(self.target_symbols)
+        return {symbol: weight for symbol in self.target_symbols}
+
+    def should_rebalance(self, portfolio):
+        """Determine if the portfolio needs rebalancing."""
+        return not portfolio.invested
+
+
+class UnitTestAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 19)
+        self.set_cash(100000)
+
+        # Run unit tests before setup (only in backtest mode).
+        if RUN_UNIT_TEST and not self.live_mode:
+            self._run_unit_tests()
+
+        self.add_equity("SPY", Resolution.MINUTE)
+        self.add_equity("BND", Resolution.MINUTE)
+        self.add_equity("AAPL", Resolution.MINUTE)
+
+        # Initialize testable allocator.
+        self._allocator = PortfolioAllocator(["SPY", "BND", "AAPL"])
+
+    def _run_unit_tests(self):
+        """Run unit tests during algorithm initialization."""
+        self.debug("=== Running Unit Tests ===")
+
+        # Test 1: Equal weight calculation.
+        allocator = PortfolioAllocator(["SPY", "BND", "AAPL"])
+        weights = allocator.calculate_weights()
+
+        assert len(weights) == 3, "Should have 3 weights"
+        assert abs(weights["SPY"] - 0.3333) < 0.001, "SPY weight incorrect"
+        assert abs(weights["BND"] - 0.3333) < 0.001, "BND weight incorrect"
+        assert abs(weights["AAPL"] - 0.3333) < 0.001, "AAPL weight incorrect"
+        self.debug("Test 1 passed: Equal weight calculation")
+
+        # Test 2: Weights sum to 1.0.
+        total_weight = sum(weights.values())
+        assert abs(total_weight - 1.0) < 0.001, f"Weights sum to {total_weight}, not 1.0"
+        self.debug("Test 2 passed: Weights sum to 1.0")
+
+        # Test 3: Single symbol allocation.
+        single_allocator = PortfolioAllocator(["SPY"])
+        single_weights = single_allocator.calculate_weights()
+        assert single_weights["SPY"] == 1.0, "Single symbol should have 100% weight"
+        self.debug("Test 3 passed: Single symbol allocation")
+
+        # Test 4: Two symbol allocation.
+        dual_allocator = PortfolioAllocator(["SPY", "BND"])
+        dual_weights = dual_allocator.calculate_weights()
+        assert abs(dual_weights["SPY"] - 0.5) < 0.001, "SPY should be 50%"
+        assert abs(dual_weights["BND"] - 0.5) < 0.001, "BND should be 50%"
+        self.debug("Test 4 passed: Two symbol allocation")
+
+        # Test 5: Mock portfolio rebalance logic.
+        class MockPortfolio:
+            def __init__(self, invested):
+                self.invested = invested
+
+        assert allocator.should_rebalance(MockPortfolio(False)) == True, \
+            "Should rebalance when not invested"
+        assert allocator.should_rebalance(MockPortfolio(True)) == False, \
+            "Should not rebalance when invested"
+        self.debug("Test 5 passed: Rebalance logic")
+
+        self.debug("=== All Unit Tests Passed ===")
+
+    def on_data(self, data: Slice):
+        if self._allocator.should_rebalance(self.portfolio):
+            weights = self._allocator.calculate_weights()
+            for symbol, weight in weights.items():
+                self.set_holdings(symbol, weight)</pre>
+</div>
+
+<p>To run the unit tests, call <code>lean backtest "&lt;projectName&gt;"</code>. If all tests pass, the debug log displays the results. If any assertion fails, the backtest stops with an error.</p>
