@@ -33,7 +33,7 @@
     {
         // Filter for liquid equities with prices above $5.
         return fundamental
-            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 10000000m)
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 10000000)
             .OrderByDescending(x =&gt; x.DollarVolume)
             .Take(500)
             .Select(x =&gt; x.Symbol);
@@ -69,7 +69,7 @@
             .ToList();
 
         // Equal-weight the portfolio across the selected stocks.
-        var weight = 1m / _selected.Count;
+        var weight = 1m / _selected.Count();
         foreach (var symbol in _selected)
         {
             SetHoldings(symbol, weight);
@@ -267,12 +267,12 @@
 
         // Screen for value: liquid stocks with positive earnings and low P/E ratios.
         var withEarnings = fundamental
-            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 5000000m
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 5000000
                       &amp;&amp; x.ValuationRatios.PERatio &gt; 0 &amp;&amp; x.ValuationRatios.PERatio &lt; 50
-                      &amp;&amp; x.MarketCap &gt; 1000000000m)
+                      &amp;&amp; x.MarketCap &gt; 1000000000)
             .ToList();
 
-        if (withEarnings.Count == 0) return Enumerable.Empty&lt;Symbol&gt;();
+        if (withEarnings.Count() == 0) return Enumerable.Empty&lt;Symbol&gt;();
 
         // Select the 20 stocks with the lowest P/E ratio (most undervalued).
         _selected = withEarnings
@@ -296,9 +296,9 @@
         }
 
         // Equal-weight the portfolio across selected value stocks.
-        if (_selected.Count &gt; 0)
+        if (_selected.Any())
         {
-            var weight = 1m / _selected.Count;
+            var weight = 1m / _selected.Count();
             foreach (var symbol in _selected)
             {
                 SetHoldings(symbol, weight);
@@ -388,14 +388,14 @@
 
         // Screen for quality: liquid stocks with high ROE and low debt-to-equity.
         var quality = fundamental
-            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 5000000m
+            .Where(x =&gt; x.HasFundamentalData &amp;&amp; x.Price &gt; 5m &amp;&amp; x.DollarVolume &gt; 5000000
                       &amp;&amp; x.OperationRatios.ROE.Value &gt; 0
                       &amp;&amp; x.OperationRatios.TotalDebtEquityRatio.Value &gt;= 0
                       &amp;&amp; x.OperationRatios.TotalDebtEquityRatio.Value &lt; 1.5
-                      &amp;&amp; x.MarketCap &gt; 1000000000m)
+                      &amp;&amp; x.MarketCap &gt; 1000000000)
             .ToList();
 
-        if (quality.Count == 0) return Enumerable.Empty&lt;Symbol&gt;();
+        if (quality.Count() == 0) return Enumerable.Empty&lt;Symbol&gt;();
 
         // Rank by ROE descending (higher ROE = higher quality).
         _selected = quality
@@ -419,9 +419,9 @@
         }
 
         // Equal-weight the portfolio across selected quality stocks.
-        if (_selected.Count &gt; 0)
+        if (_selected.Any())
         {
-            var weight = 1m / _selected.Count;
+            var weight = 1m / _selected.Count();
             foreach (var symbol in _selected)
             {
                 SetHoldings(symbol, weight);
