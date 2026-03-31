@@ -31,6 +31,16 @@
             "https://cdn.quantconnect.com/uploads/multi_csv_zipped_file.zip#csv_file_10.csv",
             SubscriptionTransportMedium.RemoteFile,
             FileFormat.ZipEntryName);
+
+        // Example of loading a remote file with Basic authentication headers:
+        var user = "username";
+        var password = "12345";
+        var byteKey = Encoding.ASCII.GetBytes($"{user}:{password}");
+        var authorizationHeaders = new Dictionary<string, string>
+        {
+            { "Authorization", $"Basic {Convert.ToBase64String(byteKey)}" }
+        };
+        return new SubscriptionDataSource(url, SubscriptionTransportMedium.RemoteFile, FileFormat.Csv, authorizationHeaders);
         */
     }
 }</pre>
@@ -62,6 +72,16 @@
         #     SubscriptionTransportMedium.REMOTE_FILE,
         #     FileFormat.ZIP_ENTRY_NAME
         # )
+
+        # Example of loading a remote file with Basic authentication headers:
+        # import base64
+        # user = "username"
+        # password = "12345"
+        # byte_key = base64.b64encode(f"{user}:{password}".encode("ascii"))
+        # authorization_headers = {
+        #     "Authorization": f"Basic {byte_key.decode('ascii')}"
+        # }
+        # return SubscriptionDataSource(url, SubscriptionTransportMedium.REMOTE_FILE, FileFormat.CSV, authorization_headers)
 </pre>
 </div>
 
@@ -126,7 +146,7 @@
         </tr>
         <tr>
             <td><code>headers</code></td>
-            <td><code>IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code></td>
+            <td><code class="csharp">IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code><code class="python">dict[str, str]</code></td>
             <td>The headers to be used for this source. In cloud algorithms, each of the key-value pairs can consist of up to 1,000 characters.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
