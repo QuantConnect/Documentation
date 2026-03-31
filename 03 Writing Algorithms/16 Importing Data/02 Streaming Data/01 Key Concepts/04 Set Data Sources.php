@@ -146,7 +146,7 @@
         </tr>
         <tr>
             <td><code>headers</code></td>
-            <td><code>IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code></td>
+            <td><code class="csharp">IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code><code class="python">dict[str, str]</code></td>
             <td>The headers to be used for this source. In cloud algorithms, each of the key-value pairs can consist of up to 1,000 characters.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
