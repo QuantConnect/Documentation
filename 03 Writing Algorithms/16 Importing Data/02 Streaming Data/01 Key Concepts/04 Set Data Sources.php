@@ -40,7 +40,7 @@
         {
             { "Authorization", $"Basic {Convert.ToBase64String(byteKey)}" }
         };
-        return new SubscriptionDataSource(url, SubscriptionTransportMedium.RemoteFile, FileFormat.Csv, authorizationHeaders);
+        return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile, FileFormat.Csv, authorizationHeaders);
         */
     }
 }</pre>
@@ -81,7 +81,7 @@
         # authorization_headers = {
         #     "Authorization": f"Basic {byte_key.decode('ascii')}"
         # }
-        # return SubscriptionDataSource(url, SubscriptionTransportMedium.REMOTE_FILE, FileFormat.CSV, authorization_headers)
+        # return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE, FileFormat.CSV, authorization_headers)
 </pre>
 </div>
 

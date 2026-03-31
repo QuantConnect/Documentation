@@ -91,13 +91,22 @@ for fallback_key in ['Option-usa-[*]', 'Index-usa-[*]']:
                     entry[field] = equity_usa[field]
 
 # Build NAMES maps per JS file (symbol -> display name)
+# Known market/exchange identifiers that shouldn't be used as display names
+_MARKET_NAMES = {'oanda', 'interactivebrokers', 'fxcm', 'bitfinex', 'gdax', 'kraken'}
+
 names_per_file = {}
 for js_file, data in grouped.items():
     names = {}
     for key in data:
         symbol = key.split('-')[-1]
         if symbol != '[*]' and symbol in contracts_real:
-            names[symbol] = contracts_real[symbol]
+            name = contracts_real[symbol]
+            # Fix forex-pair-like CFD symbols with bad names from SPDB
+            if len(symbol) == 6 and symbol.isalpha() and symbol.isupper():
+                pair = f"{symbol[:3]}/{symbol[3:]}"
+                if name.lower() in _MARKET_NAMES or name.replace("/", "-") == pair.replace("/", "-"):
+                    name = pair
+            names[symbol] = name
     if names:
         names_per_file[js_file] = names
 

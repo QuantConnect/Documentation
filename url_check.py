@@ -399,6 +399,34 @@ async def _check_url(
             results["failed_request"].append(_fmt("Failed to request", url, files))
 
 
+_market_hours_symbols: dict[str, set[str]] = {}
+
+def _get_market_hours_symbols(asset_class: str) -> set[str]:
+    """Load symbol keys from a market-hours JS data file and cache them."""
+    if asset_class in _market_hours_symbols:
+        return _market_hours_symbols[asset_class]
+    js_file = BASE_PATH / "Resources" / "datasets" / "market-hours" / f"{asset_class}-market-hours.js"
+    symbols: set[str] = set()
+    if js_file.exists():
+        content = js_file.read_text(encoding="utf-8")
+        # Keys look like "Cfd-oanda-DE30EUR" — extract the suffix after the last hyphen group
+        for match in re.finditer(r'"[^"]*-([A-Z0-9][A-Za-z0-9]*)":', content):
+            symbols.add(match.group(1))
+    _market_hours_symbols[asset_class] = symbols
+    return symbols
+
+
+def _is_market_hours_symbol(url: str, anchor: str) -> bool:
+    """Check if a market-hours anchor corresponds to a symbol in the JS data file."""
+    # URL pattern: .../asset-classes/{asset-class}/market-hours#SYMBOL
+    m = re.search(r'/asset-classes/([^/]+)/market-hours', url)
+    if not m:
+        return False
+    asset_class = m.group(1)  # e.g. "cfd", "us-equity", "forex"
+    symbols = _get_market_hours_symbols(asset_class)
+    return anchor in symbols
+
+
 def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list[str]], results: dict[str, list[str]]):
     """Validate that a #section anchor corresponds to a real file in the repo."""
     after_v2 = url.split("docs/v2/", 1)[1]
@@ -416,6 +444,10 @@ def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list
         candidates = file_index.get(section_name_raw.lower(), [])
 
     if not candidates:
+        # Market-hours pages use JS data files for symbol anchors (e.g. #DE30EUR)
+        if "/market-hours#" in url:
+            if _is_market_hours_symbol(url, section):
+                return
         results["missing_section"].append(_fmt(f'No Section "{section_name}" was found', url, files))
         return
 
@@ -438,6 +470,9 @@ def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list
             break
 
     if not found:
+        # Market-hours pages use JS data files for symbol anchors (e.g. #DE30EUR)
+        if "/market-hours#" in url and _is_market_hours_symbol(url, section):
+            return
         results["missing_section"].append(_fmt(f'No Section "{section_name}" was found', url, files))
 
 
