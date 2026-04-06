@@ -10,3 +10,5 @@
 	<li>Wait while QuantConnect processes the request.</li>
 	<li>Click the <span class='button-name'>Download</span> link that appears.</li>
 </ol>
+
+<p>If you can't download files from the Object Store, you can log data to the Object Store during a backtest and analyze it in the Research Environment. For a full walkthrough, see <a href='/docs/v2/writing-algorithms/object-store#13-Example-for-Logging'>Example for Logging</a>.</p>
