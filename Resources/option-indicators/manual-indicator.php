@@ -121,7 +121,7 @@
             Sell(_options.option2, 1);
         }
         // Liquidate any assigned positions.
-        if (Portfolio[<?=$underlyingSymbolC?>].Invested)
+        if (<?=$underlyingSymbolC?> != null &amp;&amp; Portfolio[<?=$underlyingSymbolC?>].Invested)
         {
             Liquidate(<?=$underlyingSymbolC?>);
         }
@@ -229,7 +229,7 @@
             self.sell(self._options[0], 1)
             self.sell(self._options[1], 1)
         # Liquidate any assigned positions.
-        if self.portfolio[<?=$underlyingSymbolPy?>].invested:
+        if not <?=$underlyingSymbolPy?> and self.portfolio[<?=$underlyingSymbolPy?>].invested:
             self.liquidate(<?=$underlyingSymbolPy?>)</pre>
 </div>
 
