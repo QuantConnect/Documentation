@@ -186,7 +186,7 @@
         <tr>
             <td><code class='csharp'>ObjectStore</code><code class='python'>OBJECT_STORE</code></td>
             <td>The data comes from the object store</td>
-            <td><a href='/docs/v2/writing-algorithms/object-store#13-Example-of-Custom-Data'>Example of Custom Data</a></td>
+            <td><a href='/docs/v2/writing-algorithms/object-store#14-Example-of-Custom-Data'>Example of Custom Data</a></td>
         </tr>
     </tbody>
 </table>
