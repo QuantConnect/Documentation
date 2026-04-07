@@ -6,44 +6,48 @@ Requests to QuantConnect API v2 require a hashed combination of time, and the AP
 <p>Follow the below example to create a hashed token for authentication.</p>
 <div class="section-example-container">
     <pre class="csharp">// Generate a timestamped SHA-256 hashed API token for secure authentication
-#r "nuget:RestSharp"
-using System;
 using System.Security.Cryptography;
-using RestSharp;
+using System.Text;
 
-// Request your API token on https://www.quantconnect.com/settings/ and replace the below values.
-var yourUserId = 0;
-var yourApiToken = "_____";
+// Set the QC_USER_ID and QC_API_TOKEN environment variables with values from https://www.quantconnect.com/settings/.
+var yourUserId = Environment.GetEnvironmentVariable("QC_USER_ID") ?? "0";
+var yourApiToken = Environment.GetEnvironmentVariable("QC_API_TOKEN") ?? "_____";
 
-// Get timestamp
-var stamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
-var timeStampedToken = $"{&lt;yourApiToken&gt;}:{stamp}";
-
-// Get hashed API token
-var crypt = new SHA256Managed();
-var hashToken = crypt.ComputeHash(Encoding.UTF8.GetBytes(timeStampedToken), 0, Encoding.UTF8.GetByteCount(timeStampedToken));
-var hash = new StringBuilder();
-foreach (var theByte in hashToken)
+Dictionary&lt;string, string&gt; GetHeaders()
 {
-    hash.Append(theByte.ToString("x2"));
+    // Get timestamp
+    var timestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+    var timeStampedToken = $"{yourApiToken}:{timestamp}";
+
+    // Get hashed API token
+    var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(timeStampedToken));
+    var hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+    var authentication = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{yourUserId}:{hash}"));
+
+    // Create headers dictionary.
+    return new Dictionary&lt;string, string&gt;
+    {
+        { "Authorization", $"Basic {authentication}" },
+        { "Timestamp", timestamp }
+    };
 }
-var apiToken = hash.ToString();
 </pre>
     <pre class="python"># Generate a timestamped SHA-256 hashed API token for secure authentication
+from os import environ
 from base64 import b64encode
 from hashlib import sha256
 from time import time
 
-# Request your API token on https://www.quantconnect.com/settings/ and replace the below values.
-USER_ID = 0
-API_TOKEN = '_____'
+# Set the QC_USER_ID and QC_API_TOKEN environment variables with values from https://www.quantconnect.com/settings/.
+USER_ID = environ.get('QC_USER_ID', 0)
+API_TOKEN = environ.get('QC_API_TOKEN', '_____')
 
 def get_headers():
     # Get timestamp
     timestamp = f'{int(time())}'
     time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
 
-    # Get hased API token
+    # Get hashed API token
     hashed_token = sha256(time_stamped_token).hexdigest()
     authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
     authentication = b64encode(authentication).decode('ascii')
@@ -57,23 +61,20 @@ def get_headers():
 </div>
 
 <h4>Make API Request</h4>
-<p class="csharp">Follow the below example to install the hashing into the authenticator and make an API request.</p>
-<p class="python">Follow the below example to install the hashing into the headings and make an API request.</p>
+<p>Follow the below example to set the authentication headers and make an API request.</p>
 <div class="section-example-container">
-    <pre class="csharp">// Create REST client and install authenticator.
-var client = new RestClient("&lt;requestUrl&gt;");
-client.Authenticator = new HttpBasicAuthenticator(
-    "&lt;yourUserId&gt;",
-    hash.ToString()
-);
-
-// Create Request and add timestamp header (optional: Json Content).
-var request = new RestRequest();
-request.AddHeader("Timestamp", stamp.ToString());
+    <pre class="csharp">// Create HTTP client with authentication headers.
+var client = new HttpClient();
+client.BaseAddress = new Uri("https://www.quantconnect.com/api/v2/");
+foreach (var header in GetHeaders())
+{
+    client.DefaultRequestHeaders.Add(header.Key, header.Value);
+}
 
 // Make POST request.
-var response = await client.PostAsync(request);
-var content = response.Content</pre>
+var request = new StringContent("{}", Encoding.UTF8, "application/json");
+var response = await client.PostAsync("&lt;requestUrl&gt;", request);
+var content = await response.Content.ReadAsStringAsync();</pre>
     <pre class="python"># Create POST Request with headers
 from requests import post
 BASE_URL = 'https://www.quantconnect.com/api/v2/'
@@ -82,4 +83,53 @@ response = post(f'{BASE_URL}/&lt;request_url&gt;',
                 headers = get_headers(),
                 json = {})    # Use json keyword to send the payload
 content = response.text</pre>
+</div>
+
+<h4>Using cURL</h4>
+<p>Follow the below example to make an API request with authentication using cURL.</p>
+<div class="cli section-example-container">
+<pre># Set the QC_USER_ID and QC_API_TOKEN environment variables with values from https://www.quantconnect.com/settings/.
+YOUR_USER_ID=${QC_USER_ID:-0}
+YOUR_API_TOKEN=${QC_API_TOKEN:-_____}
+
+# Get timestamp
+TIMESTAMP=$(date +%s)
+TIME_STAMPED_TOKEN="${YOUR_API_TOKEN}:${TIMESTAMP}"
+
+# Get hashed API token
+HASHED_TOKEN=$(echo -n "$TIME_STAMPED_TOKEN" | sha256sum | cut -d ' ' -f 1)
+AUTHENTICATION=$(echo -n "${YOUR_USER_ID}:${HASHED_TOKEN}" | base64 -w 0)
+
+# Make POST request with authentication headers
+curl -X POST "https://www.quantconnect.com/api/v2/&lt;request_url&gt;" \
+    -H "Authorization: Basic ${AUTHENTICATION}" \
+    -H "Timestamp: ${TIMESTAMP}" \
+    -H "Content-Type: application/json" \
+    -d '{}'</pre>
+</div>
+
+<h4>Using PowerShell</h4>
+<p>Follow the below example to make an API request with authentication using PowerShell.</p>
+<div class="cli section-example-container">
+<pre># Set the QC_USER_ID and QC_API_TOKEN environment variables with values from https://www.quantconnect.com/settings/.
+$yourUserId = if ($env:QC_USER_ID) { $env:QC_USER_ID } else { "0" }
+$yourApiToken = if ($env:QC_API_TOKEN) { $env:QC_API_TOKEN } else { "_____" }
+
+# Get timestamp
+$timestamp = [Math]::Floor((([DateTimeOffset]::UtcNow).ToUnixTimeSeconds()))
+$timeStampedToken = "${yourApiToken}:${timestamp}"
+
+# Get hashed API token
+$hasher = [System.Security.Cryptography.SHA256]::Create()
+$hashBytes = $hasher.ComputeHash([System.Text.Encoding]::UTF8.GetBytes($timeStampedToken))
+$hash = -join ($hashBytes | ForEach-Object { $_.ToString("x2") })
+$authentication = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes("${yourUserId}:${hash}"))
+
+# Make POST request with authentication headers
+$headers = @{
+    "Authorization" = "Basic $authentication"
+    "Timestamp" = "$timestamp"
+}
+$response = Invoke-RestMethod -Uri "https://www.quantconnect.com/api/v2/&lt;requestUrl&gt;" -Method Post -Headers $headers -ContentType "application/json" -Body "{}"
+Write-Host "Response: $($response | ConvertTo-Json)"</pre>
 </div>
