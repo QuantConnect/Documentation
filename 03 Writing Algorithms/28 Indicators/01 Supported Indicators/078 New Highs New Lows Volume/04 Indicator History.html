@@ -10,7 +10,7 @@
     {
         _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
         _reference = AddEquity("SPY", Resolution.Daily).Symbol;
-        _nhnlv = NHNLV([_symbol, _reference]);
+        _nhnlv = NHNLV([_symbol, _reference], 2);
 
         var indicatorHistory = IndicatorHistory(_nhnlv, new[] { _symbol, _reference }, 100, Resolution.Minute);
         var timeSpanIndicatorHistory = IndicatorHistory(_nhnlv, new[] { _symbol, _reference }, TimeSpan.FromDays(10), Resolution.Minute);
@@ -26,7 +26,7 @@
     def initialize(self) -> None:
         self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
         self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
-        self._nhnlv = self.nhnlv([self._symbol, self._reference])
+        self._nhnlv = self.nhnlv([self._symbol, self._reference], 2)
 
         indicator_history = self.indicator_history(self._nhnlv, [ self._symbol, self._reference ], 100, Resolution.MINUTE)
         timedelta_indicator_history = self.indicator_history(self._nhnlv, [ self._symbol, self._reference ], timedelta(days=10), Resolution.MINUTE)

@@ -53,11 +53,36 @@ def get_json_content(url: str) -> List:
         .replace("null", "None").replace("true", "True").replace("false", "False")
     return eval(content)
 
+_type_cache = {}
+
 def get_type(_type: str, language: str = None) -> List:
+    cache_key = (_type, language)
+    if cache_key in _type_cache:
+        return _type_cache[cache_key]
     url = f'https://www.quantconnect.com/services/inspector?type=T:{_type}'
     if language:
         url += f'&language={language}'
-    return get_json_content(url)
+    result = get_json_content(url)
+    _type_cache[cache_key] = result
+    return result
+
+def prefetch_types(type_language_pairs: list) -> None:
+    """Fetch multiple types in parallel and cache the results."""
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+    to_fetch = [(t, l) for t, l in type_language_pairs if (t, l) not in _type_cache]
+    if not to_fetch:
+        return
+    def fetch(pair):
+        _type, language = pair
+        url = f'https://www.quantconnect.com/services/inspector?type=T:{_type}'
+        if language:
+            url += f'&language={language}'
+        return pair, get_json_content(url)
+    with ThreadPoolExecutor(max_workers=16) as executor:
+        futures = {executor.submit(fetch, pair): pair for pair in to_fetch}
+        for future in as_completed(futures):
+            pair, result = future.result()
+            _type_cache[pair] = result
 
 def to_key(name: str) -> str:
     key = name

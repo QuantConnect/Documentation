@@ -843,8 +843,8 @@ class IndicatorImageGenerator(QCAlgorithm):
         'mcclellan-oscillator': IndicatorInfo(
             McClellanOscillator(19, 39), 
             'McClellanOscillator(19, 39)', 
-            'MOSC([_symbol, _reference], 19, 39)', 
-            'self.mosc([self._symbol, self._reference], 19, 39)'
+            'MOSC([_symbol, _reference])', 
+            'self.mosc([self._symbol, self._reference])'
         ),
         'mcclellan-summation-index': IndicatorInfo(
             McClellanSummationIndex(19, 39), 
@@ -855,14 +855,14 @@ class IndicatorImageGenerator(QCAlgorithm):
         'new_highs_new_lows': IndicatorInfo(
             NewHighsNewLows("NHNL", 2), 
             'NewHighsNewLows(19, 39)', 
-            'NHNL([_symbol, _reference])', 
-            'self.nhnl([self._symbol, self._reference])'
+            'NHNL([_symbol, _reference], 2)', 
+            'self.nhnl([self._symbol, self._reference], 2)'
         ),
         'new_highs_new_lows_volume': IndicatorInfo(
             NewHighsNewLowsVolume("NHNLV", 2), 
             'NewHighsNewLowsVolume(19, 39)', 
-            'NHNLV([_symbol, _reference])', 
-            'self.nhnlv([self._symbol, self._reference])'
+            'NHNLV([_symbol, _reference], 2)', 
+            'self.nhnlv([self._symbol, self._reference], 2)'
         ),
         'covariance': IndicatorInfo(
             Covariance(self._symbol, self._reference, 5), 

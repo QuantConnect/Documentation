@@ -9,7 +9,7 @@
     {
         _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
         _reference = AddEquity("SPY", Resolution.Daily).Symbol;
-        _nhnl = NHNL([_symbol, _reference]);
+        _nhnl = NHNL([_symbol, _reference], 2);
     }
 
     public override void OnData(Slice data)
@@ -30,7 +30,7 @@
     def initialize(self) -> None:
         self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
         self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
-        self._nhnl = self.nhnl([self._symbol, self._reference])
+        self._nhnl = self.nhnl([self._symbol, self._reference], 2)
 
     def on_data(self, slice: Slice) -> None:
 
@@ -58,7 +58,7 @@
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        _nhnl = NHNL(_universe.Selected);
+        _nhnl = NHNL(_universe.Selected, 2);
     }
 
     public override void OnData(Slice data)
@@ -84,7 +84,7 @@
         self._universe = self.add_universe(self.universe.etf('SPY'))
 
     def on_securities_changed(self, changes: SecurityChanges) -> None:
-        self._nhnl = self.nhnl(list(self._universe.selected))
+        self._nhnl = self.nhnl(list(self._universe.selected), 2)
 
     def on_data(self, slice: Slice) -> None:
 
