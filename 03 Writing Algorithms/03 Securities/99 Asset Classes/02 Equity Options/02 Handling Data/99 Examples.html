@@ -262,3 +262,411 @@
         # The arbitary delta criterion might be set due to hedging need or risk adjustment.
         selected = sorted(chain, key=lambda x: abs(x.greeks.delta - 0.4))[0]</pre>
 </div>
+<h4>
+ Example 4: Delta-Hedged Short Straddle
+</h4>
+<p>
+ This example demonstrates a delta-hedged short straddle strategy that sells an at-the-money (ATM) straddle with 7-30 days to expiration and continuously neutralizes the portfolio delta using
+ <code>
+  SPY
+ </code>
+ shares. The
+ <code class="csharp">
+  StraddleSelector
+ </code>
+ <code class="python">
+  StraddleSelector
+ </code>
+ helper class picks the farthest expiry within the DTE range and the strike closest to the spot price. On each data update, the combined option delta is accumulated from the
+ <code>
+  OptionChain
+ </code>
+ and the net portfolio delta is computed by adding the underlying position. The
+ <code class="csharp">
+  DeltaHedger
+ </code>
+ <code class="python">
+  DeltaHedger
+ </code>
+ helper enforces a minimum share threshold and a rehedge band to avoid over-trading, and applies a time delay between successive hedges. A scheduled task closes the straddle on expiration day and assignment events are handled to keep the underlying position clean.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class DeltaHedgedStraddleAlgorithm : QCAlgorithm
+{
+    private Equity _spy;
+    private Symbol _canonicalOption;
+    private OptionStrategy _shortStraddle;
+    private StraddleSelector _straddleSelector;
+    private DeltaHedger _hedger;
+    private decimal _straddleWeight = 0.5m;
+    private decimal _delta = 0m;
+    private DateTime? _exitDay;
+
+    public override void Initialize()
+    {
+        SetStartDate(EndDate.AddDays(-5 * 365));
+        SetCash(1_000_000);
+        Settings.SeedInitialPrices = true;
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
+        // Initialize the straddle selector with 7-30 day DTE range.
+        _straddleSelector = new StraddleSelector(minDte: 7, maxDte: 30);
+        // Initialize the delta hedger with 30 share minimum, 20 share rehedge band, and 4 hour delay.
+        _hedger = new DeltaHedger(30, 20, TimeSpan.FromHours(4));
+        _canonicalOption = QuantConnect.Symbol.CreateCanonicalOption(_spy.Symbol);
+        // Schedule the rebalance method to run 30 minutes after market open.
+        Schedule.On(
+            DateRules.EveryDay(_spy.Symbol),
+            TimeRules.AfterMarketOpen(_spy.Symbol, 30),
+            Rebalance
+        );
+        // Schedule the close expiring method to run 60 minutes before market close.
+        Schedule.On(
+            DateRules.EveryDay(_spy.Symbol),
+            TimeRules.BeforeMarketClose(_spy.Symbol, 60),
+            CloseExpiring
+        );
+        SetWarmUp(TimeSpan.FromDays(45));
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (IsWarmingUp || !slice.Bars.Any()) return;
+        if (!slice.OptionChains.TryGetValue(_canonicalOption, out var chain) || _shortStraddle == null) return;
+
+        // Accumulate the delta from all option legs in the straddle.
+        foreach (var leg in _shortStraddle.OptionLegs)
+        {
+            if (chain.Contracts.TryGetValue(leg.Symbol, out var contract))
+            {
+                _delta += contract.Greeks.Delta;
+            }
+        }
+        // Calculate the net portfolio delta including underlying and options.
+        var netDelta = _hedger.ComputeNetDelta(this, _shortStraddle.OptionLegs, _spy.Holdings.Quantity, _delta);
+        // Reset the delta accumulator for the next iteration.
+        _delta = 0m;
+        // Exit if it's not time to hedge or net delta is zero.
+        if (!(_hedger.ShouldHedge(Time) &amp;&amp; netDelta != 0)) return;
+        // Calculate the hedge quantity needed to neutralize delta.
+        var hedgeQty = _hedger.GetQuantity(netDelta);
+        if (hedgeQty.HasValue)
+        {
+            MarketOrder(_spy.Symbol, hedgeQty.Value, tag: $"Daily delta hedge ({netDelta:F2} share delta)");
+            // Record the hedge operation with timestamp and delta.
+            _hedger.RecordHedge(Time, netDelta);
+            // Update the net delta after the hedge.
+            netDelta += hedgeQty.Value;
+        }
+        Plot("Portfolio Delta", "Delta", netDelta);
+    }
+
+    private void Rebalance()
+    {
+        if (IsWarmingUp || Portfolio.Invested) return;
+        var chain = OptionChain(_spy.Symbol);
+        if (!chain.Any()) return;
+        // Use the straddle selector to find the best ATM straddle.
+        var result = _straddleSelector.Select(chain, _spy.Price, Time.Date);
+        if (result == null) return;
+        _delta = result.Value.Delta;
+        _shortStraddle = OptionStrategies.ShortStraddle(_canonicalOption, result.Value.Strike, result.Value.Expiry);
+        // Calculate the number of contracts based on portfolio value and weight.
+        Buy(_shortStraddle, (int)(Portfolio.TotalPortfolioValue * _straddleWeight / (_spy.Price * 100m)),
+            tag: $"Sell ATM straddle exp {result.Value.Expiry:d}");
+        _hedger.Reset();
+        _exitDay = result.Value.Expiry.Date;
+    }
+
+    private void CloseExpiring()
+    {
+        if (_shortStraddle == null || !_exitDay.HasValue || Time.Date &lt; _exitDay.Value) return;
+        // Liquidate all positions before expiration.
+        Liquidate(tag: "Expiry hedge liquidation");
+    }
+
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        // Handle option assignment events.
+        if (orderEvent.Status == OrderStatus.Filled &amp;&amp; orderEvent.IsAssignment)
+        {
+            // Liquidate all option legs of the straddle.
+            foreach (var leg in _shortStraddle.OptionLegs)
+            {
+                Liquidate(leg.Symbol, tag: "Assignment liquidation");
+            }
+            // Determine the direction based on whether it's a call or put assignment.
+            var direction = Securities[orderEvent.Symbol].Symbol.ID.OptionRight == OptionRight.Call ? 1 : -1;
+            MarketOrder(_spy.Symbol, -_spy.Holdings.Quantity + orderEvent.FillQuantity * direction * 100);
+            _shortStraddle = null;
+        }
+    }
+}
+
+public class StraddleSelector
+{
+    private readonly int _minDte;
+    private readonly int _maxDte;
+
+    public StraddleSelector(int minDte, int maxDte)
+    {
+        // Store the minimum days to expiration for contract selection.
+        _minDte = minDte;
+        // Store the maximum days to expiration for contract selection.
+        _maxDte = maxDte;
+    }
+
+    public (decimal Delta, DateTime Expiry, decimal Strike)? Select(IEnumerable&lt;OptionContract&gt; chain, decimal spotPrice, DateTime currentDate)
+    {
+        // Filter contracts to those within the specified DTE range.
+        var contracts = chain.Where(c =&gt;
+        {
+            var dte = (c.Expiry.Date - currentDate).Days;
+            return dte &gt;= _minDte &amp;&amp; dte &lt;= _maxDte;
+        }).ToList();
+        if (!contracts.Any()) return null;
+        // Select the farthest expiration date from the filtered contracts.
+        var expiry = contracts.Max(c =&gt; c.Expiry);
+        // Filter to only contracts with the selected expiration.
+        contracts = contracts.Where(c =&gt; c.Expiry == expiry).ToList();
+        // Find the strike price closest to the current spot price.
+        var strike = contracts.OrderBy(c =&gt; Math.Abs(c.Strike - spotPrice)).First().Strike;
+        // Filter to only contracts with the selected strike.
+        contracts = contracts.Where(c =&gt; c.Strike == strike).ToList();
+        // Ensure we have both call and put for a straddle.
+        if (contracts.Count &lt; 2) return null;
+        // Return the combined delta, expiry, and strike for the straddle.
+        return (contracts.Sum(c =&gt; c.Greeks.Delta), expiry, strike);
+    }
+}
+
+public class DeltaHedger
+{
+    private readonly int _minShares;
+    private readonly int _rehedgeBand;
+    private readonly TimeSpan _hedgeDelay;
+    private DateTime _nextHedgeTime;
+    private decimal? _lastHedgedDelta;
+
+    public DeltaHedger(int minShares, int rehedgeBand, TimeSpan hedgeDelay)
+    {
+        // Store the minimum number of shares required to execute a hedge.
+        _minShares = minShares;
+        // Store the rehedge band threshold to prevent excessive hedging.
+        _rehedgeBand = rehedgeBand;
+        // Store the time delay between hedging operations.
+        _hedgeDelay = hedgeDelay;
+        Reset();
+    }
+
+    public void Reset()
+    {
+        _nextHedgeTime = DateTime.MinValue;
+        _lastHedgedDelta = null;
+    }
+
+    public bool ShouldHedge(DateTime currentTime)
+    {
+        // Check if enough time has passed since the last hedge.
+        return currentTime &gt;= _nextHedgeTime;
+    }
+
+    public decimal ComputeNetDelta(QCAlgorithm algorithm, IEnumerable&lt;Leg&gt; legs, decimal underlyingQuantity, decimal contractDelta)
+    {
+        // Calculate the net portfolio delta by combining underlying and option positions.
+        return underlyingQuantity + legs.Sum(leg =&gt;
+            algorithm.Securities[leg.Symbol].Holdings.Quantity * contractDelta * 100);
+    }
+
+    public int? GetQuantity(decimal netDelta)
+    {
+        if (_lastHedgedDelta.HasValue
+            &amp;&amp; Math.Abs(netDelta - _lastHedgedDelta.Value) &lt; _rehedgeBand
+            &amp;&amp; Math.Abs(netDelta) &lt; _minShares + _rehedgeBand)
+        {
+            return null;
+        }
+        // Calculate the required hedge quantity to neutralize the net delta.
+        var hedgeQty = (int)Math.Round(-netDelta);
+        if (Math.Abs(hedgeQty) &lt; _minShares) return null;
+        // Return the calculated hedge quantity.
+        return hedgeQty;
+    }
+
+    public void RecordHedge(DateTime currentTime, decimal netDelta)
+    {
+        // Record the delta value after this hedge operation.
+        _lastHedgedDelta = netDelta;
+        // Set the next allowed hedge time based on the configured delay.
+        _nextHedgeTime = currentTime + _hedgeDelay;
+    }
+}</pre>
+<pre class="python">class DeltaHedgedStraddleAlgo(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(self.end_date - timedelta(5*365))
+        self.set_cash(1_000_000)
+        self.settings.seed_initial_prices = True
+        self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
+        # Initialize the straddle selector with 7-30 day DTE range.
+        self._straddle_selector = StraddleSelector(min_dte=7, max_dte=30)
+        # Initialize the delta hedger with 30 share minimum, 20 share rehedge band, and 4 hour delay.
+        self._hedger = DeltaHedger(30, 20, timedelta(hours=4))
+        self._canonical_option = Symbol.create_canonical_option(self._spy)
+        # Set the straddle position size to 50% of portfolio value.
+        self._straddle_weight = 0.5
+        self._short_straddle = None
+        self._exit_day = None
+        # Schedule the rebalance method to run 30 minutes after market open.
+        self.schedule.on(
+            self.date_rules.every_day(self._spy),
+            self.time_rules.after_market_open(self._spy, 30),
+            self._rebalance
+        )
+        # Schedule the close expiring method to run 60 minutes before market close.
+        self.schedule.on(
+            self.date_rules.every_day(self._spy),
+            self.time_rules.before_market_close(self._spy, 60),
+            self._close_expiring
+        )
+        self.set_warm_up(timedelta(45))
+
+    def on_data(self, data):
+        if self.is_warming_up or not data.bars:
+            return
+        chain = data.option_chains.get(self._canonical_option)
+        if not chain or not self._short_straddle:
+            return
+        # Accumulate the delta from all option legs in the straddle.
+        for leg in self._short_straddle.option_legs:
+            contract = chain.contracts.get(leg.symbol)
+            if contract:
+                self._delta += contract.greeks.delta
+        # Calculate the net portfolio delta including underlying and options.
+        net_delta = self._hedger.compute_net_delta(self, self._short_straddle.option_legs, self._spy.holdings.quantity, self._delta)
+        # Reset the delta accumulator for the next iteration.
+        self._delta = 0
+        # Exit if it's not time to hedge or net delta is zero.
+        if not (self._hedger.should_hedge(self.time) and net_delta):
+            return
+        # Calculate the hedge quantity needed to neutralize delta.
+        hedge_qty = self._hedger.get_quantity(net_delta)
+        if hedge_qty:
+            self.market_order(self._spy, hedge_qty, tag=f"Daily delta hedge ({net_delta:.2f} share delta)")
+            # Record the hedge operation with timestamp and delta.
+            self._hedger.record_hedge(self.time, net_delta)
+            # Update the net delta after the hedge.
+            net_delta += hedge_qty
+        self.plot("Portfolio Delta", "Delta", net_delta)
+
+    def _rebalance(self):
+        if self.is_warming_up or self.portfolio.invested:
+            return
+        chain = self.option_chain(self._spy)
+        if not chain:
+            return
+        # Use the straddle selector to find the best ATM straddle.
+        result = self._straddle_selector.select(chain, self._spy.price, self.time.date())
+        if not result:
+            return
+        self._delta, expiry, strike = result
+        self._short_straddle = OptionStrategies.short_straddle(self._canonical_option, strike, expiry)
+        # Calculate the number of contracts based on portfolio value and weight.
+        self.buy(self._short_straddle, int(self.portfolio.total_portfolio_value * self._straddle_weight / (self._spy.price * 100.0)), tag=f"Sell ATM straddle exp {expiry.date()}")
+        self._hedger.reset()
+        self._exit_day = expiry.date()
+
+    def _close_expiring(self):
+        if not self._short_straddle or not self._exit_day or self.time.date() &lt; self._exit_day:
+            return
+        # Liquidate all positions before expiration.
+        self.liquidate(tag="Expiry hedge liquidation")
+
+    def on_order_event(self, order_event):
+        # Handle option assignment events.
+        if order_event.status == OrderStatus.FILLED and order_event.is_assignment:
+            # Liquidate all option legs of the straddle.
+            for leg in self._short_straddle.option_legs:
+                self.liquidate(leg.symbol, tag="Assignment liquidation")
+            # Determine the direction based on whether it's a call or put assignment.
+            direction = 1 if self.securities[order_event.symbol].right == OptionRight.CALL else -1
+            self.market_order(self._spy, -self._spy.holdings.quantity + order_event.quantity * direction * 100)
+            self._short_straddle = None
+
+
+class StraddleSelector:
+
+    def __init__(self, min_dte, max_dte):
+        # Store the minimum days to expiration for contract selection.
+        self._min_dte = min_dte
+        # Store the maximum days to expiration for contract selection.
+        self._max_dte = max_dte
+
+    def select(self, chain, spot_price, current_date):
+        # Filter contracts to those within the specified DTE range.
+        contracts = [
+            contract for contract in chain
+            if self._min_dte &lt;= (contract.expiry.date() - current_date).days &lt;= self._max_dte
+        ]
+        if not contracts:
+            return
+        # Select the farthest expiration date from the filtered contracts.
+        expiry = max(contract.expiry for contract in contracts)
+        # Filter to only contracts with the selected expiration.
+        contracts = [contract for contract in contracts if contract.expiry == expiry]
+        # Find the strike price closest to the current spot price.
+        strike = min(contracts, key=lambda c: abs(c.strike - spot_price)).strike
+        # Filter to only contracts with the selected strike.
+        contracts = [contract for contract in contracts if contract.strike == strike]
+        # Ensure we have both call and put for a straddle.
+        if len(contracts) &lt; 2:
+            return
+        # Return the combined delta, expiry, and strike for the straddle.
+        return sum(contract.greeks.delta for contract in contracts), expiry, strike
+
+
+class DeltaHedger:
+
+    def __init__(self, min_shares, rehedge_band, hedge_delay):
+        # Store the minimum number of shares required to execute a hedge.
+        self._min_shares = min_shares
+        # Store the rehedge band threshold to prevent excessive hedging.
+        self._rehedge_band = rehedge_band
+        # Store the time delay between hedging operations.
+        self._hedge_delay = hedge_delay
+        self.reset()
+
+    def reset(self):
+        self._next_hedge_time = datetime.min
+        self._last_hedged_delta = None
+
+    def should_hedge(self, current_time):
+        # Check if enough time has passed since the last hedge.
+        return current_time &gt;= self._next_hedge_time
+
+    def compute_net_delta(self, algorithm, legs, underlying_quantity, contract_delta):
+        # Calculate the net portfolio delta by combining underlying and option positions.
+        return underlying_quantity + sum(
+            algorithm.securities[leg.symbol].holdings.quantity * contract_delta * 100
+            for leg in legs
+        )
+
+    def get_quantity(self, net_delta):
+        if (
+            self._last_hedged_delta is not None
+            and abs(net_delta - self._last_hedged_delta) &lt; self._rehedge_band
+            and abs(net_delta) &lt; self._min_shares + self._rehedge_band
+        ):
+            return
+        # Calculate the required hedge quantity to neutralize the net delta.
+        hedge_qty = int(round(-net_delta))
+        if abs(hedge_qty) &lt; self._min_shares:
+            return
+        # Return the calculated hedge quantity.
+        return hedge_qty
+
+    def record_hedge(self, current_time, net_delta):
+        # Record the delta value after this hedge operation.
+        self._last_hedged_delta = net_delta
+        # Set the next allowed hedge time based on the configured delay.
+        self._next_hedge_time = current_time + self._hedge_delay</pre>
+</div>
