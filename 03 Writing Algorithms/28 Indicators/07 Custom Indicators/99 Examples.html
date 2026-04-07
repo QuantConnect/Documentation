@@ -583,6 +583,272 @@ class CustomMoneyFlowIndex(PythonIndicator):
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
 </div>
 <h4>
+ Example 3: Custom Annualized Volatility Indicator
+</h4>
+<p>
+ The following algorithm implements a custom annualized log-return volatility indicator using a rolling window of close prices. It screens a dynamic equity universe for overbought stocks whose annualized volatility exceeds 100% and enters short positions via limit orders using a fixed equal-weight allocation, exiting when
+ <code>
+  ConnorsRSI
+ </code>
+ reverts below the exit threshold.
+</p>
+<div class="section-example-container testable">
+ <pre class="csharp">public class ConnorsCrashAlgorithm : QCAlgorithm
+{
+    private readonly int _rsiPeriod = 3;
+    private readonly int _streakPeriod = 2;
+    private readonly int _pctRankPeriod = 100;
+    private readonly int _volaPeriod = 100;
+    private readonly decimal _crsiEntry = 90m;
+    private readonly decimal _crsiExit = 30m;
+    private readonly int _maxShorts = 40;
+    private Universe _universe;
+    private readonly Dictionary&lt;Symbol, (ConnorsRelativeStrengthIndex Crsi, CustomVolatility Vola)&gt; _indicators = new();
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100_000);
+
+        Settings.AutomaticIndicatorWarmUp = true;
+        Settings.SeedInitialPrices = true;
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        // Select liquid, tradeable-priced equities for the universe.
+        _universe = AddUniverse(fundamentals =&gt;
+            fundamentals.Where(f =&gt; f.Price &gt; 5 &amp;&amp; f.DollarVolume &gt; 1e6).Select(f =&gt; f.Symbol));
+
+        Schedule.On(
+            DateRules.EveryDay("SPY"),
+            TimeRules.At(8, 0),
+            Rebalance
+        );
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Attach ConnorsRSI indicator to each security.
+            var crsi = CRSI(security.Symbol, _rsiPeriod, _streakPeriod, _pctRankPeriod);
+            // Initialize and warm up the custom volatility indicator.
+            var vola = new CustomVolatility(_volaPeriod);
+            foreach (var bar in History&lt;TradeBar&gt;(security.Symbol, _volaPeriod + 1))
+            {
+                vola.Update(bar);
+            }
+            RegisterIndicator(security.Symbol, vola, Resolution.Daily);
+            _indicators[security.Symbol] = (crsi, vola);
+        }
+        foreach (var security in changes.RemovedSecurities)
+        {
+            if (_indicators.TryGetValue(security.Symbol, out var pair))
+            {
+                DeregisterIndicator(pair.Crsi);
+                DeregisterIndicator(pair.Vola);
+                _indicators.Remove(security.Symbol);
+            }
+            Liquidate(security.Symbol);
+        }
+    }
+
+    private void Rebalance()
+    {
+        if (!_universe.Selected.Any()) return;
+
+        // Filter to securities with ready indicators.
+        var securities = _universe.Selected
+            .Where(s =&gt; Securities.ContainsKey(s) &amp;&amp; _indicators.ContainsKey(s)
+                        &amp;&amp; _indicators[s].Crsi.IsReady &amp;&amp; _indicators[s].Vola.IsReady)
+            .Select(s =&gt; Securities[s])
+            .ToList();
+
+        // Filter to securities with above-threshold annualized volatility.
+        var filterVola = securities.Where(s =&gt; _indicators[s.Symbol].Vola.Current.Value &gt; 100).ToList();
+
+        // Find currently invested short positions.
+        var shortPositions = securities.Where(s =&gt; s.Holdings.IsShort).ToList();
+
+        // Liquidate short positions when ConnorsRSI falls below exit threshold.
+        foreach (var security in shortPositions)
+        {
+            if (_indicators[security.Symbol].Crsi.Current.Value &lt; _crsiExit)
+            {
+                Liquidate(security.Symbol);
+            }
+        }
+
+        // Exclude symbols with pending open orders.
+        var pendingSymbols = Transactions.GetOpenOrderTickets()
+            .Select(t =&gt; t.Symbol)
+            .ToHashSet();
+
+        // Find short entry candidates that are not currently invested (high volatility and high CRSI).
+        var shortCandidates = filterVola
+            .Where(s =&gt; _indicators[s.Symbol].Crsi.Current.Value &gt; _crsiEntry
+                        &amp;&amp; !s.Holdings.Invested
+                        &amp;&amp; !pendingSymbols.Contains(s.Symbol))
+            .OrderBy(s =&gt; _indicators[s.Symbol].Crsi.Current.Value)
+            .ThenBy(s =&gt; _indicators[s.Symbol].Vola.Current.Value)
+            .ToList();
+
+        // Set union: liquidated positions are only counted once.
+        var occupied = shortPositions.Select(s =&gt; s.Symbol).ToHashSet();
+        occupied.UnionWith(pendingSymbols);
+        var availableSlots = _maxShorts - occupied.Count;
+
+        if (availableSlots &lt;= 0 || !shortCandidates.Any()) return;
+
+        var nOrders = Math.Min(shortCandidates.Count, availableSlots);
+        var targetWeight = -1m / _maxShorts;
+
+        foreach (var security in shortCandidates.TakeLast(nOrders))
+        {
+            var quantity = (int)CalculateOrderQuantity(security.Symbol, targetWeight);
+            if (quantity != 0)
+            {
+                LimitOrder(security.Symbol, quantity, Math.Round(1.03m * security.Price, 2));
+            }
+        }
+    }
+}
+
+public class CustomVolatility : TradeBarIndicator, IIndicatorWarmUpPeriodProvider
+{
+    private readonly RollingWindow&lt;double&gt; _window;
+
+    public override bool IsReady =&gt; _window.IsReady;
+    public int WarmUpPeriod =&gt; _window.Size;
+
+    public CustomVolatility(int period) : base("CustomVolatility")
+    {
+        _window = new RollingWindow&lt;double&gt;(period);
+    }
+
+    protected override decimal ComputeNextValue(TradeBar input)
+    {
+        // Annualized log-return volatility.
+        var price = (double)input.Value;
+        if (price &lt;= 0) return Current.Value;
+
+        _window.Add(price);
+        if (!_window.IsReady) return 0m;
+
+        // Collect prices from oldest to newest to compute chronological log returns.
+        var prices = _window.ToArray().Reverse().ToArray();
+        var logDiffs = new double[prices.Length - 1];
+        for (var i = 0; i &lt; logDiffs.Length; i++)
+        {
+            logDiffs[i] = Math.Log(prices[i + 1] / prices[i]);
+        }
+
+        // Annualized standard deviation of log returns.
+        var mean = logDiffs.Average();
+        var variance = logDiffs.Select(d =&gt; (d - mean) * (d - mean)).Average();
+        return (decimal)(Math.Sqrt(variance) * Math.Sqrt(252) * 100.0);
+    }
+}</pre>
+<pre class="python">class ConnorsCrash(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100_000)
+        self._rsi_period = 3
+        self._streak_period = 2
+        self._pct_rank_period = 100
+        self._vola_period = 100
+        self._crsi_entry = 90
+        self._crsi_exit = 30
+        self._max_shorts = 40
+        self._stop_trading_days_before_end = 1
+        self.settings.automatic_indicator_warm_up = True
+        self.settings.seed_initial_prices = True
+        self.universe_settings.resolution = Resolution.DAILY
+        # Select liquid, tradeable-priced equities for the universe.
+        self._universe = self.add_universe(
+            lambda fundamentals: [f.symbol for f in fundamentals if f.price &gt; 5 and f.dollar_volume &gt; 1e6]
+        )
+        self.schedule.on(
+            self.date_rules.every_day('SPY'),
+            self.time_rules.at(8, 0),
+            self._rebalance
+        )
+
+    def on_securities_changed(self, changes):
+        for security in changes.added_securities:
+            # Attach ConnorsRSI indicator to each security.
+            security.connors = self.crsi(security, self._rsi_period, self._streak_period, self._pct_rank_period)
+            # Initialize and warm up the custom volatility indicator.
+            security.volatility = CustomVolatility(self._vola_period)
+            for bar in self.history[TradeBar](security, self._vola_period + 1):
+                security.volatility.update(bar)
+            self.register_indicator(security, security.volatility)
+        for security in changes.removed_securities:
+            self.deregister_indicator(security.connors)
+            self.deregister_indicator(security.volatility)
+            self.liquidate(security)
+
+    def _rebalance(self):
+        if not self._universe.selected:
+            return
+        securities = [self.securities[symbol] for symbol in self._universe.selected]
+        securities = [s for s in securities if s.connors.is_ready and s.volatility.is_ready]
+        filter_vola = [s for s in securities if s.volatility.value &gt; 100]
+        # Find currently invested short positions.
+        short_positions = [s for s in securities if s.holdings.is_short]
+        # Liquidate short positions when ConnorsRSI falls below exit threshold.
+        for security in short_positions:
+            if security.connors.current.value &lt; self._crsi_exit:
+                self.liquidate(security)
+        # Exclude symbols with pending open orders.
+        pending_symbols = {t.symbol for t in self.transactions.get_open_order_tickets()}
+        # Find short entry candidates that are not currently invested (high volatility and high CRSI).
+        short_candidates = sorted([
+            s for s in filter_vola
+            if (s.connors.current.value &gt; self._crsi_entry and
+            not s.holdings.invested and
+            s.symbol not in pending_symbols)
+        ], key=lambda s: (s.connors.current.value, s.volatility.value))
+        # Set union: liquidated positions are only counted once.
+        short_position_symbols = {s.symbol for s in short_positions}
+        occupied = short_position_symbols | pending_symbols
+        available_slots = self._max_shorts - len(occupied)
+        if available_slots &lt;= 0 or not short_candidates:
+            return
+        n_orders = min(len(short_candidates), available_slots)
+        target_weight = -1 / self._max_shorts
+        for security in short_candidates[-n_orders:]:
+            quantity = int(self.calculate_order_quantity(security, target_weight))
+            if quantity:
+                self.limit_order(security, quantity, round(1.03 * security.price, 2))
+
+
+class CustomVolatility(PythonIndicator):
+
+    def __init__(self, period):
+        super().__init__()
+        self.value = 0
+        self._window = RollingWindow[float](period)
+
+    def update(self, input_: BaseData):
+        # Annualized log-return volatility.
+        price = input_.value
+        if price &lt;= 0:
+            return
+        self._window.add(price)
+        if self._window.is_ready:
+            prices = np.array(list(self._window)[::-1])
+            log_diffs = np.diff(np.log(prices))
+            self.value = np.std(log_diffs) * math.sqrt(252) * 100.0
+        return self.is_ready
+
+    @property
+    def is_ready(self) -&gt; bool:
+        return self._window.is_ready</pre>
+</div>
+<h4>
  Other Examples
 </h4>
 <p>
