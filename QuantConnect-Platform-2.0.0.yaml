@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   title: QuantConnect Platform API v2.0
   description: >
-    QuantConnect Platform API controls creating, updating and deleting projects, 
-    files, backtests and live algorithms. Automate the updating and backtesting 
+    QuantConnect Platform API controls creating, updating and deleting projects,
+    files, backtests and live algorithms. Automate the updating and backtesting
     of your strategies, or build tools to fast track your development.
   termsOfService: https://www.quantconnect.com/terms
   contact:
@@ -1897,29 +1897,9 @@ components:
           items:
             $ref: '#/components/schemas/Trade'
       description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
-    ResultsAnalysisContext:
-      type: object
-      properties:
-        sample:
-          type: object
-          description: A representative sample value produced by the analysis.
-    ResultsAnalysisRepeatedContext:
-      allOf:
-        - $ref: '#/components/schemas/ResultsAnalysisContext'
-        - type: object
-          properties:
-            occurrences:
-              type: integer
-              description: The total number of matching occurrences found by the analysis.
-    ResultsAnalysisAggregateContext:
-      type: array
-      items:
-        oneOf:
-          - $ref: '#/components/schemas/ResultsAnalysisContext'
-          - $ref: '#/components/schemas/ResultsAnalysisRepeatedContext'
-        description: The individual contexts aggregated together.
     AnalysisResult:
       type: object
+      description: The result of an analysis performed on a backtest result.
       properties:
         name:
           type: string
@@ -1927,12 +1907,12 @@ components:
         issue:
           type: string
           description: A short description of why the analysis was triggered.
-        context:
-          oneOf:
-            - $ref: '#/components/schemas/ResultsAnalysisContext'
-            - $ref: '#/components/schemas/ResultsAnalysisRepeatedContext'
-            - $ref: '#/components/schemas/ResultsAnalysisAggregateContext'
-          description: Diagnostic context carrying sample data about the detected issue.
+        sample:
+          type: object
+          description: A representative sample value of the issue detected by the analysis.
+        count:
+          type: integer
+          description: The total number of matching occurrences found by the analysis.
         solutions:
           type: array
           items:
@@ -3895,7 +3875,7 @@ components:
               {
                   CustomClass()
                   {
-              
+
                   }
               }
             # Python research file
@@ -3954,7 +3934,7 @@ components:
               @@ -2,4 +2,4 @@
                from AlgorithmImports import *
                # endregion
-              
+
               -a = 1
               +a = 2
 
@@ -6985,7 +6965,7 @@ components:
               {
                   CustomClass()
                   {
-              
+
                   }
               }
           description: The new contents of the file.
