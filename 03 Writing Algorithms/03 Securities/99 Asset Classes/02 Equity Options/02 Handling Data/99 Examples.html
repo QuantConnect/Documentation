@@ -287,7 +287,7 @@
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        SetCash(100000);
+        SetCash(1_000_000);
         Settings.SeedInitialPrices = true;
         _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
         // Initialize the straddle selector with 7-30 day DTE range.
@@ -353,8 +353,9 @@
         _delta = result.Value.Delta;
         _shortStraddle = OptionStrategies.ShortStraddle(_canonicalOption, result.Value.Strike, result.Value.Expiry);
         // Calculate the number of contracts based on portfolio value and weight.
-        Buy(_shortStraddle, (int)(Portfolio.TotalPortfolioValue * _straddleWeight / (_spy.Price * 100m)),
-            tag: $"Sell ATM straddle exp {result.Value.Expiry:d}");
+        var qty = (int)(Portfolio.TotalPortfolioValue * _straddleWeight / (_spy.Price * 100m));
+        if (qty &gt; 0)
+            Buy(_shortStraddle, qty, tag: $"Sell ATM straddle exp {result.Value.Expiry:d}");
         _hedger.Reset();
         _exitDay = result.Value.Expiry.Date;
     }
@@ -485,7 +486,7 @@ public class DeltaHedger
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
+        self.set_cash(1_000_000)
         self.settings.seed_initial_prices = True
         self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
         # Initialize the straddle selector with 7-30 day DTE range.
@@ -552,7 +553,9 @@ public class DeltaHedger
         self._delta, expiry, strike = result
         self._short_straddle = OptionStrategies.short_straddle(self._canonical_option, strike, expiry)
         # Calculate the number of contracts based on portfolio value and weight.
-        self.buy(self._short_straddle, int(self.portfolio.total_portfolio_value * self._straddle_weight / (self._spy.price * 100.0)), tag=f"Sell ATM straddle exp {expiry.date()}")
+        qty = int(self.portfolio.total_portfolio_value * self._straddle_weight / (self._spy.price * 100.0))
+        if qty:
+            self.buy(self._short_straddle, qty, tag=f"Sell ATM straddle exp {expiry.date()}")
         self._hedger.reset()
         self._exit_day = expiry.date()
 
