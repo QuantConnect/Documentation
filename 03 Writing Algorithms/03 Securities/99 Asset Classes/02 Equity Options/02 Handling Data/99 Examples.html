@@ -266,11 +266,11 @@
  Example 4: Delta-Hedged Short Straddle
 </h4>
 <p>
- This example demonstrates a delta-hedged short straddle strategy that sells an at-the-money (ATM) straddle with 7-30 days to expiration and continuously neutralizes the portfolio delta using <code>SPY</code> shares.
+ This example demonstrates a delta-hedged <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies/short-straddle'>short straddle</a> strategy that sells an at-the-money (ATM) straddle with 7-30 days to expiration and continuously neutralizes the portfolio delta using the underlying shares.
  The <code>StraddleSelector</code> helper class picks the farthest expiry within the DTE range and the strike closest to the spot price.
- On each data update, the combined option delta is accumulated from the <code>OptionChain</code> and the net portfolio delta is computed by adding the underlying position.
+ On each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a>, the combined Option delta is accumulated from the <code>OptionChain</code> and the net portfolio delta is computed by adding the underlying position.
  The <code>DeltaHedger</code> helper enforces a minimum share threshold and a rehedge band to avoid over-trading, and applies a time delay between successive hedges.
- A scheduled task closes the straddle on expiration day and assignment events are handled to keep the underlying position clean.
+ A <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> closes the straddle on expiration day and assignment events are handled to keep the underlying position clean.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class DeltaHedgedStraddleAlgorithm : QCAlgorithm
