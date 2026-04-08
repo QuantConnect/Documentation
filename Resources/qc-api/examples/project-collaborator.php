@@ -56,5 +56,41 @@ response = post(f'{BASE_URL}/projects/collaboration/delete', headers=get_headers
 result = response.json()
 # Check if the request was successful and print the result
 if result['success']:
+    print(f"Project Collaborator Deleted Successfully: {result}")
+
+if result['success']:
     print(f"Project Collaborator Deleted Successfully: {result}")</pre>
+</div>
+
+<p>The following example demonstrates how to add a collaborator to all projects that start with a given folder name.</p>
+
+<div class="section-example-container">
+    <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
+
+# Define the folder prefix to match (e.g., "SubFolder/")
+folder_prefix = "SubFolder/"
+# Define collaborator ID (replace with actual user ID)
+collaborator_id = 'johnny_walker'
+# Send a POST request to the /projects/read endpoint to get all projects
+response = post(f'{BASE_URL}/projects/read', headers=get_headers())
+result = response.json()
+if result['success']:
+    # Filter projects that start with the given folder prefix
+    matching_projects = [
+        project for project in result['projects']
+        if project['name'].startswith(folder_prefix)
+    ]
+    # Add the collaborator to each matching project
+    for project in matching_projects:
+        response = post(f'{BASE_URL}/projects/collaboration/create', headers=get_headers(), json={
+            "projectId": project['projectId'],
+            "collaboratorUserId": collaborator_id,
+            "collaborationLiveControl": True,
+            "collaborationWrite": True
+        })
+        add_result = response.json()
+        if add_result['success']:
+            print(f"Added collaborator to project '{project['name']}' (ID: {project['projectId']})")
+        else:
+            print(f"Failed to add collaborator to project '{project['name']}': {add_result}")</pre>
 </div>
