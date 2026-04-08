@@ -2,8 +2,8 @@ openapi: 3.1.0
 info:
   title: QuantConnect Platform API v2.0
   description: >
-    QuantConnect Platform API controls creating, updating and deleting projects, 
-    files, backtests and live algorithms. Automate the updating and backtesting 
+    QuantConnect Platform API controls creating, updating and deleting projects,
+    files, backtests and live algorithms. Automate the updating and backtesting
     of your strategies, or build tools to fast track your development.
   termsOfService: https://www.quantconnect.com/terms
   contact:
@@ -1897,6 +1897,32 @@ components:
           items:
             $ref: '#/components/schemas/Trade'
       description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
+    AnalysisResult:
+      type: object
+      description: The result of an analysis performed on a result.
+      properties:
+        name:
+          type: string
+          description: The name of the analysis that produced this result.
+        issue:
+          type: string
+          description: A short description of why the analysis was triggered.
+        sample:
+          type: object
+          description: A representative sample value of the issue detected by the analysis.
+        count:
+          type: integer
+          description: The total number of matching occurrences found by the analysis. If not present, it should be assumed that there is only one occurrence.
+        solutions:
+          type: array
+          items:
+            type: string
+          description: Human-readable suggestions for resolving the detected issue.
+      required:
+        - name
+        - issue
+        - sample
+        - solutions
     BacktestOrdersResponse:
       type: object
       properties:
@@ -2145,6 +2171,12 @@ components:
           type: integer
           nullable: true
           description: Number of days of out of sample days.
+        analysis:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/AnalysisResult'
+            description: List of diagnostic analysis results for the backtest.
       description: Results object class. Results are exhaust from backtest or live algorithms running in LEAN.
     BacktestSummaryResult:
       type: object
@@ -3848,7 +3880,7 @@ components:
               {
                   CustomClass()
                   {
-              
+
                   }
               }
             # Python research file
@@ -3907,7 +3939,7 @@ components:
               @@ -2,4 +2,4 @@
                from AlgorithmImports import *
                # endregion
-              
+
               -a = 1
               +a = 2
 
@@ -6938,7 +6970,7 @@ components:
               {
                   CustomClass()
                   {
-              
+
                   }
               }
           description: The new contents of the file.
