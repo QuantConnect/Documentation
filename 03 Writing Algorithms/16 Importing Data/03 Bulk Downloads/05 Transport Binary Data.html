@@ -1,19 +1,23 @@
-<p>Follow these steps to transport binary files:</p>
+<p>Follow these steps to transport binary files with <code>joblib</code>:</p>
 
 <ol>
     <li>Add the following imports to your local program:</li>
     <div class="section-example-container">
-        <pre class="python">import pickle
-import base64</pre>
+        <pre class="python">import joblib
+from io import BytesIO
+from base64 import b64encode, b64decode</pre>
     </div>
 
-    <li>Serialize your object.</li>
+    <li>Serialize your object and save it to a file. This Base64 serialization is necessary because the default <code>joblib.dump</code> serialization produces a binary file that the <code>download</code> method can't read without data corruption.</li>
     <div class="section-example-container">
-        <pre class="python">pickle_bytes = pickle.dumps(my_object)
-base64_str = base64.b64encode(pickle_bytes).decode('ascii')</pre>
+        <pre class="python">buffer = BytesIO()
+joblib.dump(my_object, buffer)
+base64_str = b64encode(buffer.getvalue()).decode('ascii')
+with open("my_model.b64", "w") as f:
+    f.write(base64_str)</pre>
     </div>
 
-    <li>Save the string representation of your object to one of the <a href='/docs/v2/writing-algorithms/importing-data/key-concepts#02-File-Providers'>supported sources</a>.</li>
+    <li>Save the file to one of the <a href='/docs/v2/writing-algorithms/importing-data/key-concepts#02-File-Providers'>supported sources</a>. For example, save the file to Dropbox.</li>
 
     <li><a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads#03-Download-Files'>Download the remote file</a> into your project.</li>
     <div class="section-example-container">
@@ -22,9 +26,38 @@ base64_str = base64.b64encode(pickle_bytes).decode('ascii')</pre>
 
     <li>Restore the object.</li>
     <div class="section-example-container">
-        <pre class="python">base64_bytes = base64_str.encode('ascii')
-model = base64.b64decode(base64_bytes)
-restored_model = pickle.loads(model)</pre>
+        <pre class="python">model_bytes = b64decode(base64_str.encode('ascii'))
+restored_model = joblib.load(BytesIO(model_bytes))</pre>
+    </div>
+</ol>
+
+<p>Follow these steps to transport binary files with <code>pickle</code>:</p>
+
+<ol>
+    <li>Add the following imports to your local program:</li>
+    <div class="section-example-container">
+        <pre class="python">import pickle
+from base64 import b64encode, b64decode</pre>
     </div>
 
+    <li>Serialize your object and save it to a file.</li>
+    <div class="section-example-container">
+        <pre class="python">pickle_bytes = pickle.dumps(my_object)
+base64_str = b64encode(pickle_bytes).decode('ascii')
+with open("my_model.b64", "w") as f:
+    f.write(base64_str)</pre>
+    </div>
+
+    <li>Save the file to one of the <a href='/docs/v2/writing-algorithms/importing-data/key-concepts#02-File-Providers'>supported sources</a>. For example, save the file to Dropbox.</li>
+
+    <li><a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads#03-Download-Files'>Download the remote file</a> into your project.</li>
+    <div class="section-example-container">
+        <pre class="python">base64_str = self.download("&lt;fileURL&gt;")</pre>
+    </div>
+
+    <li>Restore the object.</li>
+    <div class="section-example-container">
+        <pre class="python">model_bytes = b64decode(base64_str.encode('ascii'))
+restored_model = pickle.loads(model_bytes)</pre>
+    </div>
 </ol>
