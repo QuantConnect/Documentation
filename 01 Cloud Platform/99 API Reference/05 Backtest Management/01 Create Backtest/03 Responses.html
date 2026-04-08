@@ -281,7 +281,21 @@ The <code>/backtests/create</code> API provides a response in the following form
     },
     "nodeName": "string",
     "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
-    "outOfSampleDays": 0
+    "outOfSampleDays": 0,
+    "analysis": [
+      {
+        "name": "PerformanceRelativeToBenchmarkAnalysis",
+        "issue": "The strategy has a lower Sharpe ratio than the benchmark.",
+        "sample": {
+          "backtestSharpe": -0.2281345806218534,
+          "benchmarkSharpe": -0.22182175736916387
+        },
+        "count": 5,
+        "solutions": [
+          "Try adjusting the trading rules and/or the universe to get a strategy that outperforms the benchmark."
+        ]
+      }
+    ]
   },
   "debugging": true,
   "success": true,
@@ -378,6 +392,9 @@ The <code>/backtests/create</code> API provides a response in the following form
 </tr>
 <tr>
 <td width="20%">outOfSampleDays</td> <td> <code>integer</code> <br/> Number of days of out of sample days.</td>
+</tr>
+<tr>
+<td width="20%">analysis</td> <td> <code>AnalysisResult Array</code> <br/> /.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -637,7 +654,21 @@ The <code>/backtests/create</code> API provides a response in the following form
   },
   "nodeName": "string",
   "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
-  "outOfSampleDays": 0
+  "outOfSampleDays": 0,
+  "analysis": [
+    {
+      "name": "PerformanceRelativeToBenchmarkAnalysis",
+      "issue": "The strategy has a lower Sharpe ratio than the benchmark.",
+      "sample": {
+        "backtestSharpe": -0.2281345806218534,
+        "benchmarkSharpe": -0.22182175736916387
+      },
+      "count": 5,
+      "solutions": [
+        "Try adjusting the trading rules and/or the universe to get a strategy that outperforms the benchmark."
+      ]
+    }
+  ]
 }</pre>
 </div>
 </td>
@@ -1361,6 +1392,46 @@ The <code>/backtests/create</code> API provides a response in the following form
   "Lowest Capacity Asset": "string",
   "Portfolio Turnover": "string",
   "Drawdown Recovery": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AnalysisResult</code> Model - The result of an analysis performed on a result.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: PerformanceRelativeToBenchmarkAnalysis</sub></i></code> <br/> The name of the analysis that produced this result.</td>
+</tr>
+<tr>
+<td width="20%">issue</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: The strategy has a lower Sharpe ratio than the benchmark.</sub></i></code> <br/> A short description of why the analysis was triggered.</td>
+</tr>
+<tr>
+<td width="20%">sample</td> <td> <code>object<br/><i><sub>required</sub></i><br/><i><sub>example: {'backtestSharpe': -0.2281345806218534, 'benchmarkSharpe': -0.22182175736916387}</sub></i></code> <br/> A representative sample value of the issue detected by the analysis.</td>
+</tr>
+<tr>
+<td width="20%">count</td> <td> <code>integer<br/><i><sub>example: 5</sub></i></code> <br/> The total number of matching occurrences found by the analysis. If not present, it should be assumed that there is only one occurrence.</td>
+</tr>
+<tr>
+<td width="20%">solutions</td> <td> <code>string Array<br/><i><sub>required</sub></i></code> <br/> Human-readable suggestions for resolving the detected issue.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "name": "PerformanceRelativeToBenchmarkAnalysis",
+  "issue": "The strategy has a lower Sharpe ratio than the benchmark.",
+  "sample": {
+    "backtestSharpe": -0.2281345806218534,
+    "benchmarkSharpe": -0.22182175736916387
+  },
+  "count": 5,
+  "solutions": [
+    "Try adjusting the trading rules and/or the universe to get a strategy that outperforms the benchmark."
+  ]
 }</pre>
 </div>
 </td>

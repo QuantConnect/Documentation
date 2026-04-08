@@ -430,8 +430,10 @@ class APIReferenceGenerator:
             type_label += f"<br/><i><sub>example: {eg}</sub></i>"
             if isinstance(eg, str):
                 eg = f'"{eg}"'
-            elif isinstance(eg, dict):
-                eg = json.dumps(eg, indent=4)
+            elif isinstance(eg, (dict, list)):
+                pad = "  " * (indent + 1)
+                eg = json.dumps(eg, indent=2)
+                eg = eg.replace("\n", "\n" + pad)
             json_value = str(eg)
 
         # --- array bracket closure ---
@@ -459,7 +461,12 @@ class APIReferenceGenerator:
 
         if "type" in items:
             type_label = items["type"] + " Array"
-            json_value += tab + f'    "{items["type"]}"'
+            item_eg = self._get_example(items)
+            if item_eg is not None:
+                item_eg = f'"{item_eg}"' if isinstance(item_eg, str) else str(item_eg)
+            else:
+                item_eg = f'"{items["type"]}"'
+            json_value += tab + f'    {item_eg}'
         elif "$ref" in items:
             ref_path = self._ref_path(items["$ref"])
             type_label = ref_path[-1] + " Array"
