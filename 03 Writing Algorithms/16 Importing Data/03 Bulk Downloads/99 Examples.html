@@ -20,9 +20,11 @@
  method.
 </p>
 <div class="section-example-container testable">
- <pre class="python">from sklearn.svm import SVR
+ <pre class="python">import joblib
+from io import BytesIO
+from base64 import b64decode, b64encode
+from sklearn.svm import SVR
 from sklearn.model_selection import GridSearchCV
-import joblib
 
 class BulkDownloadExampleAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
@@ -30,23 +32,25 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Request SPY data for model training, prediction, and trading.
-        self.symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
         # 2-year data to train the model.
         training_length = 252*2
         self.training_data = RollingWindow(training_length)
         # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
+        history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
         for trade_bar in history:
             self.training_data.add(trade_bar)
 
         # Retrieve the already trained model from the object store for immediate use.
         if self.object_store.contains_key("sklearn_model"):
-            file = self.object_store.get_file_path("sklearn_model")
-        # Otherwise, bulk-download the model from an external source (Dropbox in this example).
+            self.model = joblib.load(self.object_store.get_file_path("sklearn_model"))
+        # Otherwise, bulk-download the base64-encoded model from an external source (Dropbox in this example).
         else:
-            file = self.download("https://www.dropbox.com/scl/fi/nhz2zxq3pr2bweia4av0o/sklearn_model?rlkey=loy09wbh69k9j6umlru9icsaj&amp;st=6vdazyp4&amp;dl=1")
-        self.model = joblib.load(file)
+            url = "https://www.dropbox.com/scl/fi/tj7wmpv1u2ysvejb0skpm/sklearn_model_b64?rlkey=pvcnuvqrp78oz1t73rytgnvdx&dl=1"
+            base64_str = self.download(url)
+            model_bytes = b64decode(base64_str.encode('ascii'))
+            self.model = joblib.load(BytesIO(model_bytes))
 
         # Train the model to use the prediction right away.
         self.train(self.my_training_method)
@@ -79,8 +83,9 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
             self.model = self.model.fit(features, labels)
 
     def on_data(self, slice: Slice) -&gt; None:
-        if self.symbol in slice.bars:
-            self.training_data.add(slice.bars[self.symbol])
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self.training_data.add(bar)
 
         # Get predictions by the updated features.
         features, _ = self.get_features_and_labels()
@@ -89,16 +94,28 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
 
         # If the predicted direction is going upward, buy SPY.
         if prediction &gt; 0:
-            self.set_holdings(self.symbol, 1)
+            self.set_holdings(self._symbol, 1)
         # If the predicted direction is going downward, sell SPY.
         elif prediction &lt; 0:            
-            self.set_holdings(self.symbol, -1)
+            self.set_holdings(self._symbol, -1)
 
     def on_end_of_algorithm(self) -&gt; None:
         # Store the model in the object store to retrieve it in other instances if the algorithm stops.
         model_key = "sklearn_model"
-        file_name = self.object_store.get_file_path(model_key)
-        joblib.dump(self.model, file_name)</pre>
+        joblib.dump(self.model, self.object_store.get_file_path(model_key))
+        self._save_base64_encoded_version(model_key)
+
+    def _save_base64_encoded_version(self, model_key):
+        # Save a base64-encoded version of the model to upload to an external source (e.g., Dropbox).
+        buffer = BytesIO()
+        joblib.dump(self.model, buffer)
+        content = b64encode(buffer.getvalue()).decode('ascii')
+        path = self.object_store.get_file_path(f"{model_key}_b64")
+        self.object_store.save(path, content)
+
+        # Locally, you may want to use the open method
+        #with open(path, "w") as f:
+        #    f.write(content)</pre>
 </div>
 <h4>
  Other Examples
