@@ -7,10 +7,12 @@ on:
   pull_request:
     paths:
       - 'QuantConnect-Platform-2.0.0.yaml'
+  workflow_dispatch:
 
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 jobs:
   vacuum-lint:
@@ -18,60 +20,110 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
+
+      - name: Install vacuum
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl -fsSL https://quobix.com/scripts/install_vacuum.sh | sh
 
       - name: Lint OpenAPI specification using vacuum
         id: lint
         shell: bash
         env:
-          DOCKER_BUILDKIT: 1
           OPENAPI_PATH: "QuantConnect-Platform-2.0.0.yaml"
           SHOW_RULES: "false"
           MINIMUM_SCORE: "10"
           FAIL_ON_ERROR: "true"
           RULESET: ""
           PRINT_LOGS: "true"
-          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
           args=( lint --pipeline-output "$OPENAPI_PATH" )
-          
+
           # --min-score <value>
           args+=( --min-score "$MINIMUM_SCORE" )
-          
+
           # --fail-severity none|error
           if [ "$FAIL_ON_ERROR" = "true" ]; then
             args+=( --fail-severity error )
           else
             args+=( --fail-severity none )
           fi
-          
+
           # --show-rules only if show_rules == "true"
           if [ "$SHOW_RULES" = "true" ]; then
             args+=( --show-rules )
           fi
-          
+
           # optional ruleset
           if [ -n "$RULESET" ]; then
             args+=( --ruleset "$RULESET" )
           fi
-          
-          CMD=( docker run --rm \
-                 -v "$GITHUB_WORKSPACE":/work:ro \
-                 dshanley/vacuum "${args[@]}" )
-          
-          echo "Running: ${CMD[*]}"
-          report=$("${CMD[@]}")
-          
+
+          echo "Running: vacuum ${args[*]}"
+          set +e
+          report=$(vacuum "${args[@]}")
+          exit_code=$?
+          set -e
+
           REPORT_FILE="$GITHUB_WORKSPACE/vacuum-lint-report.md"
           {
             echo "<!-- vacuum-lint-report -->"
             echo
             echo "$report"
           } > "$REPORT_FILE"
-          
+
           # print logs to console if enabled
           if [ "$PRINT_LOGS" = "true" ]; then
             cat "$REPORT_FILE"
           fi
-          
+
           echo "report_path=vacuum-lint-report.md" >> "$GITHUB_OUTPUT"
+          echo "exit_code=$exit_code" >> "$GITHUB_OUTPUT"
+          exit $exit_code
+
+      - name: Create GitHub issue on failure
+        if: failure() && github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          REPORT_FILE="$GITHUB_WORKSPACE/vacuum-lint-report.md"
+          SUMMARY=$(sed -n '/| Category/,/^$/p' "$REPORT_FILE")
+
+          BODY=$(cat <<EOF
+          ## OpenAPI Lint Errors
+
+          The \`vacuum\` linter found errors in \`QuantConnect-Platform-2.0.0.yaml\`.
+
+          $SUMMARY
+
+          **Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+          ## Steps to fix
+
+          1. Install vacuum locally:
+             - **Linux/macOS:** \`curl -fsSL https://quobix.com/scripts/install_vacuum.sh | sh\`
+             - **Windows:** download the latest release from https://github.com/daveshanley/vacuum/releases (e.g. \`vacuum_*_windows_x86_64.tar.gz\`), extract, and add to PATH.
+          2. Run vacuum to get the detailed error report:
+             \`\`\`
+             vacuum lint QuantConnect-Platform-2.0.0.yaml --fail-severity error
+             \`\`\`
+          3. Fix each error in \`QuantConnect-Platform-2.0.0.yaml\`. Common issues:
+             - \`oas3-schema\`: Using \`nullable: true\` (OpenAPI 3.0 style) instead of \`type: [string, "null"]\` (OpenAPI 3.1 style).
+             - \`oas-schema-check\`: Fields listed in \`required\` that don't exist in \`properties\`, or invalid type values (e.g. \`type: int\` instead of \`type: integer\`).
+          4. Re-run vacuum to confirm no errors remain:
+             \`\`\`
+             vacuum lint QuantConnect-Platform-2.0.0.yaml --fail-severity error
+             \`\`\`
+          5. Regenerate the API reference pages:
+             \`\`\`
+             python code-generators/API-Reference-Code-Generator.py
+             \`\`\`
+          EOF
+          )
+
+          gh issue create \
+            --title "OpenAPI spec lint errors detected" \
+            --body "$BODY" \
+            --label "bug"
