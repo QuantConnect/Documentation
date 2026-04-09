@@ -77,6 +77,19 @@ class APIReferenceGenerator:
             return text + "."
         return text
 
+    @staticmethod
+    def _normalize_type(type_val):
+        """Normalize an OpenAPI 3.1 type value that may be a list.
+
+        ``type: [string, "null"]`` → ``"string"``.
+        """
+        if isinstance(type_val, list):
+            for t in type_val:
+                if t != "null":
+                    return t
+            return "null"
+        return type_val
+
     # ------------------------------------------------------------------ #
     #  Query / path parameter table  (OpenAPI 'parameters' list)           #
     # ------------------------------------------------------------------ #
@@ -97,7 +110,7 @@ class APIReferenceGenerator:
             desc = self._ensure_period(desc)
 
             schema = param["schema"]
-            type_label = schema.get("type", self._ref_name(schema.get("$ref", "")))
+            type_label = self._normalize_type(schema.get("type", self._ref_name(schema.get("$ref", ""))))
             example_val = "/"
 
             for constraint in ("minimum", "maximum", "default"):
@@ -140,7 +153,7 @@ class APIReferenceGenerator:
                 example_val, _, _ = self._build_properties(ref_schema["properties"], [], indent=1)
 
         if "type" in items:
-            type_label = items["type"] + " Array"
+            type_label = self._normalize_type(items["type"]) + " Array"
 
         if "enum" in items:
             type_label += " Enum"
@@ -213,7 +226,7 @@ class APIReferenceGenerator:
                 for variant in schema["oneOf"]:
                     if "$ref" in variant:
                         queue.append(self._ref_path(variant["$ref"]))
-                    elif "type" in variant:
+                    elif "type" in variant and variant["type"] != "null":
                         queue.append(variant["type"])
                 idx += 1
                 continue
@@ -292,7 +305,7 @@ class APIReferenceGenerator:
         items = component["items"]
         html += (
             f'<tr>\n<td width="20%">value</td>'
-            f' <td> <code>{items["type"]}</code> <br/>/</td>\n</tr>\n'
+            f' <td> <code>{self._normalize_type(items["type"])}</code> <br/>/</td>\n</tr>\n'
         )
         html += (
             '<tr>\n<td width="20%">Example</td>\n<td>\n'
@@ -331,7 +344,7 @@ class APIReferenceGenerator:
             desc = self._ensure_period(ref_schema.get("description", "/"))
             html += (
                 f'\n<tr>\n<td width="20%">{name}</td>'
-                f' <td> <code>{ref_schema["type"]}</code> <br/> {desc + enum_text}</td>\n</tr>\n'
+                f' <td> <code>{self._normalize_type(ref_schema["type"])}</code> <br/> {desc + enum_text}</td>\n</tr>\n'
             )
 
             if "example" in ref_schema:
@@ -392,7 +405,7 @@ class APIReferenceGenerator:
         Returns ``(type_label, description, json_value, prop)``.
         *prop* may be replaced when a $ref is resolved to a simple type.
         """
-        type_label = prop.get("type", "object") if isinstance(prop, dict) else "object"
+        type_label = self._normalize_type(prop.get("type", "object")) if isinstance(prop, dict) else "object"
         desc = prop.get("description", "/") if isinstance(prop, dict) else "/"
         tab = "  " * indent
 
@@ -460,12 +473,13 @@ class APIReferenceGenerator:
         json_value = "[\n"
 
         if "type" in items:
-            type_label = items["type"] + " Array"
+            item_type = self._normalize_type(items["type"])
+            type_label = item_type + " Array"
             item_eg = self._get_example(items)
             if item_eg is not None:
                 item_eg = f'"{item_eg}"' if isinstance(item_eg, str) else str(item_eg)
             else:
-                item_eg = f'"{items["type"]}"'
+                item_eg = f'"{item_type}"'
             json_value += tab + f'    {item_eg}'
         elif "$ref" in items:
             ref_path = self._ref_path(items["$ref"])
@@ -500,7 +514,16 @@ class APIReferenceGenerator:
         elif "key" in prop and "value" in prop:
             json_value, type_label = self._example_key_value(prop, ref_queue, indent)
         elif "oneOf" in prop:
-            json_value, type_label = self._example_oneof(prop, ref_queue, indent)
+            # Nullable oneOf: [{$ref: ...}, {type: "null"}] → treat as a ref
+            non_null = [v for v in prop["oneOf"] if v.get("type") != "null"]
+            if len(non_null) == 1 and "$ref" in non_null[0]:
+                ref_prop = dict(prop)
+                ref_prop["$ref"] = non_null[0]["$ref"]
+                json_value, type_label, desc, prop = self._example_ref(
+                    ref_prop, ref_queue, indent, desc
+                )
+            else:
+                json_value, type_label = self._example_oneof(prop, ref_queue, indent)
         elif "allOf" in prop:
             json_value, type_label, desc = self._example_allof(prop, ref_queue, indent)
 
@@ -511,7 +534,7 @@ class APIReferenceGenerator:
         tab = "  " * indent
 
         if "type" in add_prop:
-            prop_type = add_prop["type"]
+            prop_type = self._normalize_type(add_prop["type"])
             if isinstance(prop_type, str):
                 return f'"{prop_type}"', f"{prop_type} object"
             # dict type with format (edge case)
@@ -522,7 +545,7 @@ class APIReferenceGenerator:
             return "0", type_label
 
         if "oneOf" in add_prop:
-            types = [t["type"] for t in add_prop["oneOf"] if "type" in t]
+            types = [self._normalize_type(t["type"]) for t in add_prop["oneOf"] if "type" in t]
             type_label = "/".join(types) + " object"
             if "number" in types or "integer" in types:
                 return f'{{\n{tab}    "key": 0\n{tab}  }}', type_label
@@ -557,7 +580,7 @@ class APIReferenceGenerator:
             )
             return inner, type_label, desc, prop
         if ref_schema and "type" in ref_schema:
-            return "", ref_schema["type"], ref_schema.get("description", desc), ref_schema
+            return "", self._normalize_type(ref_schema["type"]), ref_schema.get("description", desc), ref_schema
         return "", type_label, desc, prop
 
     def _example_key_value(self, prop, ref_queue, indent):
@@ -593,7 +616,7 @@ class APIReferenceGenerator:
                 continue
 
             if "type" in ref_schema:
-                json_value += tab + f'  "{vname}": {ref_schema["type"]},\n'
+                json_value += tab + f'  "{vname}": {self._normalize_type(ref_schema["type"])},\n'
             elif "allOf" in ref_schema:
                 json_value += tab + f'  "{vname}": {{\n'
                 for part in ref_schema["allOf"]:
