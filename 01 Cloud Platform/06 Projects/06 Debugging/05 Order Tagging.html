@@ -1,0 +1,61 @@
+<p>
+  You can add <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#17-Tags'>tags</a> to your orders to track why each trade was placed. This is useful for debugging your algorithm's trading logic because you can include the indicator values or conditions that triggered the order.
+</p>
+
+<div class='section-example-container testable'>
+    <pre class='csharp'>public class OrderTaggingAlgorithm : QCAlgorithm
+{
+    private ExponentialMovingAverage _emaShort;
+    private ExponentialMovingAverage _emaLong;
+    private Symbol _symbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _emaShort = EMA(_symbol, 10);
+        _emaLong = EMA(_symbol, 30);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!_emaShort.IsReady || !_emaLong.IsReady) return;
+
+        if (_emaShort &gt; _emaLong &amp;&amp; !Portfolio[_symbol].IsLong)
+        {
+            MarketOrder(_symbol, 100, tag: $"BUY: ema-short: {_emaShort:F4} &gt; ema-long: {_emaLong:F4}");
+        }
+        else if (_emaShort &lt; _emaLong &amp;&amp; !Portfolio[_symbol].IsShort)
+        {
+            MarketOrder(_symbol, -100, tag: $"SELL: ema-short: {_emaShort:F4} &lt; ema-long: {_emaLong:F4}");
+        }
+    }
+}</pre>
+    <pre class='python'>class OrderTaggingAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._ema_short = self.ema(self._symbol, 10)
+        self._ema_long = self.ema(self._symbol, 30)
+
+    def on_data(self, data: Slice) -&gt; None:
+        if not self._ema_short.is_ready or not self._ema_long.is_ready:
+            return
+
+        ema_short = self._ema_short.current.value
+        ema_long = self._ema_long.current.value
+        if ema_short &gt; ema_long and not self.portfolio[self._symbol].is_long:
+            self.market_order(self._symbol, 100, tag=f'BUY: ema-short: {ema_short:.4f} &gt; ema-long: {ema_long:.4f}')
+        elif ema_short &lt; ema_long and not self.portfolio[self._symbol].is_short:
+            self.market_order(self._symbol, -100, tag=f'SELL: ema-short: {ema_short:.4f} &lt; ema-long: {ema_long:.4f}')</pre>
+</div>
+
+<p>
+  The tag is saved to the <a href='/docs/v2/cloud-platform/backtesting/results#11-Orders'>order CSV</a> and the <a href='/docs/v2/cloud-platform/backtesting/results#17-Download-Results'>results JSON</a> that you can download for local analysis. Unlike <a href='/docs/v2/cloud-platform/projects/debugging#04-Logging-Statements'>logging statements</a>, order tags are attached directly to each order, so you don't need to search through logs to match a message to a specific trade, and they don't consume your <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>log quota</a>.
+</p>

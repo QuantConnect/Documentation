@@ -36,13 +36,13 @@
 {
     if (!_emaShort.IsReady || !_emaLong.IsReady) return;
 
-    if (_emaShort > _emaLong && !Portfolio[_symbol].IsLong)
+    if (_emaShort &gt; _emaLong &amp;&amp; !Portfolio[_symbol].IsLong)
     {
-        MarketOrder(_symbol, 100, tag: $"BUY: ema-short: {_emaShort:F4}  >  ema-long: {_emaLong:F4}");
+        MarketOrder(_symbol, 100, tag: $"BUY: ema-short: {_emaShort:F4} &gt; ema-long: {_emaLong:F4}");
     }
-    else if (_emaShort < _emaLong && !Portfolio[_symbol].IsShort)
+    else if (_emaShort &lt; _emaLong &amp;&amp; !Portfolio[_symbol].IsShort)
     {
-        MarketOrder(_symbol, -100, tag: $"SELL: ema-short: {_emaShort:F4}  <  ema-long: {_emaLong:F4}");
+        MarketOrder(_symbol, -100, tag: $"SELL: ema-short: {_emaShort:F4} &lt; ema-long: {_emaLong:F4}");
     }
 }</pre>
     <pre class='python'>def on_data(self, data: Slice):
@@ -52,9 +52,9 @@
     ema_short = self._ema_short.current.value
     ema_long = self._ema_long.current.value
     if ema_short &gt; ema_long and not self.portfolio[self._symbol].is_long:
-        self.market_order(self._symbol, 100, tag=f'BUY: ema-short: {ema_short:.4f}  &gt;  ema-long: {ema_long:.4f}')
+        self.market_order(self._symbol, 100, tag=f'BUY: ema-short: {ema_short:.4f} &gt; ema-long: {ema_long:.4f}')
     elif ema_short &lt; ema_long and not self.portfolio[self._symbol].is_short:
-        self.market_order(self._symbol, -100, tag=f'SELL: ema-short: {ema_short:.4f}  &lt;  ema-long: {ema_long:.4f}')</pre>
+        self.market_order(self._symbol, -100, tag=f'SELL: ema-short: {ema_short:.4f} &lt; ema-long: {ema_long:.4f}')</pre>
     </div>
 
     <li>In the <code>OnOrderEvent</code> method, log each fill to the content string.</li>
@@ -217,13 +217,13 @@ foreach (var row in buyOrders)
         if (!_emaShort.IsReady || !_emaLong.IsReady) return;
 
         // Place a market order when the EMAs cross.
-        if (_emaShort > _emaLong && !Portfolio[_symbol].IsLong)
+        if (_emaShort &gt; _emaLong &amp;&amp; !Portfolio[_symbol].IsLong)
         {
-            MarketOrder(_symbol, 100, tag: $"BUY: ema-short: {_emaShort:F4}  >  ema-long: {_emaLong:F4}");
+            MarketOrder(_symbol, 100, tag: $"BUY: ema-short: {_emaShort:F4} &gt; ema-long: {_emaLong:F4}");
         }
-        else if (_emaShort < _emaLong && !Portfolio[_symbol].IsShort)
+        else if (_emaShort &lt; _emaLong &amp;&amp; !Portfolio[_symbol].IsShort)
         {
-            MarketOrder(_symbol, -100, tag: $"SELL: ema-short: {_emaShort:F4}  <  ema-long: {_emaLong:F4}");
+            MarketOrder(_symbol, -100, tag: $"SELL: ema-short: {_emaShort:F4} &lt; ema-long: {_emaLong:F4}");
         }
     }
 
@@ -265,9 +265,9 @@ foreach (var row in buyOrders)
         ema_short = self._ema_short.current.value
         ema_long = self._ema_long.current.value
         if ema_short &gt; ema_long and not self.portfolio[self._symbol].is_long:
-            self.market_order(self._symbol, 100, tag=f'BUY: ema-short: {ema_short:.4f}  &gt;  ema-long: {ema_long:.4f}')
+            self.market_order(self._symbol, 100, tag=f'BUY: ema-short: {ema_short:.4f} &gt; ema-long: {ema_long:.4f}')
         elif ema_short &lt; ema_long and not self.portfolio[self._symbol].is_short:
-            self.market_order(self._symbol, -100, tag=f'SELL: ema-short: {ema_short:.4f}  &lt;  ema-long: {ema_long:.4f}')
+            self.market_order(self._symbol, -100, tag=f'SELL: ema-short: {ema_short:.4f} &lt; ema-long: {ema_long:.4f}')
 
     def on_order_event(self, order_event: OrderEvent) -&gt; None:
         if order_event.status != OrderStatus.FILLED:
