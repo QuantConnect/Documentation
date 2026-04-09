@@ -2069,8 +2069,7 @@ components:
         - error
       properties:
         note:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Note on the backtest attached by the user.
         name:
           type: string
@@ -2089,8 +2088,7 @@ components:
           type: boolean
           description: Boolean true when the backtest is completed.
         optimizationId:
-          type: string
-          nullable: true
+          type: [string, "null"]
           examples:
             - O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization task ID, if the backtest is part of an optimization.
@@ -2129,12 +2127,10 @@ components:
             - In Progress...
             - Runtime Error
         error:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Backtest error message.
         stacktrace:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Backtest error stacktrace.
         progress:
           type: number
@@ -2152,12 +2148,12 @@ components:
           description: Parameters used in the backtest.
           $ref: '#/components/schemas/ParameterSet'
         rollingWindow:
-          nullable: true
           description: Rolling window detailed statistics.
-          allOf:
+          oneOf:
             - type: object
               additionalProperties:
                 $ref: '#/components/schemas/AlgorithmPerformance'
+            - type: "null"
         runtimeStatistics:
           $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
@@ -2165,25 +2161,22 @@ components:
           $ref: '#/components/schemas/StatisticsResult'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
-          nullable: true
           description: The algorithm performance statistics.
-          allOf:
+          oneOf:
             - $ref: '#/components/schemas/AlgorithmPerformance'
+            - type: "null"
         nodeName:
           type: string
           description: The backtest node name.
         outOfSampleMaxEndDate:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: End date of out of sample data.
           format: date-time
         outOfSampleDays:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: Number of days of out of sample days.
         analysis:
-          type: array
-          nullable: true
+          type: [array, "null"]
           items:
             $ref: '#/components/schemas/AnalysisResult'
             description: List of diagnostic analysis results for the backtest.
@@ -2225,8 +2218,7 @@ components:
           description: Progress of the backtest in percent 0-1.
           format: float
         optimizationId:
-          type: string
-          nullable: true
+          type: [string, "null"]
           examples:
             - O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization task ID, if the backtest is part of an optimization.
@@ -2245,58 +2237,46 @@ components:
           items:
             type: string
         sharpeRatio:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Sharpe ratio with respect to risk free rate; measures excess of return per unit of risk.
         alpha:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.
         beta:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Algorithm "beta" statistic - the covariance between the algorithm and benchmark performance, divided by benchmark's variance.
         compoundingAnnualReturn:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Annual compounded returns statistic based on the final-starting capital and years.
         drawdown:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Drawdown maximum percentage.
         lossRate:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: The ratio of the number of losing trades to the total number of trades.
         netProfit:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Net profit percentage.
         parameters:
           type: integer
           description: Number of parameters in the backtest.
         psr:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Price-to-sales ratio.
         securityTypes:
           type: integer
           description: The number of security types (QuantConnect.SecurityType) present in the backtest.
         sortinoRatio:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Sortino ratio with respect to risk free rate; measures excess of return per unit of downside risk.
         trades:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: Number of trades in the backtest.
         treynorRatio:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
         winRate:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: The ratio of the number of winning trades to the total number of trades.
       description: Result object class for the List Backtest response from the API.
     BaseLiveAlgorithmSettings:
@@ -2488,9 +2468,8 @@ components:
             - read
             - write
         publicId:
-          type: string
+          type: [string, "null"]
           required: true
-          nullable: true
           description: The user public ID.
         profileImage:
           type: string
@@ -3807,16 +3786,13 @@ components:
           description: Date and time of when this optimization was created.
           format: date-time
         psr:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Probabilistic Sharpe ratio statistic.
         sharpeRatio:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Sharpe ratio statistic.
         trades:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: Number of trades in the best backtest (based on the criterion) of the optimziation.
         cloneId:
           type: integer
@@ -4580,13 +4556,11 @@ components:
           description: Datetime the algorithm was launched in UTC.
           format: date-time
         stopped:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Datetime the algorithm was stopped in UTC, null if its still running.
           format: date-time
         description:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Project description
         projectName:
           type: string
@@ -4637,9 +4611,9 @@ components:
         - autoRestart
       properties:
         brokerageData:
-          nullable: true
-          allOf:
+          oneOf:
             - $ref: '#/components/schemas/BrokerageData'
+            - type: "null"
         dataProvidersData:
           type: array
           description: The data providers used in the live deployment.
@@ -4693,8 +4667,7 @@ components:
           description: Datetime the algorithm was launched in UTC.
           format: date-time
         stopped:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Datetime the algorithm was stopped in UTC, null if its still running.
           format: date-time
         brokerage:
@@ -4715,8 +4688,7 @@ components:
           type: boolean
           description: Flag to indicate if the algorithm is public.
         description:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Project description
         files:
           type: array
@@ -5023,8 +4995,7 @@ components:
           type: string
           description: Project the node is being used for.
         projectId:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           examples:
             - 23456789
           description: Id of the project the node is being used for.
@@ -5038,8 +5009,7 @@ components:
           type: integer
           description: Maximum number of assets recommended for this node.
         host:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Node host.
         active:
           type: boolean
@@ -5169,8 +5139,7 @@ components:
           description: Defines the direction of optimization.
           $ref: '#/components/schemas/OptimizationTargetTo'
         targetValue:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Desired value for the optimization target statistic.
           examples:
             - 1
@@ -5264,8 +5233,6 @@ components:
         - outOfSampleMaxEndDate
         - parameters
         - criterion
-        - apiProviders
-        - source
       properties:
         optimizationId:
           type: string
@@ -5331,8 +5298,7 @@ components:
           description: Statistic to be optimized.
           $ref: '#/components/schemas/OptimizationTargetStatistic'
         targetValue:
-          type: number
-          nullable: true
+          type: [number, "null"]
           description: Desired value for the optimization target statistic.
           examples:
             - 1
@@ -5348,6 +5314,22 @@ components:
         outOfSampleDays:
           type: integer
           description: Number of days of out of sample days.
+        created:
+          type: string
+          description: Date and time of when this optimization was created.
+          format: date-time
+        psr:
+          type: [number, "null"]
+          description: Probabilistic Sharpe ratio statistic.
+        sharpeRatio:
+          type: [number, "null"]
+          description: Sharpe ratio statistic.
+        trades:
+          type: [integer, "null"]
+          description: Number of trades in the best backtest (based on the criterion) of the optimziation.
+        cloneId:
+          type: integer
+          description: Id of project where this current project was originally cloned.
       description: Response received when reading an optimization job.
     OptimizationBacktest:
       type: object
@@ -5381,13 +5363,11 @@ components:
             items:
               type: object
         startDate:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: The backtest start date.
           format: date-time
         endDate:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: The backtest end date.
           format: date-time
         outOfSampleDays:
@@ -5791,29 +5771,27 @@ components:
           items:
             $ref: '#/components/schemas/Library'
         grid:
-          nullable: true
           description: Configuration of the backtest view grid.
-          allOf:
+          oneOf:
             - $ref: '#/components/schemas/Grid'
+            - type: "null"
         liveGrid:
-          nullable: true
           description: Configuration of the live view grid.
-          allOf:
+          oneOf:
             - $ref: '#/components/schemas/Grid'
+            - type: "null"
         paperEquity:
-          type: number
+          type: [number, "null"]
           description: The equity value of the last paper trading instance.
           format: float
-          nullable: true
         lastLiveDeployment:
-          type: string
+          type: [string, "null"]
           description: The last live deployment active time.
           format: date-time
-          nullable: true
         liveForm:
-          nullable: true
-          allOf:
+          oneOf:
             - $ref: '#/components/schemas/LiveForm'
+            - type: "null"
           description: The last live wizard content used.
         encrypted:
           type: boolean
@@ -5825,19 +5803,18 @@ components:
           type: integer
           description: LEAN environment of the project running on.
         encryptionKey:
-          allOf:
+          oneOf:
             - $ref: '#/components/schemas/EncryptionKey'
-          nullable: true
+            - type: "null"
           description: Text file with at least 32 characters to be used to encrypt the project.
         isPinned:
           type: boolean
           description: Indicates if the projects is pinned in the terminal landing page
         maxFileSize:
-          type: int
+          type: integer
           description: Indicates if the maximum file length
         sharingTokenBacktest:
-          type: string
-          nullable: true
+          type: [string, "null"]
           examples:
             q4eoFHGHDxdpx7CSsrhTaMQmLSArOjOPJppFryHAVMWsqXyRxZGKjkOyZ5zj5Lqo
           description: Text file with at least 64 characters to be used to authenticate private backtests requests
@@ -6770,13 +6747,11 @@ components:
       type: object
       properties:
         startDateTime:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: The entry date/time of the first trade
           format: date-time
         endDateTime:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: The exit date/time of the first trade.
           format: date-time
         totalNumberOfTrades:
