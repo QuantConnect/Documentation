@@ -1,0 +1,264 @@
+<h4>Example 1: Generate an OOS Reconciliation Curve</h4>
+<p>The following example reads the live deployment's "Strategy Equity" chart, runs an OOS backtest that matches its start datetime and starting cash, and plots both the equity curves and the order fills side by side. Before running it, make sure your project's main algorithm file sets <code class="csharp">StartDate</code><code class="python">start_date</code> and <code class="csharp">Cash</code><code class="python">cash</code> to match the live deployment (or reads them as parameters).</p>
+<div class="section-example-container">
+    <pre class="csharp">// Load the necessary assemblies.
+#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+#r "nuget: Plotly.NET"
+#r "nuget: Plotly.NET.Interactive"
+
+using QuantConnect;
+using QuantConnect.Api;
+using QuantConnect.Research;
+using System;
+using System.Linq;
+using System.Threading;
+using PlotlyChart = Plotly.NET.Chart;
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+// Instantiate QuantBook instance for researching.
+var qb = new QuantBook();
+var projectId = qb.ProjectId;   // Replace if the live algorithm is not in this project.
+var nowSec = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+// Read the live Strategy Equity chart. The first and last valid points give
+// you the start datetime, starting cash, and end datetime.
+var liveEquity = api.ReadLiveChart(projectId, "Strategy Equity", 0, nowSec, 500).Chart;
+var equityValues = liveEquity.Series["Equity"].Values
+    .OfType&lt;Candlestick&gt;()
+    .Where(v =&gt; v.Close.HasValue)
+    .ToList();
+var startDate = equityValues.First().Time;
+var startingCash = equityValues.First().Close.Value;
+// Uncomment to reconcile up to "now" instead:
+// var endDate = DateTime.UtcNow;
+var endDate = equityValues.Last().Time;
+
+// Compile and create the OOS backtest (start date and cash must be set in the algorithm itself).
+var compilation = api.CreateCompile(projectId);
+var compileId = compilation.CompileId;
+while (api.ReadCompile(projectId, compileId).State != CompileState.BuildSuccess)
+{
+    Thread.Sleep(5000);
+}
+var backtest = api.CreateBacktest(projectId, compileId, "OOS Reconciliation");
+var backtestId = backtest.BacktestId;
+
+var completed = false;
+while (!completed)
+{
+    var result = api.ReadBacktest(projectId, backtestId);
+    completed = result.Completed;
+    Console.WriteLine($"Backtest running... {result.Progress:P2}");
+    Thread.Sleep(10000);
+}
+Console.WriteLine("Backtest completed.");
+
+// Read the backtest Strategy Equity chart.
+var backtestEquity = api.ReadBacktestChart(projectId, "Strategy Equity", 0, nowSec, 500, backtestId).Chart;
+
+// Read live and backtest orders for the fill overlay. Both endpoints can take
+// a few seconds to load the first time, so retry until the list is non-empty.
+List&lt;ApiOrderResponse&gt; ReadOrders(Func&lt;List&lt;ApiOrderResponse&gt;&gt; fetch)
+{
+    for (var attempt = 0; attempt &lt; 10; attempt++)
+    {
+        var result = fetch();
+        if (result.Any()) return result;
+        Thread.Sleep(10000);
+    }
+    throw new Exception("Failed to read orders after 10 attempts");
+}
+
+var liveOrders = ReadOrders(() =&gt; api.ReadLiveOrders(projectId, 0, 100));
+var backtestOrders = ReadOrders(() =&gt; api.ReadBacktestOrders(projectId, backtestId, 0, 100));
+
+Console.WriteLine($"Start: {startDate}, Starting cash: {startingCash}, End: {endDate}");
+Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");
+
+// Overlay the two equity curves with Plotly.NET.
+var backtestValues = backtestEquity.Series["Equity"].Values
+    .OfType&lt;Candlestick&gt;()
+    .Where(v =&gt; v.Close.HasValue)
+    .ToList();
+
+var equityChart = PlotlyChart.Combine(new[]
+{
+    Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        equityValues.Select(v =&gt; v.Time),
+        equityValues.Select(v =&gt; v.Close.Value),
+        Name: "Live"),
+    Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        backtestValues.Select(v =&gt; v.Time),
+        backtestValues.Select(v =&gt; v.Close.Value),
+        Name: "OOS Backtest")
+}).WithTitle("Live vs OOS Backtest Equity");
+display(equityChart);
+
+// Overlay the live and backtest fills per symbol.
+var liveBySymbol = liveOrders.Select(x =&gt; x.Order).GroupBy(o =&gt; o.Symbol);
+var backtestBySymbol = backtestOrders.Select(x =&gt; x.Order).GroupBy(o =&gt; o.Symbol).ToDictionary(g =&gt; g.Key, g =&gt; g.ToList());
+
+foreach (var liveGroup in liveBySymbol)
+{
+    var symbol = liveGroup.Key;
+    var live = liveGroup.ToList();
+    var bt = backtestBySymbol.TryGetValue(symbol, out var btList) ? btList : new List&lt;Order&gt;();
+
+    var traces = new[]
+    {
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            live.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            live.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.Price),
+            Name: "Live Buys"),
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            live.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            live.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.Price),
+            Name: "Live Sells"),
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            bt.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            bt.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.Price),
+            Name: "OOS Backtest Buys"),
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            bt.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            bt.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.Price),
+            Name: "OOS Backtest Sells")
+    };
+    var fillsChart = PlotlyChart.Combine(traces).WithTitle($"{symbol} Live vs OOS Backtest Fills");
+    display(fillsChart);
+}</pre>
+    <pre class="python"># Instantiate QuantBook instance for researching.
+from datetime import datetime
+from time import sleep, time
+import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.graph_objects as go
+from tslearn.metrics import dtw as DynamicTimeWarping
+
+qb = QuantBook()
+project_id = qb.project_id   # Replace if the live algorithm is not in this project.
+
+# Read the live Strategy Equity chart. The first and last points give you the
+# start datetime, starting cash, and end datetime.
+def read_chart(project_id, chart_name, start=0, end=int(time()), count=500):
+    for attempt in range(10):
+        result = api.read_live_chart(project_id, chart_name, start, end, count)
+        if result.success:
+            return result.chart
+        sleep(10)
+    raise RuntimeError(f"Failed to read {chart_name} chart after 10 attempts")
+
+live_equity_chart = read_chart(project_id, 'Strategy Equity')
+# Skip leading points with a None close (common at the start of a deployment).
+valid_values = [v for v in live_equity_chart.series['Equity'].values if v.close is not None]
+start_datetime = valid_values[0].time
+starting_cash = valid_values[0].close
+# Uncomment to reconcile up to "now" instead:
+# end_datetime = datetime.utcnow()
+end_datetime = valid_values[-1].time
+
+# Compile and create the OOS backtest (start date and cash must be set in the algorithm itself).
+compilation = api.create_compile(project_id)
+compile_id = compilation.compile_id
+while api.read_compile(project_id, compile_id).state != 'BuildSuccess':
+    sleep(5)
+backtest = api.create_backtest(project_id, compile_id, 'OOS Reconciliation')
+backtest_id = backtest.backtest_id
+completed = False
+while not completed:
+    result = api.read_backtest(project_id, backtest_id)
+    completed = result.completed
+    print(f'Backtest running... {result.progress:.2%}')
+    sleep(10)
+
+# Read the backtest Strategy Equity chart.
+def read_backtest_chart(project_id, backtest_id, chart_name, start=0, end=int(time()), count=500):
+    for attempt in range(10):
+        result = api.read_backtest_chart(project_id, chart_name, start, end, count, backtest_id)
+        if result.success:
+            return result.chart
+        sleep(10)
+    raise RuntimeError(f"Failed to read backtest {chart_name} chart after 10 attempts")
+
+backtest_equity_chart = read_backtest_chart(project_id, backtest_id, 'Strategy Equity')
+
+# Overlay the two equity curves.
+def to_naive(t):
+    ts = pd.Timestamp(t)
+    return ts.tz_convert('UTC').tz_localize(None) if ts.tzinfo else ts
+
+def to_series(chart, series_name='Equity'):
+    values = [v for v in chart.series[series_name].values if v.close is not None]
+    return pd.Series(
+        [v.close for v in values],
+        index=pd.DatetimeIndex([to_naive(v.time) for v in values])
+    )
+
+df = pd.concat([
+    to_series(live_equity_chart).rename('Live'),
+    to_series(backtest_equity_chart).rename('OOS Backtest')
+], axis=1).sort_index().ffill()
+
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.plot(df.index, df['Live'], label='Live')
+ax.plot(df.index, df['OOS Backtest'], label='OOS Backtest')
+ax.set_title('Live vs OOS Backtest Equity')
+ax.set_xlabel('Time'); ax.set_ylabel('Portfolio Value ($)')
+ax.legend(); plt.show()
+
+# Score the reconciliation: returns correlation and annualized returns DTW distance.
+returns = df.pct_change().dropna()
+returns_correlation = returns.corr().iloc[0, 1]
+raw_dtw = DynamicTimeWarping(
+    returns['Live'], returns['OOS Backtest'],
+    global_constraint='sakoe_chiba', sakoe_chiba_radius=3
+)
+annualized_dtw = abs(((1 + (raw_dtw / returns.shape[0])) ** 252) - 1)
+print(f"Returns correlation: {returns_correlation:.3f}")
+print(f"Annualized returns DTW: {annualized_dtw:.3f}")
+
+# Overlay the live and backtest fills per symbol.
+class OrderData:
+    def __init__(self):
+        self.buy_fill_times, self.buy_fill_prices = [], []
+        self.sell_fill_times, self.sell_fill_prices = [], []
+
+def group_by_symbol(orders):
+    out = {}
+    for order in [x.order for x in orders]:
+        out.setdefault(order.symbol, OrderData())
+        d = out[order.symbol]
+        is_buy = order.quantity > 0
+        (d.buy_fill_times if is_buy else d.sell_fill_times).append(to_naive(order.last_fill_time))
+        (d.buy_fill_prices if is_buy else d.sell_fill_prices).append(order.price)
+    return out
+
+def read_orders(fetch):
+    for attempt in range(10):
+        result = fetch()
+        if result:
+            return result
+        sleep(10)
+    raise RuntimeError("Failed to read orders after 10 attempts")
+
+live_by_symbol = group_by_symbol(read_orders(lambda: api.read_live_orders(project_id, 0, 100)))
+backtest_by_symbol = group_by_symbol(read_orders(lambda: api.read_backtest_orders(project_id, backtest_id, 0, 100)))
+
+for symbol in set(live_by_symbol) | set(backtest_by_symbol):
+    live = live_by_symbol.get(symbol, OrderData())
+    bt = backtest_by_symbol.get(symbol, OrderData())
+    fig = go.Figure(layout=go.Layout(
+        title=go.layout.Title(text=f'{symbol.value} Live vs OOS Backtest Fills'),
+        xaxis_title='Fill Time', yaxis_title='Fill Price', height=600))
+    fig.add_trace(go.Scatter(x=live.buy_fill_times, y=live.buy_fill_prices, mode='markers',
+        name='Live Buys', marker=go.scatter.Marker(color='aqua', symbol='triangle-up', size=12)))
+    fig.add_trace(go.Scatter(x=live.sell_fill_times, y=live.sell_fill_prices, mode='markers',
+        name='Live Sells', marker=go.scatter.Marker(color='indigo', symbol='triangle-down', size=12)))
+    fig.add_trace(go.Scatter(x=bt.buy_fill_times, y=bt.buy_fill_prices, mode='markers',
+        name='OOS Backtest Buys', marker=go.scatter.Marker(color='aqua', symbol='triangle-up-open', size=12, line=dict(width=2))))
+    fig.add_trace(go.Scatter(x=bt.sell_fill_times, y=bt.sell_fill_prices, mode='markers',
+        name='OOS Backtest Sells', marker=go.scatter.Marker(color='indigo', symbol='triangle-down-open', size=12, line=dict(width=2))))
+    fig.show()</pre>
+</div>
