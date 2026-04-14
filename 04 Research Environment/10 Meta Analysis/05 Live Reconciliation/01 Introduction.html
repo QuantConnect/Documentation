@@ -1,11 +1,12 @@
+<p>This page shows you how to generate the out-of-sample (OOS) backtest reconciliation curve from a live deployment in the Research Environment so you can quantitatively and visually compare live versus backtest performance. You read the live deployment's launch datetime and starting equity, run a backtest with matching parameters, and overlay the two "Strategy Equity" curves along with every order fill on a single chart per security.</p>
+
 <p>
-Reconciliation is a way to <a href = "https://www.quantconnect.com/forum/discussion/7606/a-new-reconciliation-metric/p1">quantify</a> the difference between an algorithm's live performance and its out-of-sample (OOS) performance (a backtest run over the live deployment period).
+Reconciliation is a way to <a href="https://www.quantconnect.com/forum/discussion/7606/a-new-reconciliation-metric/p1">quantify</a> the difference between an algorithm's live performance and its out-of-sample (OOS) performance (a backtest run over the live deployment period).
 </p>
 <p>
 Seeing the difference between live performance and OOS performance gives you a way to determine if the algorithm is making unrealistic assumptions, exploiting data differences, or merely exhibiting behavior that is impractical or impossible in live trading.
 </p>
-<p>A perfectly reconciled algorithm has an exact overlap between its live equity and OOS backtest curves. Any deviation means that the performance of the algorithm has differed for some reason. Several factors can contribute to this, often stemming from the algorithm design.</p>
-<p>
+<p>A perfectly reconciled algorithm has an exact overlap between its live equity and OOS backtest curves. Any deviation means that the performance of the algorithm has differed for some reason. Several factors can contribute to this, often stemming from the algorithm design. For a catalogue of common deviation causes (data, modeling, brokerage, third-party indicators, and real-time scheduled events), see <a href="/docs/v2/writing-algorithms/live-trading/reconciliation">Reconciliation</a> in the Writing Algorithms documentation.</p>
 
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/reconciliation-4.png" alt="Live Deployment Reconciliation" width="100%">
 
@@ -20,7 +21,7 @@ Seeing the difference between live performance and OOS performance gives you a w
 Reconciliation is scored using two metrics: returns correlation and dynamic time warping (DTW) distance.
 </p>
 <h4>What is DTW Distance?</h4>
-<p>Dynamic Time Warp (DTW) Distance quantifies the difference between two time-series. It is an algorithm that measures the shortest path between the points of two time-series. It uses Euclidean distance as a measurement of <b>point-to-point distance</b> and returns an overall measurement of the distance on the scale of the initial time-series values. We apply DTW to the returns curve of the live and OOS performance, so the DTW distance measurement is on the scale of percent returns. </p>
+<p>Dynamic Time Warp (DTW) Distance quantifies the difference between two time-series. It is an algorithm that measures the shortest path between the points of two time-series. It uses Euclidean distance as a measurement of <b>point-to-point distance</b> and returns an overall measurement of the distance on the scale of the initial time-series values. We apply DTW to the returns curve of the live and OOS performance, so the DTW distance measurement is on the scale of percent returns.</p>
 
 $$\begin{equation}
 DTW(X,Y) = min\bigg\{\sum_{l=1}^{L}\left(x_{m_l} - y_{n_l}\right)^{2}\in P^{N\times M}\bigg\}
