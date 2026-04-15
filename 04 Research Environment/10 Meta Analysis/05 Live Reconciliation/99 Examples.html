@@ -59,21 +59,34 @@ Console.WriteLine("Backtest completed.");
 // Read the backtest Strategy Equity chart.
 var backtestEquity = api.ReadBacktestChart(projectId, "Strategy Equity", 0, nowSec, 500, backtestId).Chart;
 
-// Read live and backtest orders for the fill overlay. Both endpoints can take
-// a few seconds to load the first time, so retry until the list is non-empty.
-List&lt;ApiOrderResponse&gt; ReadOrders(Func&lt;List&lt;ApiOrderResponse&gt;&gt; fetch)
+// Read live and backtest orders for the fill overlay. Each call returns at
+// most 100 orders, so paginate in 100-Id windows until we get an empty window.
+// The first window can take a few seconds to load, so retry while empty.
+List&lt;ApiOrderResponse&gt; ReadAllOrders(Func&lt;int, int, List&lt;ApiOrderResponse&gt;&gt; fetchWindow)
 {
+    var all = new List&lt;ApiOrderResponse&gt;();
+    List&lt;ApiOrderResponse&gt; first = null;
     for (var attempt = 0; attempt &lt; 10; attempt++)
     {
-        var result = fetch();
-        if (result.Any()) return result;
+        first = fetchWindow(0, 100);
+        if (first.Any()) break;
         Thread.Sleep(10000);
     }
-    throw new Exception("Failed to read orders after 10 attempts");
+    if (first == null || !first.Any()) return all;
+    all.AddRange(first);
+    var start = 100;
+    while (true)
+    {
+        var window = fetchWindow(start, start + 100);
+        if (!window.Any()) break;
+        all.AddRange(window);
+        start += 100;
+    }
+    return all;
 }
 
-var liveOrders = ReadOrders(() =&gt; api.ReadLiveOrders(projectId, 0, 100));
-var backtestOrders = ReadOrders(() =&gt; api.ReadBacktestOrders(projectId, backtestId, 0, 100));
+var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
+var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e));
 
 Console.WriteLine($"Start: {startDate}, Starting cash: {startingCash}, End: {endDate}");
 Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");
@@ -235,16 +248,28 @@ def group_by_symbol(orders):
         (d.buy_fill_prices if is_buy else d.sell_fill_prices).append(order.price)
     return out
 
-def read_orders(fetch):
+def read_all_orders(fetch_window):
+    orders = []
+    first = []
     for attempt in range(10):
-        result = fetch()
-        if result:
-            return result
+        first = fetch_window(0, 100)
+        if first:
+            break
         sleep(10)
-    raise RuntimeError("Failed to read orders after 10 attempts")
+    if not first:
+        return orders
+    orders.extend(first)
+    start = 100
+    while True:
+        window = fetch_window(start, start + 100)
+        if not window:
+            break
+        orders.extend(window)
+        start += 100
+    return orders
 
-live_by_symbol = group_by_symbol(read_orders(lambda: api.read_live_orders(project_id, 0, 100)))
-backtest_by_symbol = group_by_symbol(read_orders(lambda: api.read_backtest_orders(project_id, backtest_id, 0, 100)))
+live_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e)))
+backtest_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e)))
 
 for symbol in set(live_by_symbol) | set(backtest_by_symbol):
     live = live_by_symbol.get(symbol, OrderData())
