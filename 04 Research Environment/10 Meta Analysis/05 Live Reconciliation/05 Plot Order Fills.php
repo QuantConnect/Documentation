@@ -1,8 +1,22 @@
 <p>Follow these steps to overlay live and OOS backtest order fills on a single marker-only chart per symbol. The chart deliberately omits candlesticks and any price history so the comparison between live and backtest executions is not drowned out by other series.</p>
 
 <ol>
-    <li>Read the live and backtest orders. Both endpoints can take a few seconds to load the first time, so retry until the response reports success.</li>
+    <li>Read the live and backtest orders. Both endpoints can take a few seconds to load the first time, so retry until the response is non-empty.</li>
     <div class="section-example-container">
+        <pre class="csharp">List&lt;ApiOrderResponse&gt; ReadOrders(Func&lt;List&lt;ApiOrderResponse&gt;&gt; fetch)
+{
+    for (var attempt = 0; attempt &lt; 10; attempt++)
+    {
+        var result = fetch();
+        if (result.Any()) return result;
+        Console.WriteLine($"Orders loading... (attempt {attempt + 1}/10)");
+        Thread.Sleep(10000);
+    }
+    throw new Exception("Failed to read orders after 10 attempts");
+}
+
+var liveOrders = ReadOrders(() =&gt; api.ReadLiveOrders(projectId, 0, 100));
+var backtestOrders = ReadOrders(() =&gt; api.ReadBacktestOrders(projectId, backtestId, 0, 100));</pre>
         <pre class="python">from time import sleep
 
 def read_orders(fetch):
@@ -21,6 +35,10 @@ backtest_orders = read_orders(lambda: api.read_backtest_orders(project_id, backt
 
     <li>Organize the trade times and prices for each security into a dictionary for both the live and backtest fills.</li>
     <div class="section-example-container">
+        <pre class="csharp">var liveBySymbol = liveOrders.Select(x =&gt; x.Order).GroupBy(o =&gt; o.Symbol);
+var backtestBySymbol = backtestOrders.Select(x =&gt; x.Order)
+    .GroupBy(o =&gt; o.Symbol)
+    .ToDictionary(g =&gt; g.Key, g =&gt; g.ToList());</pre>
         <pre class="python">import pandas as pd
 
 def to_naive(t):
@@ -52,6 +70,34 @@ backtest_by_symbol = group_by_symbol(backtest_orders)</pre>
 
     <li>Plot one figure per symbol with four marker traces: live buys, live sells, backtest buys, backtest sells. Distinct markers keep live versus backtest executions visually separable.</li>
     <div class="section-example-container">
+        <pre class="csharp">foreach (var liveGroup in liveBySymbol)
+{
+    var symbol = liveGroup.Key;
+    var live = liveGroup.ToList();
+    var bt = backtestBySymbol.TryGetValue(symbol, out var btList) ? btList : new List&lt;Order&gt;();
+
+    var traces = new[]
+    {
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            live.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            live.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.Price),
+            Name: "Live Buys"),
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            live.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            live.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.Price),
+            Name: "Live Sells"),
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            bt.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            bt.Where(o =&gt; o.Quantity &gt; 0).Select(o =&gt; o.Price),
+            Name: "OOS Backtest Buys"),
+        Chart2D.Chart.Point&lt;DateTime, decimal, string&gt;(
+            bt.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.LastFillTime ?? o.Time),
+            bt.Where(o =&gt; o.Quantity &lt; 0).Select(o =&gt; o.Price),
+            Name: "OOS Backtest Sells")
+    };
+    var fillsChart = PlotlyChart.Combine(traces).WithTitle($"{symbol} Live vs OOS Backtest Fills");
+    display(fillsChart);
+}</pre>
         <pre class="python">import plotly.graph_objects as go
 
 symbols = set(live_by_symbol.keys()) | set(backtest_by_symbol.keys())

@@ -3,11 +3,25 @@
 <ol>
     <li>Read the live "Strategy Equity" chart using the retry helper from the previous step.</li>
     <div class="section-example-container">
+        <pre class="csharp">var liveEquityChart = ReadLiveChartWithRetry(projectId, "Strategy Equity");</pre>
         <pre class="python">live_equity_chart = read_chart(project_id, 'Strategy Equity')</pre>
     </div>
 
     <li>Read the backtest "Strategy Equity" chart by calling the <code class="csharp">ReadBacktestChart</code><code class="python">read_backtest_chart</code> method with the same retry pattern.</li>
     <div class="section-example-container">
+        <pre class="csharp">Chart ReadBacktestChartWithRetry(int projectId, string backtestId, string chartName)
+{
+    for (var attempt = 0; attempt &lt; 10; attempt++)
+    {
+        var result = api.ReadBacktestChart(projectId, chartName, 0, nowSec, 500, backtestId);
+        if (result.Success) return result.Chart;
+        Console.WriteLine($"Chart data is loading... (attempt {attempt + 1}/10)");
+        Thread.Sleep(10000);
+    }
+    throw new Exception($"Failed to read backtest {chartName} chart after 10 attempts");
+}
+
+var backtestEquityChart = ReadBacktestChartWithRetry(projectId, backtestId, "Strategy Equity");</pre>
         <pre class="python">def read_backtest_chart(project_id, backtest_id, chart_name, start=0, end=int(time()), count=500):
     for attempt in range(10):
         result = api.read_backtest_chart(project_id, chart_name, start, end, count, backtest_id)
@@ -20,8 +34,16 @@
 backtest_equity_chart = read_backtest_chart(project_id, backtest_id, 'Strategy Equity')</pre>
     </div>
 
-    <li>Extract the <code>Equity</code> series from each chart into a <code>pandas.Series</code> indexed by timestamp. Preserve every timestamp from both the live and backtest series and strip any timezone info so <code>pandas</code> and <code>plotly</code> can align and render the curves cleanly.</li>
+    <li>Extract the <code>Equity</code> series from each chart, filtering out points with a null close. Python uses a <code>pandas.Series</code> indexed by timestamp so the two curves can be aligned on the union of their timestamps; C# keeps two lists of <code>Candlestick</code> points and lets Plotly.NET align them on the same x-axis.</li>
     <div class="section-example-container">
+        <pre class="csharp">var liveValues = liveEquityChart.Series["Equity"].Values
+    .OfType&lt;Candlestick&gt;()
+    .Where(v =&gt; v.Close.HasValue)
+    .ToList();
+var backtestValues = backtestEquityChart.Series["Equity"].Values
+    .OfType&lt;Candlestick&gt;()
+    .Where(v =&gt; v.Close.HasValue)
+    .ToList();</pre>
         <pre class="python">import pandas as pd
 
 def to_naive(t):
@@ -42,8 +64,28 @@ backtest_series = to_series(backtest_equity_chart)
 df = pd.concat([live_series.rename('Live'), backtest_series.rename('OOS Backtest')], axis=1).sort_index().ffill()</pre>
     </div>
 
-    <li>Plot both curves on a single <code>matplotlib</code> axis.</li>
+    <li>Plot both curves on the same axis. Python uses <code>matplotlib</code>; C# uses <a href='/docs/v2/research-environment/charting/plotly-net'>Plotly.NET</a> — load <code>Plotly.NET</code> and <code>Plotly.NET.Interactive</code> from NuGet and alias <code>Plotly.NET.Chart</code> to avoid ambiguity with <code>QuantConnect.Chart</code>.</li>
     <div class="section-example-container">
+        <pre class="csharp">#r "nuget: Plotly.NET"
+#r "nuget: Plotly.NET.Interactive"
+using PlotlyChart = Plotly.NET.Chart;
+using Plotly.NET;
+using Plotly.NET.Interactive;
+using Plotly.NET.LayoutObjects;
+
+var equityChart = PlotlyChart.Combine(new[]
+{
+    Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        liveValues.Select(v =&gt; v.Time),
+        liveValues.Select(v =&gt; v.Close.Value),
+        Name: "Live"),
+    Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        backtestValues.Select(v =&gt; v.Time),
+        backtestValues.Select(v =&gt; v.Close.Value),
+        Name: "OOS Backtest")
+}).WithTitle("Live vs OOS Backtest Equity");
+
+display(equityChart);</pre>
         <pre class="python">import matplotlib.pyplot as plt
 
 fig, ax = plt.subplots(figsize=(12, 6))
@@ -57,7 +99,7 @@ plt.show()</pre>
     </div>
     <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/reconciliation-4.png" alt="Live vs OOS backtest equity curves">
 
-    <li>Score the reconciliation with the annualized returns DTW distance and the Pearson correlation of daily returns. Use <code>tslearn</code>'s <code>dtw</code> with a Sakoe-Chiba band so the algorithm runs in linear time.</li>
+    <li>Score the reconciliation with the annualized returns DTW distance and the Pearson correlation of daily returns. Use <code>tslearn</code>'s <code>dtw</code> with a Sakoe-Chiba band so the algorithm runs in linear time. The <code>tslearn</code> library is Python-only; run this step in a Python research notebook.</li>
     <div class="section-example-container">
         <pre class="python">from tslearn.metrics import dtw as DynamicTimeWarping
 

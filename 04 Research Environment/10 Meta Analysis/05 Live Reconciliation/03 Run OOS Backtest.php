@@ -5,6 +5,21 @@
 
     <li>Compile the project by calling the <code class="csharp">CreateCompile</code><code class="python">create_compile</code> method, then poll <code class="csharp">ReadCompile</code><code class="python">read_compile</code> until the compile state is <code>BuildSuccess</code>.</li>
     <div class="section-example-container">
+        <pre class="csharp">var compilation = api.CreateCompile(projectId);
+var compileId = compilation.CompileId;
+
+// Poll until the build succeeds.
+for (var attempt = 0; attempt &lt; 10; attempt++)
+{
+    var result = api.ReadCompile(projectId, compileId);
+    if (result.State == CompileState.BuildSuccess) break;
+    if (result.State == CompileState.BuildError)
+    {
+        throw new Exception($"Compilation failed: {string.Join(Environment.NewLine, result.Logs)}");
+    }
+    Console.WriteLine($"Compile in queue... (attempt {attempt + 1}/10)");
+    Thread.Sleep(5000);
+}</pre>
         <pre class="python">from time import sleep
 
 compilation = api.create_compile(project_id)
@@ -23,6 +38,9 @@ for attempt in range(10):
 
     <li>Create the OOS backtest with the <code class="csharp">CreateBacktest</code><code class="python">create_backtest</code> method.</li>
     <div class="section-example-container">
+        <pre class="csharp">var backtest = api.CreateBacktest(projectId, compileId, "OOS Reconciliation");
+var backtestId = backtest.BacktestId;
+Console.WriteLine($"Backtest Id: {backtestId}");</pre>
         <pre class="python">backtest = api.create_backtest(project_id, compile_id, 'OOS Reconciliation')
 backtest_id = backtest.backtest_id
 print(f"Backtest Id: {backtest_id}")</pre>
@@ -30,6 +48,15 @@ print(f"Backtest Id: {backtest_id}")</pre>
 
     <li>Poll the <code class="csharp">ReadBacktest</code><code class="python">read_backtest</code> method until the <code>completed</code> flag is <code>True</code>. Log the <code>progress</code> attribute on each poll so you can watch the backtest advance.</li>
     <div class="section-example-container">
+        <pre class="csharp">var completed = false;
+while (!completed)
+{
+    var result = api.ReadBacktest(projectId, backtestId);
+    completed = result.Completed;
+    Console.WriteLine($"Backtest running... {result.Progress:P2}");
+    Thread.Sleep(10000);
+}
+Console.WriteLine("Backtest completed.");</pre>
         <pre class="python">completed = False
 while not completed:
     result = api.read_backtest(project_id, backtest_id)

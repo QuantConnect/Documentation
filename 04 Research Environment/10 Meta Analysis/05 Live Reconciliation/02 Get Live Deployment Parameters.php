@@ -3,6 +3,7 @@
 <ol>
     <li>Define the project Id.</li>
     <div class="section-example-container">
+        <pre class="csharp">var projectId = 23034953;</pre>
         <pre class="python">project_id = 23034953</pre>
     </div>
 
@@ -33,6 +34,40 @@
 
     <li>Read the live "Strategy Equity" chart with the <code class="csharp">ReadLiveChart</code><code class="python">read_live_chart</code> method. The first and last <code>Equity</code> points give you the start datetime, starting equity, and end datetime.</li>
     <div class="section-example-container">
+        <pre class="csharp">var nowSec = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+Chart ReadLiveChartWithRetry(int projectId, string chartName)
+{
+    for (var attempt = 0; attempt &lt; 10; attempt++)
+    {
+        var result = api.ReadLiveChart(projectId, chartName, 0, nowSec, 500);
+        if (result.Success) return result.Chart;
+        Console.WriteLine($"Chart data is loading... (attempt {attempt + 1}/10)");
+        Thread.Sleep(10000);
+    }
+    throw new Exception($"Failed to read {chartName} chart after 10 attempts");
+}
+
+var strategyEquity = ReadLiveChartWithRetry(projectId, "Strategy Equity");
+// The first few points in the series can have a null close, so keep only
+// the points with a valid close value before extracting start/end.
+var validValues = strategyEquity.Series["Equity"].Values
+    .OfType&lt;Candlestick&gt;()
+    .Where(v =&gt; v.Close.HasValue)
+    .ToList();
+
+// Start datetime and starting equity: first valid point.
+var startDatetime = validValues.First().Time;
+var startingCash = validValues.First().Close.Value;
+// End datetime: last valid timestamp of the live Strategy Equity series.
+// Uncomment the next line instead to reconcile up to "now" and see what
+// would have happened had you not stopped the live algorithm:
+// var endDatetime = DateTime.UtcNow;
+var endDatetime = validValues.Last().Time;
+
+Console.WriteLine($"Start (UTC): {startDatetime}");
+Console.WriteLine($"Starting equity: ${startingCash:N2}");
+Console.WriteLine($"End (UTC): {endDatetime}");</pre>
         <pre class="python">from datetime import datetime
 from time import sleep, time
 
