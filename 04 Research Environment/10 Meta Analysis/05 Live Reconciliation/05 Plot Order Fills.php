@@ -1,37 +1,67 @@
 <p>Follow these steps to overlay live and OOS backtest order fills on a single marker-only chart per symbol. The chart deliberately omits candlesticks and any price history so the comparison between live and backtest executions is not drowned out by other series.</p>
 
 <ol>
-    <li>Read the live and backtest orders. Both endpoints can take a few seconds to load the first time, so retry until the response is non-empty.</li>
+    <li>Read the live and backtest orders. Each call to <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> and <code class="csharp">ReadBacktestOrders</code><code class="python">read_backtest_orders</code> returns at most 100 orders, so paginate in 100-Id windows until the endpoint returns an empty window. The first window can take a few seconds to load, so retry while it is empty.</li>
     <div class="section-example-container">
-        <pre class="csharp">List&lt;ApiOrderResponse&gt; ReadOrders(Func&lt;List&lt;ApiOrderResponse&gt;&gt; fetch)
+        <pre class="csharp">List&lt;ApiOrderResponse&gt; ReadAllOrders(Func&lt;int, int, List&lt;ApiOrderResponse&gt;&gt; fetchWindow)
 {
+    var all = new List&lt;ApiOrderResponse&gt;();
+    // Retry the first window while the response is empty (may be loading).
+    List&lt;ApiOrderResponse&gt; first = null;
     for (var attempt = 0; attempt &lt; 10; attempt++)
     {
-        var result = fetch();
-        if (result.Any()) return result;
+        first = fetchWindow(0, 100);
+        if (first.Any()) break;
         Console.WriteLine($"Orders loading... (attempt {attempt + 1}/10)");
         Thread.Sleep(10000);
     }
-    throw new Exception("Failed to read orders after 10 attempts");
+    if (first == null || !first.Any()) return all;
+    all.AddRange(first);
+    // Paginate in 100-Id windows until the endpoint returns an empty window.
+    var start = 100;
+    while (true)
+    {
+        var window = fetchWindow(start, start + 100);
+        if (!window.Any()) break;
+        all.AddRange(window);
+        start += 100;
+    }
+    return all;
 }
 
-var liveOrders = ReadOrders(() =&gt; api.ReadLiveOrders(projectId, 0, 100));
-var backtestOrders = ReadOrders(() =&gt; api.ReadBacktestOrders(projectId, backtestId, 0, 100));</pre>
+var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
+var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e));
+Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");</pre>
         <pre class="python">from time import sleep
 
-def read_orders(fetch):
+def read_all_orders(fetch_window):
+    orders = []
+    # Retry the first window while the response is empty (may be loading).
+    first = []
     for attempt in range(10):
-        result = fetch()
-        if result:
-            return result
+        first = fetch_window(0, 100)
+        if first:
+            break
         print(f"Orders loading... (attempt {attempt + 1}/10)")
         sleep(10)
-    raise RuntimeError("Failed to read orders after 10 attempts")
+    if not first:
+        return orders
+    orders.extend(first)
+    # Paginate in 100-Id windows until the endpoint returns an empty window.
+    start = 100
+    while True:
+        window = fetch_window(start, start + 100)
+        if not window:
+            break
+        orders.extend(window)
+        start += 100
+    return orders
 
-live_orders = read_orders(lambda: api.read_live_orders(project_id, 0, 100))
-backtest_orders = read_orders(lambda: api.read_backtest_orders(project_id, backtest_id, 0, 100))</pre>
+live_orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e))
+backtest_orders = read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e))
+print(f"Live orders: {len(live_orders)}, OOS orders: {len(backtest_orders)}")</pre>
     </div>
-    <p>By default, you receive the orders with an Id between 0 and 100. To read more, call the method repeatedly in windows of up to 100 Ids. For more on the order objects returned, see <a href='/docs/v2/research-environment/meta-analysis/live-analysis#03-Plot-Order-Fills'>Plot Order Fills</a> in the Live Analysis documentation.</p>
+    <p>For more on the order objects returned, see <a href='/docs/v2/research-environment/meta-analysis/live-analysis#03-Plot-Order-Fills'>Plot Order Fills</a> in the Live Analysis documentation.</p>
 
     <li>Organize the trade times and prices for each security into a dictionary for both the live and backtest fills.</li>
     <div class="section-example-container">
