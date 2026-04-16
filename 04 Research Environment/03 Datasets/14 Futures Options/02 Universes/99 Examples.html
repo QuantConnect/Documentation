@@ -4,10 +4,16 @@
 <p>The following example plots a line chart on the implied volatility curve of the closest expiring calls.</p>
 <div class="section-example-container">
     <pre class="csharp">// Load the required assembly files and data types in a separate cell.
-#load "../Initialize.csx"
-
+#load "../Initialize.csx"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">// Load the necessary assembly files.
 #load "../QuantConnect.csx"
-using System;
+#r "nuget: Plotly.NET"
+#r "nuget: Plotly.NET.Interactive"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">using System;
 using System.Collections.Generic;
 using QuantConnect;
 using QuantConnect.Data;
@@ -16,9 +22,8 @@ using QuantConnect.Data.UniverseSelection;
 using QuantConnect.Algorithm;
 using QuantConnect.Research;
 
-// Import Plotly for plotting.
-#r "../Plotly.NET.dll"
 using Plotly.NET;
+using Plotly.NET.Interactive;
 using Plotly.NET.LayoutObjects;
 
 // Create a QuantBook.
@@ -73,7 +78,7 @@ layout.SetValue("title", title);
 chart.WithLayout(layout);
 
 // Display the plot.
-HTML(GenericChart.toChartHTML(chart))</pre>
+display(chart)</pre>
     <pre class="python"># Instantiate a QuantBook instance.
 qb = QuantBook()
 # Set the date being studied.

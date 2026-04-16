@@ -2,12 +2,14 @@
 <div class="csharp section-example-container">
     <pre class="csharp">#load "../Initialize.csx"</pre>
 </div>
-<li class="csharp">Import the data types.</li>
+<li class="csharp">Load the necessary assembly files.</li>
 <div class="csharp section-example-container">
     <pre class="csharp">#load "../QuantConnect.csx"
-#r "../Microsoft.Data.Analysis.dll"
-
-using QuantConnect;
+#r "../Microsoft.Data.Analysis.dll"</pre>
+</div>
+<li class="csharp">Import the data types.</li>
+<div class="csharp section-example-container">
+    <pre class="csharp">using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Algorithm;
 using QuantConnect.Research;

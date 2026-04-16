@@ -49,11 +49,14 @@
 
     <div class='section-example-container'>
     <pre class='csharp'>// Execute the following command in first
-#load "../Initialize.csx"
-
-// Create a QuantBook object
-#load "../QuantConnect.csx"
-using QuantConnect;
+#load "../Initialize.csx"</pre>
+    </div>
+    <div class='section-example-container'>
+    <pre class='csharp'>// Load the necessary assembly files.
+#load "../QuantConnect.csx"</pre>
+    </div>
+    <div class='section-example-container'>
+    <pre class='csharp'>using QuantConnect;
 using QuantConnect.Research;
 
 var qb = new QuantBook();</pre>
@@ -83,8 +86,12 @@ series.plot()</pre>
 
     <li class='csharp'>Import the <code>Plotly.NET</code> and <code>Plotly.NET.LayoutObjects</code> packages.</li>
     <div class="csharp section-example-container">
-    <pre class="csharp">#r "../Plotly.NET.dll"
-using Plotly.NET;
+    <pre class="csharp">#r "nuget: Plotly.NET"
+#r "nuget: Plotly.NET.Interactive"</pre>
+    </div>
+    <div class="csharp section-example-container">
+    <pre class="csharp">using Plotly.NET;
+using Plotly.NET.Interactive;
 using Plotly.NET.LayoutObjects;</pre>
     </div>
 
@@ -120,10 +127,10 @@ foreach (var line in content.Split('\n'))
 var chart = Chart2D.Chart.Linee&lt;DateTime, decimal, stringe&gt;(index, values);</pre>
     </div>
 
-    <li class='csharp'>Apply the layout to the <code>Line</code> object and create the <code>HTML</code> object.</li>
+    <li class='csharp'>Apply the layout to the <code>Line</code> object and display the chart.</li>
     <div class="csharp section-example-container">
     <pre class="csharp">chart.WithLayout(layout);
-var result = HTML(GenericChart.toChartHTML(chart));</pre>
+display(chart);</pre>
     </div>
 </ol>
 

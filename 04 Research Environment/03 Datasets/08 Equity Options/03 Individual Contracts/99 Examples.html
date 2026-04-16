@@ -47,10 +47,13 @@ go.Figure(
         xaxis_rangeslider_visible=False
     )
 ).show()</pre>
-    <pre class="csharp">#load "../QuantConnect.csx"
-#r "../Plotly.NET.dll"
-
-using QuantConnect;
+    <pre class="csharp">// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "nuget: Plotly.NET"
+#r "nuget: Plotly.NET.Interactive"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Algorithm;
 using QuantConnect.Research;
@@ -58,6 +61,7 @@ using QuantConnect.Indicators;
 using QuantConnect.Data.Market;
 using QuantConnect.Securities.Option;
 using Plotly.NET;
+using Plotly.NET.Interactive;
 using Plotly.NET.LayoutObjects;
 
 // Get the SPY Option chain for January 1, 2024.
@@ -69,10 +73,10 @@ var chain = qb.OptionChain(underlyingSymbol);
 // Select a contract from the chain.
 var expiry = chain.Select(contract => contract.Expiry).Min();
 var contractSymbol = chain
-    .Where(contract => 
-        contract.Expiry == expiry && 
+    .Where(contract =>
+        contract.Expiry == expiry &&
         contract.Right == OptionRight.Call &&
-        contract.Greeks.Delta > 0.3m && 
+        contract.Greeks.Delta > 0.3m &&
         contract.Greeks.Delta < 0.7m
     )
     .OrderByDescending(contract => contract.OpenInterest)
@@ -103,7 +107,7 @@ layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
 layout.SetValue("title", title);
 chart.WithLayout(layout);
-HTML(GenericChart.toChartHTML(chart))</pre>
+display(chart)</pre>
 </div>
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-price-example-python.png' alt='Candlestick plot of the prices for a SPY Option contract'>
 <img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-price-example-csharp.png' alt='Candlestick plot of the prices for a SPY Option contract'>
@@ -140,10 +144,13 @@ history = history['openinterest'].unstack(0)[contract_symbol]
 # Plot the open interest history.
 history.plot(title=f'{contract_symbol.value} Open Interest')
 plt.show()</pre>
-    <pre class="csharp">#load "../QuantConnect.csx"
-#r "../Plotly.NET.dll"
-
-using QuantConnect;
+    <pre class="csharp">// Load the necessary assembly files.
+#load "../QuantConnect.csx"
+#r "nuget: Plotly.NET"
+#r "nuget: Plotly.NET.Interactive"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Algorithm;
 using QuantConnect.Research;
@@ -151,6 +158,7 @@ using QuantConnect.Indicators;
 using QuantConnect.Data.Market;
 using QuantConnect.Securities.Option;
 using Plotly.NET;
+using Plotly.NET.Interactive;
 using Plotly.NET.LayoutObjects;
 
 // Get the TSLA Option chain for January 1, 2024.
@@ -190,7 +198,7 @@ layout.SetValue("xaxis", xAxis);
 layout.SetValue("yaxis", yAxis);
 layout.SetValue("title", title);
 chart.WithLayout(layout);
-HTML(GenericChart.toChartHTML(chart))
+display(chart)
 </pre>
 </div>
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/equity-options-open-interest-example-python.png' alt='Line plot of the open interest for a TSLA Option contract'>
