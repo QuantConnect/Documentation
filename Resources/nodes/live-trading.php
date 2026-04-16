@@ -1,5 +1,5 @@
 <p>
-	Live trading nodes enable you to deploy live algorithms to our professionally-managed, co-located servers. 
+	Live trading nodes enable you to deploy live algorithms to our professionally-managed, co-located servers racked in <a rel="nofollow" target="_blank" href="https://www.equinix.com/data-centers/americas-colocation/united-states-colocation/new-york-data-centers/ny7">Equinix</a>. 
 	You need a live trading node for each algorithm that you deploy to our co-located servers. 
 	Several models of live trading nodes are available. 
 	More powerful live trading nodes allow you to run algorithms with larger universes and give you <a href='/docs/v2/cloud-platform/organizations/resources#08-Training-Quotas'>more time for machine learning training</a>.
