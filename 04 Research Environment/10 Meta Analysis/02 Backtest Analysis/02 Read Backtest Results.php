@@ -1,10 +1,13 @@
 <p>To get the results of a backtest, call the <code class="csharp">ReadBacktest</code><code class="python">read_backtest</code> method with the project Id and backtest ID.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">#load "../Initialize.csx"
-#load "../QuantConnect.csx"
-
-using QuantConnect;
+    <pre class="csharp">#load "../Initialize.csx"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">#load "../QuantConnect.csx"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">using QuantConnect;
 using QuantConnect.Api;
 
 var backtest = api.ReadBacktest(projectId, backtestId);</pre>

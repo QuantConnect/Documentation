@@ -97,11 +97,14 @@
 
     <div class='section-example-container'>
     <pre class='csharp'>// Execute the following command in first
-#load "../Initialize.csx"
-
-// Create a QuantBook object
-#load "../QuantConnect.csx"
-using QuantConnect;
+#load "../Initialize.csx"</pre>
+    </div>
+    <div class='section-example-container'>
+    <pre class='csharp'>// Load the necessary assembly files.
+#load "../QuantConnect.csx"</pre>
+    </div>
+    <div class='section-example-container'>
+    <pre class='csharp'>using QuantConnect;
 using QuantConnect.Research;
 
 var qb = new QuantBook();</pre>
