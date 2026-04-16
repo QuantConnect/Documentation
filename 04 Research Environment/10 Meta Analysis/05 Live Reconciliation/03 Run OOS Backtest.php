@@ -1,7 +1,7 @@
 <p>Follow these steps to run an out-of-sample backtest that mirrors the live deployment.</p>
 
 <ol>
-    <li>In the project's main algorithm file, set the start date and starting cash to match the values you read in the previous step. Use <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> and <code class="csharp">SetCash</code><code class="python">set_cash</code> so the backtest begins at the same moment and with the same equity as the live deployment. You can either hard-code the values or expose them as <a href='/docs/v2/writing-algorithms/parameter-and-optimization/parameters'>parameters</a>.</li>
+    <li>In the project's main algorithm file, set the start date and starting cash to match the values you read in the previous step. Use <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> and <code class="csharp">SetCash</code><code class="python">set_cash</code> so the backtest begins at the same moment and with the same equity as the live deployment. You can either hard-code the values or expose them as <a href='/docs/v2/writing-algorithms/optimization/parameters'>parameters</a>.</li>
 
     <li>Compile the project by calling the <code class="csharp">CreateCompile</code><code class="python">create_compile</code> method, then poll <code class="csharp">ReadCompile</code><code class="python">read_compile</code> until the compile state is <code>BuildSuccess</code>.</li>
     <div class="section-example-container">
