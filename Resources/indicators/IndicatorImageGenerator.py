@@ -745,11 +745,18 @@ class IndicatorImageGenerator(QCAlgorithm):
             'self.vwma(self._symbol, 20)'
         ),
         'vortex': IndicatorInfo(
-            Vortex(14), 
-            'Vortex(14)', 
-            'VTX(_symbol, 14)', 
+            Vortex(14),
+            'Vortex(14)',
+            'VTX(_symbol, 14)',
             'self.vtx(self._symbol, 14)',
             [['current', "plusvortex", "minusvortex"]]
+        ),
+        'wavetrend-oscillator': IndicatorInfo(
+            WaveTrendOscillator(10, 21, 4),
+            'WaveTrendOscillator(10, 21, 4)',
+            'WTO(_symbol, 10, 21, 4)',
+            'self.wto(self._symbol, 10, 21, 4)',
+            [['current', 'signal']]
         ),
         'wilder-accumulative-swing-index': IndicatorInfo(
             WilderAccumulativeSwingIndex(20), 
