@@ -23,16 +23,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-1
-      
-      - name: Get Lean version
-        run: |
-          VERSION=$(python3 -c "import json,urllib.request; print(max(v['id'] for v in json.load(urllib.request.urlopen('https://www.quantconnect.com/api/v2/services/cloud/versions'))['versions']))")
-          if [ -z "$VERSION" ]; then
-            echo "ERROR: VERSION is empty"
-            exit 1
-          fi
-          echo "Using VERSION=$VERSION"
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
       - name: Upload skills to S3
-        run: aws s3 cp skills.zip s3://cdn.quantconnect.com/skills/skills-$VERSION.zip --acl bucket-owner-full-control
+        run: aws s3 cp skills.zip s3://cdn.quantconnect.com/skills/skills-latest.zip --acl bucket-owner-full-control
