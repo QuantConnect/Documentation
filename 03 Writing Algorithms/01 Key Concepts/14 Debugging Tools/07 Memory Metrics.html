@@ -1,0 +1,80 @@
+<p>
+  The static <code>OS</code> class in the <code>QuantConnect</code> namespace exposes memory and CPU metrics that you can read from your algorithm to monitor resource usage during backtests and live trading.
+</p>
+
+<p>The following table lists the static members of the <code>OS</code> class that report memory and CPU usage:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Data Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">ApplicationMemoryUsed</code><code class="python">application_memory_used</code></td>
+            <td><code class="csharp">long</code><code class="python">int</code></td>
+            <td>Private memory allocated to the current process, including managed and unmanaged memory, in megabytes.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">TotalPhysicalMemoryUsed</code><code class="python">total_physical_memory_used</code></td>
+            <td><code class="csharp">long</code><code class="python">int</code></td>
+            <td>Managed-runtime RAM usage (sampled with <code>GC.GetTotalMemory</code>), in megabytes. LEAN's memory monitor samples this value.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">CpuUsage</code><code class="python">cpu_usage</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Total CPU usage as a percentage, sampled on a background thread.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">GetServerStatistics()</code><code class="python">get_server_statistics()</code></td>
+            <td><code class="csharp">Dictionary&lt;string, string&gt;</code><code class="python">dict</code></td>
+            <td>Snapshot dictionary with <code>CPU Usage</code>, <code>Used RAM</code>, <code>Total RAM</code>, <code>Hostname</code>, and <code>LEAN Version</code> entries.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following examples show how to read these metrics from an algorithm:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Log the current memory usage of the algorithm process.
+Log($"Total physical memory used: {OS.TotalPhysicalMemoryUsed} MB");
+Log($"Application memory used: {OS.ApplicationMemoryUsed} MB");</pre>
+    <pre class="python"># Log the current memory usage of the algorithm process.
+self.log(f"Total physical memory used: {OS.total_physical_memory_used} MB")
+self.log(f"Application memory used: {OS.application_memory_used} MB")</pre>
+</div>
+
+<div class="section-example-container">
+    <pre class="csharp">// Log the current CPU usage as a percentage.
+Log($"CPU usage: {OS.CpuUsage}%");</pre>
+    <pre class="python"># Log the current CPU usage as a percentage.
+self.log(f"CPU usage: {OS.cpu_usage}%")</pre>
+</div>
+
+<div class="section-example-container">
+    <pre class="csharp">// Log a full snapshot of the server statistics.
+foreach (var kvp in OS.GetServerStatistics()) Log($"{kvp.Key}: {kvp.Value}");</pre>
+    <pre class="python"># Log a full snapshot of the server statistics.
+for key, value in OS.get_server_statistics().items(): self.log(f"{key}: {value}")</pre>
+</div>
+
+<p>
+  LEAN samples <code class="csharp">OS.TotalPhysicalMemoryUsed</code><code class="python">OS.total_physical_memory_used</code> once per minute and smooths the reading with an exponential moving average so that short-lived spikes do not terminate the algorithm.
+  The engine sets <code>emaPeriod = 60</code>, which gives you roughly a 1-hour rolling window.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Update the smoothed memory reading each minute.
+sample = OS.TotalPhysicalMemoryUsed;
+memoryUsed = Convert.ToInt64((emaPeriod-1)/emaPeriod * memoryUsed + (1/emaPeriod)*sample);</pre>
+    <pre class="python"># Update the smoothed memory reading each minute.
+sample = OS.total_physical_memory_used
+memory_used = int((ema_period - 1) / ema_period * memory_used + (1 / ema_period) * sample)</pre>
+</div>
+
+<p>
+  If the smoothed value exceeds the node's memory limit, LEAN terminates the algorithm with the runtime message <code>Execution Security Error: Memory Usage Maxed Out - {memoryCap}MB max, with last sample of {lastSample}MB.</code>, where <code>{memoryCap}</code> is the node's configured limit and <code>{lastSample}</code> is the most recent reading.
+</p>
