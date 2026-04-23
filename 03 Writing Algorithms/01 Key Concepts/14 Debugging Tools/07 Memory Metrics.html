@@ -41,28 +41,31 @@
 <div class="section-example-container">
     <pre class="csharp">// Log the current memory usage of the algorithm process.
 Log($"Total physical memory used: {OS.TotalPhysicalMemoryUsed} MB");
-Log($"Application memory used: {OS.ApplicationMemoryUsed} MB");</pre>
+Log($"Application memory used: {OS.ApplicationMemoryUsed} MB");
+
+// Log the current CPU usage as a percentage.
+Log($"CPU usage: {OS.CpuUsage}%");
+
+// Log a full snapshot of the server statistics.
+foreach (var kvp in OS.GetServerStatistics()) Log($"{kvp.Key}: {kvp.Value}");</pre>
     <pre class="python"># Log the current memory usage of the algorithm process.
 self.log(f"Total physical memory used: {OS.total_physical_memory_used} MB")
-self.log(f"Application memory used: {OS.application_memory_used} MB")</pre>
-</div>
+self.log(f"Application memory used: {OS.application_memory_used} MB")
 
-<div class="section-example-container">
-    <pre class="csharp">// Log the current CPU usage as a percentage.
-Log($"CPU usage: {OS.CpuUsage}%");</pre>
-    <pre class="python"># Log the current CPU usage as a percentage.
-self.log(f"CPU usage: {OS.cpu_usage}%")</pre>
-</div>
+# Log the current CPU usage as a percentage.
+self.log(f"CPU usage: {OS.cpu_usage}%")
 
-<div class="section-example-container">
-    <pre class="csharp">// Log a full snapshot of the server statistics.
-foreach (var kvp in OS.GetServerStatistics()) Log($"{kvp.Key}: {kvp.Value}");</pre>
-    <pre class="python"># Log a full snapshot of the server statistics.
+# Log a full snapshot of the server statistics.
 for key, value in OS.get_server_statistics().items(): self.log(f"{key}: {value}")</pre>
 </div>
 
 <p>
-  LEAN samples <code class="csharp">OS.TotalPhysicalMemoryUsed</code><code class="python">OS.total_physical_memory_used</code> once per minute and smooths the reading with an exponential moving average so that short-lived spikes do not terminate the algorithm.
+  LEAN monitors the process's RAM usage during backtests and live trading so it can stop the algorithm gracefully when it approaches the node's memory limit, instead of letting the runtime crash.
+  To avoid killing an algorithm over a short-lived spike, LEAN does not act on the raw reading — it smooths the sampled value first and checks the smoothed value against the limit.
+</p>
+
+<p>
+  LEAN samples <code class="csharp">OS.TotalPhysicalMemoryUsed</code><code class="python">OS.total_physical_memory_used</code> once per minute and feeds each sample into an exponential moving average.
   The engine sets <code>emaPeriod = 60</code>, which gives you roughly a 1-hour rolling window.
 </p>
 
