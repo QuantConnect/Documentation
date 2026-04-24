@@ -5,35 +5,38 @@
 """
 from __future__ import annotations
 
-import argparse
-import re
-import shutil
-import sys
+from argparse import ArgumentParser
 from pathlib import Path
+from re import MULTILINE, compile
+from shutil import copy2
+from sys import exit, stderr
 
 
-FRONTMATTER_NAME = re.compile(r"^name:\s*(.+?)\s*$", re.MULTILINE)
-SKIP_DIRS = {".git", "node_modules", ".venv", "__pycache__"}
+FRONTMATTER_NAME = compile(r"^name:\s*(.+?)\s*$", MULTILINE)
+# Only scan the numbered top-level chapters where SKILL.md files may live.
+CHAPTER_DIR = compile(r"^0[1-6] ")
+# Frontmatter lives at the top of the file; 2KB is plenty and avoids reading
+# full SKILL.md bodies (some are hundreds of lines).
+HEAD_BYTES = 2048
 
 
 def extract_name(skill_file: Path) -> str | None:
-    text = skill_file.read_text(encoding="utf-8")
-    if not text.startswith("---"):
+    with skill_file.open(encoding="utf-8") as f:
+        head = f.read(HEAD_BYTES)
+    if not head.startswith("---"):
         return None
-    end = text.find("\n---", 3)
+    end = head.find("\n---", 3)
     if end == -1:
         return None
-    frontmatter = text[3:end]
-    match = FRONTMATTER_NAME.search(frontmatter)
+    match = FRONTMATTER_NAME.search(head[3:end])
     return match.group(1).strip() if match else None
 
 
 def find_skill_files(root: Path) -> list[Path]:
     results: list[Path] = []
-    for path in root.rglob("SKILL.md"):
-        if any(part in SKIP_DIRS for part in path.relative_to(root).parts):
-            continue
-        results.append(path)
+    for child in root.iterdir():
+        if child.is_dir() and CHAPTER_DIR.match(child.name):
+            results.extend(child.rglob("SKILL.md"))
     return sorted(results)
 
 
@@ -44,16 +47,15 @@ def install(src: Path, dst: Path, mode: str, dry_run: bool) -> None:
         print(f"DRY-RUN: {action}")
         return
     dst.parent.mkdir(parents=True, exist_ok=True)
-    if dst.exists() or dst.is_symlink():
-        dst.unlink()
+    dst.unlink(missing_ok=True)
     if mode == "link":
         dst.symlink_to(src)
     else:
-        shutil.copy2(src, dst)
+        copy2(src, dst)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = ArgumentParser(description=__doc__)
     parser.add_argument(
         "--link",
         dest="mode",
@@ -73,7 +75,7 @@ def main() -> int:
         rel = skill_file.relative_to(repo_root)
         name = extract_name(skill_file)
         if not name:
-            print(f"SKIP: no 'name:' in frontmatter — {rel}", file=sys.stderr)
+            print(f"SKIP: no 'name:' in frontmatter — {rel}", file=stderr)
             skipped += 1
             continue
 
@@ -89,4 +91,4 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    exit(main())
