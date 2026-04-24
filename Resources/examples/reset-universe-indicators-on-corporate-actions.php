@@ -78,12 +78,12 @@ class SelectionData:
         SetEndDate(2024, 12, 31);
         Settings.SeedInitialPrices = true;
         // Add a universe of US Equities based on an indicator.
-        _universe = AddUniverse(_SelectAssets);
+        _universe = AddUniverse(SelectAssets);
         // Add a warm-up period to warm up the indicators in the universe selection.
         SetWarmUp(TimeSpan.FromDays(60));
     }
 
-    private IEnumerable&lt;Symbol&gt; _SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
     {
         // Update the indicator of all stocks in the universe dataset and
         // get the subset of stocks that have their indicator ready.
