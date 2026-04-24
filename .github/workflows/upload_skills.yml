@@ -17,7 +17,7 @@ jobs:
       - name: Validate SKILL.md frontmatter
         run: |
           python3 - <<'EOF'
-          import sys, pathlib, yaml
+          import sys, io, pathlib, yaml
           REQUIRED = {'name', 'description'}
           errors = []
           for p in sorted(pathlib.Path('.').rglob('SKILL.md')):
@@ -25,10 +25,12 @@ jobs:
               if len(parts) < 3 or parts[0]:
                   errors.append((p, 'missing or unterminated YAML frontmatter'))
                   continue
+              stream = io.StringIO(parts[1])
+              stream.name = str(p)
               try:
-                  data = yaml.safe_load(parts[1])
+                  data = yaml.safe_load(stream)
               except yaml.YAMLError as e:
-                  errors.append((p, f'invalid YAML: {e}'))
+                  errors.append((p, f'invalid YAML:\n{e}'))
                   continue
               if not isinstance(data, dict):
                   errors.append((p, 'frontmatter must be a mapping'))
@@ -37,7 +39,11 @@ jobs:
               if missing:
                   errors.append((p, f'frontmatter missing: {", ".join(sorted(missing))}'))
           for p, err in errors:
-              print(f'::error file={p}::{err}')
+              summary = str(err).splitlines()[0]
+              print(f'::error file={p}::{summary}')
+              print(f'::group::{p}')
+              print(err)
+              print('::endgroup::')
           sys.exit(1 if errors else 0)
           EOF
 
