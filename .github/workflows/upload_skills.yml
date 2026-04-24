@@ -15,37 +15,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Validate SKILL.md frontmatter
-        run: |
-          python3 - <<'EOF'
-          import sys, io, pathlib, yaml
-          REQUIRED = {'name', 'description'}
-          errors = []
-          for p in sorted(pathlib.Path('.').rglob('SKILL.md')):
-              parts = p.read_text(encoding='utf-8').split('---\n', 2)
-              if len(parts) < 3 or parts[0]:
-                  errors.append((p, 'missing or unterminated YAML frontmatter'))
-                  continue
-              stream = io.StringIO(parts[1])
-              stream.name = str(p)
-              try:
-                  data = yaml.safe_load(stream)
-              except yaml.YAMLError as e:
-                  errors.append((p, f'invalid YAML:\n{e}'))
-                  continue
-              if not isinstance(data, dict):
-                  errors.append((p, 'frontmatter must be a mapping'))
-                  continue
-              missing = REQUIRED - data.keys()
-              if missing:
-                  errors.append((p, f'frontmatter missing: {", ".join(sorted(missing))}'))
-          for p, err in errors:
-              summary = str(err).splitlines()[0]
-              print(f'::error file={p}::{summary}')
-              print(f'::group::{p}')
-              print(err)
-              print('::endgroup::')
-          sys.exit(1 if errors else 0)
-          EOF
+        run: python3 validate-and-install-skills.py -v
 
       - name: Zip skills
         run:  zip -r skills.zip . -i "**/SKILL.md"
