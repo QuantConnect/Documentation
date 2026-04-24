@@ -117,7 +117,7 @@ public class BenzingaNewsDataAlgorithm : QCAlgorithm
 
 class BenzingaNewsDataAlgorithm(QCAlgorithm):
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -&gt;  None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
@@ -135,180 +135,151 @@ class BenzingaNewsDataAlgorithm(QCAlgorithm):
         
             
 class BenzingaNewsAlphaModel(AlphaModel):
-    
-    symbol_data_by_symbol = {}
+
+    _securities = []
     # A custom word-score map for calculating the total sentiment score
     word_scores = {'good': 1, 'great': 1, 'best': 1, 'growth': 1,
                    'bad': -1, 'terrible': -1, 'worst': -1, 'loss': -1}
     
-    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt;  List[Insight]:
         insights = []
         
-        for symbol, symbol_data in self.symbol_data_by_symbol.items():
-            if slice.contains_key(symbol_data.benzinga_symbol):
+        for security in self._securities:
+            if slice.contains_key(security.benzinga_data):
                 # Assign a sentiment score to the news article by specific word appearance scoring
-                content_words = slice[symbol_data.benzinga_symbol].contents.lower()
+                content_words = slice[security.benzinga_data].contents.lower()
                 score = 0
                 for word, word_score in self.word_scores.items():
                     score += (content_words.count(word) * word_score)
-                symbol_data.target_direction = InsightDirection.UP if score &gt; 0 else InsightDirection.FLAT
+                security.target_direction = InsightDirection.UP if score &gt;  0 else InsightDirection.FLAT
         
             # Ensure we have security data in the current Slice to avoid stale filling
-            if not (slice.contains_key(symbol) and slice[symbol] is not None and not slice[symbol].is_fill_forward):
+            if not (slice.contains_key(security) and slice[security] is not None and not slice[security].is_fill_forward):
                 continue
         
             # Buy or sell if the sentiment has changed from our current holdings
-            if symbol_data.current_direction != symbol_data.target_direction:
-                symbol_data.current_direction = symbol_data.target_direction
-                insights.append(Insight.price(symbol, timedelta(days=14), symbol_data.target_direction))
+            if security.current_direction != security.target_direction:
+                security.current_direction = security.target_direction
+                insights.append(Insight.price(security.symbol, timedelta(14), security.target_direction))
         
         return insights
         
-    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt;  None:
         for security in changes.added_securities:
-            symbol = security.symbol
-            self.symbol_data_by_symbol[symbol] = SymbolData(algorithm, symbol)
+            
+            # Requesting data to obtain the updated news for sentiment score calculation
+            security.benzinga_data = algorithm.add_data(BenzingaNews, security)
+            security.current_direction = InsightDirection.FLAT
+            security.target_direction = InsightDirection.FLAT
+
+            # Historical data
+            history = algorithm.history(security.benzinga_data, 14, Resolution.DAILY)
+            algorithm.debug(f"We got {len(history)} items from our history request")
+
+            self._securities.append(security)
         
         for security in changes.removed_securities:
-            symbol_data = self.symbol_data_by_symbol.pop(security.symbol, None)
-            if symbol_data:
-                symbol_data.dispose()
-            
-class SymbolData:
-    
-    current_direction = InsightDirection.FLAT
-    target_direction = InsightDirection.FLAT
-    
-    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
-        self.algorithm = algorithm
-        
-        # Requesting data to obtain the updated news for sentiment score calculation
-        self.benzinga_symbol = algorithm.add_data(BenzingaNews, symbol).symbol
-        
-        # Historical data
-        history = algorithm.history(self.benzinga_symbol, 14, Resolution.DAILY)
-        algorithm.debug(f"We got {len(history)} items from our history request")
-        
-    def dispose(self) -&gt; None:
-        # Unsubscribe from Benzinga news feed for this security to release computational resources
-        self.algorithm.remove_security(self.benzinga_symbol)</pre>
+            if security in self._securities:
+                # Unsubscribe from Benzinga news feed for this security to release computational resources
+                algorithm.remove_security(security.benzinga_data)
+                self._securities.remove(security)</pre>
 <pre class="csharp">using System.Text.RegularExpressions;
 
-public class BenzingaNewsDataAlgorithm : QCAlgorithm
-{
-    public override void Initialize()
-    {
-        SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 12, 31);
-        SetCash(100000);
-        
-        AddUniverseSelection(
-            new ManualUniverseSelectionModel(
-                QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)
-        ));
-        
-        AddAlpha(new BenzingaAlphaModel());
-        
-        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        
-        AddRiskManagement(new NullRiskManagementModel());
-        
-        SetExecution(new ImmediateExecutionModel());
-    }
-}
 
-public class BenzingaAlphaModel : AlphaModel
+namespace QuantConnect.Algorithm.CSharp
 {
-    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
-    // A custom word-score map for calculating the total sentiment score
-    private Dictionary&lt;string, int&gt; _wordScores = new Dictionary&lt;string, int&gt;(){
-        {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
-        {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
-    };
-
-    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    public class BenzingaNewsDataAlgorithm : QCAlgorithm
     {
-        var insights = new List&lt;Insight&gt;();
-        
-        foreach (var kvp in _symbolDataBySymbol)
+        public override void Initialize()
         {
-            var symbol = kvp.Key;
-            var symbolData = kvp.Value;
+            SetStartDate(2024, 9, 1);
+            SetEndDate(2024, 12, 31);
+            SetCash(100000);
             
-            if (slice.ContainsKey(symbolData.benzingaSymbol))
-            {
-                // Assign a sentiment score to the news article by specific word appearance scoring
-                var contentWords = slice[symbolData.benzingaSymbol].Contents.ToLower();
+            AddUniverseSelection(
+                new ManualUniverseSelectionModel(
+                    QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)
+            ));
+            
+            AddAlpha(new BenzingaAlphaModel());
+            
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            
+            AddRiskManagement(new NullRiskManagementModel());
+            
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class BenzingaAlphaModel : AlphaModel
+    {
+        private List&lt; Security&gt;  _securities = [];
+        // A custom word-score map for calculating the total sentiment score
+        private readonly Dictionary&lt; string, int&gt;  _wordScores = new(){
+            {"good", 1}, {"great", 1}, {"best", 1}, {"growth", 1},
+            {"bad", -1}, {"terrible", -1}, {"worst", -1}, {"loss", -1}
+        };
+
+        public override IEnumerable&lt; Insight&gt;  Update(QCAlgorithm algorithm, Slice slice)
+        {
+            var insights = new List&lt; Insight&gt; ();
+
+            foreach (var (benzingaSymbol, newsItem) in slice.Get&lt; BenzingaNews&gt; ())
+            {               
+                var security = algorithm.Securities[benzingaSymbol.Underlying];
+                var contentWords = newsItem.Contents.ToLower();
                 var score = 0;
+
                 foreach (var entry in _wordScores)
                 {
-                    score += (Regex.Matches(contentWords, entry.Key).Count * entry.Value);
+                    score += Regex.Matches(contentWords, entry.Key).Count * entry.Value;
                 }
-                symbolData.targetDirection = score &gt; 0 ? InsightDirection.Up : InsightDirection.Flat;
+                var targetDirection = score &gt;  0 ? InsightDirection.Up : InsightDirection.Flat;
+                security.Set("TargetDirection", targetDirection);
             }
             
-            
-            // Ensure we have security data in the current Slice to avoid stale filling
-            if (!(slice.ContainsKey(symbol) &amp;&amp; slice[symbol] != null &amp;&amp; !slice[symbol].IsFillForward))
+            // Generate insights based on direction changes
+            foreach (var security in _securities)
             {
-                continue;
+                if (!(slice.ContainsKey(security)  &amp;&amp;  slice[security] != null  &amp;&amp;  !slice[security].IsFillForward)) continue;
+                
+                var targetDirection = security.Get&lt; InsightDirection&gt; ("TargetDirection");
+                
+                // Buy or sell if the sentiment has changed from our current holdings
+                if (security.Get&lt; InsightDirection&gt; ("CurrentDirection") != targetDirection)
+                {
+                    insights.Add(Insight.Price(security, TimeSpan.FromDays(14), targetDirection));
+                    security.Set("CurrentDirection", targetDirection);
+                }
             }
-            
-            // Buy or sell if the sentiment has changed from our current holdings
-            if (symbolData.currentDirection != symbolData.targetDirection)
-            {
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(14), symbolData.targetDirection));
-                symbolData.currentDirection = symbolData.targetDirection;
-            }
+            return insights;
         }
-        return insights;
-    }
 
-    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
-    {
-        foreach (var security in changes.AddedSecurities)
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
         {
-            var symbol = security.Symbol;
-            _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
-        }
-
-        foreach (var security in changes.RemovedSecurities)
-        {
-            var symbol = security.Symbol;
-            if (_symbolDataBySymbol.ContainsKey(symbol))
+            foreach (var security in changes.AddedSecurities)
             {
-                _symbolDataBySymbol[symbol].dispose();
-                _symbolDataBySymbol.Remove(symbol);
+                // Requesting data to obtain the updated news for sentiment score calculation
+                var benzingaSymbol = algorithm.AddData&lt; BenzingaNews&gt; (security.Symbol).Symbol;
+                security.Set("CurrentDirection", InsightDirection.Flat);
+                security.Set("TargetDirection", InsightDirection.Flat);
+
+                // Historical data
+                var history = algorithm.History&lt; BenzingaNews&gt; (benzingaSymbol, 14, Resolution.Daily);
+                algorithm.Debug($"We got {history.Count()} items from our history request");
+                _securities.Add(security);
+                security.Set("BenzingaSymbol", benzingaSymbol);
+            }
+
+            foreach (var security in changes.RemovedSecurities)
+            {
+                if (_securities.Contains(security))
+                {
+                    algorithm.RemoveSecurity(security.Get&lt; Symbol&gt; ("BenzingaSymbol"));
+                    _securities.Remove(security);
+                }
             }
         }
-    }
-}
-
-
-public class SymbolData
-{
-    private QCAlgorithm _algorithm;
-    public Symbol benzingaSymbol;
-    public InsightDirection currentDirection = InsightDirection.Flat;
-    public InsightDirection targetDirection = InsightDirection.Flat;
-    
-    
-    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
-    {
-        _algorithm = algorithm;
-        
-        // Requesting data to obtain the updated news for sentiment score calculation
-        benzingaSymbol = algorithm.AddData&lt;BenzingaNews&gt;(symbol).Symbol;
-        
-        // Historical data
-        var history = algorithm.History&lt;BenzingaNews&gt;(benzingaSymbol, 14, Resolution.Daily);
-        algorithm.Debug($"We got {history.Count()} items from our history request");
-    }
-    
-    public void dispose()
-    {
-        // Unsubscribe from the Benzinga feed for this security to release computational resources
-        _algorithm.RemoveSecurity(benzingaSymbol);
     }
 }</pre>
 </div>
