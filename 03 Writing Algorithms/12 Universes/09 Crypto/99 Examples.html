@@ -194,3 +194,131 @@
         # Place orders to rebalance the portfolio.
         self.set_holdings(targets)</pre>
 </div>
+
+
+
+<h4>Example 4: Indicator Universe</h4>
+<p>The following example shows how to select a universe of Crypto pairs based on indicators.</p>
+<div class="section-example-container testable">
+	<pre class="python">class CryptoIndicatorUniverseSelectionAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        # Add a universe of Crypto pairs based on indicators.
+        self._selection_data_by_symbol = {}
+        self._universe = self.add_universe(CryptoUniverse.coinbase(self._select_assets))
+        # Add a warm-up period to warm up the indicators in the universe selection.
+        self.set_warm_up(timedelta(60))
+
+    def _select_assets(self, data):
+        # Update the indicator of all Crypto pairs in the universe dataset and
+        # get the subset of them that have their indicator ready.
+        ready_pairs = [
+            c for c in data
+            if self._selection_data_by_symbol.setdefault(c.symbol, SelectionData()).update(c)
+        ]
+        # As Crypto pairs leave the universe dataset, delete their SelectionData objects.
+        for symbol in self._selection_data_by_symbol.keys() - {c.symbol for c in data}:
+            del self._selection_data_by_symbol[symbol]
+        # During warm-up, keep the universe empty.
+        if self.is_warming_up:
+            return []
+        # Select a subset of the Crypto pairs based on their indicators.
+        # Example: Pairs trading above their bollinger band with high volume.
+        filtered = []
+        for c in ready_pairs:
+            selection_data = self._selection_data_by_symbol[c.symbol]
+            if c.close > selection_data.bb.upper_band.current.value:
+                filtered.append(c)
+        filtered = sorted(filtered, key=lambda c: self._selection_data_by_symbol[c.symbol].mean_daily_usd_volume)[-10:]
+        return [c.symbol for c in filtered]
+
+
+class SelectionData:
+
+    def __init__(self):
+        self.mean_daily_usd_volume = SimpleMovingAverage(30)
+        self.bb = BollingerBands(30, 2)
+    
+    def update(self, c):
+        # Update all the indicators and return true if they are all ready.
+        return (
+            self.mean_daily_usd_volume.update(c.end_time, c.volume_in_usd) &
+            self.bb.update(TradeBar(c.end_time, c.symbol, c.open, c.high, c.low, c.close, c.volume_in_usd))
+        )</pre>
+	<pre class="csharp">public class CryptoIndicatorUniverseSelectionAlgorithm : QCAlgorithm
+{
+    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol;
+    private Universe _universe;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        // Add a universe of Crypto pairs based on indicators.
+        _selectionDataBySymbol = new Dictionary&lt;Symbol, SelectionData&gt;();
+        _universe = AddUniverse(CryptoUniverse.Coinbase(_SelectAssets));
+        // Add a warm-up period to warm up the indicators in the universe selection.
+        SetWarmUp(TimeSpan.FromDays(60));
+    }
+
+    private IEnumerable&lt;Symbol&gt; _SelectAssets(IEnumerable&lt;CryptoUniverse&gt; data)
+    {
+        // Update the indicator of all Crypto pairs in the universe dataset and
+        // get the subset of them that have their indicator ready.
+        var readyPairs = new List&lt;CryptoUniverse&gt;();
+        foreach (var c in data)
+        {
+            if (!_selectionDataBySymbol.TryGetValue(c.Symbol, out var sd))
+            {
+                sd = new SelectionData();
+                _selectionDataBySymbol[c.Symbol] = sd;
+            }
+            if (sd.Update(c))
+            {
+                readyPairs.Add(c);
+            }
+        }
+        // As Crypto pairs leave the universe dataset, delete their SelectionData objects.
+        var activePairs = data.Select(c => c.Symbol).ToHashSet();
+        foreach (var symbol in _selectionDataBySymbol.Keys.Where(s => !activePairs.Contains(s)).ToList())
+        {
+            _selectionDataBySymbol.Remove(symbol);
+        }
+        // During warm-up, keep the universe empty.
+        if (IsWarmingUp)
+        {
+            return Enumerable.Empty&lt;Symbol&gt;();
+        }
+        // Select a subset of the Crypto pairs based on their indicators.
+        // Example: Pairs trading above their bollinger band with high volume.
+        return readyPairs
+            .Where(c => c.Close > _selectionDataBySymbol[c.Symbol].BB.UpperBand.Current.Value)
+            .OrderBy(c => _selectionDataBySymbol[c.Symbol].MeanDailyUsdVolume.Current.Value)
+            .TakeLast(10)
+            .Select(c => c.Symbol);
+    }
+}
+
+public class SelectionData
+{
+    public SimpleMovingAverage MeanDailyUsdVolume { get; }
+    public BollingerBands BB { get; }
+
+    public SelectionData()
+    {
+        MeanDailyUsdVolume = new SimpleMovingAverage(30);
+        BB = new BollingerBands(30, 2);
+    }
+
+    public bool Update(CryptoUniverse c)
+    {
+        // Update all the indicators and return true if they are all ready.
+        return (
+            MeanDailyUsdVolume.Update(c.EndTime, (decimal)c.VolumeInUsd) &
+            BB.Update(new TradeBar(c.EndTime, c.Symbol, c.Open, c.High, c.Low, c.Close, (decimal)c.VolumeInUsd))
+        );
+    }
+}</pre>
+</div>
