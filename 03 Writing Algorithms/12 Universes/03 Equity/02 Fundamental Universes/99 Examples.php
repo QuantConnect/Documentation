@@ -59,102 +59,195 @@
  <code>
   Fundamental
  </code>
- object has adjusted price and volume information, so you can do any price-related analysis.
+ object has daily price and volume information, so you can do any price-related analysis.
   The following algorithm defines a separate class to contain the indicator of each asset.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">using System.Collections.Concurrent;
-	
-public class UpTrendLiquidUniverseAlgorithm : QCAlgorithm
+ <pre class="csharp">public class UpTrendLiquidUniverseAlgorithm  : QCAlgorithm
 {    
-    // Create a concurrent dictionary to store the EMA data for universe selection.
-    private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
+    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
+    private Universe _universe;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
+        Settings.SeedInitialPrices = true;
         // Add the custom universe.
-        AddUniverse(SelectAssets);
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+        _universe = AddUniverse(SelectAssets);
+        // Add a warm-up period to warm up the indicators.
+        SetWarmUp(TimeSpan.FromDays(300));
     }
-    
-    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamental)
+
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-        return (from f in fundamental
-            // Create/Update the EMA indicators of each stock.
-            let avg = _selectionDataBySymbol.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(200))
-            where avg.Update(f.EndTime, f.AdjustedPrice)
-            // Select the Equities that are above their EMA and have a daily volume of $1B.
-            // These assets are in an uptrend and are very liquid.
-            where avg.Ema.IsReady &amp;&amp; f.Price &gt; avg.Ema.Current.Value &amp;&amp; f.DollarVolume &gt; 1000000000
-            // Select the 10 most liquid Equities to avoid extra slippage.   
-            orderby f.DollarVolume descending
-            select f.Symbol).Take(10);
+        // Update the indicator of all stocks in the universe dataset and
+        // get the subset of stocks that have their indicator ready.
+        var readyStocks = new List&lt;Fundamental&gt;();
+        foreach (var f in fundamentals)
+        {
+            if (!_selectionDataBySymbol.TryGetValue(f.Symbol, out var sd))
+            {
+                sd = new SelectionData(this, f, 200);
+                _selectionDataBySymbol[f.Symbol] = sd;
+            }
+            if (sd.Update(f))
+            {
+                readyStocks.Add(f);
+            }
+        }
+        // As assests leave the Fundamental dataset, delete their SelectionData object.
+        var activeStocks = fundamentals.Select(f => f.Symbol).ToHashSet();
+        foreach (var symbol in _selectionDataBySymbol.Keys.Where(s => !activeStocks.Contains(s)).ToList())
+        {
+            _selectionDataBySymbol.Remove(symbol);
+        }
+        // During warm-up, keep the universe empty.
+        if (IsWarmingUp)
+        {
+            return Enumerable.Empty&lt;Symbol&gt;();
+        }
+        // Select the Equities that are above their EMA and have a daily volume of $1B.
+        // These assets are in an uptrend and are very liquid.
+        return readyStocks
+            .Select(f => _selectionDataBySymbol[f.Symbol])
+            .Where(x => x.IsAboveEma && x.Volume > 1000000000)
+            // Select the 10 most liquid Equities to avoid extra slippage.    
+            .OrderBy(x => x.Volume)
+            .TakeLast(10)
+            .Select(x => x.Symbol);
     }
 }
 
 // Create a separate class to contain the EMA information of each asset.
-class SelectionData
+public class SelectionData
 {
-    public readonly ExponentialMovingAverage Ema;
+    private QCAlgorithm _algorithm;
+    private decimal _priceScaleFactor;
+    private ExponentialMovingAverage _ema { get; }
+    public Symbol Symbol;
+    public bool IsAboveEma = false;
+    public decimal Volume = 0;
 
-    // Create an EMA indicator for trend estimation and filtering.
-    public SelectionData(int period)
+    public SelectionData(QCAlgorithm algorithm, Fundamental f, int period)
     {
-        Ema = new ExponentialMovingAverage(period);
+        _algorithm = algorithm;
+        _priceScaleFactor = f.PriceScaleFactor;
+        // Create an EMA indicator for trend estimation and filtering.
+        Symbol = f.Symbol;
+        _ema = new ExponentialMovingAverage(period);
     }
 
     // Update your variables and indicators with the latest data.
-    // You may also want to use the History API here to warm-up the indicator.
-    public bool Update(DateTime time, decimal value)
+    public bool Update(Fundamental f)
     {
-        return Ema.Update(time, value);
+        // If there hasn't been a split or dividend since the last trading
+        // day, just update the indicator like normal.
+        if (f.PriceScaleFactor == _priceScaleFactor)
+        {
+            return _update(f.EndTime, f.Volume, f.Price);
+        }
+        // Otherwise, reset the indicator and warm it up with the new
+        // adjusted history.
+        _priceScaleFactor = f.PriceScaleFactor;
+        _ema.Reset();
+        var history = _algorithm.History&lt;TradeBar&gt;(
+            Symbol,
+            _ema.WarmUpPeriod,
+            Resolution.Daily,
+            dataNormalizationMode: DataNormalizationMode.ScaledRaw
+        );
+        foreach (var bar in history)
+        {
+            _update(bar.EndTime, bar.Volume, bar.Close);
+        }
+        return _ema.IsReady;
+    }
+
+    private bool _update(DateTime endTime, decimal volume, decimal price)
+    {
+        Volume = volume * price;
+        if (_ema.Update(endTime, price))
+        {
+            IsAboveEma = price > _ema.Current.Value;
+        }
+        return _ema.IsReady;
     }
 }</pre>
 <pre class="python">class UpTrendLiquidUniverseAlgorithm(QCAlgorithm):
 	
-    # Create a dictionary to store the EMA data for universe selection.
     _selection_data_by_symbol = {}
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        
+        self.settings.seed_initial_prices = True
         # Add the custom universe.
-        self.add_universe(self._select_assets)
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        self._universe = self.add_universe(self._select_assets)
+        # Add a warm-up period to warm up the indicators.
+        self.set_warm_up(timedelta(300))
     
-    def _select_assets(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        for f in fundamental:
-            # Create/Update the EMA indicators of each stock.
-            if f.symbol not in self._selection_data_by_symbol:
-                self._selection_data_by_symbol[f.symbol] = SelectionData(f.symbol, 200)
-            self._selection_data_by_symbol[f.symbol].update(f.end_time, f.adjusted_price, f.dollar_volume)
-        
+    def _select_assets(self, fundamentals: List[Fundamental]) -> List[Symbol]:
+        # Update the indicator of all stocks in the universe dataset and
+        # get the subset of stocks that have their indicator ready.
+        ready_stocks = [
+            f for f in fundamentals
+            if self._selection_data_by_symbol.setdefault(f.symbol, SelectionData(self, f, 200)).update(f)
+        ]
+        # As assests leave the Fundamental dataset, delete their SelectionData object.
+        for symbol in self._selection_data_by_symbol.keys() - {f.symbol for f in fundamentals}:
+            del self._selection_data_by_symbol[symbol]
+        # During warm-up, keep the universe empty.
+        if self.is_warming_up:
+            return []
         # Select the Equities that are above their EMA and have a daily volume of $1B.
         # These assets are in an uptrend and are very liquid.
-        selected = [x for x in self._selection_data_by_symbol.values() if x.is_above_ema and x.volume &gt; 1_000_000_000]
-            
+        selected = [self._selection_data_by_symbol[f.symbol] for f in ready_stocks]
+        selected = [x for x in selected if x.is_above_ema and x.volume > 1_000_000_000]          
         # Select the 10 most liquid Equities to avoid extra slippage.    
-        return [ x.symbol for x in sorted(selected, key=lambda x: x.volume)[-10:] ]
+        selected = [x.symbol for x in sorted(selected, key=lambda x: x.volume)[-10:]]
+        return selected
 
 
 # Create a separate class to contain the EMA information of each asset.
-class SelectionData(object):
+class SelectionData:
 
-    def __init__(self, symbol, period):
+    def __init__(self, algorithm, f, period):
+        self._algorithm = algorithm
+        self._price_scale_factor = f.price_scale_factor
         # Create an EMA indicator for trend estimation and filtering.
-        self.symbol = symbol
+        self.symbol = f.symbol
         self._ema = ExponentialMovingAverage(period)
         self.is_above_ema = False
         self.volume = 0
 
     # Update your variables and indicators with the latest data.
-    # You may also want to use the History API here to warm-up the indicator.
-    def update(self, time, price, volume):
-        self.volume = volume
-        if self._ema.update(time, price):
-            self.is_above_ema = price &gt; self._ema.current.value</pre>
+    def update(self, f):
+        # If there hasn't been a split or dividend since the last trading
+        # day, just update the indicator like normal.
+        if f.price_scale_factor == self._price_scale_factor:
+            return self._update(f.end_time, f.volume, f.price)
+        # Otherwise, reset the indicator and warm it up with the new 
+        # adjusted history.
+        self._price_scale_factor = f.price_scale_factor
+        self._ema.reset()
+        history = self._algorithm.history[TradeBar](
+            self.symbol, 
+            self._ema.warm_up_period, 
+            Resolution.DAILY, 
+            data_normalization_mode=DataNormalizationMode.SCALED_RAW
+        )
+        for bar in history:
+            self._update(bar.end_time, bar.volume, bar.close)
+        return self._ema.is_ready
+    
+    def _update(self, end_time, volume, price):
+        self.volume = volume * price 
+        if self._ema.update(end_time, price):
+            self.is_above_ema = price > self._ema.current.value
+        return self._ema.is_ready</pre>
 </div>
 <p>
  In this example, the
@@ -356,7 +449,7 @@ class SelectionData(object):
  Research post.
 </p>
 
-<h4>Example 6: Reset Indicators on Corporate Actions</h4>
+<h4>Example 6: Stocks Far Above Their SMA</h4>
 <? include(DOCS_RESOURCES."/examples/reset-universe-indicators-on-corporate-actions.php"); ?>
 
 <h4>
