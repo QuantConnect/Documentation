@@ -207,8 +207,7 @@ public class SelectionData
         selected = [self._selection_data_by_symbol[f.symbol] for f in ready_stocks]
         selected = [x for x in selected if x.is_above_ema and x.volume > 1_000_000_000]          
         # Select the 10 most liquid Equities to avoid extra slippage.    
-        selected = [x.symbol for x in sorted(selected, key=lambda x: x.volume)[-10:]]
-        return selected
+        return [x.symbol for x in sorted(selected, key=lambda x: x.volume)[-10:]]
 
 
 # Create a separate class to contain the EMA information of each asset.
