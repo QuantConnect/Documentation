@@ -321,99 +321,184 @@ class SelectionData:
 	You can use this ratio to select assets that are above their 10-day SMA and sort the results by the Equities that have had the biggest jump since yesterday.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">using System.Collections.Concurrent;
-
-public class HighRelativeVolumeUniverseAlgorithm : QCAlgorithm
+ <pre class="csharp">public class UpTrendLiquidUniverseAlgorithm  : QCAlgorithm
 {    
-    // Create a dictionary to store the EMA data for universe selection.
-    private ConcurrentDictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
+    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
+    private Universe _universe;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
-        // Add a universe with custom selection rules for filtering.
-        AddUniverse(SelectAssets);
+        Settings.SeedInitialPrices = true;
+        // Add the custom universe.
+        UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+        _universe = AddUniverse(SelectAssets);
+        // Add a warm-up period to warm up the indicators.
+        SetWarmUp(TimeSpan.FromDays(30));
     }
-    
-    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamental)
+
+    private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;Fundamental&gt; fundamentals)
     {
-        return (from f in fundamental
-            // Create/Update the volume SMA indicator of each stock.
-            let avg = _selectionDataBySymbol.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(f.Symbol, 10))
-            where avg.Update(f.EndTime, f.Volume)
-            // Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
-            where avg.VolumeRatio &gt; 1
+        // Update the indicator of all stocks in the universe dataset and
+        // get the subset of stocks that have their indicator ready.
+        var readyStocks = new List&lt;Fundamental&gt;();
+        foreach (var f in fundamentals)
+        {
+            if (!_selectionDataBySymbol.TryGetValue(f.Symbol, out var sd))
+            {
+                sd = new SelectionData(this, f, 10);
+                _selectionDataBySymbol[f.Symbol] = sd;
+            }
+            if (sd.Update(f))
+            {
+                readyStocks.Add(f);
+            }
+        }
+        // As assests leave the Fundamental dataset, delete their SelectionData object.
+        var activeStocks = fundamentals.Select(f => f.Symbol).ToHashSet();
+        foreach (var symbol in _selectionDataBySymbol.Keys.Where(s => !activeStocks.Contains(s)).ToList())
+        {
+            _selectionDataBySymbol.Remove(symbol);
+        }
+        // During warm-up, keep the universe empty.
+        if (IsWarmingUp)
+        {
+            return Enumerable.Empty&lt;Symbol&gt;();
+        }
+        // Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
+        return readyStocks
+            .Select(f => _selectionDataBySymbol[f.Symbol])
+            .Where(x => x.VolumeRatio > 1)
             // Select the 10 Equities with the highest relative volume, since they have the highest capactity
-            // for scalp-trading or intra-day movement.
-            orderby avg.VolumeRatio descending
-            select f.Symbol).Take(10);
+            // for scalp-trading or intra-day movement. 
+            .OrderBy(x => x.VolumeRatio)
+            .TakeLast(10)
+            .Select(x => x.Symbol);
     }
 }
 
-// Define a separate class to contain and calculate the SMA of each Equity.
-class SelectionData
+// Create a separate class to contain the SMA information of each asset.
+public class SelectionData
 {
-    public readonly Symbol Symbol;
-    public readonly SimpleMovingAverage VolumeSma;
-    public decimal VolumeRatio;
+    private QCAlgorithm _algorithm;
+    private decimal _priceScaleFactor;
+    private SimpleMovingAverage _sma { get; }
+    public Symbol Symbol;
+    public decimal VolumeRatio = 0;
 
-    public SelectionData(Symbol symbol, int period)
+    public SelectionData(QCAlgorithm algorithm, Fundamental f, int period)
     {
-        // Create an SMA of volume to track the popularity of the stock.
-        Symbol = symbol;
-        VolumeSma = new SimpleMovingAverage(period);
+        _algorithm = algorithm;
+        _priceScaleFactor = f.PriceScaleFactor;
+        // Create an EMA indicator for trend estimation and filtering.
+        Symbol = f.Symbol;
+        _sma = new SimpleMovingAverage(period);
     }
-    
-    public bool Update(DateTime time, decimal value)
+
+    // Update your variables and indicators with the latest data.
+    public bool Update(Fundamental f)
+    {
+        // If there hasn't been a split or dividend since the last trading
+        // day, just update the indicator like normal.
+        if (f.PriceScaleFactor == _priceScaleFactor)
+        {
+            return _update(f.EndTime, f.Volume);
+        }
+        // Otherwise, reset the indicator and warm it up with the new
+        // adjusted history.
+        _priceScaleFactor = f.PriceScaleFactor;
+        _sma.Reset();
+        var history = _algorithm.History&lt;TradeBar&gt;(
+            Symbol,
+            _sma.WarmUpPeriod,
+            Resolution.Daily,
+            dataNormalizationMode: DataNormalizationMode.ScaledRaw
+        );
+        foreach (var bar in history)
+        {
+            _update(bar.EndTime, bar.Volume);
+        }
+        return _sma.IsReady;
+    }
+
+    private bool _update(DateTime endTime, decimal volume)
     {
         // Update the SMA with today's data and calculate the relative volume position for filtering.
-        var ready = VolumeSma.Update(time, value);
-        VolumeRatio = VolumeSma.Current.Value != 0m ? value / VolumeSma.Current.Value : -1m;
+        var ready = _sma.Update(endTime, volume);
+        VolumeRatio = _sma.Current.Value != 0m ? volume / _sma.Current.Value : -1m;
         return ready;
     }
 }</pre>
 <pre class="python">class HighRelativeVolumeUniverseAlgorithm(QCAlgorithm):
-    
-    # Create a dictionary to store the EMA data for universe selection.
-    _selection_data_by_symbol = {}
 
-    def initialize(self) -&gt; None:
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        
-        # Add a universe with custom selection rules for filtering.
-        self.add_universe(self._select_assets)
+        self.settings.seed_initial_prices = True
+        # Add the custom universe.
+        self._selection_data_by_symbol = {}
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        self._universe = self.add_universe(self._select_assets)
+        # Add a warm-up period to warm up the indicators.
+        self.set_warm_up(timedelta(30))
     
-    def _select_assets(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        # Create/Update the volume SMA indicator of each stock.
-        for f in fundamental:
-            if f.symbol not in self._selection_data_by_symbol:
-                self._selection_data_by_symbol[f.symbol] = SelectionData(f.symbol, 10)
-            self._selection_data_by_symbol[f.symbol].update(f.end_time, f.adjusted_price, f.dollar_volume)
-
+    def _select_assets(self, fundamentals: List[Fundamental]) -> List[Symbol]:
+        # Update the indicator of all stocks in the universe dataset and
+        # get the subset of stocks that have their indicator ready.
+        ready_stocks = [
+            f for f in fundamentals
+            if self._selection_data_by_symbol.setdefault(f.symbol, SelectionData(self, f, 10)).update(f)
+        ]
+        # As assests leave the Fundamental dataset, delete their SelectionData object.
+        for symbol in self._selection_data_by_symbol.keys() - {f.symbol for f in fundamentals}:
+            del self._selection_data_by_symbol[symbol]
+        # During warm-up, keep the universe empty.
+        if self.is_warming_up:
+            return []
         # Select the Equities with higher trading volume than their SMA, indicating higher capital flow.
-        selected = [sd for sd in self._selection_data_by_symbol.values() if sd.volume_ratio &gt; 1]
-            
+        selected = [self._selection_data_by_symbol[f.symbol] for f in ready_stocks]
+        selected = [sd for sd in selected if sd.volume_ratio > 1]        
         # Select the 10 Equities with the highest relative volume, since they have the highest capactity
         # for scalp-trading or intra-day movement.
-        return [ x.symbol for x in sorted(selected, key=lambda x: x.volume_ratio)[-10:] ]
+        return [x.symbol for x in sorted(selected, key=lambda x: x.volume_ratio)[-10:]]
 
 
-# Define a separate class to contain and calculate the SMA of each Equity.
-class SelectionData(object):
-    
-    def __init__(self, symbol, period):
-        self.symbol = symbol
-        self.volume_ratio = 0
+# Create a separate class to contain the SMA information of each asset.
+class SelectionData:
+
+    def __init__(self, algorithm, f, period):
+        self._algorithm = algorithm
+        self._price_scale_factor = f.price_scale_factor
         # Create an SMA of volume to track the popularity of the stock.
+        self.symbol = f.symbol
         self._sma = SimpleMovingAverage(period)
 
-    def update(self, time, price, volume):
+    # Update your variables and indicators with the latest data.
+    def update(self, f):
+        # If there hasn't been a split or dividend since the last trading
+        # day, just update the indicator like normal.
+        if f.price_scale_factor == self._price_scale_factor:
+            return self._update(f.end_time, f.volume)
+        # Otherwise, reset the indicator and warm it up with the new 
+        # adjusted history.
+        self._price_scale_factor = f.price_scale_factor
+        self._sma.reset()
+        history = self._algorithm.history[TradeBar](
+            self.symbol, 
+            self._sma.warm_up_period, 
+            Resolution.DAILY, 
+            data_normalization_mode=DataNormalizationMode.SCALED_RAW
+        )
+        for bar in history:
+            self._update(bar.end_time, bar.volume)
+        return self._sma.is_ready
+    
+    def _update(self, end_time, volume):
         # Update the SMA with today's data and calculate the relative volume position for filtering.
-        if self._sma.update(time, volume):
-            self.volume_ratio = volume / self._sma.current.value if self._sma.current.value != 0 else -1</pre>
+        if self._sma.update(end_time, volume):
+            self.volume_ratio = volume / self._sma.current.value if self._sma.current.value != 0 else -1
+        return self._sma.is_ready</pre>
 </div>
 <h4>
  Example 4: 10 "Fastest Moving" Stocks With a 50-Day EMA &gt; 200 Day EMA
