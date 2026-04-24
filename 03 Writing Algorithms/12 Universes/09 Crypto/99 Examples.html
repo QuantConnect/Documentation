@@ -249,7 +249,7 @@ class SelectionData:
         )</pre>
 	<pre class="csharp">public class CryptoIndicatorUniverseSelectionAlgorithm : QCAlgorithm
 {
-    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol;
+    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
     private Universe _universe;
 
     public override void Initialize()
@@ -257,7 +257,6 @@ class SelectionData:
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         // Add a universe of Crypto pairs based on indicators.
-        _selectionDataBySymbol = new Dictionary&lt;Symbol, SelectionData&gt;();
         _universe = AddUniverse(CryptoUniverse.Coinbase(_SelectAssets));
         // Add a warm-up period to warm up the indicators in the universe selection.
         SetWarmUp(TimeSpan.FromDays(60));
