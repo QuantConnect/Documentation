@@ -355,6 +355,10 @@ class SelectionData(object):
  </a>
  Research post.
 </p>
+
+<h4>Example 6: Reset Indicators on Corporate Actions</h4>
+<? include(DOCS_RESOURCES."/examples/reset-universe-indicators-on-corporate-actions.php"); ?>
+
 <h4>
  Other Examples
 </h4>

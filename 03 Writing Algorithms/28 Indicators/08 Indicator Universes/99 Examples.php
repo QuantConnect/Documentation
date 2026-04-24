@@ -5,6 +5,9 @@ $number = 1;
 include(DOCS_RESOURCES."/examples/manual-indicator-universe-selection.php");
 ?>
 
+<h4>Example 2: Reset Indicators on Corporate Actions</h4>
+<? include(DOCS_RESOURCES."/examples/reset-universe-indicators-on-corporate-actions.php"); ?>
+
 <h4>Other Examples</h4>
 <p>For more examples, see the following algorithms:</p>
 
