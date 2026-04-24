@@ -321,7 +321,7 @@ class SelectionData:
 	You can use this ratio to select assets that are above their 10-day SMA and sort the results by the Equities that have had the biggest jump since yesterday.
 </p>
 <div class="section-example-container testable">
- <pre class="csharp">public class UpTrendLiquidUniverseAlgorithm  : QCAlgorithm
+ <pre class="csharp">public class HighRelativeVolumeUniverseAlgorithm  : QCAlgorithm
 {    
     private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
     private Universe _universe;
