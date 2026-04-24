@@ -69,7 +69,7 @@ class SelectionData:
         return self.indicator.is_ready</pre>
 	<pre class="csharp">public class EquityIndicatorUniverseSelectionAlgorithm : QCAlgorithm
 {
-    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol;
+    private Dictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new();
     private Universe _universe;
 
     public override void Initialize()
@@ -78,7 +78,6 @@ class SelectionData:
         SetEndDate(2024, 12, 31);
         Settings.SeedInitialPrices = true;
         // Add a universe of US Equities based on an indicator.
-        _selectionDataBySymbol = new Dictionary&lt;Symbol, SelectionData&gt;();
         _universe = AddUniverse(_SelectAssets);
         // Add a warm-up period to warm up the indicators in the universe selection.
         SetWarmUp(TimeSpan.FromDays(60));
