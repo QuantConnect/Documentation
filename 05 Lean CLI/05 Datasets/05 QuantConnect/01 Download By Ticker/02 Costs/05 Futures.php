@@ -28,27 +28,27 @@
         <tr>
             <td>Tick</td>
             <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>6 QCC = $0.06 USD</td>
+            <td>150 QCC = $1.50 USD</td>
         </tr>
         <tr>
             <td>Second</td>
             <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>5 QCC = $0.05 USD</td>
+            <td>100 QCC = $1.00 USD</td>
         </tr>
         <tr>
             <td>Minute</td>
             <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>5 QCC = $0.05 USD</td>
+            <td>50 QCC = $0.50 USD</td>
         </tr>
         <tr>
             <td>Hour</td>
             <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>300 QCC = $3 USD</td>
+            <td>1500 QCC = $15 USD</td>
         </tr>
         <tr>
             <td>Daily</td>
             <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>100 QCC = $1 USD</td>
+            <td>1500 QCC = $15 USD</td>
         </tr>
     </tbody>
 </table>
@@ -128,17 +128,17 @@
                 <br>=&gt; 1 * 252 * 3 files
                 <br>=  756 files
                 <br>
-                <br>756 files @ 5 QCC/file
-                <br>=&gt; 756 * 5 QCC
-                <br>= 3,780 QCC 
-                <br>= $37.80 USD
+                <br>756 files @ 50 QCC/file
+                <br>=&gt; 756 * 50 QCC
+                <br>= 37,800 QCC
+                <br>= $378 USD
             </td>
             <td>1 ticker with 3 data formats
                 <br>=&gt; 3 files/day
                 <br>
-                <br>3 file/day @ 5 QCC/file
-                <br>=&gt; 15 QCC/day
-                <br>= $0.15 USD/day
+                <br>3 file/day @ 50 QCC/file
+                <br>=&gt; 150 QCC/day
+                <br>= $1.50 USD/day
             </td>
         </tr>
     </tbody>
