@@ -1,14 +1,87 @@
 <p>
 	To broadcast a command to your live algorithms, send a payload through the <a href='/docs/v2/cloud-platform/api-reference/live-management/live-commands'>QuantConnect REST API</a> or <a href='/docs/v2/lean-cli/live-trading/algorithm-control'>LEAN CLI</a>.
 	<span class='csharp'>LEAN converts the first character in each key of the payload to uppercase before injecting the data into your algorithm.</span>
-	The following script demonstrates how to broadcast a command to all projects in your organization with the REST API.
+	Follow these steps to broadcast a command to all projects in your organization from the command line.
 </p>
 
-<div class="section-example-container">
-<pre class="python">from base64 import b64encode
+<ol>
+    <li>
+        <span class='csharp'>Create a new console project and change into its directory.</span>
+        <span class='python'>Install the <code>requests</code> library, if you haven't already.</span>
+    </li>
+    <div class="section-example-container">
+        <pre class="csharp">dotnet new console -n broadcast_command
+cd broadcast_command</pre>
+        <pre class="python">pip install requests</pre>
+    </div>
+
+    <li>Save the following code as <code class='csharp'>Program.cs</code><code class='python'>broadcast_command.py</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">// Broadcast a command to all live algorithms in your organization via the QuantConnect REST API.
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+
+// Edit these values:
+var userId = "0";
+var apiToken = "_____";
+var organizationId = "_____";
+
+var baseUrl = "https://www.quantconnect.com/api/v2/";
+
+Dictionary&lt;string, string&gt; GetHeaders()
+{
+    // Get timestamp
+    var timestamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds().ToString();
+    var timeStampedToken = $"{apiToken}:{timestamp}";
+
+    // Get hashed API token
+    var hashBytes = SHA256.HashData(Encoding.UTF8.GetBytes(timeStampedToken));
+    var hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
+    var authentication = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{userId}:{hash}"));
+
+    // Create headers dictionary.
+    return new Dictionary&lt;string, string&gt;
+    {
+        { "Authorization", $"Basic {authentication}" },
+        { "Timestamp", timestamp }
+    };
+}
+
+async Task&lt;string&gt; BroadcastCommand(object command)
+{
+    var client = new HttpClient();
+    client.BaseAddress = new Uri(baseUrl);
+    foreach (var header in GetHeaders())
+    {
+        client.DefaultRequestHeaders.Add(header.Key, header.Value);
+    }
+    // Force camelCase so the body keys stay lowercase even if the variables get renamed.
+    var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    var payload = JsonSerializer.Serialize(new { organizationId, command }, options);
+    var request = new StringContent(payload, Encoding.UTF8, "application/json");
+    var response = await client.PostAsync("live/commands/broadcast", request);
+    return await response.Content.ReadAsStringAsync();
+}
+
+// Read the ticker, quantity, and (optional) command type from the command line:
+var ticker = args[0];
+var quantity = int.Parse(args[1]);
+var command = new Dictionary&lt;string, object&gt;
+{
+    { "ticker", ticker },
+    { "quantity", quantity }
+};
+if (args.Length &gt; 2)
+{
+    command["$type"] = args[2];
+}
+Console.WriteLine(await BroadcastCommand(command));</pre>
+        <pre class="python">from base64 import b64encode
 from hashlib import sha256
 from time import time
-from requests import get, post
+from sys import argv
+from requests import post
 
 # Edit these values:
 USER_ID = 0
@@ -35,15 +108,32 @@ def get_headers():
 
 def broadcast_command(command):
     return post(
-        f'{BASE_URL}/live/commands/broadcast', 
-        headers=get_headers(), 
+        f'{BASE_URL}/live/commands/broadcast',
+        headers=get_headers(),
         json={"organizationId": ORGANIZATION_ID, "command": command}
     ).json()
 
-# Provide the command to call the on_command event handler:
-print(broadcast_command({'ticker': 'AAPL', 'quantity': 1}))
-# Provide the command with the $type to call encapsulated event handlers:
-print(broadcast_command({'$type': 'MyCommand', 'ticker': 'AAPL', 'quantity': 1}))</pre>
-</div>
+# Read the ticker, quantity, and (optional) command type from the command line:
+ticker = argv[1]
+quantity = int(argv[2])
+command = {'ticker': ticker, 'quantity': quantity}
+if len(argv) &gt; 3:
+    command['$type'] = argv[3]
+print(broadcast_command(command))</pre>
+    </div>
+
+    <li>Replace the placeholder values at the top of the file with your user Id, API token, and organization Id.</li>
+
+    <li>
+        Run the script, passing the ticker and quantity as arguments.
+        The first form below calls the <code class='python'>on_command</code><code class='csharp'>OnCommand</code> method; the second adds an optional third argument that sets the <code>$type</code> key to route to an encapsulated <code>Command</code> subclass handler.
+    </li>
+    <div class="section-example-container">
+        <pre class="csharp">dotnet run -- AAPL 1
+dotnet run -- AAPL 1 MyCommand</pre>
+        <pre class="python">python broadcast_command.py AAPL 1
+python broadcast_command.py AAPL 1 MyCommand</pre>
+    </div>
+</ol>
 
 <p>To get your user Id, API token, and organization Id, see <a href='/docs/v2/cloud-platform/community/profile#09-Request-API-Token'>Request API Token</a> and <a href='/docs/v2/cloud-platform/organizations/getting-started#05-Get-Organization-Id'>Get Organization Id</a>.</p>
