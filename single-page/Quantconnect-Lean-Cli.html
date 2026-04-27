@@ -3006,17 +3006,17 @@ class Weather(PythonData):
   </p>
   <div class="cli section-example-container">
    <pre>Data that will be purchased and downloaded:
-┌───────────────────────────┬─────────┬────────────────────────┬────────────┬─────────┐
-│ Dataset                   │ Vendor  │ Details                │ File count │ Price   │
-├───────────────────────────┼─────────┼────────────────────────┼────────────┼─────────┤
-│ Binance Crypto Price Data │ CoinAPI │ Data type: Trade       │ 32         │ 800 QCC │
-│                           │         │ Ticker: BTCBUSD        │            │         │
-│                           │         │ Resolution: Second     │            │         │
-│                           │         │ Start date: 2022-05-05 │            │         │
-│                           │         │ End date: 2022-06-05   │            │         │
-└───────────────────────────┴─────────┴────────────────────────┴────────────┴─────────┘
-Total price: 800 QCC
-Organization balance: 1,000 QCC
+┌─────────────┬──────────┬────────────────────────┬────────────┬────────┐
+│ Dataset     │ Vendor   │ Details                │ File count │ Price  │
+├─────────────┼──────────┼────────────────────────┼────────────┼────────┤
+│ US Equities │ AlgoSeek │ Data type: Trade       │ 3          │ 15 QCC │
+│             │          │ Ticker: SPY            │            │        │
+│             │          │ Resolution: Minute     │            │        │
+│             │          │ Start date: 2023-01-01 │            │        │
+│             │          │ End date: 2023-01-05   │            │        │
+└─────────────┴──────────┴────────────────────────┴────────────┴────────┘
+Total price: 15 QCC
+Organization balance: 10,000 QCC
 
 Data Terms of Use has been signed previously.
 Find full agreement at: https://www.quantconnect.com/terms/data/?organization=&lt;organizationId&gt;
@@ -3124,7 +3124,46 @@ Continue? [y/N]: y
     <code>
      lean data download
     </code>
-    to start an interactive downloading wizard and then enter the dataset category number.
+    to start an interactive downloading wizard and then select
+    <span class="button-name">
+     QuantConnect
+    </span>
+    to list the categories in the
+    <a href="https://www.quantconnect.com/datasets">
+     Dataset Market
+    </a>
+    .
+    <div class="cli section-example-container">
+     <pre>$ lean data download
+Select a historical data provider:
+1) Interactive Brokers
+2) Oanda
+3) Bitfinex
+4) Coinbase Advanced Trade
+5) Binance
+6) Kraken
+7) CharlesSchwab
+8) IQFeed
+9) Polygon
+10) FactSet
+11) AlphaVantage
+12) CoinApi
+13) ThetaData
+14) QuantConnect
+15) Local
+16) Terminal Link
+17) Bybit
+18) TradeStation
+19) Alpaca
+20) Tastytrade
+21) Eze
+22) dYdX
+23) Databento
+Enter an option: 14</pre>
+    </div>
+   </li>
+   <li>
+    Enter the dataset category number.
     <div class="cli section-example-container">
      <pre>$ lean data download
 Select a category:
@@ -3147,38 +3186,37 @@ Enter an option: 5</pre>
     <div class="cli section-example-container">
      <pre>$ lean data download
 Select a dataset:
-1) Binance Crypto Future Margin Rate Data
-2) Binance Crypto Future Price Data
-3) Binance Crypto Price Data
-4) Binance US Crypto Price Data
-5) Bitcoin Metadata
-6) Bitfinex Crypto Price Data
-7) Brain Language Metrics on Company Filings
-8) Brain ML Stock Ranking
-9) CFD Data
-10) Coinbase Crypto Price Data
-11) Composite Factor Bundle
-12) Cross Asset Model
-13) FOREX Data
-14) Insider Trading
-15) Kraken Crypto Price Data
-16) NFT Sales
-17) Tactical
-18) US Congress Trading
-19) US ETF Constituents
-20) US Equities
-21) US Equity Coarse Universe
-22) US Equity Options
-23) US Equity Security Master
-24) US Federal Reserve (FRED)
-25) US Futures
-26) US Futures Security Master
-27) US Index Options
-28) US SEC Filings
-29) US Treasury Yield Curve
-30) VIX Central Contango
-31) VIX Daily Price
-Enter an option: 20</pre>
+1) Bitcoin Metadata
+2) Brain Language Metrics on Company Filings
+3) Brain ML Stock Ranking
+4) CFD Data
+5) Composite Factor Bundle
+6) Cross Asset Model
+7) FOREX Data
+8) Insider Trading
+9) International Future Universe
+10) NFT Sales
+11) Tactical
+12) US Congress Trading
+13) US ETF Constituents
+14) US Equities
+15) US Equity Coarse Universe
+16) US Equity Option Universe
+17) US Equity Options
+18) US Equity Security Master
+19) US Future Option Universe
+20) US Future Options
+21) US Future Universe
+22) US Futures
+23) US Futures Security Master
+24) US Index Option Universe
+25) US Index Options
+26) US Interest Rate
+27) US SEC Filings
+28) US Treasury Yield Curve
+29) VIX Central Contango
+30) VIX Daily Price
+Enter an option: 13</pre>
     </div>
     <p>
      If you don't have an active subscription to the US Equity Security Master, you'll get the following error message:
@@ -4031,444 +4069,6 @@ Continue? [y/N]: y</pre>
   </table>
   <p>
    The preceding table assumes you download trade, quote, and open interest data. However, you can run backtests with only trade data.
-  </p>
- </body>
-</html>
-
-<h3>Crypto</h3>
-<html>
- <body>
-  <p>
-   Crypto algorithms require at least one of the
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/coinapi">
-    CoinAPI datasets
-   </a>
-   . The CoinAPI datasets are available in several resolutions. The resolution you need depends on the Crypto subscriptions you create in your algorithm and the resolution of data you get in
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">
-    history requests
-   </a>
-   . The following table describes the file format and costs of each resolution:
-  </p>
-  <table class="qc-table table">
-   <thead>
-    <tr>
-     <th>
-      Resolution
-     </th>
-     <th>
-      File Format
-     </th>
-     <th>
-      Cost per file
-     </th>
-    </tr>
-   </thead>
-   <tbody>
-    <tr>
-     <td>
-      Tick
-     </td>
-     <td>
-      One file per security per trading day per brokerage per data format. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      100 QCC = $1 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Second
-     </td>
-     <td>
-      One file per security per trading day per brokerage per data format. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      25 QCC = $0.25 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Minute
-     </td>
-     <td>
-      One file per security per trading day per brokerage per data format. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      5 QCC = $0.05 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Hour
-     </td>
-     <td>
-      One file per security per brokerage.
-      <br/>
-     </td>
-     <td>
-      400 QCC = $4 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Daily
-     </td>
-     <td>
-      One file per security per brokerage.
-      <br/>
-     </td>
-     <td>
-      100 QCC = $1 USD
-     </td>
-    </tr>
-   </tbody>
-  </table>
-  <p>
-   If you add universes to your algorithm, you also need
-   <code>
-    CryptoUniverse
-   </code>
-   data. The file format of
-   <code>
-    CryptoUniverse
-   </code>
-   data is one file per day per brokerage and each file costs 100 QCC = $1 USD.
-  </p>
-  <p>
-   For example, the following algorithm creates a universe of 100 Cryptocurrencies and then subscribes to minute resolution data for each one in the universe:
-  </p>
-  <div class="section-example-container">
-   <pre class="csharp">public class CryptoDataAlgorithm : QCAlgorithm
-{
-    public override void Initialize()
-    {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2021, 1, 1);
-        UniverseSettings.Asynchronous = true;            
-        AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; universeDay.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
-        );
-    }
-}</pre>
-   <pre class="python">class CryptoDataAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self.set_start_date(2020, 1, 1)
-        self.set_end_date(2021, 1, 1)
-        self.universe_settings.asynchronous = True
-        self.add_universe(CryptoUniverse.coinbase(self.universe_filter))
-
-    def universe_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: (cf.volume_in_usd or 0), reverse=True)
-        return [cf.symbol for cf in sorted_by_dollar_volume[:100]]</pre>
-  </div>
-  <p>
-   The following table shows the data cost of the preceding algorithm:
-  </p>
-  <table class="qc-table table">
-   <thead>
-    <tr>
-     <th>
-      Dataset
-     </th>
-     <th>
-      Package
-     </th>
-     <th>
-      Initial Cost
-     </th>
-     <th>
-      Ongoing Cost
-     </th>
-    </tr>
-   </thead>
-   <tbody>
-    <tr>
-     <td>
-      Coinbase Crypto Price Data
-     </td>
-     <td>
-      Universe Download
-     </td>
-     <td>
-      365 days
-      <br/>
-      =&gt; 365 files
-      <br/>
-      <br/>
-      365 files @ 100 QCC/file
-      <br/>
-      =&gt; 365 * 100 QCC
-      <br/>
-      = 36,500 QCC
-      <br/>
-      = $365 USD
-     </td>
-     <td>
-      1 file per day @ 100 QCC/file
-      <br/>
-      =&gt; 100 QCC/day
-      <br/>
-      = $1 USD/day
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Coinbase Crypto Price Data
-     </td>
-     <td>
-      Minute Download
-     </td>
-     <td>
-      100 securities over 365 trading days with 2 data formats
-      <br/>
-      =&gt; 1 * 100 * 365 * 2 files
-      <br/>
-      = 73,000 files
-      <br/>
-      <br/>
-      73,000 files @ 5 QCC/file
-      <br/>
-      =&gt; 73,000 * 5 QCC
-      <br/>
-      = 365,000 QCC
-      <br/>
-      = $3,650 USD
-     </td>
-     <td>
-      100 securities with 2 data formats
-      <br/>
-      =&gt; 100 * 2 files/day
-      <br/>
-      = 200 files/day
-      <br/>
-      <br/>
-      200 files/day @ 5 QCC/file
-      <br/>
-      =&gt; 200 * 5 QCC/day
-      <br/>
-      = 1,000 QCC/day
-      <br/>
-      = $10 USD/day
-     </td>
-    </tr>
-   </tbody>
-  </table>
-  <p>
-   The preceding table assumes you download trade and quote data, but you can run backtests with only trade data.
-  </p>
- </body>
-</html>
-
-<h3>Crypto Future</h3>
-<html>
- <body>
-  <p>
-   Crypto Future algorithms require data from one of the price datasets and one of the margin rate datasets.
-    The price datasets are available in several resolutions. 
-    The resolution you need depends on the Crypto Future subscriptions you create in your algorithm and the resolution of data you get in
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">
-    history requests
-   </a>
-   . 
-    The following table describes the file format and costs of each resolution:
-  </p>
-  <table class="qc-table table">
-   <thead>
-    <tr>
-     <th>
-      Resolution
-     </th>
-     <th>
-      File Format
-     </th>
-     <th>
-      Cost per file
-     </th>
-    </tr>
-   </thead>
-   <tbody>
-    <tr>
-     <td>
-      Tick
-     </td>
-     <td>
-      One file per security per trading day per data format. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      100 QCC = $1 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Second
-     </td>
-     <td>
-      One file per security per trading day per data format. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      25 QCC = $0.25 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Minute
-     </td>
-     <td>
-      One file per security per trading day per data format. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      5 QCC = $0.05 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Hour
-     </td>
-     <td>
-      One file per security. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      400 QCC = $4 USD
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Daily
-     </td>
-     <td>
-      One file per security. Quote and trade data are separate files.
-      <br/>
-     </td>
-     <td>
-      100 QCC = $1 USD
-     </td>
-    </tr>
-   </tbody>
-  </table>
-  <p>
-   The file format of the margin rate data is one file per Crypto Future and each file costs 100 QCC = $1 USD.
-  </p>
-  <p>
-   For example, the following algorithm subscribes to minute resolution data for one Crypto Future:
-  </p>
-  <div class="section-example-container">
-   <pre class="csharp">public class CryptoFutureDataAlgorithm : QCAlgorithm
-{
-    public override void Initialize()
-    {
-        SetStartDate(2020, 1, 1);
-        SetEndDate(2021, 1, 1);
-        SetBrokerageModel(BrokerageName.BinanceFutures, AccountType.Margin);
-        AddCryptoFuture("BTCUSD");
-    }
-}</pre>
-   <pre class="python">class CryptoFutureDataAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self.set_start_date(2020, 1, 1)
-        self.set_end_date(2021, 1, 1)
-        self.set_brokerage_model(BrokerageName.BINANCE_FUTURES, AccountType.MARGIN)
-        self.add_crypto_future('BTCUSD')</pre>
-  </div>
-  <p>
-   The following table shows the data cost of the preceding algorithm:
-  </p>
-  <table class="qc-table table">
-   <thead>
-    <tr>
-     <th>
-      Dataset
-     </th>
-     <th>
-      Package
-     </th>
-     <th>
-      Initial Cost
-     </th>
-     <th>
-      Ongoing Cost
-     </th>
-    </tr>
-   </thead>
-   <tbody>
-    <tr>
-     <td>
-      Binance Crypto Future Price Data
-     </td>
-     <td>
-      Minute Download
-     </td>
-     <td>
-      1 security over 365 trading days with 2 data formats
-      <br/>
-      =&gt; 1 * 365 * 2 files
-      <br/>
-      = 730 files
-      <br/>
-      <br/>
-      730 files @ 5 QCC/file
-      <br/>
-      =&gt; 730 * 5 QCC
-      <br/>
-      = 3,650 QCC
-      <br/>
-      = $36.50 USD
-     </td>
-     <td>
-      2 files per day @ 5 QCC/file
-      <br/>
-      =&gt; 2 * 5 QCC/day
-      <br/>
-      = 10 QCC/day
-      <br/>
-      = $0.10 USD/day
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Binance Crypto Future Margin Rate Data
-     </td>
-     <td>
-      Download On Premise
-     </td>
-     <td>
-      1 security
-      <br/>
-      =&gt; 1 file
-      <br/>
-      <br/>
-      1 file @ 100 QCC/file
-      <br/>
-      =&gt; 1 * 100 QCC
-      <br/>
-      = 100 QCC
-      <br/>
-      = $1 USD
-     </td>
-     <td>
-      1 security
-      <br/>
-      =&gt; 1 file/day
-      <br/>
-      <br/>
-      1 file/day @ 100 QCC/file
-      <br/>
-      =&gt; 1 * 100 QCC/day
-      <br/>
-      = 100 QCC/day
-      <br/>
-      = $1 USD/day
-     </td>
-    </tr>
-   </tbody>
-  </table>
-  <p>
-   The preceding table assumes you download trade and quote data, but you can run backtests with only trade data.
   </p>
  </body>
 </html>
