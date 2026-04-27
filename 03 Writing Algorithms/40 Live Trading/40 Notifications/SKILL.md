@@ -1,6 +1,6 @@
 ---
 name: notifications
-description: Use when adding or reviewing live-trading `Notify.*` calls (Email, SMS, Telegram, Web/Webhook, FTP/SFTP) in a QuantConnect/LEAN algorithm. Notifications run in QuantConnect Cloud live trading only — backtests, local LEAN, and LEAN CLI live deployments don't have them, so guard call sites with `live_mode`. Covers per-channel limits (10 KB email body, 1,600-char SMS, 300 s webhook timeout, default `attachment.txt` filename), the tiered hourly free quota with paid overage (SMS always billed per message regardless of tier), the rule that raw subscribed-dataset content can't be sent (terms-of-use), the Discord webhook content-key JSON envelope, the Telegram group-ID + bot-token + UTF-32 emoji rules, that *receiving* messages is the live-commands skill, and that `notify.*` belongs in event handlers, not per-bar `on_data`.
+description: Use when adding or reviewing live-trading `Notify.*` calls (Email, SMS, Telegram, Web/Webhook, FTP/SFTP) in a QuantConnect/LEAN algorithm. Notifications run in QuantConnect Cloud live trading only — backtests, local LEAN, and LEAN CLI live deployments don't have them, so guard call sites with `live_mode`. Covers per-channel limits (10 KB email body, 1,600-char SMS, 300 s webhook timeout, default `attachment.txt` filename), the tiered hourly free quota with paid overage (SMS always billed per message regardless of tier), the rule that raw subscribed-dataset content can't be sent (terms-of-use), the Discord webhook content-key JSON envelope, the Telegram group-ID + bot-token + UTF-32 emoji rules, that *receiving* messages is the live-commands skill, that *shipping portfolio targets* to a fund/platform belongs in the custom-signal-export skill rather than `notify.web`, and that `notify.*` belongs in event handlers, not per-bar `on_data`.
 ---
 
 # Notifications in QuantConnect / LEAN
@@ -89,6 +89,10 @@ Putting `notify.*` inside `on_data` on minute or tick resolution saturates the h
 
 The notification system **can't be used for data distribution** — that's a terms-of-use violation, not just a quota concern. Send derived information (signal value, portfolio value, fill summary), not raw bars/quotes/trades from QuantConnect-subscribed datasets. The logging skill carries the same rule.
 
+## Shipping trading signals: use signal exports, not webhooks
+
+If the goal is to feed an algorithm's portfolio targets to a fund, allocator, or trading platform — Collective2, Numerai, vBase, or your own endpoint — use signal exports, not `notify.web`. The signal-export manager debounces fills into one batched call (default 5 s window), passes a standardized `PortfolioTarget` list, and has bundled providers for the common destinations. See the custom-signal-export skill. Reach for `notify.*` only for genuine notifications (fill alerts, broker errors, daily summaries) where a human, not a trading system, is the recipient.
+
 ## Receiving messages
 
 Notify is one-way out. To *receive* external instructions (manual liquidate, parameter change), use the live-commands skill.
@@ -104,4 +108,5 @@ Notify is one-way out. To *receive* external instructions (manual liquidate, par
 7. For webhook: receiver responds within 300 s? Discord targets wrapped in a `content`-keyed JSON object?
 8. For FTP vs SFTP: auth method matches the server (password vs SSH key, not both)?
 9. Does the message body contain raw subscribed-dataset content? If yes, swap for a derived value.
-10. Does the algorithm need to *receive* messages? That's the live-commands skill.
+10. Is the payload actually a trading signal / portfolio target headed to a fund or platform? If yes, use signal exports (custom-signal-export skill), not `notify.web`.
+11. Does the algorithm need to *receive* messages? That's the live-commands skill.
