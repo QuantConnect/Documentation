@@ -14,11 +14,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Validate SKILL.md frontmatter
-        run: python3 validate-and-install-skills.py -v
-
-      - name: Zip skills
-        run:  zip -r skills.zip . -i "**/SKILL.md"
+      - name: Bundle Skills
+        # Validate and bundle all SKILL.md files into a single zip for upload.
+        run: python3 bundle-skills.py
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6

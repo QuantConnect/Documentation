@@ -1,6 +1,6 @@
 ---
 name: scheduled-events
-description: Use when adding or reviewing Scheduled Events in a QuantConnect/LEAN algorithm (portfolio rebalancing, periodic signal checks, anything scheduled via self.schedule.on). Ensures the time rule does not fire inside a data bar's time period, covers the 8AM convention for dynamic US Equity universes on daily data, and notes that string tickers work in date/time rules.
+description: Use when adding or reviewing Scheduled Events in a QuantConnect/LEAN algorithm. Triggers — code uses py`self.schedule.on(...)`cs`Schedule.On(...)`, py`date_rules.*`cs`DateRules.*`, py`time_rules.*`cs`TimeRules.*`; questions like "rebalance weekly/monthly", "fire at 8am ET", "why is my rebalance using yesterday's universe", "schedule 15 min before close", "daily Crypto rebalance at midnight UTC", "why does my hourly schedule fire at the wrong time", "multi-asset rebalance across time zones". Skip when — scheduling indicator updates (those route through universe selection or py`plot_indicator`cs`PlotIndicator`, not py`self.schedule.on`cs`Schedule.On`).
 ---
 
 # Scheduled Events in QuantConnect / LEAN
@@ -60,7 +60,8 @@ Schedule.On(DateRules.EveryDay("SPY"), TimeRules.BeforeMarketClose("SPY", 15), E
 // One-off event on a specific date
 Schedule.On(DateRules.On(2024, 6, 3), TimeRules.At(9, 0), OneShot);
 
-// Daily Crypto at midnight UTC (requires the UTC time-zone override)
+// Daily Crypto at midnight UTC (requires the UTC time-zone override).
+// Pass a method group (`CryptoRebalance`), not `CryptoRebalance()` — that would invoke immediately.
 TimeRules.SetDefaultTimeZone(TimeZones.Utc);
 Schedule.On(DateRules.EveryDay("BTCUSD"), TimeRules.Midnight, CryptoRebalance);
 ```
@@ -69,8 +70,8 @@ Schedule.On(DateRules.EveryDay("BTCUSD"), TimeRules.Midnight, CryptoRebalance);
 
 Scheduled events are used for lots of things — logging, signal checks, closing trailing positions, periodic reporting. This section applies **only** if the event places `PortfolioTarget`s (i.e. a rebalance).
 
-1. **Enable `self.settings.seed_initial_prices = True` in `initialize`.** Without it, securities that join the universe may no price on the first tick of the rebalance — `PortfolioTarget(symbol, weight)` has nothing to size against and the rebalance errors or silently skips. With it, LEAN seeds each new security with its last known price the moment it enters the universe.
-2. **Filter out zero-price securities before building targets.** Even with seed_initial_prices, a freshly-added symbol can still have `price == 0` briefly (delisting day, data gap, there hasn't been a bar for the asset since it entered the universe). Orders at zero throw errors and leaves the portfolio under-invested.
+1. **Enable py`self.settings.seed_initial_prices = True`cs`Settings.SeedInitialPrices = true` in py`initialize`cs`Initialize`.** Without it, securities that join the universe may have no price on the first tick of the rebalance — `PortfolioTarget(symbol, weight)` has nothing to size against and the rebalance errors or silently skips. With it, LEAN seeds each new security with its last known price the moment it enters the universe.
+2. **Filter out zero-price securities before building targets.** Even with py`seed_initial_prices`cs`SeedInitialPrices`, a freshly-added symbol can still have py`price == 0`cs`Price == 0` briefly (delisting day, data gap, no bar for the asset since it entered the universe). Orders at zero throw errors and leave the portfolio under-invested.
 
 ```python
 def _rebalance(self):
@@ -92,11 +93,13 @@ private void Rebalance()
     {
         return;
     }
+    // Materialize Selected before counting + iterating; it's IEnumerable<Symbol>.
     var securities = _universe.Selected.Select(s => Securities[s]).Where(s => s.Price > 0).ToList();
     if (!securities.Any())
     {
         return;
     }
+    // 1m forces decimal division — integer division would truncate to 0.
     var weight = 1m / securities.Count;
     var targets = securities.Select(s => new PortfolioTarget(s, weight)).ToList();
     SetHoldings(targets, true);
@@ -144,7 +147,11 @@ self.schedule.on(
 )
 ```
 
-**Why 08:00:** in live trading, universe selection runs between 07:00 and 08:00 ET. Scheduling the rebalance at 08:00 guarantees `self._universe.selected` reflects the **current day's** universe constituents, not the previous day's.
+```csharp
+Schedule.On(DateRules.WeekStart("SPY"), TimeRules.At(8, 0), Rebalance);
+```
+
+**Why 08:00:** in live trading, universe selection runs between 07:00 and 08:00 ET. Scheduling the rebalance at 08:00 guarantees py`self._universe.selected`cs`_universe.Selected` reflects the **current day's** universe constituents, not the previous day's.
 
 ## Align universe selection with the rebalance schedule
 
@@ -158,11 +165,19 @@ self._universe = self.add_universe(self.universe.etf('SPY'))
 self.schedule.on(date_rule, self.time_rules.at(8, 0), self._rebalance)
 ```
 
-Using the **same** `date_rules.week_start('SPY')` on both ensures that on every day the rebalance runs, `self._universe.selected` reflects a selection run earlier the same day (between 07:00 and 08:00 ET in live). On every other day, neither runs.
+```csharp
+var dateRule = DateRules.WeekStart("SPY");
+UniverseSettings.Schedule.On(dateRule);
+UniverseSettings.Resolution = Resolution.Daily;
+_universe = AddUniverse(Universe.ETF("SPY"));
+Schedule.On(dateRule, TimeRules.At(8, 0), Rebalance);
+```
+
+Using the **same** py`week_start('SPY')`cs`WeekStart("SPY")` date rule on both ensures that on every day the rebalance runs, py`self._universe.selected`cs`_universe.Selected` reflects a selection run earlier the same day (between 07:00 and 08:00 ET in live). On every other day, neither runs.
 
 ## Time zones
 
-`time_rules.at(hour, minute)` interprets the hour/minute in the **time-rule default time zone**, which defaults to the algorithm time zone (New York / ET unless overridden). The "bar boundary" you're dodging is in the **data's** time zone — so these have to match, or the event will run mid-bar.
+py`self.time_rules.at(hour, minute)`cs`TimeRules.At(hour, minute)` interprets the hour/minute in the **time-rule default time zone**, which defaults to the algorithm time zone (New York / ET unless overridden). The "bar boundary" you're dodging is in the **data's** time zone — so these have to match, or the event will run mid-bar.
 
 ### Crypto (UTC-based data)
 
@@ -178,7 +193,16 @@ self.schedule.on(
 )
 ```
 
-Without the time-zone override, `midnight` means midnight ET, which lands mid-bar in UTC.
+```csharp
+TimeRules.SetDefaultTimeZone(TimeZones.Utc);
+
+Schedule.On(
+    DateRules.EveryDay("BTCUSD"),
+    TimeRules.Midnight,   // interpreted as 00:00 UTC — top of the daily Crypto bar
+    Rebalance);
+```
+
+Without the time-zone override, py`midnight`cs`Midnight` means midnight ET, which lands mid-bar in UTC.
 
 ### Assets across multiple time zones (e.g. US Equities + Crypto)
 
@@ -188,14 +212,14 @@ General approach:
 
 1. For each asset class, write down its "valid fire" windows in a common time zone (UTC is usually easiest). Include any extra constraints like the 08:00 ET universe selection cutoff for dynamic US Equity universes.
 2. Pick a time in the intersection of all the windows.
-3. Set the time-rule default time zone to that common zone so `at(...)` reads naturally, or pass it to `at(hour, minute, time_zone)` explicitly.
+3. Set the time-rule default time zone to that common zone so py`at(...)`cs`At(...)` reads naturally, or pass it to py`at(hour, minute, time_zone)`cs`At(hour, minute, timeZone)` explicitly.
 4. **If the intersection is empty, change a data resolution.** A narrower bar gives wider valid-fire windows — e.g. dropping daily Crypto to hourly turns "only 00:00 UTC is valid" into "any top-of-hour is valid."
 
 Worked example: daily dynamic US Equity universe (must fire at 08:00 ET, which is 12:00 or 13:00 UTC) + daily Crypto (must fire at 00:00 UTC). The valid-fire windows don't overlap, so either use hourly Crypto (then the Equity slot at 08:00 ET / 13:00 UTC is also a top-of-hour Crypto slot and works), or accept separate Scheduled Events as a last resort.
 
 ## String tickers work — don't build a Symbol just for the rule
 
-`date_rules` and `time_rules` methods accept a plain string ticker (or a `Symbol`). The string ticker does **not** need to have been added to the algorithm:
+The date/time rule methods accept a plain string ticker (or a `Symbol`). The string ticker does **not** need to have been added to the algorithm:
 
 ```python
 # Good — concise, no Symbol boilerplate
@@ -203,7 +227,13 @@ self.date_rules.week_start('SPY')
 self.time_rules.after_market_open('SPY', 1)
 ```
 
-**Do not pass a `Universe` object.** It looks reasonable — you've added a universe, and it feels like the rule should anchor to "that universe's calendar" — but `date_rules`/`time_rules` don't accept a universe and the runtime error is opaque. Pass the ticker of an asset that trades on the relevant market (e.g. `'SPY'` for a US Equity universe):
+```csharp
+// Good — concise, no Symbol boilerplate
+DateRules.WeekStart("SPY");
+TimeRules.AfterMarketOpen("SPY", 1);
+```
+
+**Do not pass a `Universe` object.** It looks reasonable — you've added a universe, and it feels like the rule should anchor to "that universe's calendar" — but the date/time rule methods don't accept a universe and the runtime error is opaque. Pass the ticker of an asset that trades on the relevant market (e.g. `'SPY'` for a US Equity universe):
 
 ```python
 # WRONG — Universe object is not accepted by date_rules / time_rules
@@ -222,52 +252,40 @@ self.schedule.on(
 )
 ```
 
+```csharp
+// WRONG — Universe object is not accepted by DateRules / TimeRules
+_universe = AddUniverse(SelectAssets);
+Schedule.On(
+    DateRules.EveryDay(_universe),
+    TimeRules.AfterMarketOpen(_universe, 1),
+    Rebalance);
+
+// Right — anchor the calendar to a representative ticker for the market
+Schedule.On(
+    DateRules.EveryDay("SPY"),
+    TimeRules.AfterMarketOpen("SPY", 1),
+    Rebalance);
+```
+
 ## Common mistakes to avoid
 
-- **`after_market_open('SPY', 1)` with daily data** — fires at 09:31 ET, which is inside the daily bar. Use `time_rules.at(8, 0)` instead.
-- **`time_rules.every(timedelta(minutes=30))` with hourly data during a trading session** — the `X:30` fires land mid-bar. Either fire only at the top of the hour, or only outside the asset's trading session.
-- **Assuming hourly US Equity bars align to the 09:30 open** — they don't. Hourly bars are wall-clock aligned: 10:00, 11:00, 12:00, … are boundaries; 10:30, 11:30, … are not. The first bar of the session is a 30-minute 09:30–10:00 partial, then the grid is whole-hour from there. So `at(10, 30)` with hourly US Equity data fires inside the 10:00–11:00 bar, not on a boundary. If the user specifies a non-top-of-hour intraday time, switch to minute resolution or raise the conflict — don't silently fire mid-bar.
-- **Rebalancing a dynamic Equity universe before universe selection finishes** — in live, universe selection runs between 07:00 and 08:00 ET, so firing earlier than 08:00 means `self._universe.selected` still holds the previous day's constituents. If you use daily data, run at 08:00 ET. If you use intraday data, run at the top of the hour or minute, but not before 08:00 ET.
-- **Building a `Symbol` just to pass to `date_rules`/`time_rules`** — a string works.
-- **Passing a `Universe` object to `date_rules`/`time_rules`** — e.g. `date_rules.every_day(self._universe)` or `time_rules.after_market_open(self._universe, 1)`. These methods take a string ticker or a `Symbol`, not a universe. Pass a representative ticker for the relevant market (`'SPY'`, `'BTCUSD'`, etc.).
-- **Firing on a weekend / holiday calendar that doesn't match the asset** — use the asset's own ticker in `date_rules.week_start('SPY')` so the calendar matches the market the asset trades on.
-- **Time-zone mismatch between the time rule and the data** — e.g. scheduling Crypto at `at(0, 0)` without setting UTC, so the event fires at 00:00 ET (05:00 UTC), five hours into the daily Crypto bar. Either call `time_rules.set_default_time_zone(TimeZones.UTC)` or pass the time zone to `at(...)` explicitly.
+- **py`after_market_open('SPY', 1)`cs`AfterMarketOpen("SPY", 1)` with daily data** — fires at 09:31 ET, which is inside the daily bar. Use py`time_rules.at(8, 0)`cs`TimeRules.At(8, 0)` instead.
+- **py`time_rules.every(timedelta(minutes=30))`cs`TimeRules.Every(TimeSpan.FromMinutes(30))` with hourly data during a trading session** — the `X:30` fires land mid-bar. Either fire only at the top of the hour, or only outside the asset's trading session.
+- **Assuming hourly US Equity bars align to the 09:30 open** — they don't. Hourly bars are wall-clock aligned: 10:00, 11:00, 12:00, … are boundaries; 10:30, 11:30, … are not. The first bar of the session is a 30-minute 09:30–10:00 partial, then the grid is whole-hour from there. So py`at(10, 30)`cs`At(10, 30)` with hourly US Equity data fires inside the 10:00–11:00 bar, not on a boundary. If the user specifies a non-top-of-hour intraday time, switch to minute resolution or raise the conflict — don't silently fire mid-bar.
+- **Rebalancing a dynamic Equity universe before universe selection finishes** — in live, universe selection runs between 07:00 and 08:00 ET, so firing earlier than 08:00 means py`self._universe.selected`cs`_universe.Selected` still holds the previous day's constituents. If you use daily data, run at 08:00 ET. If you use intraday data, run at the top of the hour or minute, but not before 08:00 ET.
+- **Building a `Symbol` just to pass to the date/time rules** — a string works.
+- **Passing a `Universe` object to the date/time rules** — e.g. py`date_rules.every_day(self._universe)`cs`DateRules.EveryDay(_universe)` or py`time_rules.after_market_open(self._universe, 1)`cs`TimeRules.AfterMarketOpen(_universe, 1)`. These methods take a string ticker or a `Symbol`, not a universe. Pass a representative ticker for the relevant market (`'SPY'`, `'BTCUSD'`, etc.).
+- **Firing on a weekend / holiday calendar that doesn't match the asset** — use the asset's own ticker in py`date_rules.week_start('SPY')`cs`DateRules.WeekStart("SPY")` so the calendar matches the market the asset trades on.
+- **Time-zone mismatch between the time rule and the data** — e.g. scheduling Crypto at py`at(0, 0)`cs`At(0, 0)` without setting UTC, so the event fires at 00:00 ET (05:00 UTC), five hours into the daily Crypto bar. Either call py`time_rules.set_default_time_zone(TimeZones.UTC)`cs`TimeRules.SetDefaultTimeZone(TimeZones.Utc)` or pass the time zone to py`at(...)`cs`At(...)` explicitly.
 - **Splitting a multi-asset-class rebalance into one Scheduled Event per asset class** — prefer a single rebalance function firing at one time valid for every asset. If no such time exists, drop a data resolution to widen the valid-fire windows before resorting to multiple events.
-- **Running universe selection daily when the rebalance is weekly/monthly** — wastes work. Pass the same date rule to `self.universe_settings.schedule.on(...)` so universe selection and rebalance only run on the same days.
+- **Running universe selection daily when the rebalance is weekly/monthly** — wastes work. Pass the same date rule to py`self.universe_settings.schedule.on(...)`cs`UniverseSettings.Schedule.On(...)` so universe selection and rebalance only run on the same days.
 
 ## Quick checklist when writing a Scheduled Event
 
 1. What is the coarsest data resolution of the assets this event reads or trades?
 2. Does the chosen time fall **outside** every bar of that resolution for those assets?
-3. If the event depends on `self._universe.selected` for a dynamic US Equity universe, is it at/after 08:00 ET?
-4. Is the calendar (`date_rules.week_start(...)`) anchored to an asset that trades on the relevant market?
-5. Do you know which time zone `time_rules.at(...)` is being interpreted in (algorithm zone by default, or the time-rule default zone)? Use that to verify the fire time lands outside every asset's bar boundaries.
+3. If the event depends on py`self._universe.selected`cs`_universe.Selected` for a dynamic US Equity universe, is it at/after 08:00 ET?
+4. Is the calendar (py`date_rules.week_start(...)`cs`DateRules.WeekStart(...)`) anchored to an asset that trades on the relevant market?
+5. Do you know which time zone py`time_rules.at(...)`cs`TimeRules.At(...)` is being interpreted in (algorithm zone by default, or the time-rule default zone)? Use that to verify the fire time lands outside every asset's bar boundaries.
 6. If the algorithm trades multiple asset classes, is there a single fire time valid for all of them? If not, widen the windows by dropping a data resolution before splitting into multiple events.
-7. If the rebalance runs less often than every trading day, is the dynamic universe on the same `date_rules` via `self.universe_settings.schedule.on(...)`?
-
-## C# equivalents
-
-Every concept above applies identically to C# — only the syntax differs. Mapping:
-
-| Python                                                         | C#                                                      |
-| -------------------------------------------------------------- | ------------------------------------------------------- |
-| `self.schedule.on(...)`                                        | `Schedule.On(...)`                                      |
-| `self.date_rules.week_start('SPY')`                            | `DateRules.WeekStart("SPY")`                            |
-| `self.time_rules.at(8, 0)`                                     | `TimeRules.At(8, 0)`                                    |
-| `self.time_rules.midnight`                                     | `TimeRules.Midnight`                                    |
-| `self.time_rules.after_market_open('SPY', 1)`                  | `TimeRules.AfterMarketOpen("SPY", 1)`                   |
-| `self.time_rules.every(timedelta(hours=1))`                    | `TimeRules.Every(TimeSpan.FromHours(1))`                |
-| `self.time_rules.set_default_time_zone(TimeZones.UTC)`         | `TimeRules.SetDefaultTimeZone(TimeZones.Utc)`           |
-| `self.universe_settings.schedule.on(date_rule)`                | `UniverseSettings.Schedule.On(dateRule)`                |
-| `self.add_universe(self.universe.etf('SPY'))`                  | `AddUniverse(Universe.ETF("SPY"))`                      |
-| `self._universe.selected`                                      | `_universe.Selected`                                    |
-| `PortfolioTarget(symbol, weight)`                              | `new PortfolioTarget(symbol, weight)`                   |
-| `self.set_holdings(targets, liquidate_existing_holdings=True)` | `SetHoldings(targets, liquidateExistingHoldings: true)` |
-| `TimeZones.UTC` / `TimeZones.NEW_YORK`                         | `TimeZones.Utc` / `TimeZones.NewYork`                   |
-
-C#-only gotchas:
-
-- Pass a **method group** (`Rebalance`) to `Schedule.On`, not `Rebalance()` — the parentheses would invoke it immediately.
-- `TimeZones` members use PascalCase (`Utc`, `NewYork`), not the Python `UTC`/`NEW_YORK`.
-- Decimal literals for weights (`1m / members.Count`) — `PortfolioTarget` takes `decimal`, and integer division would truncate.
-- `_universe.Selected` is an `IEnumerable<Symbol>`; materialize it (`.ToList()`) before indexing or taking the count twice.
+7. If the rebalance runs less often than every trading day, is the dynamic universe on the same date rule via py`self.universe_settings.schedule.on(...)`cs`UniverseSettings.Schedule.On(...)`?

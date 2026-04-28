@@ -1,38 +1,79 @@
 ---
 name: notifications
-description: Use when adding or reviewing live-trading `Notify.*` calls (Email, SMS, Telegram, Web/Webhook, FTP/SFTP) in a QuantConnect/LEAN algorithm. Notifications run in QuantConnect Cloud live trading only — backtests, local LEAN, and LEAN CLI live deployments don't have them, so guard call sites with `live_mode`. Covers per-channel limits (10 KB email body, 1,600-char SMS, 300 s webhook timeout, default `attachment.txt` filename), the tiered hourly free quota with paid overage (SMS always billed per message regardless of tier), the rule that raw subscribed-dataset content can't be sent (terms-of-use), the Discord webhook content-key JSON envelope, the Telegram group-ID + bot-token + UTF-32 emoji rules, that *receiving* messages is the live-commands skill, that *shipping portfolio targets* to a fund/platform belongs in the custom-signal-export skill rather than `notify.web`, and that `notify.*` belongs in event handlers, not per-bar `on_data`.
+description: Use when a QuantConnect/LEAN live algorithm sends data out or receives external instructions. Triggers — code uses py`notify.email`cs`Notify.Email`/py`notify.sms`cs`Notify.Sms`/py`notify.telegram`cs`Notify.Telegram`/py`notify.web`cs`Notify.Web`/py`notify.ftp`cs`Notify.Ftp`/py`notify.sftp`cs`Notify.Sftp`, py`signal_export.*`cs`SignalExport.*`, py`on_command`cs`OnCommand`, py`add_command`cs`AddCommand`, py`broadcast_command`cs`BroadcastCommand`, py`link()`cs`Link()`, or a class implementing `ISignalExportTarget` / `Command`; phrases like "Discord/Slack alert on fills", "email on drawdown", "push portfolio targets to Collective2/Numerai/vBase/our endpoint", "custom signal export to my broker", "manual liquidate from outside", "parent algo signals child", "multi-algorithm arbitrage". Skip when — purely in-algo log/debug (use `logging` skill).
 ---
 
-# Notifications in QuantConnect / LEAN
+# External Communication in QuantConnect / LEAN
 
-Notifications send messages **out** of a live-trading algorithm — to email, SMS, Telegram, an HTTP endpoint, or an (S)FTP server. They are different from commands (see the live-commands skill), which deliver messages **in** to the algorithm.
+A live-trading algorithm has several primitives for talking to the outside world. The right choice depends on **direction** (out / in) and **content** (trade data / human alert / file / instruction). Two recurring decisions are easy to get wrong:
 
-## Critical: Cloud live trading only
+- **Trade data going out:** prefer **Signal Exports** over `notify.web`.
+- **Instructions coming in:** prefer **Commands** over polling the Object Store.
 
-Notifications are wired up exclusively in QuantConnect Cloud live trading. They are no-ops in **backtests**, **local LEAN**, and **LEAN CLI live deployments**. Guard every call with `self.live_mode` so the call sites are obvious and no companion logging fires in backtests:
+## Decision matrix
 
-```python
-if self.live_mode:
-    self.notify.email("ops@example.com", "Order filled", details)
-```
+| Direction | Content | Primitive |
+| --- | --- | --- |
+| Out | Portfolio targets / trade signals to a platform | **Signal Exports** (bundled Collective2 / Numerai / vBase, or custom `ISignalExportTarget`) |
+| Out | Human-facing alert (fill, error, daily summary) | `notify.email` / `sms` / `telegram` / `web` |
+| Out | Bulk file delivery to a counterparty | `notify.ftp` / `notify.sftp` |
+| In | Manual instruction (liquidate, parameter change) | **Commands** (py`on_command`cs`OnCommand` or `Command` subclass) |
+| In | Cross-algorithm coordination (parent → child, arbitrage) | **Commands** + `project_id` link, or `broadcast_command` |
 
-## Wrap repeated calls in a helper
+## Critical: live-trading gating
 
-When the same channel is used in more than one place, route every call through a private helper so the address/phone/group-ID/token/filename and the `live_mode` gate live in **one** place. Lift the recipient/credentials to **module-level constants** at the top of the file — the user reads them as config and edits them in one place.
+`notify.*` and command-send primitives are **Cloud live trading only** — no-ops in backtests, local LEAN, and LEAN CLI live deployments. **Signal Exports are different**: they fire anywhere the algorithm runs, including backtests.
 
-```python
-OPS_EMAIL = "ops@example.com"
+- For `notify.*` and command sends (py`link`cs`Link`, py`broadcast_command`cs`BroadcastCommand`, py`download_data`cs`DownloadData`): gate every call site with py`self.live_mode`cs`LiveMode`.
+- For Signal Exports to a production endpoint: either skip py`add_signal_export_provider`cs`AddSignalExportProvider` when not in live mode, or short-circuit at the top of `send` / `Send`.
 
-class MyAlgorithm(QCAlgorithm):
+# Sending OUT
 
-    def _notify_email(self, subject: str, message: str) -> None:
-        if self.live_mode:
-            self.notify.email(OPS_EMAIL, subject, message)
-```
+## Trade signals / portfolio targets → Signal Exports
 
-Apply the same pattern to other channels — `_notify_sms`, `_notify_telegram`, `_notify_web`, `_notify_ftp`. One-off notifications can stay inline.
+For portfolio targets to a fund, allocator, or trading platform: use **Signal Exports**, not `notify.web`. The signal-export manager:
 
-## The five channels
+- Debounces fills into one batched call (default 5s window).
+- Passes a standardized `PortfolioTarget` list, not an ad-hoc payload.
+- Has bundled providers for Collective2, Numerai, vBase.
+- Survives broker reconnects without duplicating the payload.
+
+For Collective2/Numerai/vBase the bundled provider is enough — register via py`signal_export.add_signal_export_providers(...)`cs`SignalExport.AddSignalExportProviders(...)` in `initialize`, then call py`signal_export.set_target_portfolio_from_portfolio()`cs`SignalExport.SetTargetPortfolioFromPortfolio()` to push.
+
+For any other destination, write a custom `ISignalExportTarget`. Don't reach for `notify.web` to roll your own.
+
+**Why not `notify.web` for trade data?**
+
+- `notify.web` is fire-and-forget HTTP POST with a 300s receiver timeout, no retry, no debouncing. Every fill triggers a separate call → quota burn, race conditions, partial state at the receiver.
+- Signal Exports send a single coherent portfolio snapshot per debounce window — the receiver sees the *intended* state, not a stream of deltas.
+- Trade-data payloads tend to drift (per-symbol weights, metadata). A signal exporter encapsulates the schema; ad-hoc webhook bodies drift across versions.
+
+Reach for `notify.web` only when the recipient is a notification consumer (Discord channel, monitoring webhook), not a trading system that's about to act on the payload.
+
+### Custom Signal Exports
+
+Implement `ISignalExportTarget` — a class with py`send(parameters: SignalExportTargetParameters) -> bool`cs`bool Send(SignalExportTargetParameters parameters)` and py`dispose() -> None`cs`void Dispose()`. Register in `initialize` via py`signal_export.add_signal_export_provider(...)`cs`SignalExport.AddSignalExportProvider(...)`. py`parameters.algorithm`cs`parameters.Algorithm` is the algorithm; py`parameters.targets`cs`parameters.Targets` is the list of `PortfolioTarget`s.
+
+#### The only real question: what payload does the receiver expect?
+
+QuantConnect doesn't define the wire format — the receiving service does. Before writing the class, get from the user (or the receiver's API docs):
+
+1. **Endpoint URL and auth.** Bearer token, API key header, HMAC body? Lift to module-level constants or constructor args, not hard-coded inside `send`.
+2. **Field names and types.** `{symbol, quantity}`? `{ticker, weight}`? `{asset, side, size}`? The receiver's contract drives every line of the body-build code.
+3. **Per-target or per-batch?** Most APIs accept a list — `send` is called once per aggregated batch of fills, so build one request, not N.
+4. **Quantity in shares or in weight?** py`parameters.targets[i].quantity`cs`parameters.Targets[i].Quantity` is a **portfolio weight** (a fraction like `0.10`), not a share count. If the receiver wants share counts, round-trip via py`PortfolioTarget.percent(parameters.algorithm, x.symbol, x.quantity, x.tag)`cs`PortfolioTarget.Percent(parameters.Algorithm, x.Symbol, x.Quantity, x.Tag)` — the returned target's quantity is the share count.
+
+Pass `tag` through — it's the only carrier of caller-provided context (signal id, regime, confidence) and is empty unless the calling code created targets with a tag.
+
+#### Three things that bite
+
+- **Reuse one HTTP client.** Allocate py`Session`cs`HttpClient` once in the constructor, close in `dispose`. Building a fresh client per `send` exhausts ephemeral ports under load.
+- **Return a `bool`, don't raise.** Catch network and JSON errors and return `False`. An exception escaping `send` aborts the algorithm.
+- **`send` fires in backtests too.** Either skip `add_signal_export_provider` when not in live mode, or short-circuit at the top of `send` with a `live_mode` check.
+
+## Human-facing alerts → `notify.*`
+
+Six channels for messages a human (not a trading system) will read:
 
 ```
 notify.email(address, subject, message, data=None, headers=None)
@@ -43,13 +84,13 @@ notify.ftp(hostname, username, password, file_path, file_content, port=None)
 notify.sftp(hostname, username, password|private_key + private_key_passphrase, file_path, file_content, port=None)
 ```
 
-| Channel | Body limit |
-| --- | --- |
-| Email | 10 KB body, optional named attachment |
-| SMS | 1,600 chars; phone must be E.164 (`+1...`) |
-| Telegram | Plain text via bot in a group |
-| Web (HTTP POST) | 300 s response timeout on the receiver |
-| FTP / SFTP | Sends file content under `file_path` |
+| Channel | Body limit | Per-channel notes |
+| --- | --- | --- |
+| Email | 10 KB body, optional named attachment | `headers={'filename': '...'}` to override default `attachment.txt` |
+| SMS | 1,600 chars; E.164 phone (`+1...`) | Only channel with no free quota; per-message QCC cost (1 US/CA, 10 international) |
+| Telegram | Plain text via bot in a group | Group ID is a negative integer; emojis must be UTF-32 escapes (`'\U0001f680'`); `token` is optional only if `@quantconnect_notifications_bot` is in the group |
+| Web (HTTP POST) | 300s receiver timeout | No retry. Discord receivers expect a `content`-keyed JSON envelope, not a plain string |
+| FTP / SFTP | Sends file content under `file_path` | SFTP accepts `password=` OR `private_key=` (with optional passphrase), not both. FTP is plaintext |
 
 ### Hourly free quota by tier
 
@@ -61,52 +102,153 @@ notify.sftp(hostname, username, password|private_key + private_key_passphrase, f
 | Trading Firm | 240 |
 | Institution | 3,600 |
 
-The hourly quota covers email, FTP, Telegram, and webhook combined; overage costs 1 QCC per notification. **SMS is excluded** and always billed per message regardless of tier (1 QCC US/CA, 10 QCC international).
+The hourly quota covers email, FTP, Telegram, and webhook combined; overage costs 1 QCC per notification. **SMS is excluded** and always billed per message regardless of tier.
 
-## Critical: Don't fire per-bar — fire on events
+### Wrap repeated calls in a helper
 
-Putting `notify.*` inside `on_data` on minute or tick resolution saturates the hourly quota in seconds and burns QCC. Notifications belong on events:
+When the same channel fires from more than one place, route every call through a private helper (e.g. `_notify_email`, `_notify_sms`) so the recipient/credentials and the `live_mode` gate live in one place. Lift recipients to module-level constants. One-off notifications can stay inline.
 
-- `on_order_event` (filled / canceled / rejected)
-- `on_brokerage_message` (broker errors, disconnects)
-- `on_warmup_finished`
-- Scheduled events (daily summary, threshold alerts)
-- Signal/state transitions — only on the *change*, not on every bar the condition is true.
+### Fire on events, not per-bar
 
-## Per-channel gotchas
+Putting `notify.*` inside py`on_data`cs`OnData` on minute or tick resolution saturates the hourly quota in seconds and burns QCC. Notifications belong on events:
 
-**Email.** Without `headers={'filename': '...'}` the attachment is named `attachment.txt`. Body cap is 10 KB — large diagnostic dumps belong in the attachment or in the Object Store, not inlined in `message`.
+- py`on_order_event`cs`OnOrderEvent` — filled / canceled / rejected.
+- py`on_brokerage_message`cs`OnBrokerageMessage` — broker errors, disconnects.
+- py`on_warmup_finished`cs`OnWarmupFinished`.
+- Scheduled events (daily summary, threshold alerts) — see the `scheduled-events` skill.
+- Signal / state transitions — only on the *change*, not every bar the condition is true.
 
-**SMS.** `phone_number` must be E.164 (`+14155551234`, not `(415) 555-1234`). It's the only channel without a free quota, so reserve it for genuinely urgent alerts (broker disconnects, halt-trading) and use email/Telegram/webhook for routine notifications.
+### Don't send raw subscribed-dataset content
 
-**Telegram.** `id` is the **group ID** as it appears in the Telegram web URL — a negative integer like `-503016366`. The `token` argument is optional **only** if `@quantconnect_notifications_bot` has been added to the group; otherwise create a bot via `@BotFather` and pass its token. Emojis must be UTF-32 escape sequences (`'\U0001f680'`); literal emoji characters fail the Telegram API encoding.
+The notification system **can't be used for data distribution** — that's a terms-of-use violation, not a quota concern. Send derived information (signal value, portfolio value, fill summary), not raw bars/quotes/trades from QuantConnect-subscribed datasets.
 
-**Webhook.** HTTP POST with a 300 s response timeout — endpoints that block on synchronous expensive work silently time out, and there is no built-in retry. Discord webhooks expect a JSON body keyed on `content`, not a plain string — wrap with `json.dumps({'content': ...})`. A plain string to a Discord URL is rejected with no visible error in the algorithm.
+# Receiving IN — Commands
 
-**FTP vs SFTP.** `notify.ftp` is plaintext. `notify.sftp` is SSH FTP and accepts either `password=` **or** `private_key=` (with optional `private_key_passphrase=`), not both.
+Commands inject data **into** a running live algorithm. Typical uses: a manual "panic close-all", a click-to-confirm grey-box trade, or coordinating sibling algorithms (arbitrage between exchanges, child strategies offloading execution to a brokerage-connected parent).
 
-## Don't send subscribed dataset content
+Commands give you authenticated delivery routed through QC infrastructure, real-time pickup (no polling latency), and both REST/API broadcast and project-targeted send (via `project_id` + py`link().download_data()`cs`Link().DownloadData()`) for parent/child coordination.
 
-The notification system **can't be used for data distribution** — that's a terms-of-use violation, not just a quota concern. Send derived information (signal value, portfolio value, fill summary), not raw bars/quotes/trades from QuantConnect-subscribed datasets. The logging skill carries the same rule.
+**Why not poll the Object Store?**
 
-## Shipping trading signals: use signal exports, not webhooks
+You *can* technically have one algorithm write a JSON blob to the Object Store and another read it. Don't:
 
-If the goal is to feed an algorithm's portfolio targets to a fund, allocator, or trading platform — Collective2, Numerai, vBase, or your own endpoint — use signal exports, not `notify.web`. The signal-export manager debounces fills into one batched call (default 5 s window), passes a standardized `PortfolioTarget` list, and has bundled providers for the common destinations. See the custom-signal-export skill. Reach for `notify.*` only for genuine notifications (fill alerts, broker errors, daily summaries) where a human, not a trading system, is the recipient.
+- Object Store reads aren't real-time. You'd need a per-bar or scheduled poll — which adds latency and burns quota.
+- Concurrent-write semantics are undefined: two writers can clobber each other silently.
+- No delivery acknowledgement. A skipped read fails open, not closed.
+- Object Store is for persistent state (trained models, accumulated features, end-of-run CSVs); Commands are the queue.
 
-## Receiving messages
+## Before writing any code: ask the user about the payload
 
-Notify is one-way out. To *receive* external instructions (manual liquidate, parameter change), use the live-commands skill.
+Handler signature, `Command` subclass fields, and the sender script all depend on the payload shape. Before generating code, ask:
 
-## Quick checklist when adding a notification
+1. **What fields will the command carry?** (e.g. `ticker` + `quantity`, or `action` + `target_weight`.) Use those exact names — they become attribute accesses inside the handler.
+2. **One command shape, or several?** One → generic py`on_command(data)`cs`OnCommand(dynamic data)`. Several → encapsulated `Command` subclasses dispatched by `$type`.
+3. **How will it be sent?** REST API, email click-link, broadcast from a sibling, or LEAN CLI. This decides whether to add a `live_mode`-guarded py`link(...)`cs`Link(...)` / py`broadcast_command(...)`cs`BroadcastCommand(...)` inside the algorithm.
 
-1. Is the call gated with `self.live_mode`?
-2. If the channel is used more than once, is the call routed through a `_notify_*` helper with the recipient/credentials lifted to module-level constants?
-3. Is the call site an event handler or per-bar `on_data`? If per-bar, can it be gated to a real state change?
-4. For SMS: is the alert urgent enough to justify per-message QCC cost? Phone number in E.164 format and body under 1,600 chars?
-5. For email: is the attachment filename set via `headers={'filename': ...}` and the body under 10 KB?
-6. For Telegram: group ID a negative integer, bot present in group (or `token` passed), emojis as UTF-32 escapes?
-7. For webhook: receiver responds within 300 s? Discord targets wrapped in a `content`-keyed JSON object?
-8. For FTP vs SFTP: auth method matches the server (password vs SSH key, not both)?
-9. Does the message body contain raw subscribed-dataset content? If yes, swap for a derived value.
-10. Is the payload actually a trading signal / portfolio target headed to a fund or platform? If yes, use signal exports (custom-signal-export skill), not `notify.web`.
-11. Does the algorithm need to *receive* messages? That's the live-commands skill.
+## Always link the user to the sender-script docs
+
+Don't inline auth/REST boilerplate in the algorithm. Add a comment with a pointer to https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/commands#06-Send-Commands-by-API (or `#07-Broadcast-Commands-by-API` for org-wide broadcasts), plus the payload shape this handler reads.
+
+## Two handler styles: generic vs encapsulated
+
+The dispatcher routes on whether the payload contains a `$type` key.
+
+- **Generic** (single command shape): override py`on_command(data)`cs`OnCommand(dynamic data)`. Payload without `$type` arrives here. Keys become attributes (py`data.ticker` / `data["ticker"]`cs`data.Ticker`).
+- **Encapsulated** (multiple distinct shapes): subclass `Command` (Python: class with class-level attributes; C#: properties), register with py`add_command(MyCommand)`cs`AddCommand<MyCommand>()`. Payload with `$type` → matching registered `Command` subclass; other keys populate the instance fields. With `$type` set but the class not registered on the receiver, the command is dropped silently — relevant for `broadcast_command`.
+
+**Subclass-method access inside `run` / `Run`.** `algorithm` is typed as `IAlgorithm`. Methods on base `QCAlgorithm` (`log`, `set_holdings`, `portfolio`, …) work, but **methods you defined on your own subclass aren't reachable through it**.
+
+- Python: set `MyCommand.ALGORITHM = self` in `initialize` and call through the static (e.g. `MyCommand.ALGORITHM.do_something()`).
+- C#: cast — `((MyAlgorithm)algorithm).DoSomething()`.
+
+The return value (py`Optional[bool]`cs`bool?`) surfaces in the live commands log and in py`download_data()`cs`DownloadData()`'s response body — always return `True` on success or `False` on rejection rather than implicit `None`.
+
+## Sending commands: four mechanisms
+
+| Mechanism | Reaches | Use it for |
+| --- | --- | --- |
+| py`self.link(...)`cs`Link(...)` | One project (caller's by default; another via `project_id`) when the URL is opened | Email/Slack click-to-run, grey-box confirmations |
+| py`self.broadcast_command(...)`cs`BroadcastCommand(...)` | Every live deployment in the org **except** the caller, **except** algos without the `$type` registered | Sibling-algorithm coordination |
+| REST `POST /live/commands/create` | One project, by `projectId` | External orchestration (script, webhook, dashboard) |
+| REST `POST /live/commands/broadcast` | Whole organization (with optional `excludeProjectId`) | External fan-out |
+
+LEAN CLI wraps the same REST endpoints. The receiver doesn't know or care which mechanism delivered the payload — all four funnel into the same py`on_command`cs`OnCommand` / py`Command.run`cs`Command.Run` dispatcher.
+
+The `OrderCommand` `$type` is built-in — every live deployment understands it without `add_command` and places the order described by the payload (`symbol`, `order_type`, `quantity`, `limit_price`, `stop_price`, `tag`).
+
+### Cross-project send for parent/child
+
+Set py`algorithm.project_id`cs`algorithm.ProjectId` to the target project before calling `link`. py`Extensions.download_data(link)`cs`link.DownloadData()` executes synchronously and returns the response body — use it for the parent-child execution-offload pattern (paper-trading child sends commands to a brokerage-connected parent that places the actual orders).
+
+### Broadcast scope rules
+
+- **The sender does not receive its own broadcast.** If you need fan-out *plus* local execution, run the local path first, then broadcast.
+- A typed command is delivered only to algorithms that registered the same `Command` class via `add_command`; others drop it silently.
+- A generic command (no `$type`) reaches every live algorithm in the org that defines `on_command`.
+- LEAN does **not** add a sender field — always include py`"sender": self.project_id`cs`sender = ProjectId` so receivers can disambiguate which sibling sent it.
+
+## Multi-algorithm coordination
+
+Arbitrage and parent-child execution are the same pattern with different mechanisms:
+
+- **Symmetric N-to-N (e.g. arbitrage between exchanges):** `broadcast_command` — each algorithm broadcasts fills from py`on_order_event`cs`OnOrderEvent` (gated on `live_mode` and py`OrderStatus.FILLED`cs`OrderStatus.Filled`) and reacts to siblings' broadcasts in `on_command`.
+- **One-to-one with response (e.g. paper-trading child offloading execution to a brokerage-connected parent):** `link` + `project_id` + py`download_data(link)`cs`link.DownloadData()` — the child sets `project_id` to the parent and calls `download_data` from `on_order_event` to fire synchronously and read the parent's return value.
+
+For a parent that just translates payloads into orders, set py`self.settings.seed_initial_prices = True`cs`Settings.SeedInitialPrices = true` in `initialize` so newly-added symbols can be traded on the first command.
+
+<!-- csharp-only -->
+## Command gotchas
+
+- **LEAN uppercases the first character of every payload key when delivering to C#.** A payload sent as `{"ticker": "AAPL"}` reads as `data.Ticker` in C# but `data.ticker` in Python. When defining an encapsulated `Command` subclass, name C# properties PascalCase (`Ticker`, `Quantity`).
+- **`dynamic` defers field-resolution to runtime.** `data.Ticker` compiles even if the field doesn't exist; missing fields throw at runtime. Validate before use.
+- **Cast numeric fields explicitly** — `var qty = (decimal)data.Quantity;` — JSON deserializes integers as `int`/`long` and arithmetic mixing types throws.
+- **`Link(new { ... })` uses an anonymous object whose property names go on the wire verbatim.** `new { Ticker = "AAPL" }` produces `{"Ticker": "AAPL"}`, which a Python sibling reads as `data.Ticker` (not `data.ticker`). For lowercase keys, use `Dictionary<string, object>`.
+<!-- /csharp-only -->
+
+# Universal rules
+
+- **py`self.live_mode`cs`LiveMode` gate every `notify.*` and command-send site.** Notifications and command-send primitives are no-ops outside Cloud live trading.
+- **Signal Exports run everywhere (incl. backtests).** Either skip provider registration when not in live mode, or short-circuit at the top of `send`.
+- **Fire on events, not per-bar.** Every channel here has a quota or rate-limit; per-bar firing exhausts it.
+- **No raw subscribed-dataset content in any payload.** Derived values only.
+
+# Checklist
+
+## Direction & primitive
+
+1. **Direction?** Out → notify or Signal Export. In → Command. Don't poll Object Store as a queue.
+2. **Out, payload is portfolio targets / trade signals?** Signal Exports, not `notify.web`. Bundled provider for Collective2/Numerai/vBase; custom class for anything else.
+3. **Out, recipient is a human / monitoring system?** Pick the right `notify.*` channel.
+4. **In, instruction or coordination?** Commands.
+
+## Notifications
+
+5. Every `notify.*` call gated with py`self.live_mode`cs`LiveMode`?
+6. Channel used more than once → routed through a `_notify_*` helper with credentials at module scope?
+7. Call site is an event handler, not per-bar `on_data`? If per-bar, can it be gated on a real state change?
+8. **SMS:** urgent enough to justify per-message QCC? Phone in E.164? Body under 1,600 chars?
+9. **Email:** attachment filename via `headers={'filename': ...}`? Body under 10 KB?
+10. **Telegram:** group ID a negative integer? Bot in the group (or `token` passed)? Emojis as UTF-32 escapes?
+11. **Webhook:** receiver responds within 300s? Discord targets wrapped in `{"content": ...}`?
+12. **FTP vs SFTP:** auth method matches the server (password vs SSH key, not both)?
+13. Payload contains raw subscribed-dataset content? Swap for a derived value.
+
+## Custom Signal Exports
+
+14. Reuse one HTTP client via the constructor; close in `dispose`.
+15. Return a `bool` — never raise out of `send`.
+16. Live-mode gated if the endpoint is production.
+17. Quantity is a weight, not a share count — use py`PortfolioTarget.percent`cs`PortfolioTarget.Percent` to convert if needed.
+18. Pass `tag` through — it's the only carrier of caller-provided context.
+
+## Commands
+
+19. Asked the user about payload fields, single vs multi-shape, and send mechanism?
+20. Comment in the algorithm pointing at the sender-script docs + the payload shape this handler reads?
+21. Send sites gated with py`self.live_mode`cs`LiveMode`?
+22. Encapsulated commands registered with `add_command` on every receiver?
+23. py`Command.run`cs`Command.Run` returns `True`/`False`, not implicit `None`?
+24. Broadcast payloads include py`"sender": self.project_id`cs`sender = ProjectId`?
+25. Python `Command.run` calling subclass methods? Use the static-reference pattern (`MyCommand.ALGORITHM = self`).
+26. Broadcast sites filter `on_order_event` to py`OrderStatus.FILLED`cs`OrderStatus.Filled`?
+27. C# payload field access uses PascalCase? Numeric fields explicitly cast?

@@ -1,40 +1,13 @@
 ---
 name: logging
-description: Use when adding or reviewing logging statements in a QuantConnect/LEAN algorithm. Covers the four channels (log/debug/error/quit), per-tier log quotas, `log`'s duplicate suppression, the 1/sec + 200-char limits on `debug`/`error`, why `quit()` needs a following `return`, the live-only `safe_log` wrapper, preferring order `tag=` over a trailing `log`, and Object Store for structured backtest diagnostics.
+description: Use when adding or reviewing logging in a QuantConnect/LEAN algorithm. Triggers — code uses py`self.log`cs`Log`, py`self.debug`cs`Debug`, py`self.error`cs`Error`, py`self.quit`cs`Quit`; questions like "why are my logs missing", "log quota exceeded", "too many log lines per bar", "how do I log every fill", "where do my prints go", "save backtest data for Research analysis", "log spam in py`on_data`cs`OnData` / inside loops". Skip when — goal is sending alerts out of the algo (email/SMS/webhook → `notifications` skill).
 ---
 
 # Logging in QuantConnect / LEAN
 
-Algorithms have four logging channels — `log`, `debug`, `error`, and `quit` — each with different visibility, rate-limits, and side effects. Picking the wrong channel either spams the Cloud Terminal (and triggers rate-limiting) or hides important information in the log file where nobody will see it.
+The default mode of an algorithm is **silent**. Logs are quota-bounded with a silent failure: once the budget runs out, no further lines are written — *including* the lines you'd actually need when something breaks. This skill is about keeping log volume low enough that the diagnostic trail survives the run.
 
-## The four channels
-
-```python
-self.log("My log message")       # log file only — quiet, high volume OK
-self.debug("My debug message")   # orange in Cloud Terminal + log file
-self.error("My error message")   # red in Cloud Terminal + log file
-self.quit("My quit message")     # orange in Cloud Terminal, then stop the algorithm
-```
-
-```csharp
-Log("My log message");
-Debug("My debug message");
-Error("My error message");
-Quit("My quit message");
-```
-
-| Channel | Where it shows | Rate-limit | Use it for |
-| --- | --- | --- | --- |
-| `log` | Log file only | Duplicate suppression (see below) | High-volume diagnostics, order fills, per-bar state, end-of-algorithm summaries |
-| `debug` | Cloud Terminal (orange) + log file | 1 per second, 200-char cap | A handful of notable events you want to *see* while the algorithm runs |
-| `error` | Cloud Terminal (red) + log file | 1 per second | Caught exceptions, invariant violations, "this should never happen" branches |
-| `quit` | Cloud Terminal (orange) + log file, then **stops the algorithm** | — | Unrecoverable state where the algorithm must not continue |
-
-## Critical rule: be parsimonious — log lines are a scarce resource
-
-Logs are quota-bounded, and the failure mode is silent: once the quota is exhausted the remainder of the run produces no logs at all, including the lines you'd actually need when something breaks. "Log it all and filter later" is not a viable default in this environment — every `log`/`debug`/`error` call has to justify its slot.
-
-Quotas are set per organization tier:
+## Quotas (and why every line costs)
 
 | Tier | Logs per backtest | Logs per day |
 | --- | --- | --- |
@@ -44,82 +17,120 @@ Quotas are set per organization tier:
 | Trading Firm | 5 MB | 50 MB |
 | Institution | ∞ | ∞ |
 
-Daily quotas restore on a **24-hour rolling window**, not at midnight, and deleting a backtest or project does **not** refund the quota. On the Free and Quant Researcher tiers in particular, a chatty algorithm on minute or tick resolution can fill the per-backtest budget in a few simulated days.
+Daily quotas restore on a **24-hour rolling window**, not at midnight, and deleting a backtest or project does **not** refund the quota. On Free / Quant Researcher tiers, a chatty algorithm on minute or tick resolution can fill the per-backtest budget in a few simulated days. Live trading has its own limit: **100,000 lines per project, retained for up to one year.**
 
-Live trading has its own limit: **100,000 lines per project, retained for up to one year.** Overflow lines are trimmed from the oldest end.
+## Six rules for keeping logs useful
 
-Rules for staying under:
+1. **Only log significant events** — trades executed, errors, major state changes (warm-up finished, signal flipped, scheduled rebalance fired). If a reader of the log would skim past the line, it shouldn't be there.
+2. **Never log routine HOLD / no-action decisions in loops.** If the algorithm decides "do nothing" for 4900 of 5000 symbols, that's 4900 useless lines per bar. Log only the active subset, or one summary count.
+3. **Use summary logging.** Once per day, write one line listing only the active positions and their P&L. Don't write a status line per bar.
+4. **Avoid logging inside tight loops or per iteration.** Aggregate inside the loop, emit one line after.
+5. **Log at key decision points, not every evaluation.** The values that *led* to a decision are useful; every intermediate computation is noise.
+6. **Keep logs actionable and signal-focused.** "Sold 100 SPY at 612.34 on EMA cross down" is actionable. "Bar received, EMA=608.11" is not — it tells you nothing the algorithm did.
 
-1. **Log on events, not on bars.** Order fills, signal changes, scheduled rebalances, warm-up finished, end-of-algorithm — yes. Per-bar state at minute/tick resolution — no, unless the backtest window is short *or* the line is gated by a real event condition.
-2. **Prefer alternatives to `log` when one fits.** Order `tag=` for order-placement context (see below); Object Store for structured rows you'll analyze in Research (see below); `safe_log` (live-only, see below) for verbose diagnostics that would overwhelm a backtest.
-3. **Logging raw dataset content is not permitted** — and bars, trades, and quotes from subscribed datasets are exactly the high-volume content that drains the quota fastest. Log derived quantities (your signal value, your portfolio value, your decision), not the market data that produced them.
-4. **Before adding any `log` / `debug` / `error` call, ask: "is this line worth one of a finite number of slots?"** If the answer is unclear, it probably isn't — route it through `safe_log`, put it on the order as a tag, or write it to the Object Store instead.
-
-When reviewing or generating algorithm code, treat log density the same way you'd treat allocations in a hot loop: the default should be silence, and each line should earn its place.
-
-## Critical rule: `quit()` does not stop execution immediately
-
-`quit()` schedules the algorithm to stop — but the current method keeps running to its end. Any code after the `quit()` call still executes, which means orders can still be placed, state can still be mutated, and later exceptions can still be raised. If the intent is to stop *now*, `return` immediately after the quit call.
+## The four logging functions
 
 ```python
-if portfolio_is_corrupt:
-    self.quit("Portfolio state is inconsistent — bailing out")
-    return   # <-- required; without this the method keeps running
+self.log("My log message")       # log file only — quiet
+self.debug("My debug message")   # Cloud Terminal (orange) + log — 1/sec, 200-char cap
+self.error("My error message")   # Cloud Terminal (red) + log — 1/sec
+self.quit("My quit message")     # log + stops the algorithm (follow with `return`)
 ```
 
 ```csharp
-if (portfolioIsCorrupt)
+Log("My log message");
+Debug("My debug message");
+Error("My error message");
+Quit("My quit message");   // follow with `return;` — Quit schedules a stop but the method keeps running
+```
+
+Default to py`log`cs`Log`. Reach for the others only when their specific behavior is needed: py`debug`cs`Debug` / py`error`cs`Error` for a *handful* of events per day you want to see live in the Cloud Terminal, py`quit`cs`Quit` only on unrecoverable state.
+
+## Patterns
+
+### Log on events, not on bars
+
+A logger in py`on_data`cs`OnData` writes ~390 lines per simulated trading day at minute resolution. Move it to py`on_order_event`cs`OnOrderEvent` (or another event handler) so it fires only when something happened:
+
+```python
+def on_order_event(self, order_event):
+    if order_event.status == OrderStatus.FILLED:
+        self.log(f"{self.time}: filled {order_event.symbol} qty={order_event.fill_quantity} @ {order_event.fill_price:.2f}")
+```
+
+```csharp
+public override void OnOrderEvent(OrderEvent orderEvent)
 {
-    Quit("Portfolio state is inconsistent — bailing out");
-    return;  // <-- required
+    if (orderEvent.Status == OrderStatus.Filled)
+    {
+        Log($"{Time}: filled {orderEvent.Symbol} qty={orderEvent.FillQuantity} @ {orderEvent.FillPrice:F2}");
+    }
 }
 ```
 
-This applies inside every method, including `on_data`, event handlers, and scheduled functions.
+### Aggregate inside loops; log once after
 
-## Duplicate-message rate-limit on `log`
-
-If you log the **exact same string** more than once, only the first instance is written to the log file. This is a common foot-gun: a per-bar log like `self.log("Portfolio value below threshold")` looks fine in the first bar and then silently disappears.
-
-Bypass it by making each message unique — the simplest way is to include the algorithm time:
+A per-symbol log inside the rebalance loop is N lines per rebalance — for a 5000-symbol universe, that's 5000 lines. Compute first, log a summary outside the loop:
 
 ```python
-# Bad — every call after the first is dropped
-self.log("Portfolio value below threshold")
-
-# Good — the timestamp makes each message distinct
-self.log(f"{self.time}: Portfolio value below threshold ({self.portfolio.total_portfolio_value:.2f})")
+targets = [(s, compute_weight(s)) for s in selected]
+top = sorted(targets, key=lambda t: -abs(t[1]))[:5]
+self.log(f"{self.time}: rebalanced {len(targets)}, top: {top}")
+for s, w in targets:
+    self.set_holdings(s, w)
 ```
 
 ```csharp
-// Good
-Log($"{Time}: Portfolio value below threshold ({Portfolio.TotalPortfolioValue:F2})");
+var targets = selected.Select(s => (Symbol: s, Weight: ComputeWeight(s))).ToList();
+var top = targets.OrderByDescending(t => Math.Abs(t.Weight)).Take(5).ToList();
+Log($"{Time}: rebalanced {targets.Count}, top: [{string.Join(\", \", top)}]");
+foreach (var (s, w) in targets) SetHoldings(s, w);
 ```
 
-Embedding the actual value being logged (price, portfolio value, symbol) usually makes the message unique on its own and removes the need for a manual timestamp.
+### Daily summary — only the active positions
 
-## `debug` and `error` rate-limit + 200-char cap
-
-`debug` and `error` are throttled to roughly 1 message per second — extra messages in the same second are dropped to avoid crashing the browser-rendered Cloud Terminal. `debug` additionally truncates at 200 characters.
-
-Implication: **don't call `debug`/`error` from `on_data` on minute or tick resolution** without guarding it, or from a tight loop. For high-volume diagnostics use `log`; reserve `debug`/`error` for a small number of notable events per day.
+py`on_end_of_day`cs`OnEndOfDay` fires once per traded symbol per day, so a universe of 5000 symbols would call it 5000 times. Drive the summary from a Scheduled Event instead — once per trading day, at a time outside any data bar (5 minutes after the US Equity close works on every resolution; see the `scheduled-events` skill for the rules).
 
 ```python
-# Bad — fires every minute bar, 99% of messages dropped, and 200 chars isn't enough
-self.debug(f"Bar {bar}, EMA {self._ema.current.value}, portfolio {self.portfolio.total_portfolio_value}, ...")
+def initialize(self):
+    self.schedule.on(
+        self.date_rules.every_day('SPY'),
+        self.time_rules.at(16, 5),
+        self._daily_summary,
+    )
 
-# Good — log file for volume, debug for the signal change
-self.log(f"{self.time}: bar={bar.close:.2f} ema={self._ema.current.value:.2f}")
-if crossed_up and not was_crossed_up:
-    self.debug(f"{self.time}: EMA cross up, entering long")
+def _daily_summary(self):
+    active = [(s, h) for s, h in self.portfolio.items() if h.invested]
+    self.log(f"{self.time.date()}: {len(active)} positions, total ${self.portfolio.total_portfolio_value:.2f}")
+    for s, h in active:
+        self.log(f"  {s}: qty={h.quantity} unrealized={h.unrealized_profit:.2f}")
 ```
 
-## End-of-algorithm summary
+```csharp
+public override void Initialize()
+{
+    Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(16, 5), DailySummary);
+}
 
-To record final state (win rate, custom stats, ending positions), put log statements in `on_end_of_algorithm` — the log file is what survives after the run ends, and this handler fires exactly once at the end.
+private void DailySummary()
+{
+    var active = Portfolio.Where(kvp => kvp.Value.Invested).ToList();
+    Log($"{Time.Date:yyyy-MM-dd}: {active.Count} positions, total ${Portfolio.TotalPortfolioValue:F2}");
+    foreach (var kvp in active)
+    {
+        Log($"  {kvp.Key}: qty={kvp.Value.Quantity} unrealized={kvp.Value.UnrealizedProfit:F2}");
+    }
+}
+```
+
+The summary records the *useful* state — only positions actually held, not zeroes for every symbol in the universe.
+
+### End-of-algorithm summary
+
+py`on_end_of_algorithm`cs`OnEndOfAlgorithm` fires exactly once. Put final stats here.
 
 ```python
-def on_end_of_algorithm(self) -> None:
+def on_end_of_algorithm(self):
     self.log(f"Final portfolio value: {self.portfolio.total_portfolio_value:.2f}")
     self.log(f"Wins: {self._wins}, losses: {self._losses}")
 ```
@@ -132,18 +143,41 @@ public override void OnEndOfAlgorithm()
 }
 ```
 
-## Debugging in live mode
+### Log values *before* the branch, not after
 
-In live trading you can't attach a debugger, set breakpoints, or inspect state interactively — **logs are the only debugging tool.** The typical question ("why didn't my algorithm place an order yesterday?") is answerable only if the values that drove the decision were logged *at the time the decision was made*.
-
-Two practices make this tractable:
-
-### 1. A `safe_log` wrapper that only fires in live mode
-
-Verbose diagnostic logging would blow past the per-backtest log quota in seconds, but in live mode the volume is naturally capped by wall-clock time. Route diagnostic logs through a wrapper that is a no-op in backtests:
+The point of a diagnostic log is to answer "why did (or didn't) this branch fire?" — which requires logging the inputs **before** the `if`, regardless of outcome. Logging only inside the taken branch tells you nothing about the cases where it wasn't.
 
 ```python
-def safe_log(self, message: str) -> None:
+# Bad — only the days you traded leave a trail.
+if bar.close > self._ema.current.value and self.portfolio[self.spy].quantity == 0:
+    self._safe_log(f"{self.time}: entering long")
+    self.set_holdings(self.spy, 1)
+
+# Good — every decision day has the inputs recorded.
+self._safe_log(
+    f"{self.time}: close={bar.close:.2f} ema={self._ema.current.value:.2f} qty={self.portfolio[self.spy].quantity}"
+)
+if bar.close > self._ema.current.value and self.portfolio[self.spy].quantity == 0:
+    self.set_holdings(self.spy, 1)
+```
+
+```csharp
+// Good — log every term in the condition before the if.
+SafeLog($"{Time}: close={bar.Close:F2} ema={_ema.Current.Value:F2} qty={Portfolio[_spy].Quantity}");
+if (bar.Close > _ema.Current.Value && Portfolio[_spy].Quantity == 0)
+{
+    SetHoldings(_spy, 1);
+}
+```
+
+If the `if` checks three things, log all three. When an order doesn't happen, the line shows which term blocked it.
+
+### `safe_log` wrapper for live-only diagnostics
+
+In live trading the volume is naturally capped by wall-clock time, so chatty diagnostics that would blow the backtest quota are fine. Route them through a wrapper that's a no-op in backtests:
+
+```python
+def _safe_log(self, message):
     if self.live_mode:
         self.log(message)
 ```
@@ -155,131 +189,92 @@ private void SafeLog(string message)
 }
 ```
 
-Use `safe_log` for everything you'd want to inspect *if* something went wrong in live — ordinary backtests stay clean, and when a live incident happens the log already contains the trail.
+Use it for verbose diagnostics you'd only need *if* something went wrong in live — backtests stay clean, and when an incident happens the log already contains the trail.
 
-### 2. Log the values *before* the branch, not after
+### Prefer order tags over a `log` call after the order
 
-The point of a debug log is to answer "why did (or didn't) this branch fire?" — which requires logging the values the branch evaluates **before** the `if`, regardless of the outcome. Logging only inside the taken branch tells you nothing about the cases where the branch wasn't taken.
-
-```python
-# Bad — only tells you about the days you did trade
-if bar.close > self._ema.current.value and self.portfolio[self.spy].quantity == 0:
-    self.safe_log(f"{self.time}: entering long")
-    self.set_holdings(self.spy, 1)
-
-# Good — records the values every time, so "no order today" is explainable
-self.safe_log(
-    f"{self.time}: close={bar.close:.2f} ema={self._ema.current.value:.2f} "
-    f"qty={self.portfolio[self.spy].quantity}"
-)
-if bar.close > self._ema.current.value and self.portfolio[self.spy].quantity == 0:
-    self.set_holdings(self.spy, 1)
-```
-
-Log every value that appears in the condition — if the `if` checks three things, log all three. When an order doesn't happen, the log line shows which of the three was the blocker.
-
-This pairs naturally with `log` (not `debug`/`error`): the volume is too high for the Cloud Terminal, and the duplicate-suppression is not a problem here because each line already contains a changing timestamp and changing values.
-
-## Prefer order tags over `log` for order context
-
-When the thing you want to record is *why this order was placed*, put the context on the order itself via the `tag` parameter rather than calling `log` right after `market_order`. The tag travels with the order, shows up on the order ticket, the order events, the trade list, and — crucially — the Object Store CSV in the pattern below. A separate `log` line is unanchored from the order and is subject to log's duplicate-suppression and log-quota.
+Put the *why* on the order's `tag=` rather than a separate `log` line — it travels with the order, shows on the ticket and trade list, and costs nothing against the log quota. Include the values that drove the decision, not just a label.
 
 ```python
-# Bad — the "Buy SPY" line is detached from the order and adds a log-quota line
-self.market_order("SPY", 1)
-self.log("Buy SPY")
-
-# Good — the context lives on the order
-self.market_order(
-    "SPY", 1,
-    tag=f"{self.time}: close={bar.close:.2f} ema={self._ema.current.value:.2f}",
-)
+self.market_order("SPY", 1, tag=f"{self.time}: close={bar.close:.2f} ema={self._ema.current.value:.2f}")
 ```
 
 ```csharp
-MarketOrder("SPY", 1,
-    tag: $"{Time}: close={bar.Close:F2} ema={_ema.Current.Value:F2}");
+MarketOrder("SPY", 1, tag: $"{Time}: close={bar.Close:F2} ema={_ema.Current.Value:F2}");
 ```
 
-Include the values that drove the decision, not just a human-readable label — `close=612.34 ema=608.11` explains the fill; "Buy SPY" doesn't.
+### Object Store for structured Research data
 
-## Object Store logging for Research analysis
-
-For structured diagnostic data you want to analyze in Research (e.g. a CSV of every signal evaluation), the log file is the wrong tool — size-capped and awkward to parse. Accumulate rows in memory and save once in `on_end_of_algorithm`:
+For structured rows you'll analyze in a Research notebook (e.g. a CSV of every signal evaluation), the log file is the wrong tool — size-capped and awkward to parse. Accumulate rows in memory and save once in py`on_end_of_algorithm`cs`OnEndOfAlgorithm`:
 
 ```python
-def initialize(self) -> None:
-    self._content = "time,symbol,price,tag\n"   # CSV header
+def initialize(self):
+    self._content = "time,symbol,price,tag\n"
 
-def on_order_event(self, order_event: OrderEvent) -> None:
+def on_order_event(self, order_event):
     if order_event.status == OrderStatus.FILLED:
         self._content += f"{order_event.utc_time},{order_event.symbol},{order_event.fill_price},{order_event.ticket.tag}\n"
 
-def on_end_of_algorithm(self) -> None:
+def on_end_of_algorithm(self):
     self.object_store.save(f"{self.project_id}-{self.algorithm_id}.txt", self._content)
 ```
 
-C# follows the same pattern with the PascalCase APIs from the equivalents table below. Read back in a research notebook with `qb.object_store.read(key)`.
+```csharp
+public override void Initialize()
+{
+    _content = "time,symbol,price,tag\n";
+}
 
-- **Accumulate in memory, save once** — writing every bar is wasteful.
-- **Use a stable, unique key** like `{project_id}-{algorithm_id}.txt` so runs don't clobber each other.
-- **Backtests only** — in live, the 100K-line log file remains the right place for diagnostics.
+public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    if (orderEvent.Status == OrderStatus.Filled)
+        _content += $"{orderEvent.UtcTime},{orderEvent.Symbol},{orderEvent.FillPrice},{orderEvent.Ticket.Tag}\n";
+}
 
-## Picking the right channel
+public override void OnEndOfAlgorithm()
+{
+    ObjectStore.Save($"{ProjectId}-{AlgorithmId}.txt", _content);
+}
+```
 
-Decision order:
+Read back in Research with py`qb.object_store.read(key)`cs`qb.ObjectStore.Read(key)`. Use a stable, unique key like `{project_id}-{algorithm_id}.txt` so runs don't clobber each other. Backtests only — in live, the 100K-line log file is the right place for diagnostics.
 
-1. **Does the algorithm need to stop?** → `quit(...)` followed by `return`.
-2. **Is this something the user needs to *see* in the Cloud Terminal while the algorithm runs?**
-   - Error-level (caught exception, invariant violation) → `error`
-   - Notable-but-normal (signal change, daily summary) → `debug`
-3. **Everything else** → `log`. This is the default. Order fills, per-event diagnostics, end-of-algorithm summaries, live-trading audit trails all belong in `log`.
+## Silent footgun: duplicate-message suppression
 
-## Common mistakes to avoid
+If you log the **exact same string** more than once, only the first call is written — the rest are dropped silently. A per-bar log like py`self.log("Portfolio value below threshold")`cs`Log("Portfolio value below threshold")` looks fine on bar one and then disappears. Always include a changing value (timestamp, price, symbol) so each line is distinct:
 
-- **`quit()` without a following `return`** — the algorithm *will* stop, but the current method keeps executing until it returns naturally. Orders placed after the `quit` call still go through.
-- **Identical `log` strings in a loop** — everything after the first call is silently suppressed. Include the timestamp or a changing value (symbol, price, portfolio value) so each line is unique.
-- **`debug`/`error` in `on_data` on minute/tick data** — rate-limited to ~1/second, so most calls vanish. Use `log` for high-frequency diagnostics and reserve `debug`/`error` for notable events.
-- **Logging raw dataset content** — not permitted and eats the log quota. Log derived quantities (your signal, your portfolio value, your order), not the subscribed market data that produced them.
-- **No logging in a live algorithm** — if a live algorithm misbehaves and there are no logs, there is nothing to diagnose against. Always log order fills and key state transitions, and route "why did this branch fire?" diagnostics through a live-only `safe_log` wrapper.
-- **Diagnostic logs only inside the taken branch** — they can't explain the *missing* orders. Log the values *before* the `if`, covering every term in the condition.
-- **`log` right after `market_order`/`limit_order`/etc.** — context detached from the order, eats quota, and is duplicate-suppressed. Put the reasoning on the order via `tag=...`.
-- **Using `log` to accumulate structured diagnostics in a backtest** — write rows to an in-memory buffer and `object_store.save` once in `on_end_of_algorithm` instead.
-- **End-of-run state logged from `on_data`** — belongs in `on_end_of_algorithm` so it fires exactly once.
-- **Using `debug` as the default channel** — floods the Cloud Terminal, hits the 1/second rate-limit, and the actually-important debug messages get dropped with the noise.
+```python
+self.log(f"{self.time}: portfolio below threshold ({self.portfolio.total_portfolio_value:.2f})")
+```
 
-## Quick checklist when adding logging
+```csharp
+Log($"{Time}: portfolio below threshold ({Portfolio.TotalPortfolioValue:F2})");
+```
 
-1. Is this a stopping condition? → `quit(...)` then `return`.
-2. Does a human need to see it live? → `debug` (notable) or `error` (problem). Otherwise `log`.
-3. Will this line run every bar at minute/tick resolution? **First** ask whether it needs to run every bar at all — per-bar logs are the fastest way to exhaust the quota, and an event-gated log (fire, order, signal change) almost always covers the same diagnostic need. If it genuinely has to run every bar, it must be `log` (never `debug`/`error` — they're rate-limited to ~1/second and the vast majority of calls will be dropped) **and** include a changing value so it isn't duplicate-suppressed.
-4. Is the message unique each time? If the content is static, add `self.time` or the relevant value so `log`'s duplicate-suppression doesn't drop it.
-5. Is any part of the message verbatim market data from a subscribed dataset? If yes, log the derived quantity instead.
-6. For final/summary output, is it in `on_end_of_algorithm`?
-7. For verbose live-only debugging, is it routed through `safe_log` (gated on `self.live_mode`) and placed *before* the branching `if`, with every term of the condition included in the message?
-8. If the message is explaining *why an order was placed*, is it on the order as `tag=...` rather than a separate `log` call?
-9. If the goal is structured data to analyze in Research (not just runtime visibility), is it being accumulated in memory and saved to the Object Store in `on_end_of_algorithm`?
+Embedding the actual value being logged usually makes the message unique on its own, removing the need for an explicit timestamp.
 
-## C# equivalents
+## Common mistakes
 
-Every concept above applies identically to C# — only the syntax differs. Mapping:
+- **Logging every bar.** Switch to event-driven (order fill, signal change, scheduled rebalance) or a daily summary.
+- **Logging inside a per-symbol loop.** Aggregate inside, emit one line outside. For 5000-symbol universes the difference is 1 line vs 5000 per bar.
+- **Logging "HOLD" / "no action" outcomes.** They're 99% of the iterations and tell you nothing.
+- **Identical strings across calls.** `log` deduplicates silently — include a changing value so each line is distinct.
+- **`log` right after py`market_order`cs`MarketOrder`** — context detached from the order. Put it on the order via py`tag="..."`cs`tag: "..."` instead.
+- **Logging raw market data** (bars, trades, quotes from subscribed datasets). Not permitted *and* the highest-volume content possible. Log the derived quantity (signal value, portfolio value, decision).
+- **End-of-run state logged from py`on_data`cs`OnData`** — belongs in py`on_end_of_algorithm`cs`OnEndOfAlgorithm` so it fires exactly once.
+- **No logging at all in live.** When something goes wrong you'll have nothing to diagnose against. Always log fills and key state transitions; route verbose diagnostics through `safe_log`.
+- **Diagnostic logs only inside the taken branch.** Won't explain *missing* orders. Log values *before* the `if`, covering every term in the condition.
+- **Using the log file to accumulate structured rows** for Research analysis. Use the Object Store instead.
+- **py`debug`cs`Debug` / py`error`cs`Error` from py`on_data`cs`OnData` on minute/tick data.** Rate-limited to ~1/second, so most calls vanish. For high-frequency diagnostics use `log`; reserve `debug`/`error` for a handful of notable events per day.
+- **py`quit`cs`Quit` without a following `return`.** The algorithm *will* stop, but the current method keeps executing until it returns naturally; orders placed after the quit call still go through.
 
-| Python | C# |
-| --- | --- |
-| `self.log(msg)` | `Log(msg)` |
-| `self.debug(msg)` | `Debug(msg)` |
-| `self.error(msg)` | `Error(msg)` |
-| `self.quit(msg)` | `Quit(msg)` |
-| `self.time` | `Time` |
-| `self.portfolio.total_portfolio_value` | `Portfolio.TotalPortfolioValue` |
-| `self.live_mode` | `LiveMode` |
-| `on_end_of_algorithm` | `OnEndOfAlgorithm` |
-| `self.market_order("SPY", 1, tag="...")` | `MarketOrder("SPY", 1, tag: "...")` |
-| `self.object_store.save(key, content)` | `ObjectStore.Save(key, content)` |
-| `order_event.ticket.tag` | `orderEvent.Ticket.Tag` |
-| `self.project_id` / `self.algorithm_id` | `ProjectId` / `AlgorithmId` |
+## Checklist
 
-C#-specific notes:
-- The `safe_log` wrapper is `SafeLog` in C# (PascalCase) and should be gated on `LiveMode`, not `live_mode`.
-- Prefer interpolated strings (`$"..."`) over concatenation for log messages — cheaper and easier to read.
-- Format numerics explicitly (`:F2`, `:P2`) to keep log lines compact and stable across locales.
+1. Could this line be event-gated (fill, scheduled fire, signal change) instead of running every bar / every iteration?
+2. If it's inside a loop, is it summarizing the loop's outcome rather than firing per iteration?
+3. If it logs "no action" / "HOLD", does it really need to be there?
+4. Is the message unique each call (timestamp or changing value), so duplicate-suppression doesn't silently drop it?
+5. Does it cover every value in the decision condition, *before* the branch, so a missing order is explainable?
+6. If it's an order-context message, is it on the order via `tag=` rather than a separate `log` call?
+7. If it's bulk structured data for Research, is it accumulated in memory and saved to the Object Store in py`on_end_of_algorithm`cs`OnEndOfAlgorithm`?
+8. If it's verbose live-only diagnostics, is it routed through `safe_log` (gated on py`self.live_mode`cs`LiveMode`)?
