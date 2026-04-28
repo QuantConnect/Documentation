@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Validate, split, zip, and (optionally) install SKILL.md files.
 
+The script lives in `skill-templates/` and scans every SKILL.md under that
+directory. Build outputs (`skills/` tree and `skills.zip`) are written at
+the parent (repo root) so they never intermingle with the source SKILL.md
+files inside `skill-templates/`.
+
 Default run: validate + split + zip. No install.
 
 Every SKILL.md must be dual-language. Validation fails if the file has no
@@ -13,11 +18,12 @@ language markers — add at least one of:
 For each SKILL.md found:
   1. Validate YAML frontmatter (name + description required) and confirm the
      file is dual-language.
-  2. Split into language-specific trees:
-         <repo>/skills/python/<chapter-path>/SKILL.md
-         <repo>/skills/csharp/<chapter-path>/SKILL.md
+  2. Split into language-specific trees, preserving the path relative to
+     `skill-templates/`:
+         <repo>/skills/python/<rel-path>/SKILL.md
+         <repo>/skills/csharp/<rel-path>/SKILL.md
      Frontmatter `name` is left untouched.
-  3. Bundle the entire <repo>/skills/ tree into a single <repo>/skills.zip.
+  3. Bundle the entire `<repo>/skills/` tree into `<repo>/skills.zip`.
   4. With `--py` or `--cs`: also install the matching tree flat into
      ~/.claude/skills/<name>/SKILL.md so Claude can discover the skills.
 
@@ -45,8 +51,6 @@ REQUIRED_KEYS = {"name", "description"}
 DESCRIPTION_MIN = 30
 DESCRIPTION_MAX = 1024
 LANGS = ("python", "csharp")
-# Only scan the numbered top-level chapters where SKILL.md files may live.
-CHAPTER_DIR = re.compile(r"^0[1-6] ")
 IN_ACTIONS = environ.get("GITHUB_ACTIONS") == "true"
 # Dual-language inline markers (whitespace between halves tolerated).
 # py-first: py`X`cs`Y`     groups: (1)=python (2)=csharp
@@ -70,19 +74,10 @@ class FrontmatterError(ValueError):
 
 @dataclass(frozen=True)
 class Skill:
-    rel: Path           # source path relative to repo root
-    rel_chapter: Path   # source parent relative to repo root
-    content: str        # raw source content (utf-8)
-    name: str           # frontmatter `name`
-
-
-def find_skill_files(root: Path) -> list[Path]:
-    return sorted(
-        skill
-        for child in root.iterdir()
-        if child.is_dir() and CHAPTER_DIR.match(child.name)
-        for skill in child.rglob("SKILL.md")
-    )
+    rel: Path        # source path relative to templates root
+    rel_dir: Path    # source parent relative to templates root
+    content: str     # raw source content (utf-8)
+    name: str        # frontmatter `name`
 
 
 def parse_frontmatter(content: str) -> dict:
@@ -118,7 +113,7 @@ def is_dual_language(content: str) -> bool:
     )
 
 
-def load_skill(skill_file: Path, repo_root: Path) -> Skill:
+def load_skill(skill_file: Path, templates_root: Path) -> Skill:
     content = skill_file.read_text(encoding="utf-8")
     name = parse_frontmatter(content)["name"]
     if not is_dual_language(content):
@@ -130,8 +125,8 @@ def load_skill(skill_file: Path, repo_root: Path) -> Skill:
             "  - both ```python and ```csharp fenced code blocks."
         )
     return Skill(
-        rel=skill_file.relative_to(repo_root),
-        rel_chapter=skill_file.parent.relative_to(repo_root),
+        rel=skill_file.relative_to(templates_root),
+        rel_dir=skill_file.parent.relative_to(templates_root),
         content=content,
         name=name,
     )
@@ -247,17 +242,26 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    repo_root = Path(__file__).resolve().parent
-    skill_files = find_skill_files(repo_root)
+    templates_root = Path(__file__).resolve().parent
 
     skills: list[Skill] = []
     failed = False
-    for skill_file in skill_files:
+    for skill_file in sorted(templates_root.rglob("SKILL.md")):
         try:
-            skills.append(load_skill(skill_file, repo_root))
+            skills.append(load_skill(skill_file, templates_root))
         except FrontmatterError as e:
-            report_error(skill_file.relative_to(repo_root), str(e))
+            report_error(skill_file.relative_to(templates_root), str(e))
             failed = True
+
+    # Two SKILLs sharing a frontmatter `name` would silently overwrite each
+    # other on install — flag the collision instead.
+    seen: dict[str, Path] = {}
+    for s in skills:
+        if s.name in seen:
+            report_error(s.rel, f"duplicate skill name '{s.name}' (also in {seen[s.name]})")
+            failed = True
+        else:
+            seen[s.name] = s.rel
 
     if failed:
         return 1
@@ -266,6 +270,7 @@ def main() -> int:
         print(f"Validated {len(skills)} SKILL.md file(s), all OK.")
         return 0
 
+    repo_root = templates_root.parent
     skills_root = repo_root / "skills"
     bundle_zip = repo_root / "skills.zip"
     install_root = Path.home() / ".claude" / "skills"
@@ -277,7 +282,7 @@ def main() -> int:
     for skill in skills:
         for lang in LANGS:
             write_file(
-                skills_root / lang / skill.rel_chapter / "SKILL.md",
+                skills_root / lang / skill.rel_dir / "SKILL.md",
                 split_for_language(skill.content, lang),
                 dry_run=args.dry_run,
             )
@@ -289,7 +294,7 @@ def main() -> int:
     if args.install_lang:
         for skill in skills:
             install(
-                skills_root / args.install_lang / skill.rel_chapter / "SKILL.md",
+                skills_root / args.install_lang / skill.rel_dir / "SKILL.md",
                 install_root / skill.name / "SKILL.md",
                 dry_run=args.dry_run,
             )

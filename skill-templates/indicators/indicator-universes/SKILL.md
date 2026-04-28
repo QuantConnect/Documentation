@@ -1,5 +1,5 @@
 ---
-name: indicator-universe
+name: indicator-universes
 description: Use when selecting a QuantConnect/LEAN universe based on per-symbol indicators. Triggers — code uses py`add_universe(...)`cs`AddUniverse(...)` with a selection callback that builds per-symbol `SimpleMovingAverage`/`ExponentialMovingAverage`/`BollingerBands`/`RSI`/`ATR` etc., often via a `SelectionData` class kept in a per-symbol dict; questions like "rank stocks by 21-day SMA", "top N most volatile crypto pairs", "fundamentals universe with momentum filter", "why does my SMA spike around splits/dividends", "why does my universe shrink during warm-up", "how do I avoid history calls in universe selection". Skip when — universe doesn't need per-symbol indicators (use plain fundamentals/ETF/CryptoUniverse selection).
 ---
 
