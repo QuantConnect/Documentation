@@ -1,6 +1,6 @@
 ---
 name: notifications
-description: Use when a QuantConnect/LEAN live algorithm sends data out or receives external instructions. Triggers — code uses py`notify.email`cs`Notify.Email`/py`notify.sms`cs`Notify.Sms`/py`notify.telegram`cs`Notify.Telegram`/py`notify.web`cs`Notify.Web`/py`notify.ftp`cs`Notify.Ftp`/py`notify.sftp`cs`Notify.Sftp`, py`signal_export.*`cs`SignalExport.*`, py`on_command`cs`OnCommand`, py`add_command`cs`AddCommand`, py`broadcast_command`cs`BroadcastCommand`, py`link()`cs`Link()`, or a class implementing `ISignalExportTarget` / `Command`; phrases like "Discord/Slack alert on fills", "email on drawdown", "push portfolio targets to Collective2/Numerai/vBase/our endpoint", "custom signal export to my broker", "manual liquidate from outside", "parent algo signals child", "multi-algorithm arbitrage". Skip when — purely in-algo log/debug (use `logging` skill).
+description: Use when a QuantConnect/LEAN live algorithm sends data out or receives external instructions. Triggers — code uses py`notify.email`cs`Notify.Email`/py`notify.sms`cs`Notify.Sms`/py`notify.telegram`cs`Notify.Telegram`/py`notify.web`cs`Notify.Web`/py`notify.ftp`cs`Notify.Ftp`/py`notify.sftp`cs`Notify.Sftp`, py`signal_export.*`cs`SignalExport.*`, py`on_command`cs`OnCommand`, py`add_command`cs`AddCommand`, py`broadcast_command`cs`BroadcastCommand`, py`link()`cs`Link()`, or a class implementing `ISignalExportTarget` / `Command`; phrases like "Discord/Slack alert on fills", "email on drawdown", "push portfolio targets to our endpoint", "custom signal export to my broker", "manual liquidate from outside", "parent algo signals child", "multi-algorithm arbitrage". Skip when — purely in-algo log/debug (use `logging` skill).
 ---
 
 # External Communication in QuantConnect / LEAN
@@ -14,7 +14,7 @@ A live-trading algorithm has several primitives for talking to the outside world
 
 | Direction | Content | Primitive |
 | --- | --- | --- |
-| Out | Portfolio targets / trade signals to a platform | **Signal Exports** (bundled Collective2 / Numerai / vBase, or custom `ISignalExportTarget`) |
+| Out | Portfolio targets / trade signals to a platform | **Signal Exports** (custom `ISignalExportTarget`) |
 | Out | Human-facing alert (fill, error, daily summary) | `notify.email` / `sms` / `telegram` / `web` |
 | Out | Bulk file delivery to a counterparty | `notify.ftp` / `notify.sftp` |
 | In | Manual instruction (liquidate, parameter change) | **Commands** (py`on_command`cs`OnCommand` or `Command` subclass) |
@@ -31,26 +31,13 @@ A live-trading algorithm has several primitives for talking to the outside world
 
 ## Trade signals / portfolio targets → Signal Exports
 
-For portfolio targets to a fund, allocator, or trading platform: use **Signal Exports**, not `notify.web`. The signal-export manager:
+For portfolio targets to a fund, allocator, or trading platform: use **Signal Exports**, not `notify.web`. They plug into the trading workflow — a `send` call fires automatically on every fill with the current portfolio state — and the manager:
 
 - Debounces fills into one batched call (default 5s window).
 - Passes a standardized `PortfolioTarget` list, not an ad-hoc payload.
-- Has bundled providers for Collective2, Numerai, vBase.
 - Survives broker reconnects without duplicating the payload.
 
-For Collective2/Numerai/vBase the bundled provider is enough — register via py`signal_export.add_signal_export_providers(...)`cs`SignalExport.AddSignalExportProviders(...)` in `initialize`, then call py`signal_export.set_target_portfolio_from_portfolio()`cs`SignalExport.SetTargetPortfolioFromPortfolio()` to push.
-
-For any other destination, write a custom `ISignalExportTarget`. Don't reach for `notify.web` to roll your own.
-
-**Why not `notify.web` for trade data?**
-
-- `notify.web` is fire-and-forget HTTP POST with a 300s receiver timeout, no retry, no debouncing. Every fill triggers a separate call → quota burn, race conditions, partial state at the receiver.
-- Signal Exports send a single coherent portfolio snapshot per debounce window — the receiver sees the *intended* state, not a stream of deltas.
-- Trade-data payloads tend to drift (per-symbol weights, metadata). A signal exporter encapsulates the schema; ad-hoc webhook bodies drift across versions.
-
-Reach for `notify.web` only when the recipient is a notification consumer (Discord channel, monitoring webhook), not a trading system that's about to act on the payload.
-
-### Custom Signal Exports
+### Implementation
 
 Implement `ISignalExportTarget` — a class with py`send(parameters: SignalExportTargetParameters) -> bool`cs`bool Send(SignalExportTargetParameters parameters)` and py`dispose() -> None`cs`void Dispose()`. Register in `initialize` via py`signal_export.add_signal_export_provider(...)`cs`SignalExport.AddSignalExportProvider(...)`. py`parameters.algorithm`cs`parameters.Algorithm` is the algorithm; py`parameters.targets`cs`parameters.Targets` is the list of `PortfolioTarget`s.
 
@@ -118,7 +105,7 @@ Putting `notify.*` inside py`on_data`cs`OnData` on minute or tick resolution sat
 - Scheduled events (daily summary, threshold alerts) — see the `scheduled-events` skill.
 - Signal / state transitions — only on the *change*, not every bar the condition is true.
 
-### Don't send raw subscribed-dataset content
+### Send derived values only
 
 The notification system **can't be used for data distribution** — that's a terms-of-use violation, not a quota concern. Send derived information (signal value, portfolio value, fill summary), not raw bars/quotes/trades from QuantConnect-subscribed datasets.
 
@@ -126,16 +113,7 @@ The notification system **can't be used for data distribution** — that's a ter
 
 Commands inject data **into** a running live algorithm. Typical uses: a manual "panic close-all", a click-to-confirm grey-box trade, or coordinating sibling algorithms (arbitrage between exchanges, child strategies offloading execution to a brokerage-connected parent).
 
-Commands give you authenticated delivery routed through QC infrastructure, real-time pickup (no polling latency), and both REST/API broadcast and project-targeted send (via `project_id` + py`link().download_data()`cs`Link().DownloadData()`) for parent/child coordination.
-
-**Why not poll the Object Store?**
-
-You *can* technically have one algorithm write a JSON blob to the Object Store and another read it. Don't:
-
-- Object Store reads aren't real-time. You'd need a per-bar or scheduled poll — which adds latency and burns quota.
-- Concurrent-write semantics are undefined: two writers can clobber each other silently.
-- No delivery acknowledgement. A skipped read fails open, not closed.
-- Object Store is for persistent state (trained models, accumulated features, end-of-run CSVs); Commands are the queue.
+Commands give you authenticated delivery with real-time pickup — no upload-to-Object-Store-and-poll round-trip — and both REST/API broadcast and project-targeted send (via `project_id` + py`link().download_data()`cs`Link().DownloadData()`) work for parent/child coordination.
 
 ## Before writing any code: ask the user about the payload
 
@@ -205,50 +183,3 @@ For a parent that just translates payloads into orders, set py`self.settings.see
 - **`Link(new { ... })` uses an anonymous object whose property names go on the wire verbatim.** `new { Ticker = "AAPL" }` produces `{"Ticker": "AAPL"}`, which a Python sibling reads as `data.Ticker` (not `data.ticker`). For lowercase keys, use `Dictionary<string, object>`.
 <!-- /csharp-only -->
 
-# Universal rules
-
-- **py`self.live_mode`cs`LiveMode` gate every `notify.*` and command-send site.** Notifications and command-send primitives are no-ops outside Cloud live trading.
-- **Signal Exports run everywhere (incl. backtests).** Either skip provider registration when not in live mode, or short-circuit at the top of `send`.
-- **Fire on events, not per-bar.** Every channel here has a quota or rate-limit; per-bar firing exhausts it.
-- **No raw subscribed-dataset content in any payload.** Derived values only.
-
-# Checklist
-
-## Direction & primitive
-
-1. **Direction?** Out → notify or Signal Export. In → Command. Don't poll Object Store as a queue.
-2. **Out, payload is portfolio targets / trade signals?** Signal Exports, not `notify.web`. Bundled provider for Collective2/Numerai/vBase; custom class for anything else.
-3. **Out, recipient is a human / monitoring system?** Pick the right `notify.*` channel.
-4. **In, instruction or coordination?** Commands.
-
-## Notifications
-
-5. Every `notify.*` call gated with py`self.live_mode`cs`LiveMode`?
-6. Channel used more than once → routed through a `_notify_*` helper with credentials at module scope?
-7. Call site is an event handler, not per-bar `on_data`? If per-bar, can it be gated on a real state change?
-8. **SMS:** urgent enough to justify per-message QCC? Phone in E.164? Body under 1,600 chars?
-9. **Email:** attachment filename via `headers={'filename': ...}`? Body under 10 KB?
-10. **Telegram:** group ID a negative integer? Bot in the group (or `token` passed)? Emojis as UTF-32 escapes?
-11. **Webhook:** receiver responds within 300s? Discord targets wrapped in `{"content": ...}`?
-12. **FTP vs SFTP:** auth method matches the server (password vs SSH key, not both)?
-13. Payload contains raw subscribed-dataset content? Swap for a derived value.
-
-## Custom Signal Exports
-
-14. Reuse one HTTP client via the constructor; close in `dispose`.
-15. Return a `bool` — never raise out of `send`.
-16. Live-mode gated if the endpoint is production.
-17. Quantity is a weight, not a share count — use py`PortfolioTarget.percent`cs`PortfolioTarget.Percent` to convert if needed.
-18. Pass `tag` through — it's the only carrier of caller-provided context.
-
-## Commands
-
-19. Asked the user about payload fields, single vs multi-shape, and send mechanism?
-20. Comment in the algorithm pointing at the sender-script docs + the payload shape this handler reads?
-21. Send sites gated with py`self.live_mode`cs`LiveMode`?
-22. Encapsulated commands registered with `add_command` on every receiver?
-23. py`Command.run`cs`Command.Run` returns `True`/`False`, not implicit `None`?
-24. Broadcast payloads include py`"sender": self.project_id`cs`sender = ProjectId`?
-25. Python `Command.run` calling subclass methods? Use the static-reference pattern (`MyCommand.ALGORITHM = self`).
-26. Broadcast sites filter `on_order_event` to py`OrderStatus.FILLED`cs`OrderStatus.Filled`?
-27. C# payload field access uses PascalCase? Numeric fields explicitly cast?
