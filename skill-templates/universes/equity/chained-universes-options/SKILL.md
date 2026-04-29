@@ -7,8 +7,6 @@ description: Use when chaining a dynamic Equity universe (Fundamental or ETF con
 
 Chain a dynamic Equity universe (Fundamental, ETF constituents) with Option contracts on each selected underlying by calling py`self.add_universe_options(universe, option_filter)`cs`AddUniverseOptions(universe, optionFilter)` **once in py`initialize`cs`Initialize`**, after creating the parent universe and saving its reference. LEAN handles the rest: the parent's selector picks the equities; LEAN automatically subscribes the matching Option contracts and routes additions/removals through py`on_securities_changed`cs`OnSecuritiesChanged` as the parent universe rotates.
 
-**Don't call py`add_option`cs`AddOption` from the selector or py`on_securities_changed`cs`OnSecuritiesChanged` to wire this up.** py`add_option`cs`AddOption` is the API for a single static Option universe, not for chaining; using it from the selector duplicates LEAN's lifecycle logic, breaks idempotence, and tends to leak subscriptions when the parent rotates. py`add_universe_options`cs`AddUniverseOptions` is purpose-built for this.
-
 ## Required setup
 
 1. **Save the parent universe's reference** — py`add_universe(...)`cs`AddUniverse(...)` returns the `Universe` object you pass to py`add_universe_options(...)`cs`AddUniverseOptions(...)`.
@@ -95,7 +93,5 @@ LEAN drives the chain automatically. If you need to react to specific contracts 
 
 ## Common mistakes
 
-- **Calling py`add_option(symbol)`cs`AddOption(symbol)` from the selector or py`on_securities_changed`cs`OnSecuritiesChanged` to attach options to a chained universe.** That's the static-universe API; using it here duplicates LEAN's lifecycle and leaks subscriptions when the parent rotates. py`add_universe_options`cs`AddUniverseOptions` is the right API for the chained case — call it once in py`initialize`cs`Initialize`.
-- **Skipping py`DataNormalizationMode.RAW`cs`DataNormalizationMode.Raw`.** Default is adjusted; strikes are raw. py`u.strikes(n, m)`cs`u.Strikes(n, m)` and other strike-relative filters silently pick the wrong contracts when the underlying is adjusted. Symptoms cluster around splits and ex-dividend dates.
-- **Discarding the parent universe reference.** py`add_universe_options`cs`AddUniverseOptions` needs the `Universe` object returned by py`add_universe(...)`cs`AddUniverse(...)` — assign it to a variable, don't throw it away.
-- **Omitting the Option filter or returning the wrong type.** Without a filter LEAN subscribes to the entire chain per underlying, which is huge. The filter must return the `OptionFilterUniverse` (the input, post-fluent-chain) — not a list of `Symbol`. Returning a list silently produces an empty universe.
+- **Calling py`add_option(symbol)`cs`AddOption(symbol)` from the selector or py`on_securities_changed`cs`OnSecuritiesChanged` to attach options to a chained universe.** That is the static-universe API. Use py`add_universe_options`cs`AddUniverseOptions` once in py`initialize`cs`Initialize` instead.
+- **Returning a list of `Symbol` from the Option filter.** The filter must return the `OptionFilterUniverse` (the input, post-fluent-chain). A list silently produces an empty universe.
