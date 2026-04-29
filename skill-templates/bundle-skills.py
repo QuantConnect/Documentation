@@ -35,6 +35,7 @@ Flags:
 """
 from __future__ import annotations
 
+import json
 import re
 from argparse import ArgumentParser
 from dataclasses import dataclass
@@ -42,6 +43,7 @@ from os import environ
 from pathlib import Path
 from shutil import copy2, rmtree
 from sys import exit, stderr
+from urllib.request import urlopen
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import yaml
@@ -52,6 +54,14 @@ DESCRIPTION_MIN = 30
 DESCRIPTION_MAX = 1024
 LANGS = ("python", "csharp")
 IN_ACTIONS = environ.get("GITHUB_ACTIONS") == "true"
+# Enum-like helper classes whose constants are exposed as `fields` (not
+# `properties`); shared by fetch_fundamental_lookup and format_fundamental_lookup.
+FUND_ENUM_HELPER_TYPES = (
+    "MorningstarSectorCode",
+    "MorningstarIndustryGroupCode",
+    "MorningstarIndustryCode",
+    "MorningstarEconomySphereCode",
+)
 # Dual-language inline markers (whitespace between halves tolerated).
 # py-first: py`X`cs`Y`     groups: (1)=python (2)=csharp
 # cs-first: cs`Y`py`X`     groups: (1)=csharp (2)=python
@@ -151,6 +161,84 @@ def strip_code_blocks(content: str, lang: str) -> str:
             out.append(lines[i])
             i += 1
     return "\n".join(out)
+
+
+def fetch_fundamental_lookup(language: str) -> dict[str, list[str]]:
+    """Walk Fundamental and its non-leaf sub-types via the QC inspector.
+
+    BFS from `Fundamental`. For each property whose type lives in
+    `QuantConnect.Data.Fundamental.*` and whose base is *not* MultiPeriodField,
+    queue it for expansion. MultiPeriodField wrappers are listed by name in the
+    parent's properties but never expanded — their only members are period
+    accessors that the skill already documents.
+
+    Each entry is keyed by the property-accessor name from its parent
+    (snake_case in Python, PascalCase in C#) — e.g. CompanyReference is listed
+    under `company_reference` in Python because that's how callers reach it
+    (`f.company_reference`). The root uses the lowercased type name in Python.
+    MultiPeriodField wrappers are suffixed with `*` so the skill can flag which
+    properties need a period accessor.
+    """
+    inspector_url = (
+        "https://www.quantconnect.com/services/inspector"
+        "?language={lang}&type=T:QuantConnect.Data.Fundamental.{type}"
+    )
+    fund_prefix = "QuantConnect.Data.Fundamental."
+    # MultiPeriodField subclasses (and closed generics) are leaf wrappers —
+    # don't recurse into them; their only members are period accessors.
+    leaf_base_prefix = "QuantConnect.Data.Fundamental.MultiPeriodField"
+    root_type = "Fundamental"
+
+    root_display = root_type.lower() if language == "python" else root_type
+    out: dict[str, list[str]] = {}
+    visited: set[str] = set()
+    # Queue items are (type_name, display_name) — display follows the parent's accessor casing.
+    queue: list[tuple[str, str]] = [(root_type, root_display)]
+    while queue:
+        type_name, display = queue.pop(0)
+        if type_name in visited:
+            continue
+        visited.add(type_name)
+        url = inspector_url.format(lang=language, type=type_name)
+        with urlopen(url) as r:
+            data = json.load(r)
+        names: list[str] = []
+        for p in data["properties"]:
+            prop_name = p["property-name"]
+            full = p["property-full-type-name"]
+            base = p.get("property-base-type-full-name") or ""
+            if base.startswith(leaf_base_prefix):
+                names.append(prop_name + "*")
+            else:
+                names.append(prop_name)
+                if full.startswith(fund_prefix):
+                    short = full[len(fund_prefix):]
+                    if short not in visited:
+                        queue.append((short, prop_name))
+        out[display] = names
+    # Append the enum-helper classes — their named integer constants live in
+    # `fields`, not `properties`. They're not reachable via tree-walking and
+    # appear at the bottom of the rendered lookup.
+    for type_name in FUND_ENUM_HELPER_TYPES:
+        url = inspector_url.format(lang=language, type=type_name)
+        with urlopen(url) as r:
+            data = json.load(r)
+        out[type_name] = [f["field-name"] for f in data.get("fields", [])]
+    return out
+
+
+def format_fundamental_lookup(lookup: dict[str, list[str]]) -> str:
+    """Render in three tiers: root, chainable types (alpha), enum helpers (alpha).
+
+    Sorting is case-insensitive so PascalCase headings interleave naturally
+    with snake_case ones; the root is pinned to the top because every other
+    path chains from it.
+    """
+    root = next(iter(lookup))
+    helpers = [k for k in lookup if k in FUND_ENUM_HELPER_TYPES]
+    chainable = [k for k in lookup if k != root and k not in FUND_ENUM_HELPER_TYPES]
+    ordered = [root] + sorted(chainable, key=str.lower) + sorted(helpers, key=str.lower)
+    return "\n".join(f"- **{k}**: {', '.join(lookup[k])}" for k in ordered)
 
 
 def split_for_language(content: str, lang: str) -> str:
@@ -278,12 +366,24 @@ def main() -> int:
     # Wipe the build dir so deletions in the source propagate.
     remove_tree(skills_root, dry_run=args.dry_run)
 
+    fund_lookup_marker = "<!-- fundamental-lookup -->"
+    # Lazily fetched per language; populated only when a skill needs the lookup.
+    fundamental_lookup: dict[str, str] = {}
+
     # Build: split each skill into a Python and a C# tree.
     for skill in skills:
         for lang in LANGS:
+            content = split_for_language(skill.content, lang)
+            if fund_lookup_marker in content:
+                if lang not in fundamental_lookup:
+                    print(f"Fetching Fundamental property tree ({lang}) from inspector...")
+                    fundamental_lookup[lang] = format_fundamental_lookup(
+                        fetch_fundamental_lookup(lang)
+                    )
+                content = content.replace(fund_lookup_marker, fundamental_lookup[lang])
             write_file(
                 skills_root / lang / skill.rel_dir / "SKILL.md",
-                split_for_language(skill.content, lang),
+                content,
                 dry_run=args.dry_run,
             )
         print(f"Built '{skill.name}' from {skill.rel}")
