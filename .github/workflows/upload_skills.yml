@@ -28,3 +28,13 @@ jobs:
 
       - name: Upload skills to S3
         run: aws s3 cp skills.zip s3://cdn.quantconnect.com/skills/skills-latest.zip --acl bucket-owner-full-control
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: github-action-skills-bundle
+          add-paths: skills/**
+          title: "Update bundled skills/ tree"
+          body: "Automated changes from skill-templates/bundle-skills.py."
+          committer: "GitHub Actions <github-actions@github.com>"
+          author: "GitHub Actions <github-actions@github.com>"
