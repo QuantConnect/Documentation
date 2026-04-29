@@ -205,13 +205,6 @@ For a parent that just translates payloads into orders, set py`self.settings.see
 - **`Link(new { ... })` uses an anonymous object whose property names go on the wire verbatim.** `new { Ticker = "AAPL" }` produces `{"Ticker": "AAPL"}`, which a Python sibling reads as `data.Ticker` (not `data.ticker`). For lowercase keys, use `Dictionary<string, object>`.
 <!-- /csharp-only -->
 
-# Universal rules
-
-- **py`self.live_mode`cs`LiveMode` gate every `notify.*` and command-send site.** Notifications and command-send primitives are no-ops outside Cloud live trading.
-- **Signal Exports run everywhere (incl. backtests).** Either skip provider registration when not in live mode, or short-circuit at the top of `send`.
-- **Fire on events, not per-bar.** Every channel here has a quota or rate-limit; per-bar firing exhausts it.
-- **No raw subscribed-dataset content in any payload.** Derived values only.
-
 # Checklist
 
 ## Direction & primitive
@@ -235,20 +228,17 @@ For a parent that just translates payloads into orders, set py`self.settings.see
 
 ## Custom Signal Exports
 
-14. Reuse one HTTP client via the constructor; close in `dispose`.
-15. Return a `bool` — never raise out of `send`.
-16. Live-mode gated if the endpoint is production.
-17. Quantity is a weight, not a share count — use py`PortfolioTarget.percent`cs`PortfolioTarget.Percent` to convert if needed.
-18. Pass `tag` through — it's the only carrier of caller-provided context.
+14. Quantity is a weight, not a share count — use py`PortfolioTarget.percent`cs`PortfolioTarget.Percent` to convert if needed.
+15. Pass `tag` through — it's the only carrier of caller-provided context.
 
 ## Commands
 
-19. Asked the user about payload fields, single vs multi-shape, and send mechanism?
-20. Comment in the algorithm pointing at the sender-script docs + the payload shape this handler reads?
-21. Send sites gated with py`self.live_mode`cs`LiveMode`?
-22. Encapsulated commands registered with `add_command` on every receiver?
-23. py`Command.run`cs`Command.Run` returns `True`/`False`, not implicit `None`?
-24. Broadcast payloads include py`"sender": self.project_id`cs`sender = ProjectId`?
-25. Python `Command.run` calling subclass methods? Use the static-reference pattern (`MyCommand.ALGORITHM = self`).
-26. Broadcast sites filter `on_order_event` to py`OrderStatus.FILLED`cs`OrderStatus.Filled`?
-27. C# payload field access uses PascalCase? Numeric fields explicitly cast?
+16. Asked the user about payload fields, single vs multi-shape, and send mechanism?
+17. Comment in the algorithm pointing at the sender-script docs + the payload shape this handler reads?
+18. Send sites gated with py`self.live_mode`cs`LiveMode`?
+19. Encapsulated commands registered with `add_command` on every receiver?
+20. py`Command.run`cs`Command.Run` returns `True`/`False`, not implicit `None`?
+21. Broadcast payloads include py`"sender": self.project_id`cs`sender = ProjectId`?
+22. Python `Command.run` calling subclass methods? Use the static-reference pattern (`MyCommand.ALGORITHM = self`).
+23. Broadcast sites filter `on_order_event` to py`OrderStatus.FILLED`cs`OrderStatus.Filled`?
+24. C# payload field access uses PascalCase? Numeric fields explicitly cast?

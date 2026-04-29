@@ -7,8 +7,6 @@ description: Use when selecting a QuantConnect/LEAN universe based on per-symbol
 
 The pattern: stream the universe's daily data through one indicator instance per symbol, then filter or rank the universe by the indicator's value. Wrap the per-symbol state in a `SelectionData` class kept in a per-symbol dict on the algorithm.
 
-**Do not call py`self.history(...)`cs`History(...)` inside the universe selection callback to compute indicators.** It runs every selection step for every symbol — for an 8000-symbol Equity fundamentals universe that's thousands of history requests per trading day. Stream the data through the indicator instead; that's what the universe data is for.
-
 ## Basic pattern (Equity / Fundamentals)
 
 US Equities only support **data-point indicators** for universe selection (SMA, EMA, RSI, StandardDeviation, BollingerBands, etc. — anything that updates from `(time, value)`), not bar indicators (ATR, candle patterns).
@@ -328,24 +326,8 @@ These universes are almost always paired with a py`self.schedule.on(...)`cs`Sche
 ## Common mistakes
 
 - **Calling py`self.history(...)`cs`History(...)` per symbol inside the selection callback.** Doesn't scale and is the entire reason this pattern exists. The only legitimate history call is the post-split rewarm in the Equity `SelectionData` update, which fires once per affected symbol per corporate action.
-- **Forgetting to clean up `SelectionData` for departed symbols.** The dict grows forever. Use the set difference between the dict's keys and the symbols in the current data.
-- **Returning a populated list during py`self.is_warming_up`cs`IsWarmingUp`.** Selection happens on un-ready indicators.
-- **Warm-up shorter than the indicator's warm-up period.** py`set_warm_up(timedelta(N))`cs`SetWarmUp(TimeSpan.FromDays(N))` is **calendar days**, not trading days. For a 21-bar daily indicator, 21 days isn't enough for US Equities — weekends and holidays mean ~30 calendar days is the floor; pad to 1.5–2× the indicator length to be safe.
 - **Ignoring py`price_scale_factor`cs`PriceScaleFactor` on Equity.** Raw py`f.price`cs`f.Price` drops abruptly through splits and dividends; the indicator's window straddles the boundary and produces a spurious value. Symptoms are subtle: rankings spike around heavily-dividend-paying or recently-split stocks.
-- **Using a short-circuit operator (py`and`cs`&&`) instead of `&` between two update calls.** The short-circuit form means if the first indicator isn't ready, the second never updates that bar, and the two indicators become permanently out of sync. The canonical pattern is to _combine_ the side-effecting update with the joint readiness check in one expression: py`return ind1.update(...) & ind2.update(...)`cs`return ind1.Update(...) & ind2.Update(...)`. Each update returns the indicator's new readiness, so the `&`-joined expression doubles as the row's readiness.
-- **Splitting update from readiness, then writing `update(...) & update(...)` followed by a `&`-joined readiness check.** Once the updates have run, the readiness check is just a bool read with no side effect — short-circuit (py`and`cs`&&`) is fine there, and `&` is just noise. Don't carry the "non-short-circuit" rule into pure boolean expressions.
+- **Using a short-circuit operator (py`and`cs`&&`) instead of `&` between two update calls.** The short-circuit form means if the first indicator isn't ready, the second never updates that bar, and the two indicators become permanently out of sync. The canonical pattern combines the side-effecting update with the joint readiness check in one expression: py`return ind1.update(...) & ind2.update(...)`cs`return ind1.Update(...) & ind2.Update(...)`.
+- **Splitting update from readiness, then writing `update(...) & update(...)` followed by a `&`-joined readiness check.** Once the updates have run, the readiness check is a bool read with no side effect — short-circuit (py`and`cs`&&`) is correct there, and `&` is just noise. The "non-short-circuit" rule is for the side-effecting update calls only.
 - **Putting the selection logic on intraday data.** Universe selection callbacks usually fire once per day. The indicators are seeing daily bars regardless of py`universe_settings.resolution`cs`UniverseSettings.Resolution` — `SimpleMovingAverage(21)` means 21 days, not 21 minutes.
-- **Trying to use a bar indicator on an Equity universe.** `Fundamental` has no OHLCV — only the previous day's close in py`f.price`cs`f.Price`. `ATR`, candle patterns, and other indicators that genuinely need high/low/open cannot be driven from `Fundamental`. (`BollingerBands` and similar that compute on closes are _data-point_ indicators — they're fine.) On Crypto, the data point does have OHLCV, so wrap it in a `TradeBar` before passing to a true bar indicator.
-
-## Checklist when writing one of these
-
-1. Is there a `SelectionData` class with the indicator(s) as instance attributes / properties?
-2. Is there a per-symbol dict on the algorithm, with lazy-create on first sight of a symbol (py`setdefault`cs`TryGetValue` + assign)?
-3. Is there a cleanup step removing entries for symbols no longer in the current data?
-4. Does the per-symbol update method return the indicator's readiness so the comprehension / LINQ filter can keep only ready symbols?
-5. Is py`set_warm_up(timedelta(N))`cs`SetWarmUp(TimeSpan.FromDays(N))` set, with `N` ≥ ~1.5× the longest indicator's warm-up period in calendar days?
-6. Does the callback return an empty list while py`self.is_warming_up`cs`IsWarmingUp`?
-7. **Equity only:** is py`price_scale_factor`cs`PriceScaleFactor` cached and checked, with reset + py`SCALED_RAW`cs`ScaledRaw` rewarm on change?
-8. **Crypto only:** for bar indicators, is the universe data point being wrapped in a `TradeBar` before update? **Equity only:** are all indicators data-point indicators (no bar indicators)?
-9. Between multiple update calls in the per-symbol update method, is the operator `&` (non-short-circuit), not py`and`cs`&&`? And conversely, are pure readiness reads using py`and`cs`&&`, not `&`?
-10. Is universe selection running on its default daily schedule (no py`universe_settings.schedule.on(...)`cs`UniverseSettings.Schedule.On(...)` slowing it down)? The exception is a data-point indicator where the slower cadence _is_ the indicator semantic (e.g., a 21-week SMA on weekly closes). Crypto bar indicators always need the daily cadence — never slow them down.
+- **Using a bar indicator on an Equity universe.** `Fundamental` has no OHLCV — only the previous day's close in py`f.price`cs`f.Price`. `ATR`, candle patterns, and other indicators that genuinely need high/low/open cannot be driven from `Fundamental`. (`BollingerBands` and similar that compute on closes are _data-point_ indicators — they're fine.) On Crypto, the data point does have OHLCV, so wrap it in a `TradeBar` before passing to a true bar indicator.

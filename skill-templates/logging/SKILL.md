@@ -255,9 +255,6 @@ Embedding the actual value being logged usually makes the message unique on its 
 
 ## Common mistakes
 
-- **Logging every bar.** Switch to event-driven (order fill, signal change, scheduled rebalance) or a daily summary.
-- **Logging inside a per-symbol loop.** Aggregate inside, emit one line outside. For 5000-symbol universes the difference is 1 line vs 5000 per bar.
-- **Logging "HOLD" / "no action" outcomes.** They're 99% of the iterations and tell you nothing.
 - **Identical strings across calls.** `log` deduplicates silently — include a changing value so each line is distinct.
 - **`log` right after py`market_order`cs`MarketOrder`** — context detached from the order. Put it on the order via py`tag="..."`cs`tag: "..."` instead.
 - **Logging raw market data** (bars, trades, quotes from subscribed datasets). Not permitted *and* the highest-volume content possible. Log the derived quantity (signal value, portfolio value, decision).
@@ -267,14 +264,3 @@ Embedding the actual value being logged usually makes the message unique on its 
 - **Using the log file to accumulate structured rows** for Research analysis. Use the Object Store instead.
 - **py`debug`cs`Debug` / py`error`cs`Error` from py`on_data`cs`OnData` on minute/tick data.** Rate-limited to ~1/second, so most calls vanish. For high-frequency diagnostics use `log`; reserve `debug`/`error` for a handful of notable events per day.
 - **py`quit`cs`Quit` without a following `return`.** The algorithm *will* stop, but the current method keeps executing until it returns naturally; orders placed after the quit call still go through.
-
-## Checklist
-
-1. Could this line be event-gated (fill, scheduled fire, signal change) instead of running every bar / every iteration?
-2. If it's inside a loop, is it summarizing the loop's outcome rather than firing per iteration?
-3. If it logs "no action" / "HOLD", does it really need to be there?
-4. Is the message unique each call (timestamp or changing value), so duplicate-suppression doesn't silently drop it?
-5. Does it cover every value in the decision condition, *before* the branch, so a missing order is explainable?
-6. If it's an order-context message, is it on the order via `tag=` rather than a separate `log` call?
-7. If it's bulk structured data for Research, is it accumulated in memory and saved to the Object Store in py`on_end_of_algorithm`cs`OnEndOfAlgorithm`?
-8. If it's verbose live-only diagnostics, is it routed through `safe_log` (gated on py`self.live_mode`cs`LiveMode`)?
