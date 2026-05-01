@@ -7,7 +7,7 @@ on:
   workflow_dispatch:  # Run on manual trigger
 
 jobs:
-  upload_skills:
+  upload_skills_project_templates:
     runs-on: ubuntu-24.04
 
     steps:
@@ -19,6 +19,9 @@ jobs:
         # The script lives in `skill-templates/` and writes `skills.zip` at the repo root.
         run: python3 skill-templates/bundle-skills.py
 
+      - name: Zip
+        run: zip -r llm_content.zip skills/ project-templates/
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -26,8 +29,8 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET }}
           aws-region: us-west-1
 
-      - name: Upload skills to S3
-        run: aws s3 cp skills.zip s3://cdn.quantconnect.com/skills/skills-latest.zip --acl bucket-owner-full-control
+      - name: Upload content to S3
+        run: aws s3 cp llm_content.zip s3://cdn.quantconnect.com/skills/llm_content-latest.zip --acl bucket-owner-full-control
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8

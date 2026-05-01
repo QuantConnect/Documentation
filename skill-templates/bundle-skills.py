@@ -295,20 +295,6 @@ def remove_tree(path: Path, *, dry_run: bool) -> bool:
     return True
 
 
-def zip_tree(src_dir: Path, zip_path: Path, *, dry_run: bool) -> None:
-    """Zip every file under src_dir into zip_path, with src_dir.name as archive root."""
-    if dry_run:
-        print(f"DRY-RUN: zip {src_dir} -> {zip_path}")
-        return
-    zip_path.parent.mkdir(parents=True, exist_ok=True)
-    zip_path.unlink(missing_ok=True)
-    root = src_dir.name
-    with ZipFile(zip_path, "w", ZIP_DEFLATED) as zf:
-        for f in sorted(src_dir.rglob("*")):
-            if f.is_file():
-                zf.write(f, arcname=f"{root}/{f.relative_to(src_dir).as_posix()}")
-
-
 def main() -> int:
     parser = ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -360,7 +346,6 @@ def main() -> int:
 
     repo_root = templates_root.parent
     skills_root = repo_root / "skills"
-    bundle_zip = repo_root / "skills.zip"
     install_root = Path.home() / ".claude" / "skills"
 
     # Wipe the build dir so deletions in the source propagate.
@@ -388,9 +373,6 @@ def main() -> int:
             )
         print(f"Built '{skill.name}' from {skill.rel}")
 
-    if skills:
-        zip_tree(skills_root, bundle_zip, dry_run=args.dry_run)
-
     if args.install_lang:
         for skill in skills:
             install(
@@ -402,7 +384,6 @@ def main() -> int:
     print()
     print(f"Done. Built {len(skills)} skill(s).")
     print(f"Build root: {skills_root}")
-    print(f"Bundle:     {bundle_zip}")
     if args.install_lang:
         print(f"Installed {len(skills)} {args.install_lang} skill(s) to {install_root}")
     return 0
