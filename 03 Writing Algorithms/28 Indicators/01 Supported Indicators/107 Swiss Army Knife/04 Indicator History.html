@@ -14,6 +14,13 @@
         var indicatorHistory = IndicatorHistory(_swiss, _symbol, 100, Resolution.Minute);
         var timeSpanIndicatorHistory = IndicatorHistory(_swiss, _symbol, TimeSpan.FromDays(10), Resolution.Minute);
         var timePeriodIndicatorHistory = IndicatorHistory(_swiss, _symbol, new DateTime(2024, 7, 1), new DateTime(2024, 7, 5), Resolution.Minute);
+
+        // Access all attributes of indicatorHistory
+        var gauss = indicatorHistory.Select(x => ((dynamic)x).Gauss).ToList();
+        var butter = indicatorHistory.Select(x => ((dynamic)x).Butter).ToList();
+        var highPass = indicatorHistory.Select(x => ((dynamic)x).HighPass).ToList();
+        var twoPoleHighPass = indicatorHistory.Select(x => ((dynamic)x).TwoPoleHighPass).ToList();
+        var bandPass = indicatorHistory.Select(x => ((dynamic)x).BandPass).ToList();
     }
 }</pre>
 <pre class="python">class SwissArmyKnifeAlgorithm(QCAlgorithm):
@@ -24,4 +31,11 @@
         indicator_history = self.indicator_history(self._swiss, self._symbol, 100, Resolution.MINUTE)
         timedelta_indicator_history = self.indicator_history(self._swiss, self._symbol, timedelta(days=10), Resolution.MINUTE)
         time_period_indicator_history = self.indicator_history(self._swiss, self._symbol, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
-    </pre></div>
+    
+        # Access all attributes of indicator_history
+        indicator_history_df = indicator_history.data_frame
+        gauss = indicator_history_df["gauss"]
+        butter = indicator_history_df["butter"]
+        high_pass = indicator_history_df["highpass"]
+        two_pole_high_pass = indicator_history_df["twopolehighpass"]
+        band_pass = indicator_history_df["bandpass"]</pre></div>
