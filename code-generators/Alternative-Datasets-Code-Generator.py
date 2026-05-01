@@ -82,17 +82,80 @@ def _parse_content(content):
         content = content.replace(old, new)      
     return content
 
+ALT_UNIVERSE_SKILL_PATH = 'skill-templates/universes/equity/alternative-data-universes/SKILL.md'
+
+ALT_UNIVERSE_SKILL_DESCRIPTION = (
+    "Use when selecting a dynamic Equity universe from an alternative-data class in a "
+    "QuantConnect/LEAN algorithm — calling py`add_universe(<AltClass>, selector)`"
+    "cs`AddUniverse<AltClass>(selector)` with Brain, CoinGecko, EOD Historical Data, "
+    "Quiver Quantitative, or Smart Insider universe classes. "
+    "Triggers — questions like \"which class do I pass to add_universe for Brain sentiment / "
+    "Quiver insider trades / Smart Insider buybacks / EODHD upcoming earnings / "
+    "CoinGecko market cap\", missing-class compile errors on names like "
+    "`BrainSentimentIndicatorUniverse` or `EODHDUpcomingEarnings`. "
+    "Skip when — the universe is Morningstar Fundamental (use `fundamental-universes`), "
+    "ETF constituents (use py`self.universe.etf(...)`cs`Universe.ETF(...)`), or pure "
+    "indicator-driven selection (use `indicator-universes`)."
+)
+
+def _alt_universe_snippet(cls):
+    return f"""```python
+def initialize(self) -> None:
+    self._universe = self.add_universe({cls}, self.universe_selection)
+
+def universe_selection(self, alt_coarse: List[{cls}]) -> List[Symbol]:
+    return Universe.UNCHANGED
+```
+
+```csharp
+private Universe _universe;
+
+public override void Initialize()
+{{
+    _universe = AddUniverse<{cls}>(UniverseSelection);
+}}
+
+private IEnumerable<Symbol> UniverseSelection(IEnumerable<{cls}> altCoarse)
+{{
+    return Universe.Unchanged;
+}}
+```"""
+
+def _build_alt_universe_skill(skill_data):
+    parts = [
+        "---",
+        "name: alternative-data-universes",
+        f"description: {ALT_UNIVERSE_SKILL_DESCRIPTION}",
+        "---",
+        "",
+        "# Available Alternative Data Universes",
+        "",
+        "The snippets below show how to call py`add_universe(<AltClass>, selector)`"
+        "cs`AddUniverse<AltClass>(selector)` with each alternative-data universe class. "
+        "Replace py`Universe.UNCHANGED`cs`Universe.Unchanged` with your selection logic.",
+        "",
+    ]
+    for dataset_name, classes in skill_data:
+        parts.append(f"## {dataset_name}")
+        parts.append("")
+        for cls in classes:
+            parts.append(_alt_universe_snippet(cls))
+            parts.append("")
+    return "\n".join(parts).rstrip() + "\n"
+
+
 if __name__ == '__main__':
-    url = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"    
-    docs = sorted(
-        json.loads(urlopen(url).read().decode('utf-8')), 
-        key=lambda x: x["vendorName"].strip()
-    )
+    url = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"
+    docs = json.loads(urlopen(url).read().decode('utf-8'))
+    for d in docs:
+        if d["vendorName"].strip() == "CoinAPI":
+            d["vendorName"] = "QuantConnect"
+    docs = sorted(docs, key=lambda x: x["vendorName"].strip())
 
     docs_by_vendor = {k : sorted(v, key=lambda x: x['name'].strip())
         for k,v in groupby(docs, lambda x: x["vendorName"].strip())}
 
-    priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "CoinAPI", "OANDA"]
+    priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "OANDA"]
     vendors = [x for x in priority if x in docs_by_vendor]
     vendors += [k for k in docs_by_vendor if k not in vendors]
 
@@ -122,7 +185,9 @@ if __name__ == '__main__':
     <tbody>
 """
     data_tree_attr_pattern = r'data-tree="([^"]*)"'
-    
+    add_universe_class_pattern = r'add_universe\(\s*([A-Z]\w+)'
+    alt_universe_skill_data = []
+
     for i, vendor in enumerate(vendors):
         path = f'{DATASET}/{i+2:02} {vendor}'
         vendor_folder = Path(path)
@@ -151,7 +216,9 @@ if __name__ == '__main__':
                 final_sections["Data Point Attributes"] = data_point_attributes
             all_sections.update(final_sections)
 
-            for k, (title, content) in enumerate(all_sections.items()):        
+            universe_section_fallback_classes = []
+
+            for k, (title, content) in enumerate(all_sections.items()):
                 content = _parse_content(content)
                 for old, new in languages.items():
                     content = content.replace(old, new)
@@ -188,12 +255,20 @@ if __name__ == '__main__':
         </tr>
 """
                 if title.strip() == "Universe Selection" and vendor not in priority:
+                    seen = set()
+                    universe_section_fallback_classes = [
+                        m for m in re.findall(add_universe_class_pattern, content)
+                        if not (m in seen or seen.add(m))
+                    ]
                     alt_universe_html_ = f"<a href=\"/docs/v2/writing-algorithms/datasets/{vendor.lower().replace(' ', '-')}/{name.lower().replace(' ', '-')}#{k+1:02}-Universe-Selection\">"
                     alt_universe_html += "    <li>" + alt_universe_html_ + f"{name}</a></li>" + "\n"
                     universe_html = universe_html.replace(alt_universe_html_.split('#')[0], alt_universe_html_)
 
                 with open(folder / f'{1+k:02} {title.strip()}.html', "w", encoding="utf-8") as html_file:
                     html_file.write(content)
+
+            if vendor not in priority and universe_section_fallback_classes:
+                alt_universe_skill_data.append((name, universe_section_fallback_classes))
 
             print(f'Documentation of {dataset["name"]} is generated and inplace!')
 
@@ -202,6 +277,11 @@ if __name__ == '__main__':
     
     with open('Resources/datasets/supported-alternative-dataset-universe.html', "w", encoding="utf-8") as html_file:
         html_file.write(alt_universe_html + "</ul>")
+
+    skill_path = Path(ALT_UNIVERSE_SKILL_PATH)
+    skill_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(skill_path, "w", encoding="utf-8") as skill_file:
+        skill_file.write(_build_alt_universe_skill(alt_universe_skill_data))
         
     with open('Resources/datasets/available-universe.html', "w", encoding="utf-8") as html_file:
         html_file.write(universe_html + """</tbody>
