@@ -1543,6 +1543,318 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: searchAITool
+  /agents/tasks/create:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 01 Tasks
+        - 01 Create Task
+      summary: Create a new agent task.
+      requestBody:
+        description: Organization, agent, name, prompt, and project preference for the new task.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAgentTaskRequest'
+        required: true
+      responses:
+        "200":
+          description: The created agent task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentTaskResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createAgentTask
+  /agents/tasks/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 01 Tasks
+        - 02 Read Task
+      summary: Read an agent task by Id.
+      requestBody:
+        description: Id of the task to read.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadAgentTaskRequest'
+        required: true
+      responses:
+        "200":
+          description: The agent task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentTaskResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readAgentTask
+  /agents/tasks/update:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 01 Tasks
+        - 03 Update Task
+      summary: Update an agent task.
+      requestBody:
+        description: Id and new name of the task to update.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAgentTaskRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateAgentTask
+  /agents/tasks/delete:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 01 Tasks
+        - 04 Delete Task
+      summary: Delete an agent task.
+      requestBody:
+        description: Id of the task to delete.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAgentTaskRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteAgentTask
+  /agents/tasks/list:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 01 Tasks
+        - 05 List Tasks
+      summary: List the agent tasks of an organization.
+      requestBody:
+        description: Id of the organization whose tasks to list.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAgentTasksRequest'
+        required: true
+      responses:
+        "200":
+          description: Agent tasks for the organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentTaskListResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listAgentTasks
+  /agents/deployments/create:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 01 Create Deployment
+      summary: Deploy an agent task.
+      requestBody:
+        description: Id of the task to deploy.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAgentDeploymentRequest'
+        required: true
+      responses:
+        "200":
+          description: The created deployment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateAgentDeploymentResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createAgentDeployment
+  /agents/deployments/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 02 Read Deployment
+      summary: Read an agent deployment by Id.
+      requestBody:
+        description: Id of the deployment to read.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadAgentDeploymentRequest'
+        required: true
+      responses:
+        "200":
+          description: The agent deployment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentDeploymentResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readAgentDeployment
+  /agents/deployments/prompt:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 03 Update Deployment
+      summary: Send a follow-up prompt to a running agent deployment.
+      requestBody:
+        description: Id of the deployment and the new prompt to run.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAgentDeploymentRequest'
+        required: true
+      responses:
+        "200":
+          description: Confirmation that the prompt run has started.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateAgentDeploymentResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: updateAgentDeployment
+  /agents/deployments/list:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 04 List Deployments
+      summary: List the deployments of an agent task.
+      requestBody:
+        description: Id of the task whose deployments to list.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAgentDeploymentsRequest'
+        required: true
+      responses:
+        "200":
+          description: Deployments for the task.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentDeploymentListResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listAgentDeployments
+  /agents/deployments/stop:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 05 Stop Deployment
+      summary: Stop a running agent deployment.
+      requestBody:
+        description: Id of the deployment to stop.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StopAgentDeploymentRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: stopAgentDeployment
+  /agents/deployments/delete:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 06 Delete Deployment
+      summary: Delete an agent deployment.
+      requestBody:
+        description: Id of the deployment to delete.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteAgentDeploymentRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: deleteAgentDeployment
+  /agents/deployments/conversation/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 14 Agent Management
+        - 02 Deployments
+        - 07 Read Conversation
+      summary: Read the conversation transcript of an agent deployment.
+      requestBody:
+        description: Id of the deployment whose conversation to read.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadAgentConversationRequest'
+        required: true
+      responses:
+        "200":
+          description: Conversation transcript and token usage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentConversationResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readAgentConversation
 
 
 components:
@@ -7095,6 +7407,500 @@ components:
       oneOf:
         - $ref: '#/components/schemas/LoadingResponse'
         - $ref: '#/components/schemas/ReadChartResponse'
+    AgentTaskOwner:
+      type: object
+      properties:
+        publicId:
+          type: string
+          description: Public profile slug of the user.
+          examples:
+            - alexandre_catarino
+        name:
+          type: string
+          description: Display name of the user.
+          examples:
+            - Alexandre Catarino
+        image:
+          type: string
+          description: Filename of the user's profile image.
+          examples:
+            - e76004d3a79bb421536616863.jpeg
+      description: Owner of an agent task.
+    AgentTaskStatusEntry:
+      type: object
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of an associated deployment.
+          examples:
+            - A-dc29abb48861866874f695798925f9d2
+        status:
+          type: string
+          description: Current status of the deployment.
+          examples:
+            - Running
+      description: Status entry for one of a task's active deployments.
+    AgentTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Identifier of the task.
+          examples:
+            - 332
+        name:
+          type: string
+          description: Name of the task.
+          examples:
+            - Print Hello World Message
+        organizationId:
+          type: string
+          description: Identifier of the organization that owns the task.
+        agentId:
+          type: integer
+          description: Identifier of the agent the task uses.
+          examples:
+            - 47
+        prompt:
+          type: string
+          description: Prompt the agent will execute when deployed.
+        deployments:
+          type: integer
+          description: Number of times this task has been deployed.
+        lastDeploymentId:
+          type: integer
+          nullable: true
+          description: Numeric Id of the most recent deployment, or null if never deployed.
+        lastDeploymentTime:
+          type: string
+          nullable: true
+          description: Timestamp of the most recent deployment.
+          examples:
+            - '2026-05-06 19:09:52'
+        created:
+          type: string
+          description: Creation timestamp.
+          examples:
+            - '2026-05-06 19:22:25'
+        updated:
+          type: string
+          description: Last-updated timestamp.
+          examples:
+            - '2026-05-06 19:22:26'
+        projectId:
+          type: integer
+          nullable: true
+          description: Identifier of the project bound to the task, when one exists.
+        owner:
+          $ref: '#/components/schemas/AgentTaskOwner'
+        upcomingDeployments:
+          nullable: true
+          description: Pending scheduled deployments, when the task has a schedule.
+        status:
+          type: array
+          description: Statuses of the task's currently active deployments.
+          items:
+            $ref: '#/components/schemas/AgentTaskStatusEntry'
+        schedule:
+          type: string
+          nullable: true
+          description: Cron expression that schedules the task, when one is set.
+        scheduleHuman:
+          type: string
+          nullable: true
+          description: Human-readable description of the schedule.
+        projectPreference:
+          type: string
+          description: How projects are mapped to deployments of this task.
+          enum:
+            - project-each-task-deployment
+            - project-for-task
+        notifications:
+          type: array
+          description: Notification targets configured for the task.
+          items:
+            type: object
+      description: An agent task definition.
+    AgentDeployment:
+      type: object
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of the deployment.
+          examples:
+            - A-a5d782221843ac9aa99211e3b1949c01
+        agentId:
+          type: integer
+          description: Identifier of the agent the deployment runs.
+          examples:
+            - 47
+        status:
+          type: string
+          description: Current status of the deployment.
+          enum:
+            - InQueue
+            - Running
+            - Completed
+            - Stopped
+            - Failed
+        taskId:
+          type: integer
+          description: Identifier of the parent task.
+        model:
+          type: string
+          description: Model identifier used by the deployment, when set.
+        created:
+          type: string
+          description: Creation timestamp.
+        started:
+          type: string
+          nullable: true
+          description: Start timestamp, or null if not yet started.
+        ended:
+          type: string
+          nullable: true
+          description: End timestamp, or null if still active.
+        machine:
+          type: string
+          nullable: true
+          description: Machine the deployment is running on.
+        mcpTools:
+          type: array
+          description: MCP tools available to the deployment.
+          items:
+            type: string
+        hostName:
+          type: string
+          nullable: true
+          description: Hostname of the deployment, when running.
+        prompt:
+          type: string
+          description: Prompt the deployment is executing.
+        projectId:
+          type: integer
+          description: Identifier of the project the deployment runs against.
+        versionId:
+          type: integer
+          description: Identifier of the LEAN version the deployment runs.
+        runtimeError:
+          type: string
+          nullable: true
+          description: Runtime error reported by the deployment, when one occurred.
+      description: An agent deployment instance of a task.
+    AgentConversationMessagePart:
+      type: object
+      properties:
+        type:
+          type: string
+          description: Kind of part (text, reasoning, dynamic-tool, step-start, etc.).
+          examples:
+            - text
+        text:
+          type: string
+          description: Text content, when the part is text or reasoning.
+        state:
+          type: string
+          description: State of a tool-call part, when applicable.
+        toolName:
+          type: string
+          description: Name of the invoked tool, for dynamic-tool parts.
+        input:
+          type: object
+          description: Input passed to the tool, for dynamic-tool parts.
+        output:
+          type: object
+          description: Output returned by the tool, for dynamic-tool parts.
+        messages:
+          type: array
+          description: Sub-messages produced by the part, when applicable.
+          items:
+            type: object
+      description: One part of a conversation message.
+    AgentConversationMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of the message.
+        role:
+          type: string
+          description: Author of the message.
+          examples:
+            - user
+            - assistant
+        parts:
+          type: array
+          description: Ordered parts that make up the message.
+          items:
+            $ref: '#/components/schemas/AgentConversationMessagePart'
+        time:
+          type: string
+          description: Timestamp the message was produced.
+      description: One message in an agent conversation.
+    AgentConversation:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Identifier of the deployment this conversation belongs to.
+        userId:
+          type: integer
+          description: Identifier of the user that owns the deployment.
+        organizationId:
+          type: string
+          description: Identifier of the organization that owns the deployment.
+        channel:
+          type: string
+          description: Internal pub/sub channel of the deployment.
+        projectId:
+          type: integer
+          description: Identifier of the project the deployment runs against.
+        prompt:
+          type: string
+          description: Prompt the deployment is executing.
+        agents:
+          type: array
+          description: Agent definitions participating in the conversation.
+          items:
+            type: object
+        notificationTargets:
+          type: array
+          description: Notification targets configured for the deployment.
+          items:
+            type: object
+        messages:
+          type: array
+          description: Conversation messages, in order.
+          items:
+            $ref: '#/components/schemas/AgentConversationMessage'
+        agentProperties:
+          type: object
+          description: Per-agent runtime properties.
+        chatMessages:
+          type: array
+          description: Flat chat-style transcript of the conversation.
+          items:
+            type: object
+        inputTokens:
+          type: integer
+          description: Total input tokens consumed by the deployment so far.
+        outputTokens:
+          type: integer
+          description: Total output tokens produced by the deployment so far.
+        aggregateStatus:
+          type: string
+          description: Aggregate status of the deployment.
+          examples:
+            - Running
+      description: Full conversation transcript and metadata for an agent deployment.
+    CreateAgentTaskRequest:
+      type: object
+      required:
+        - organizationId
+        - agentId
+        - name
+        - prompt
+        - projectPreference
+      properties:
+        organizationId:
+          type: string
+          description: Identifier of the organization that will own the task.
+        agentId:
+          type: integer
+          description: Identifier of the agent the task should use.
+          examples:
+            - 47
+        name:
+          type: string
+          description: Name of the task. The platform may rewrite this to a normalized form on create.
+        prompt:
+          type: string
+          description: Prompt the agent will execute when the task is deployed.
+        projectPreference:
+          type: string
+          description: How projects should be mapped to deployments of this task.
+          enum:
+            - project-each-task-deployment
+            - project-for-task
+      description: Request body for creating an agent task.
+    ReadAgentTaskRequest:
+      type: object
+      required:
+        - taskId
+      properties:
+        taskId:
+          type: integer
+          description: Identifier of the task to read.
+      description: Request body for reading an agent task.
+    UpdateAgentTaskRequest:
+      type: object
+      required:
+        - taskId
+      properties:
+        taskId:
+          type: integer
+          description: Identifier of the task to update.
+        name:
+          type: string
+          description: New name for the task.
+      description: Request body for updating an agent task.
+    DeleteAgentTaskRequest:
+      type: object
+      required:
+        - taskId
+      properties:
+        taskId:
+          type: integer
+          description: Identifier of the task to delete.
+      description: Request body for deleting an agent task.
+    ListAgentTasksRequest:
+      type: object
+      required:
+        - organizationId
+      properties:
+        organizationId:
+          type: string
+          description: Identifier of the organization whose tasks to list.
+      description: Request body for listing the agent tasks of an organization.
+    AgentTaskResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            task:
+              $ref: '#/components/schemas/AgentTask'
+      description: Response wrapping a single agent task.
+    AgentTaskListResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            tasks:
+              type: array
+              description: Agent tasks belonging to the organization.
+              items:
+                $ref: '#/components/schemas/AgentTask'
+      description: Response wrapping the list of agent tasks for an organization.
+    CreateAgentDeploymentRequest:
+      type: object
+      required:
+        - taskId
+      properties:
+        taskId:
+          type: integer
+          description: Identifier of the task to deploy.
+      description: Request body for creating an agent deployment.
+    ReadAgentDeploymentRequest:
+      type: object
+      required:
+        - deploymentId
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of the deployment to read.
+      description: Request body for reading an agent deployment.
+    UpdateAgentDeploymentRequest:
+      type: object
+      required:
+        - deploymentId
+        - prompt
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of the running deployment to send the follow-up prompt to.
+          examples:
+            - A-99bd84b60376ecda56c1145b2074ca32
+        prompt:
+          type: string
+          description: New prompt for the deployment to run.
+          examples:
+            - Test with ROC(30)
+      description: Request body for sending a follow-up prompt to an agent deployment.
+    UpdateAgentDeploymentResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            message:
+              type: string
+              description: Confirmation message returned by the platform.
+              examples:
+                - Prompt run started.
+      description: Response returned when a follow-up prompt is accepted by a deployment.
+    ListAgentDeploymentsRequest:
+      type: object
+      required:
+        - taskId
+      properties:
+        taskId:
+          type: integer
+          description: Identifier of the task whose deployments to list.
+      description: Request body for listing deployments of an agent task.
+    StopAgentDeploymentRequest:
+      type: object
+      required:
+        - deploymentId
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of the deployment to stop.
+      description: Request body for stopping an agent deployment.
+    DeleteAgentDeploymentRequest:
+      type: object
+      required:
+        - deploymentId
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of the deployment to delete.
+      description: Request body for deleting an agent deployment.
+    ReadAgentConversationRequest:
+      type: object
+      required:
+        - deploymentId
+      properties:
+        deploymentId:
+          type: string
+          description: Identifier of the deployment whose conversation to read.
+      description: Request body for reading an agent deployment's conversation.
+    AgentDeploymentResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            deployment:
+              $ref: '#/components/schemas/AgentDeployment'
+      description: Response wrapping a single agent deployment.
+    AgentDeploymentListResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            deployments:
+              type: array
+              description: Deployments belonging to the task.
+              items:
+                $ref: '#/components/schemas/AgentDeployment'
+      description: Response wrapping the list of deployments for an agent task.
+    CreateAgentDeploymentResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            deployment:
+              $ref: '#/components/schemas/AgentDeployment'
+            debug:
+              type: object
+              description: Internal debug payload describing the deployed agent, version, and resource controls.
+      description: Response returned when an agent deployment is created.
+    AgentConversationResponse:
+      allOf:
+        - $ref: '#/components/schemas/RestResponse'
+        - type: object
+          properties:
+            conversation:
+              $ref: '#/components/schemas/AgentConversation'
+      description: Response wrapping the conversation transcript of an agent deployment.
   responses:
     BacktestResponse:
       description: Backtest read response packet.
