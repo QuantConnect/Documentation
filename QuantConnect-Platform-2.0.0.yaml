@@ -7468,12 +7468,10 @@ components:
           type: integer
           description: Number of times this task has been deployed.
         lastDeploymentId:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: Numeric Id of the most recent deployment, or null if never deployed.
         lastDeploymentTime:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Timestamp of the most recent deployment.
           examples:
             - '2026-05-06 19:09:52'
@@ -7488,26 +7486,25 @@ components:
           examples:
             - '2026-05-06 19:22:26'
         projectId:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: Identifier of the project bound to the task, when one exists.
         owner:
           $ref: '#/components/schemas/AgentTaskOwner'
         upcomingDeployments:
-          nullable: true
+          type: [array, "null"]
           description: Pending scheduled deployments, when the task has a schedule.
+          items:
+            type: object
         status:
           type: array
           description: Statuses of the task's currently active deployments.
           items:
             $ref: '#/components/schemas/AgentTaskStatusEntry'
         schedule:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Cron expression that schedules the task, when one is set.
         scheduleHuman:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Human-readable description of the schedule.
         projectPreference:
           type: string
@@ -7553,16 +7550,13 @@ components:
           type: string
           description: Creation timestamp.
         started:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Start timestamp, or null if not yet started.
         ended:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: End timestamp, or null if still active.
         machine:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Machine the deployment is running on.
         mcpTools:
           type: array
@@ -7570,8 +7564,7 @@ components:
           items:
             type: string
         hostName:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Hostname of the deployment, when running.
         prompt:
           type: string
@@ -7583,8 +7576,7 @@ components:
           type: integer
           description: Identifier of the LEAN version the deployment runs.
         runtimeError:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Runtime error reported by the deployment, when one occurred.
       description: An agent deployment instance of a task.
     AgentConversationMessagePart:
