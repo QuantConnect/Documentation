@@ -1,79 +1,52 @@
-"""Strict mypy syntax check for project-templates/python/**/main.py.
-
-Adapted from LEAN's run_syntax_check.py
-(https://github.com/QuantConnect/Lean/blob/master/run_syntax_check.py).
-Differences vs. LEAN's original:
-  * Walks `project-templates/python/**/main.py` only.
-  * Passes `--strict` to mypy on top of LEAN's flag set.
-  * Requires a 100% pass rate (LEAN tolerates up to 0.9% failures).
-  * No MYPYPATH (templates are self-contained).
-  * Writes its log next to itself, not at the repo root.
-
-Usage:
-    python project-templates/python/run_syntax_check.py
-    python project-templates/python/run_syntax_check.py equity-rsi   # path substring filter
-"""
-
 import os
-import re
 import sys
 import time
 import tempfile
+import re
 from pathlib import Path
 from subprocess import run
 from multiprocessing import Pool, Lock, freeze_support
 
-SCRIPT_DIR = Path(__file__).resolve().parent
-LOG_PATH = SCRIPT_DIR / "syntax-check.log"
-
-target_files: list[str] = []
+target_files = []
 lock = None
 start_time = time.time()
+
+LOG_PATH = Path(__file__).resolve().parent / "syntax-check.log"
 
 
 def init_pool(l):
     global lock
     lock = l
 
-
 def log(message: str):
     print(message)
     with open(LOG_PATH, "a") as file:
         file.write(message)
 
-
 def sync_log(message: str):
     with lock:
         log(message)
 
-
-for main_py in sorted(SCRIPT_DIR.rglob("main.py")):
-    target_files.append(str(main_py))
-
+for subdir, dirs, files_in_folder in os.walk("./project-templates/python"):
+    for file_name in files_in_folder:
+        file_path = subdir + os.sep + file_name
+        if file_path.endswith(".py") and file_name != "run_syntax_check.py":
+            target_files.append(file_path)
+target_files.sort()
 
 def adjust_file_contents(target_file: str):
     try:
         file = Path(target_file)
-        file_content = file.read_text(encoding="utf-8")
-        adjusted_import = (
-            "from AlgorithmImports import *;"
-            "from datetime import date, time, datetime, timedelta;"
-            "import pandas as pd;import numpy as np;"
-            "import math;import json;import os;"
-        )
+        file_content = file.read_text(encoding='utf-8')
+        adjusted_import = 'from AlgorithmImports import *;from datetime import date, time, datetime, timedelta;import pandas as pd;import numpy as np;import math;import json;import os;'
 
         tmp_file = tempfile.NamedTemporaryFile(prefix=f"{file.name}_", delete=False)
-        Path(tmp_file.name).write_text(
-            "# mypy: disable-error-code=\"no-redef\"\n"
-            + file_content.replace("from AlgorithmImports import *", adjusted_import),
-            encoding="utf-8",
-        )
+        Path(tmp_file.name).write_text("# mypy: disable-error-code=\"no-redef\"\n" + file_content.replace("from AlgorithmImports import *", adjusted_import), encoding='utf-8')
         return tmp_file
     except:
         import traceback
         sync_log(f"{target_file} failed An exception occurred: {traceback.format_exc()}")
         return None
-
 
 specific_order_attributes = ['limit_price', 'trigger_price', 'trigger_touched', 'stop_price', 'stop_triggered', 'trailing_amount', 'trailing_as_percentage']
 
@@ -81,9 +54,9 @@ specific_ibase_data_attributes = ['is_fill_forward', 'volume', 'open', 'high', '
 
 specific_indicator_attributes = ['is_ready', 'samples', 'name', 'current', 'update', 'reset', 'updated']
 
-
 def should_ignore(line: str, prev_line_ignored: bool) -> bool:
     result = any(to_ignore in line for to_ignore in (
+        # this ('object') is just noise: mypy might not be able to resolve base class in some cases
         '"object"',
         'Name "datetime" is not defined',
         'Name "np" is not defined',
@@ -99,29 +72,38 @@ def should_ignore(line: str, prev_line_ignored: bool) -> bool:
         'Signature of "update" incompatible with supertype "IndicatorBase"',
         'Signature of "update" incompatible with supertype "QuantConnect.Indicators.IndicatorBase"',
         'has incompatible type "Symbol"; expected "str"',
+        # This methods take an indicator and consolidator which might be instances of custom
+        # indicator/consolidator Python classes that don't inherit from PythonIndicator or IDataConsolidator
         'No overload variant of "register_indicator" of "QCAlgorithm" matches argument types',
-        'No overload variant of "warm_up_indicator" of "QCAlgorithm" matches argument types',
+        'No overload variant of "warm_up_indicator" of "QCAlgorithm" matches argument types'
     ))
 
-    if result or ('note: ' in line and prev_line_ignored) or \
+    if result or ('note: ' in line and prev_line_ignored) or\
         ('None' in line and '[func-returns-value]' not in line):
         return True
 
+    # Ignore accessing specific order types properties
     order_attributes_match = re.search(r'error: "Order" has no attribute "([^"]+)"', line)
     if order_attributes_match and order_attributes_match.group(1) in specific_order_attributes:
         return True
 
+    # Ignore accessing specific properties of common data types derived from IBaseData, like Tick, TradeBar and QoteBar
     base_data_attributes_match = re.search(r'error: "IBaseData" has no attribute "([^"]+)"', line)
     if base_data_attributes_match and base_data_attributes_match.group(1) in specific_ibase_data_attributes:
         return True
 
+    # Ignore accessing indicator properties. Useful for instance when adding indicators of different types
+    # to a list and then iterating over them, the common type will be IIndicatorWarmUpPeriodProvider
     indicator_attributes_match = re.search(r'error: "IIndicatorWarmUpPeriodProvider" has no attribute "([^"]+)"', line) or re.search(r'error: "Iterable\[IndicatorDataPoint\]" has no attribute "([^"]+)"', line)
     if indicator_attributes_match and indicator_attributes_match.group(1) in specific_indicator_attributes:
         return True
 
+    # Ignore accessing specific properties of some models, just to reduce noise in regression algorithms asserting internal stuff.
+    # We don't expect users to be accessing properties of models like this in most cases
     if re.search('error: "(IBuyingPowerModel)|(IBenchmark)|(IMarginInterestRateModel)" has no attribute "([^"]+)"', line):
         return True
 
+    # In some cases Python developers use the same variable and redefine it, this is not a problem in Python but mypy doesn't like it
     if re.search(r'error: Incompatible types in assignment \(expression has type "([^"]+)", variable has type "([^"]+)"\)', line):
         return True
 
@@ -134,25 +116,16 @@ def run_syntax_check(target_file: str):
         return False
 
     try:
-        algorithm_result = run(
-            [
-                sys.executable, "-m", "mypy",
-                "--strict",
-                "--skip-cache-mtime-checks", "--skip-version-check",
-                "--show-error-codes", "--no-error-summary", "--no-color-output",
-                "--ignore-missing-imports", "--check-untyped-defs",
-                tmp_file.name,
-            ],
-            capture_output=True, text=True,
-        )
+        algorithm_result = run([sys.executable, "-m", "mypy", "--strict", "--skip-cache-mtime-checks", "--skip-version-check", "--show-error-codes",
+            "--no-error-summary", "--no-color-output", "--ignore-missing-imports", "--check-untyped-defs",  tmp_file.name], capture_output=True, text=True)
 
-        output = ""
+        output = ''
         if algorithm_result.stderr:
             output += algorithm_result.stderr
         if algorithm_result.stdout:
             output += algorithm_result.stdout
 
-        filtered_output = ""
+        filtered_output = ''
         prev_line_ignored = False
         for line in output.splitlines():
             ignored = not line.startswith(tmp_file.name) or should_ignore(line, prev_line_ignored)
@@ -172,17 +145,15 @@ def run_syntax_check(target_file: str):
         os.unlink(tmp_file.name)
     return False
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     freeze_support()
 
-    pool_size = min(os.cpu_count() or 4, 8)
-    with Pool(pool_size, initializer=init_pool, initargs=(Lock(),)) as pool:
+    with Pool(12, initializer=init_pool, initargs=(Lock(),)) as pool:
         if len(sys.argv) > 1:
-            target_files = [t for t in target_files if sys.argv[1] in t]
+            target_files = [target for target in target_files if sys.argv[1] in target]
         result = pool.map(run_syntax_check, target_files)
         log(f"TEMPLATES: {target_files}")
         log(str(result))
-        success_rate = round((sum(result) / len(result)) * 100, 1) if result else 0.0
+        success_rate = round((sum(result) / len(result)) * 100, 1)
         log(f"SUCCESS RATE {success_rate}% took {time.time() - start_time}s")
-        exit(0 if result and all(result) else 1)
+        exit(0 if success_rate >= 100 else 1)
