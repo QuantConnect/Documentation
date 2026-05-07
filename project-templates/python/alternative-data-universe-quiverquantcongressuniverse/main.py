@@ -16,7 +16,7 @@ class QuiverQuantCongressUniverseAlgorithm(QCAlgorithm):
         # Rebalance shortly after the open so today's universe is locked in.
         self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.at(9, 0, 0), self._rebalance)
 
-    def _select_assets(self, data: List[QuiverQuantCongress]) -> List[Symbol]:
+    def _select_assets(self, data: List[QuiverQuantCongressUniverse]) -> List[Symbol]:
         # Keep buy disclosures over $200K to filter out small reports.
         return [d.symbol for d in data
                 if d.amount and d.amount > 200000

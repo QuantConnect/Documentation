@@ -43,7 +43,7 @@ class CustomFillModel(ImmediateFillModel):
         self._absolute_remaining_by_order_id: dict[int, float] = {}
         self._random = Random(387510346)
 
-    def market_fill(self, asset: Security, order: Order) -> OrderEvent:
+    def market_fill(self, asset: Security, order: MarketOrder) -> OrderEvent:
         absolute_remaining = order.absolute_quantity
 
         if order.id in self._absolute_remaining_by_order_id.keys():
@@ -87,7 +87,7 @@ class CustomSlippageModel:
 
     def get_slippage_approximation(self, asset: Security, order: Order) -> float:
         # custom slippage math
-        slippage = asset.price * 0.0001 * np.log10(2*float(order.absolute_quantity))
+        slippage = asset.price * 0.0001 * float(np.log10(2 * order.absolute_quantity))
         self._algorithm.log(f"CustomSlippageModel: {slippage}")
         return slippage
 
