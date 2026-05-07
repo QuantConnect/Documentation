@@ -18,7 +18,7 @@ class QuiverGovernmentContractUniverseAlgorithm(QCAlgorithm):
 
     def _select_assets(self, data: List[QuiverGovernmentContractUniverse]) -> List[Symbol]:
         # Group by ticker and keep names with 3+ contracts totalling over $50K.
-        contracts_by_symbol = {}
+        contracts_by_symbol: dict[Symbol, list[QuiverGovernmentContractUniverse]] = {}
         for d in data:
             contracts_by_symbol.setdefault(d.symbol, []).append(d)
         return [s for s, ds in contracts_by_symbol.items()

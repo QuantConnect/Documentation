@@ -18,7 +18,7 @@ class QuiverLobbyingUniverseAlgorithm(QCAlgorithm):
 
     def _select_assets(self, data: List[QuiverLobbyingUniverse]) -> List[Symbol]:
         # Aggregate lobbying spend per ticker and keep names spending $100K+.
-        spend_by_symbol = {}
+        spend_by_symbol: dict[Symbol, float] = {}
         for d in data:
             spend_by_symbol[d.symbol] = spend_by_symbol.get(d.symbol, 0) + (d.amount or 0)
         return [s for s, v in spend_by_symbol.items() if v >= 100000]

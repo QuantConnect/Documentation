@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class IndexOptionAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
@@ -15,7 +15,7 @@ class IndexOptionAlgorithm(QCAlgorithm):
         # Filter the Option universe by Delta. The last set_filter call prevails.
         # self._option.set_filter(lambda u: u.delta(0.25, 0.75))
 
-    def on_data(self, slice):
+    def on_data(self, slice: Slice) -> None:
         if self.portfolio.invested:
             return
         # Get the Option chain data.

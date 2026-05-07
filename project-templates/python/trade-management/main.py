@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class OneCancelOtherExampleAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.settings.automatic_indicator_warm_up = True
@@ -12,7 +12,7 @@ class OneCancelOtherExampleAlgorithm(QCAlgorithm):
         self._spy.ema = self.ema(self._spy, 14, Resolution.DAILY)
         self._spy.has_oco = False
 
-    def on_data(self, data: Slice):
+    def on_data(self, data: Slice) -> None:
         if self._spy.has_oco:
             return
         bar = data.bars.get(self._spy)
@@ -34,7 +34,7 @@ class OneCancelOtherExampleAlgorithm(QCAlgorithm):
         self._spy.take_profit = self.limit_order(self._spy, -quantity, limit_price)
         self._spy.has_oco = True
     
-    def on_order_event(self, order_event):
+    def on_order_event(self, order_event: OrderEvent) -> None:
         if order_event.status == OrderStatus.FILLED:
             equity = self.securities[order_event.symbol]
             match order_event.ticket.order_type:

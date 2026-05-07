@@ -12,7 +12,7 @@ class CustomModelslgorithm(QCAlgorithm):
         # The brokerage model sets the reality models that reflect the brokerage behavior
         self.set_brokerage_model(BrokerageName.INTERACTIVE_BROKERS_BROKERAGE, AccountType.MARGIN)
 
-        def custom_security_initalizer(security):
+        def custom_security_initalizer(security: Security) -> None:
             security.set_fee_model(CustomFeeModel(self))
             security.set_fill_model(CustomFillModel(self))
             security.set_slippage_model(CustomSlippageModel(self))
@@ -37,13 +37,13 @@ class CustomModelslgorithm(QCAlgorithm):
 # If we want to use methods from other models, you need to inherit from one of them
 class CustomFillModel(ImmediateFillModel):
 
-    def __init__(self, algorithm):
+    def __init__(self, algorithm: QCAlgorithm) -> None:
         super().__init__()
         self._algorithm = algorithm
-        self._absolute_remaining_by_order_id = {}
+        self._absolute_remaining_by_order_id: dict[int, float] = {}
         self._random = Random(387510346)
 
-    def market_fill(self, asset, order):
+    def market_fill(self, asset: Security, order: Order) -> OrderEvent:
         absolute_remaining = order.absolute_quantity
 
         if order.id in self._absolute_remaining_by_order_id.keys():
@@ -67,11 +67,11 @@ class CustomFillModel(ImmediateFillModel):
 
 class CustomFeeModel(FeeModel):
 
-    def __init__(self, algorithm):
+    def __init__(self, algorithm: QCAlgorithm) -> None:
         super().__init__()
         self._algorithm = algorithm
 
-    def get_order_fee(self, parameters):
+    def get_order_fee(self, parameters: OrderFeeParameters) -> OrderFee:
         # custom fee math
         fee = max(1, parameters.security.price
                   * parameters.order.absolute_quantity
@@ -82,10 +82,10 @@ class CustomFeeModel(FeeModel):
 
 class CustomSlippageModel:
 
-    def __init__(self, algorithm):
+    def __init__(self, algorithm: QCAlgorithm) -> None:
         self._algorithm = algorithm
 
-    def get_slippage_approximation(self, asset, order):
+    def get_slippage_approximation(self, asset: Security, order: Order) -> float:
         # custom slippage math
         slippage = asset.price * 0.0001 * np.log10(2*float(order.absolute_quantity))
         self._algorithm.log(f"CustomSlippageModel: {slippage}")
@@ -94,11 +94,11 @@ class CustomSlippageModel:
 
 class CustomBuyingPowerModel(BuyingPowerModel):
 
-    def __init__(self, algorithm):
+    def __init__(self, algorithm: QCAlgorithm) -> None:
         super().__init__()
         self._algorithm = algorithm
 
-    def has_sufficient_buying_power_for_order(self, parameters):
+    def has_sufficient_buying_power_for_order(self, parameters: HasSufficientBuyingPowerForOrderParameters) -> HasSufficientBuyingPowerForOrderResult:
         # custom behavior: this model will assume that there is always enough buying power
         has_sufficient_buying_power_for_order_result = HasSufficientBuyingPowerForOrderResult(True)
         self._algorithm.log(f"CustomBuyingPowerModel: {has_sufficient_buying_power_for_order_result.is_sufficient}")
@@ -109,20 +109,20 @@ class CustomBuyingPowerModel(BuyingPowerModel):
 # the most popular order fills: Market, Stop Market and Limit
 class SimpleCustomFillModel(FillModel):
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
-    def _create_order_event(self, asset, order):
+    def _create_order_event(self, asset: Security, order: Order) -> OrderEvent:
         utc_time = Extensions.convert_to_utc(asset.local_time, asset.exchange.time_zone)
         return OrderEvent(order, utc_time, OrderFee.ZERO)
 
-    def _set_order_event_to_filled(self, fill, fill_price, fill_quantity):
+    def _set_order_event_to_filled(self, fill: OrderEvent, fill_price: float, fill_quantity: float) -> OrderEvent:
         fill.status = OrderStatus.FILLED
         fill.fill_quantity = fill_quantity
         fill.fill_price = fill_price
         return fill
 
-    def _get_trade_bar(self, asset, order_direction):
+    def _get_trade_bar(self, asset: Security, order_direction: OrderDirection) -> TradeBar:
         trade_bar = asset.cache.get_data(TradeBar)
         if trade_bar: return trade_bar
 
@@ -130,7 +130,7 @@ class SimpleCustomFillModel(FillModel):
         price = asset.price
         return TradeBar(asset.local_time, asset.symbol, price, price, price, price, 0)
 
-    def market_fill(self, asset, order):
+    def market_fill(self, asset: Security, order: Order) -> OrderEvent:
         fill = self._create_order_event(asset, order)
         if order.status == OrderStatus.CANCELED: return fill
 
@@ -140,7 +140,7 @@ class SimpleCustomFillModel(FillModel):
             order.quantity
         )
 
-    def stop_market_fill(self, asset, order):
+    def stop_market_fill(self, asset: Security, order: Order) -> OrderEvent:
         fill = self._create_order_event(asset, order)
         if order.status == OrderStatus.CANCELED: return fill
 
@@ -155,7 +155,7 @@ class SimpleCustomFillModel(FillModel):
 
         return fill
 
-    def limit_fill(self, asset, order):
+    def limit_fill(self, asset: Security, order: Order) -> OrderEvent:
         fill = self._create_order_event(asset, order)
         if order.status == OrderStatus.CANCELED: return fill
 

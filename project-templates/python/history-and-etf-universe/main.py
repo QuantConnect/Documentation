@@ -3,7 +3,7 @@ from AlgorithmImports import *
 # endregion
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    _weight_by_symbol = {}
+    _weight_by_symbol: dict[Symbol, float] = {}
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
@@ -16,7 +16,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
 
     def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -> List[Symbol]:
         
-        def get_atr(symbol):
+        def get_atr(symbol: Symbol) -> float:
             atr = AverageTrueRange(14)
             self.warm_up_indicator(symbol, atr, Resolution.DAILY)
             return atr.current.value
@@ -29,7 +29,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
 
         return list(atr_by_symbol.keys())
 
-    def _place_orders(self):
+    def _place_orders(self) -> None:
         # We will keep the ETF weights by scale it up to sum 1
         sum_of_weight = sum([self._weight_by_symbol[x] for x in self._universe.selected])
         self.plot("Universe", "Sum Of Weight (%)", sum_of_weight * 100)

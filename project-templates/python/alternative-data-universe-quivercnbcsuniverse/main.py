@@ -19,7 +19,7 @@ class QuiverCNBCsUniverseAlgorithm(QCAlgorithm):
 
     def _select_assets(self, data: List[QuiverCNBCsUniverse]) -> List[Symbol]:
         # Group raw CNBC opinions by ticker so we can score each name.
-        cnbc_by_symbol = {}
+        cnbc_by_symbol: dict[Symbol, list[QuiverCNBCsUniverse]] = {}
         for d in data:
             cnbc_by_symbol.setdefault(d.symbol, []).append(d)
         # Keep names with 3+ BUY recommendations to filter out noise.

@@ -17,23 +17,23 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
         # Create an EMA indicator to generate trade signals.
         self._spy.ema = self.ema(self._spy, 20, Resolution.DAILY)
     
-    def _notify_all(self, subject, message):
+    def _notify_all(self, subject: str, message: str) -> None:
         self.notify.email("email@address.com", subject, message)
         message = f"{self.time:yyyyMMdd}: {subject} > {message}"
         self.log(message)
         # See https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/notifications
         # for all notification methods
         self.notify.sms("+16191234567", message)
-    
-    def on_brokerage_disconnect(self):
+
+    def on_brokerage_disconnect(self) -> None:
         self._notify_all(f"Brokerage disconnected on {self.time}", "-")
         self._connected = False
 
-    def on_brokerage_reconnect(self):
+    def on_brokerage_reconnect(self) -> None:
         self._notify_all(f"Brokerage reconnected on {self.time}", "-")
         self._connected = True
 
-    def on_brokerage_message(self, message_event):
+    def on_brokerage_message(self, message_event: BrokerageMessageEvent) -> None:
         match message_event.Type:
             case BrokerageMessageType.ERROR:
                 self._notify_all(f"Brokerage Message", str(message_event))
@@ -43,7 +43,7 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
     def on_data(self, slice: Slice) -> None:
         self._notify_ema_cross(slice)
 
-    def _notify_ema_cross(self, slice: Slice):
+    def _notify_ema_cross(self, slice: Slice) -> None:
         if not self.live_mode:
             return
         bar = slice.bars.get(self._spy)

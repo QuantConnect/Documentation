@@ -3,12 +3,12 @@ from AlgorithmImports import *
 # endregion
 
 class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
-    _averages = {}
+    _averages: dict[Symbol, 'SelectionData'] = {}
     _count = 10
     _tolerance = 0.01
     _target_percent = 0.09
     
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2021, 1, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
@@ -16,7 +16,7 @@ class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
         self.universe_settings.leverage = 2
         self.universe_settings.resolution = Resolution.DAILY
 
-        def _filter(fundamentals: List[Fundamental]):
+        def _filter(fundamentals: List[Fundamental]) -> List[Symbol]:
             selected = {}
             for f in fundamentals:
                 # grab the SelectionData instance for this symbol
@@ -35,7 +35,7 @@ class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
         self._universe = self.add_universe(_filter)
         self.set_warm_up(400, Resolution.DAILY)
 
-    def on_data(self, data):
+    def on_data(self, data: Slice) -> None:
         # we'll simply go long each security in the universe
         targets = [PortfolioTarget(x, self._target_percent) 
             for x in self._universe.selected if self.securities[x].has_data]
@@ -44,14 +44,14 @@ class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
 
 # class used to improve readability of the fundamental selection function
 class SelectionData:
-    def __init__(self):
+    def __init__(self) -> None:
         self.fast = ExponentialMovingAverage(100)
         self.slow = ExponentialMovingAverage(300)
         
     # Updates the EMA100 and EMA300 indicators, returning true when they're both ready
-    def update(self, time, value) -> bool:
+    def update(self, time: datetime, value: float) -> bool:
         return self.fast.update(time, value) & self.slow.update(time, value)
 
-    def scaled_delta(self):
+    def scaled_delta(self) -> float:
         fast, slow = self.fast.current.value, self.slow.current.value
         return (fast-slow)/((fast + slow)/2)

@@ -63,7 +63,7 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
             for contract in security.options:
                 self.remove_option_contract(contract)
 
-    def _select_option_contracts(self, underlying: Equity):
+    def _select_option_contracts(self, underlying: Equity) -> tuple[Any, Any]:
         # Get all tradable option contracts for filtering.
         option_contract_list = self.option_chain(underlying)
 

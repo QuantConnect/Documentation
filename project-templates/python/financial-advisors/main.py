@@ -27,23 +27,23 @@ class FinancialAdvisorAlgorithmAlgorithm(QCAlgorithm):
             self.set_holdings("SPY", 1)
 
     #region Live trading features
-    def _notify_all(self, subject, message):
+    def _notify_all(self, subject: str, message: str) -> None:
         self.notify.email("email@address.com", subject, message)
         message = f"{self.time:yyyyMMdd}: {subject} > {message}"
         self.log(message)
         # See https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/notifications
         # for all notification methods
         self.notify.sms("+16191234567", message)
-    
-    def on_brokerage_disconnect(self):
+
+    def on_brokerage_disconnect(self) -> None:
         self._notify_all(f"Brokerage disconnected on {self.time}", "-")
         self._connected = False
 
-    def on_brokerage_reconnect(self):
+    def on_brokerage_reconnect(self) -> None:
         self._notify_all(f"Brokerage reconnected on {self.time}", "-")
         self._connected = True
 
-    def on_brokerage_message(self, message_event):
+    def on_brokerage_message(self, message_event: BrokerageMessageEvent) -> None:
         match message_event.Type:
             case BrokerageMessageType.ERROR:
                 self._notify_all(f"Brokerage Message", str(message_event))

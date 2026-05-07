@@ -3,11 +3,11 @@ from AlgorithmImports import *
 # endregion
 
 class IndexOptionAlgorithm(QCAlgorithm):
-    _chain = []
+    _chain: list[OptionContract] = []
     _min_strike = -1
     _max_strike = 1
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(500000)
@@ -29,13 +29,13 @@ class IndexOptionAlgorithm(QCAlgorithm):
         # Set a scheduled event to filter the closed ATM calls every 5 minutes.
         self.schedule.on(date_rule, self.time_rules.every(timedelta(minutes=5)), self._filter)
 
-    def _populate_option_chain(self):
+    def _populate_option_chain(self) -> None:
         # Filter the expiry daily only since the contract list is updated daily.
         chain = self.option_chain(self._option_chain_symbol)
         expiry = min([x.expiry for x in chain])
         self._chain = [x for x in chain if x.expiry==expiry]
 
-    def _filter(self):
+    def _filter(self) -> None:
         if not self._chain:
             return
         underlying = self.securities[self._option_chain_symbol.underlying]
@@ -56,7 +56,7 @@ class IndexOptionAlgorithm(QCAlgorithm):
         # Since we are trading 0DTE, they will expire on end of day
         # so we don't need to remove them explicitly
         
-    def on_data(self, slice):
+    def on_data(self, slice: Slice) -> None:
         # Only trade on updated data.
         chain = slice.option_chains.get(self._option_chain_symbol)
         if not chain:

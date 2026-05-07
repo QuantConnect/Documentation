@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class BasicFutureAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.universe_settings.asynchronous = True
@@ -17,12 +17,12 @@ class BasicFutureAlgorithm(QCAlgorithm):
         )
         self._future.set_filter(0, 92)
 
-    def on_data(self, data: Slice):
+    def on_data(self, data: Slice) -> None:
         if self.portfolio.invested:
             return
         self.market_order(self._future.mapped, 1)
 
-    def on_symbol_changed_events(self, symbol_changed_events):
+    def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -> None:
         '''Track events when security changes its ticker, allowing the algorithm to adapt to these changes.'''
         for symbol, changed_event in symbol_changed_events.items():
             old_symbol = self.symbol(changed_event.old_symbol)
