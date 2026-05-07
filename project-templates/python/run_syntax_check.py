@@ -148,7 +148,7 @@ def run_syntax_check(target_file: str):
 if __name__ == '__main__':
     freeze_support()
 
-    with Pool(12, initializer=init_pool, initargs=(Lock(),)) as pool:
+    with Pool(4, initializer=init_pool, initargs=(Lock(),)) as pool:
         if len(sys.argv) > 1:
             target_files = [target for target in target_files if sys.argv[1] in target]
         result = pool.map(run_syntax_check, target_files)
