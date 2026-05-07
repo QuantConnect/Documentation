@@ -25,4 +25,4 @@ ethusd = qb.add_crypto("ETHUSD").symbol</pre>
     </div>
 </ol>
 
-<p>To view the supported assets in the Crypto datasets, see the <span class='page-section-name'>Supported Assets</span> section of the <a href='/docs/v2/writing-algorithms/datasets/coinapi'>CoinAPI dataset listings</a>.</p>
+<p>To view the supported assets in the Crypto datasets, see the <span class='page-section-name'>Supported Assets</span> section of the <a href='/docs/v2/writing-algorithms/datasets/quantconnect'>QuantConnect dataset listings</a>.</p>
