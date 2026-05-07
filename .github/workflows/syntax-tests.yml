@@ -1,0 +1,54 @@
+name: Syntax Tests
+
+on:
+  push:
+    paths:
+      - 'project-templates/python/**'
+      - '.github/workflows/syntax-tests.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'project-templates/python/**'
+      - '.github/workflows/syntax-tests.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Liberate disk space
+        uses: jlumbroso/free-disk-space@main
+        with:
+          tool-cache: true
+          large-packages: false
+          docker-images: false
+          swap-storage: false
+
+      - name: Define docker helper
+        run: |
+          echo 'runInContainer() { docker exec test-container "$@"; }' > $HOME/ci_functions.sh
+          echo "BASH_ENV=$HOME/ci_functions.sh" >> $GITHUB_ENV
+
+      - name: Start container
+        run: |
+          docker run -d \
+            --workdir /__w/Documentation/Documentation \
+            -v /home/runner/work:/__w \
+            --name test-container \
+            quantconnect/lean:foundation \
+            tail -f /dev/null
+
+      - name: Run Syntax Test
+        run: |
+          runInContainer bash -c "pip install --no-cache-dir quantconnect-stubs types-requests==2.32.* types-pytz==2025.2.0.* mypy==1.20.2"
+          runInContainer python project-templates/python/run_syntax_check.py
+
+      - name: Upload syntax-check log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: syntax-check-log
+          path: project-templates/python/syntax-check.log
+          if-no-files-found: ignore
