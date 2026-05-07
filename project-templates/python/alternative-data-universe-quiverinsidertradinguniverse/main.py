@@ -18,7 +18,7 @@ class QuiverInsiderTradingUniverseAlgorithm(QCAlgorithm):
 
     def _select_assets(self, data: List[QuiverInsiderTradingUniverse]) -> List[Symbol]:
         # Aggregate insider dollar volume per ticker and keep the 10 largest.
-        dollar_volume = {}
+        dollar_volume: dict[Symbol, float] = {}
         for d in data:
             if not d.price_per_share:
                 continue

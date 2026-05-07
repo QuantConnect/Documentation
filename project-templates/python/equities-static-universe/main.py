@@ -5,7 +5,7 @@ from AlgorithmImports import *
 class EquitiesStaticTemplateAlgorithm(QCAlgorithm):
     _tolerance = 0.0025
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
@@ -16,7 +16,7 @@ class EquitiesStaticTemplateAlgorithm(QCAlgorithm):
             self.plot_indicator(ticker, equity.macd)
         self.schedule.on(self.date_rules.every_day('SPY'), self.time_rules.after_market_open('SPY', 1), self._rebalance)
 
-    def _rebalance(self):
+    def _rebalance(self) -> None:
         for security in self.securities.values():
             quantity = security.holdings.quantity
             macd = security.macd

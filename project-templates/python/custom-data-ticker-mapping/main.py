@@ -34,10 +34,10 @@ class CustomDataTradeProviderAlgorithm(QCAlgorithm):
 
 class SelectedTrades(PythonData):
     
-    def get_source(self, config, date, is_live_mode):
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -> SubscriptionDataSource:
         return SubscriptionDataSource("selected_trades.csv", SubscriptionTransportMedium.OBJECT_STORE)
 
-    def reader(self, config, line, date, is_live_mode):
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -> BaseData:
         if not line.strip():
             return None
         data = [x.strip() for x in line.split(',')]

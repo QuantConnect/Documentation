@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class QuiverInsiderTradingChainedUniverseAlgorithm(QCAlgorithm):
 
-    _fundamental = []
+    _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
@@ -20,14 +20,14 @@ class QuiverInsiderTradingChainedUniverseAlgorithm(QCAlgorithm):
         # Rebalance shortly after the open so today's intersection is locked in.
         self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.at(9, 0, 0), self._rebalance)
 
-    def _fundamental_filter(self, fundamental: List[Fundamental]):
+    def _fundamental_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
         self._fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.UNCHANGED
 
     def _select_assets(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -> List[Symbol]:
         # Aggregate insider dollar volume per ticker and keep the 10 largest.
-        dollar_volume = {}
+        dollar_volume: dict[Symbol, float] = {}
         for d in alt_coarse:
             if not d.price_per_share:
                 continue

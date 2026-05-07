@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class CustomDataBitstampAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2020, 9, 1)
         self.set_end_date(2020, 12, 31)
         self.set_cash(100000)
@@ -13,7 +13,7 @@ class CustomDataBitstampAlgorithm(QCAlgorithm):
         # Get some historical data.
         history = self.history(Bitstamp, self._btc, 200, Resolution.DAILY)
 
-    def on_data(self, slice):
+    def on_data(self, slice: Slice) -> None:
         # Get the data of the current day.
         data = slice.get(self._btc)
         if not data:
@@ -23,7 +23,7 @@ class CustomDataBitstampAlgorithm(QCAlgorithm):
 
 class Bitstamp(PythonData):
 
-    def get_source(self, config, date, is_live_mode):
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, is_live_mode: bool) -> SubscriptionDataSource:
         if is_live_mode:
             return SubscriptionDataSource('https://www.bitstamp.net/api/ticker/', SubscriptionTransportMedium.REST)
         return SubscriptionDataSource(
@@ -31,7 +31,7 @@ class Bitstamp(PythonData):
             SubscriptionTransportMedium.REMOTE_FILE
         )
 
-    def reader(self, config, line, date, is_live_mode):
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, is_live_mode: bool) -> BaseData:
         if not line.strip():
             return None
         coin = Bitstamp()

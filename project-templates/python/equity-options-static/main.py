@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class EquityOptionAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
@@ -14,7 +14,7 @@ class EquityOptionAlgorithm(QCAlgorithm):
         self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
         self.schedule.on(self.date_rules.every(DayOfWeek.MONDAY), self.time_rules.after_market_open(self._spy, 1), self._buy_covered_call)
 
-    def _buy_covered_call(self):
+    def _buy_covered_call(self) -> None:
         '''Buy a Covered Call: Buy the underlying and sell the ATM call.
         '''
         next_friday = (self.time + timedelta(4)).date()

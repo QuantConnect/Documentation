@@ -38,8 +38,8 @@ class CustomMoneyFlowIndex(PythonIndicator):
         super().__init__()
         self.value = 0
         self._previous_typical_price = 0
-        self._negative_money_flow = RollingWindow(period)
-        self._positive_money_flow = RollingWindow(period)
+        self._negative_money_flow: RollingWindow[float] = RollingWindow(period)
+        self._positive_money_flow: RollingWindow[float] = RollingWindow(period)
     
     def update(self, input: BaseData) -> bool:
         if not isinstance(input, TradeBar):

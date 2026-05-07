@@ -5,7 +5,7 @@ from AlgorithmImports import *
 class OptionChainFullExample(QCAlgorithm):
     _last_ticket: OrderTicket = None
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 9, 5)
         self.set_cash(500000)
@@ -21,7 +21,7 @@ class OptionChainFullExample(QCAlgorithm):
 
         self._option_chain_symbol = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
 
-    def _trade_at_the_money_contract(self, ema, current):
+    def _trade_at_the_money_contract(self, ema: ExponentialMovingAverage, current: IndicatorDataPoint) -> None:
         # Pace trades every 10 minutes
         last_trade_time = self._last_ticket.time if self._last_ticket else None
         if last_trade_time and (self.utc_time-last_trade_time).total_seconds() < 600: return
@@ -40,7 +40,7 @@ class OptionChainFullExample(QCAlgorithm):
             if atm_put and not atm_put.invested:
                 self._last_ticket = self.market_order(atm_put, 1)
 
-    def _get_at_the_money_contract(self, right, spot):
+    def _get_at_the_money_contract(self, right: OptionRight, spot: float) -> Symbol | None:
         chain = self.option_chain(self._option_chain_symbol)
         expiry = min([x.expiry for x in chain])
         contracts = sorted([x for x in chain if x.expiry == expiry and x.right == right],

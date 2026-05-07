@@ -4,7 +4,7 @@ from AlgorithmImports import *
 
 class ForexExampleAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Add the some trading pair.
@@ -17,7 +17,7 @@ class ForexExampleAlgorithm(QCAlgorithm):
             for quote_bar in self.history[QuoteBar](forex, 12*60):
                 forex.spread_low.update(quote_bar.end_time, quote_bar.ask.close - quote_bar.bid.close)
 
-    def on_data(self, slice: Slice):
+    def on_data(self, slice: Slice) -> None:
         # Ensure we have quote data in the current slice.
         for symbol, quote_bar in slice.quote_bars.items():
             # Bid-ask spread = Ask price - Bid price

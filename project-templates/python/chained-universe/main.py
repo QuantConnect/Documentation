@@ -3,7 +3,7 @@ from AlgorithmImports import *
 # endregion
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    _weight_by_symbol = {}
+    _weight_by_symbol: dict[Symbol, float] = {}
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
@@ -29,7 +29,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
         return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def _place_orders(self):
+    def _place_orders(self) -> None:
         if not self._universe.selected:
             return
         sum_of_weight = sum([self._weight_by_symbol[x] for x in self._universe.selected])
