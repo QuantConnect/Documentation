@@ -40,7 +40,7 @@ class OptionChainFullExample(QCAlgorithm):
             if atm_put and not atm_put.invested:
                 self._last_ticket = self.market_order(atm_put, 1)
 
-    def _get_at_the_money_contract(self, right: OptionRight, spot: float) -> Symbol | None:
+    def _get_at_the_money_contract(self, right: OptionRight, spot: float) -> Option | None:
         chain = self.option_chain(self._option_chain_symbol)
         expiry = min([x.expiry for x in chain])
         contracts = sorted([x for x in chain if x.expiry == expiry and x.right == right],

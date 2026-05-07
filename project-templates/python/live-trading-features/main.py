@@ -34,7 +34,7 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
         self._connected = True
 
     def on_brokerage_message(self, message_event: BrokerageMessageEvent) -> None:
-        match message_event.Type:
+        match message_event.type:
             case BrokerageMessageType.ERROR:
                 self._notify_all(f"Brokerage Message", str(message_event))
             case _:
