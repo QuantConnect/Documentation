@@ -58,7 +58,6 @@ def on_data(self, slice: Slice) -> None:
 | `SECReport8K` | US SEC Filings | `report` |
 | `USTreasuryYieldCurveRate` | US Treasury Yield Curve | `one_month`, `two_month`, `three_month`, `six_month`, `one_year`, `two_year`, `three_year`, `five_year`, `seven_year`, `ten_year`, `twenty_year`, `thirty_year` |
 | `VIXCentralContango` | VIX Central Contango | `front_month`, `f_1`, `f_2`, `f_3`, `f_4`, `f_5`, `f_6`, `f_7`, `f_8`, `f_9`, `f_10`, `f_11`, `f_12`, `contango_f_2_minus_f_1`, `contango_f_7_minus_f_4`, `contango_f_7_minus_f_4_div_3`, `period` |
-| `QuiverWallStreetBets` | WallStreetBets | `date`, `mentions`, `rank`, `sentiment` |
 
 ## List Type
 
