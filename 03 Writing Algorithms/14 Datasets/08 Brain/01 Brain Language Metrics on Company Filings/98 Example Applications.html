@@ -15,32 +15,32 @@ The Brain Language Metrics on Company Filings dataset enables you to test strate
 
 class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
 
-    def initialize(self):
+    def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000) 
+        self.set_cash(100000)
         # Seed the price of each asset with its last known price to avoid trading errors.
         self.settings.seed_initial_prices = True
-        # Requesting data -- we aim to obtain a sentiment score from the company filings
-        # Combining both fundamental and sentiment factor, as well as past performance and future provision
-        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
-        self.dataset_symbol = self.add_data(BrainCompanyFilingLanguageMetrics10K , self._symbol).symbol
-        
+        # Request company filing data to obtain sentiment scores from company reports.
+        # Combine sentiment with fundamental context, past performance, and forward-looking provisions.
+        self._equity = self.add_equity("AAPL", Resolution.DAILY)
+        self._filing_data = self.add_data(BrainCompanyFilingLanguageMetrics10K, self._equity)
         # Historical data
-        history = self.history(self.dataset_symbol, 365, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
-        
-    def on_data(self, data):
-        # Trade base on the updated report sentiment
-        if data.contains_key(self.dataset_symbol):
-            sentiment = data[self.dataset_symbol].report_sentiment.sentiment
-            # Buy for a positive sentiment score for the positive return projection
-            self.set_holdings(self._symbol, int(sentiment &gt; 0))</pre>
+        history = self.history(self._filing_data, 365, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from our history request for {self._filing_data}")
+
+    def on_data(self, data: Slice) -&gt; None:
+        # Trade based on the updated report sentiment.
+        if self._filing_data not in data:
+            return
+        sentiment = data[self._filing_data].report_sentiment.sentiment
+        # Buy when sentiment is positive to express the expected positive return projection.
+        self.set_holdings(self._equity, int(sentiment &gt; 0))</pre>
 <pre class="csharp">public class BrainCompanyFilingNLPDataAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol;
-    private Symbol _datasetSymbol;
-    
+    private Equity _equity;
+    private Symbol _filingData;
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
@@ -48,24 +48,23 @@ class BrainCompanyFilingNLPDataAlgorithm(QCAlgorithm):
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
         Settings.SeedInitialPrices = true;
-        // Requesting data -- we aim to obtain a sentiment score from the company filings
-        // Combining both fundamental and sentiment factor, as well as past performance and future provision
-        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-        _datasetSymbol = AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_symbol).Symbol;
-        
+        // Request company filing data to obtain sentiment scores from company reports.
+        // Combine sentiment with fundamental context, past performance, and forward-looking provisions.
+        _equity = AddEquity("AAPL", Resolution.Daily);
+        _filingData = AddData&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_equity.Symbol).Symbol;
         // Historical data
-        var history = History&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_datasetSymbol, 365, Resolution.Daily);
-        Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
+        var history = History&lt;BrainCompanyFilingLanguageMetrics10K&gt;(_filingData, 365, Resolution.Daily);
+        Debug($"We got {history.Count()} items from our history request for {_filingData}");
     }
 
     public override void OnData(Slice slice)
     {
-        // Trade base on the updated report sentiment
-        if (slice.ContainsKey(_datasetSymbol))
+        // Trade based on the updated report sentiment.
+        if (slice.ContainsKey(_filingData))
         {
-            // Buy for a positive sentiment score for the positive return projection
-            var sentiment = slice[_datasetSymbol].ReportSentiment.Sentiment;
-            SetHoldings(_symbol, sentiment &gt; 0 ? 1 : 0);
+            var sentiment = slice[_filingData].ReportSentiment.Sentiment;
+            // Buy when sentiment is positive to express the expected positive return projection.
+            SetHoldings(_equity.Symbol, sentiment &gt; 0 ? 1 : 0);
         }
     }
 }</pre>
