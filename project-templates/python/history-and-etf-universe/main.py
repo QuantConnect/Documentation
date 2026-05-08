@@ -31,7 +31,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         return list(atr_by_symbol.keys())
 
     def _place_orders(self) -> None:
-        # We will keep the ETF weights by scale it up to sum 1.
+        # Normalise ETF weights to sum to 1 before setting target holdings.
         sum_of_weight = sum([self._weight_by_symbol[x] for x in self._universe.selected])
         self.plot("Universe", "Sum Of Weight (%)", sum_of_weight * 100)
         targets = [PortfolioTarget(x, self._weight_by_symbol[x] / sum_of_weight) for x in self._universe.selected]

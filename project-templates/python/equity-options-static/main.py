@@ -34,11 +34,11 @@ class EquityOptionAlgorithm(QCAlgorithm):
         atm_call = contracts[0]
         contract = self.add_option_contract(atm_call)
         contract_multiplier = contract.contract_multiplier
-        # We will invest 100% of the portfolio value observing the contract multiplier.
-        # For example, if 100% of the portfolio value is 345 shares of SPY, we will invest 300.
+        # Size the equity position to 100% of portfolio, rounded down to the nearest contract multiple.
+        # For example, 345 shares rounds down to 300 to match the 100-share contract size.
         # Then, we sell 3 contracts of ATM call. If we are exercised, the position is closed.
         equity_order_quantity = np.floor(self.calculate_order_quantity(self._spy, 1)  / contract_multiplier) * contract_multiplier
-        # If we are invested in the underlying, the hedge takes into account the final quantity.
+        # Sell one call contract per 100 shares, accounting for any existing underlying position.
         atm_call_order_quantity = -(self._spy.holdings.quantity + equity_order_quantity) / contract_multiplier
         if equity_order_quantity:
             self.market_order(self._spy, equity_order_quantity)

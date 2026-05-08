@@ -22,7 +22,6 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
         message = f"{self.time:yyyyMMdd}: {subject} > {message}"
         self.log(message)
         # See https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/notifications
-        # For all notification methods.
         self.notify.sms("+16191234567", message)
 
     def on_brokerage_disconnect(self) -> None:
@@ -49,9 +48,7 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
         bar = slice.bars.get(self._spy)
         if not bar:
             return
-        # Trend-following strategy using price and EMA.
-        # If the price is above EMA, SPY is in an uptrend, and we buy it.
-        # We sent a link to our email address and await confirmation.
+        # Send a trade confirmation link when the EMA cross condition is detected.
         if bar.close > self._spy.ema.current.value and not self._spy.holdings.is_long:
             link = self.link({"ticker": "SPY", "size": 1})
             self._notify_all("Trade Confirmation Needed", f"Click here to run: {link}")

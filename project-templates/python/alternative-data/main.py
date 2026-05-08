@@ -11,7 +11,7 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         # Seed the price of each asset with its last known price to avoid trading errors.
         self.settings.seed_initial_prices = True
-        # We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking.
+        # Select 5 high-volume, large-cap stocks; higher trading volume improves ML ranking credibility.
         tickers = ["AAPL", "TSLA", "MSFT", "F", "KO"]
         for ticker in tickers:
             # Requesting data to get 2 days estimated relative ranking.
@@ -19,16 +19,16 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
             self.add_data(BrainStockRanking2Day, equity)
 
     def on_data(self, data: Slice) -> None:
-        # Collect rankings for all selected symbols for ranking them.
+        # Get Brain ML ranking data for all symbols in the current slice.
         points = data.get(BrainStockRanking2Day)
         if points is None:
             return
         sum_of_ranks = sum(abs(x.rank) for x in points.values()) * .9
         if sum_of_ranks == 0:
             return
-        # Rank each symbol's Brain ML ranking relative to each other for positional sizing.
+        # Plot each symbol's ML rank score.
         for x in points.values():
             self.plot("Rank", x.symbol.underlying, x.rank)
-        # Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight.
+        # Allocate weight proportional to each symbol's ML rank score.
         targets = [PortfolioTarget(x.symbol.underlying, x.rank/sum_of_ranks) for x in points.values()]
         self.set_holdings(targets)

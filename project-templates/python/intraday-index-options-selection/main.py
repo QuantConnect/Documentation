@@ -56,8 +56,7 @@ class IndexOptionAlgorithm(QCAlgorithm):
         for contract in contracts:
             if contract not in self.securities:
                 self.add_option_contract(contract)
-        # Since we are trading 0DTE, they will expire on end of day.
-        # So we don't need to remove them explicitly.
+        # 0DTE contracts expire at end of day and are removed automatically.
 
     def on_data(self, data: Slice) -> None:
         # Only trade on updated data.
@@ -70,8 +69,6 @@ class IndexOptionAlgorithm(QCAlgorithm):
         if not calls:
             return
         atm_call = sorted(calls, key=lambda x: abs(chain.underlying.price - x.strike))[0]
-        # We will buy the ATM call if we don't have it.
-        # We are not selling the calls we have purchased previously.
-        # So, we will buy a lot of contracts if underlying price moves a lot.
+        # Buy the nearest ATM call each time the underlying moves to a new strike.
         if not self.portfolio[atm_call].invested:
             self.market_order(atm_call, 1)

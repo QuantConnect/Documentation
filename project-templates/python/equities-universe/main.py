@@ -22,7 +22,7 @@ class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
                 # Grab the SelectionData instance for this symbol.
                 self._averages[f.symbol] = avg = self._averages.get(f.symbol, SelectionData())
                 # Update returns true when the indicators are ready, so don't accept until they are.
-                # And only pick symbols who have their market cap above 1Bi and 100 day ema over their 300 day ema.
+                # Accept symbols with market cap above $10B and the fast EMA above the slow EMA.
                 if (avg.update(f.end_time, f.adjusted_price) and
                     f.market_cap > 10_000_000_000 and
                     avg.fast.current.value > avg.slow.current.value * (1 + self._tolerance)):
@@ -35,7 +35,7 @@ class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
         self.set_warm_up(400, Resolution.DAILY)
 
     def on_data(self, data: Slice) -> None:
-        # We'll simply go long each security in the universe.
+        # Go long each universe security at the target weight.
         targets = [PortfolioTarget(x, self._target_percent)
             for x in self._universe.selected if self.securities[x].has_data]
         self.set_holdings(targets, True)

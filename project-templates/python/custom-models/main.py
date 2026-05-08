@@ -16,7 +16,7 @@ class CustomModelslgorithm(QCAlgorithm):
             security.set_fee_model(CustomFeeModel(self))
             security.set_fill_model(CustomFillModel(self))
             security.set_slippage_model(CustomSlippageModel(self))
-            # We can set different models for different asset classes.
+            # Apply NullBuyingPowerModel for Options to allow unconstrained position sizing.
             if security.Type in [SecurityType.OPTION, SecurityType.INDEX_OPTION]:
                 security.set_buying_power_model(BuyingPowerModel.NULL)
             else:
@@ -31,7 +31,7 @@ class CustomModelslgorithm(QCAlgorithm):
             self.set_holdings("SPY", 1)
 
 
-# If we want to use methods from other models, you need to inherit from one of them.
+# Inherit from ImmediateFillModel to reuse base logic and override only market_fill.
 class CustomFillModel(ImmediateFillModel):
 
     def __init__(self, algorithm: QCAlgorithm) -> None:
@@ -99,8 +99,7 @@ class CustomBuyingPowerModel(BuyingPowerModel):
         return has_sufficient_buying_power_for_order_result
 
 
-# The simple fill model shows how to implement a simpler version of
-# The most popular order fills: Market, Stop Market and Limit.
+# Simplified fill model implementing Market, Stop Market, and Limit fills.
 class SimpleCustomFillModel(FillModel):
 
     def __init__(self) -> None:

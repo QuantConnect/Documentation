@@ -42,8 +42,8 @@ class SelectedTrades(PythonData):
             ticker = data[1]
             time = datetime.strptime(data[0], "%Y-%m-%d")
             # Create the SecurityIdentifier with the point-in-time ticker and the current date.
-            # In this example, we trade META in 2020 when its ticker was FB.
-            # Then, we will see it when it is META.
+            # This example uses META, which traded under the ticker FB in 2020.
+            # From 2024 onwards, the symbol resolves to META.
             security_id = SecurityIdentifier.generate_equity(ticker, Market.USA, mapping_resolve_date=time)
             if security_id.date.year < 1998:
                 # Ticker not found in QuantConnect database on this date.

@@ -37,11 +37,11 @@ class ETFUniverseAlgorithm(QCAlgorithm):
         # Select the stocks with the greatest ATR.
         securities = [self.securities[symbol] for symbol in self._universe.selected]
         selected = sorted([s for s in securities if s.atr.is_ready], key=lambda security: security.atr)[-10:]
-        # We will keep the ETF weights by scale it up to sum 1.
+        # Normalise ETF weights to sum to 1 before setting target holdings.
         sum_of_weight = sum([self._weight_by_symbol[security.symbol] for security in selected])
         self.plot("Universe", "Sum Of Weight (%)", sum_of_weight * 100)
         if not sum_of_weight:
             return
         targets = [PortfolioTarget(s, self._weight_by_symbol[s.symbol] / sum_of_weight) for s in selected]
-        # Remove securities that are not top ATR.
+        # Rebalance and liquidate securities outside the top ATR selection.
         self.set_holdings(targets, True)

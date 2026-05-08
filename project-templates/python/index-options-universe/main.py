@@ -15,7 +15,7 @@ class IndexOptionAlgorithm(QCAlgorithm):
         # Filter the Option universe to only select 0DTE Options.
         self._option.set_filter(lambda u: u.expiration(0, 0).strikes(-1, 1))
         # Filter the Option universe by Delta. The last set_filter call prevails.
-        # Self._option.set_filter(lambda u: u.delta(0.25, 0.75)).
+        # self._option.set_filter(lambda u: u.delta(0.25, 0.75)).
 
     def on_data(self, data: Slice) -> None:
         if self.portfolio.invested:
@@ -24,7 +24,7 @@ class IndexOptionAlgorithm(QCAlgorithm):
         chain = data.option_chains.get(self._option)
         if not chain:
             return
-        # Sorted the call Option contracts according to their strike prices.
+        # Sort call contracts by strike price.
         calls = sorted([x for x in chain if x.right == OptionRight.CALL], key=lambda x: x.strike)
         if not calls: return
         # Buy 1 0DTE call Option contract for the SPX index.
