@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities with a forward stock split in the next 3 days.
             _universe = AddUniverse<EODHDUpcomingSplits>(data =>
             {

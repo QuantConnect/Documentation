@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities with positive sentiment in their latest SEC filings.
             _universe = AddUniverse<BrainCompanyFilingLanguageMetricsUniverseAll>(data =>
             {

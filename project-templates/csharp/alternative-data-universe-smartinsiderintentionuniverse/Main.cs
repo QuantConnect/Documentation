@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of large-cap US Equities announcing meaningful buyback intentions.
             _universe = AddUniverse<SmartInsiderIntentionUniverse>(data =>
             {

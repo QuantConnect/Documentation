@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities with positive 7-day media sentiment and active mention coverage.
             _universe = AddUniverse<BrainSentimentIndicatorUniverse>(data =>
             {

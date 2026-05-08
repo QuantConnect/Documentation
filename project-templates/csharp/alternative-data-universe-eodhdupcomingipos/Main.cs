@@ -19,7 +19,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of confirmed non-penny upcoming IPOs.
             _universe = AddUniverse<EODHDUpcomingIPOs>(data =>
             {

@@ -17,7 +17,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of the 10 US Equities with the largest insider-trading dollar volume.
             _universe = AddUniverse<QuiverInsiderTradingUniverse>(data =>
             {

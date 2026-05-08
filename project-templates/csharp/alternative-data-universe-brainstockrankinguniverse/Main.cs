@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities with positive Brain ML rankings across 2-, 3-, and 5-day horizons.
             _universe = AddUniverse<BrainStockRankingUniverse>(data =>
             {

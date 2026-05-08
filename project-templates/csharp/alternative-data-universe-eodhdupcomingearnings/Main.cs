@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities reporting earnings in the next 3 days with a positive estimate.
             _universe = AddUniverse<EODHDUpcomingEarnings>(data =>
             {

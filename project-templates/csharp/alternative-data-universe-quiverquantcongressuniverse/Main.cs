@@ -17,7 +17,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities recently bought by US Congress members in trades over $200K.
             _universe = AddUniverse<QuiverQuantCongressUniverse>(data =>
             {

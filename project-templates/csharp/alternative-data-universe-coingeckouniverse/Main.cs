@@ -27,7 +27,7 @@ namespace QuantConnect.Algorithm.CSharp
                 .Select(x => x.Key.Symbol)
                 .ToList();
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of the top 10 CoinGecko coins by market cap that we can trade.
             _universe = AddUniverse<CoinGecko>("CoinGeckoUniverse", Resolution.Daily, data =>
             {

@@ -18,7 +18,7 @@ namespace QuantConnect.Algorithm.CSharp
             Settings.SeedInitialPrices = true;
 
             // Trade daily on CNBC opinion updates.
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // Universe of US Equities flagged by 3+ positive CNBC opinions.
             _universe = AddUniverse<QuiverCNBCsUniverse>(data =>
             {
