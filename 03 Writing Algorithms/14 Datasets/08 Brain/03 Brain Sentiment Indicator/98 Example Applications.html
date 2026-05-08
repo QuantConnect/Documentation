@@ -14,71 +14,60 @@ The Brain Sentiment Indicator dataset enables you to incorporate sentiment from 
 
 
 class BrainSentimentDataAlgorithm(QCAlgorithm):
-    
     latest_sentiment_value = None
     target_holdings = 0
-    
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000) 
-        
-        # Requesting the processed longer term (30-day) sentiment score data for sentiment trading
-        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.set_cash(100000)
+        # Request the processed longer term sentiment score data for sentiment trading.
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY)
         self.dataset_symbol = self.add_data(BrainSentimentIndicator30Day, self.aapl).symbol
-        
-        # Historical data
         history = self.history(self.dataset_symbol, 100, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
         if history.empty:
             return
-        
-        # Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
+        # Warm up historical sentiment values so the signal is immediately tradable.
         previous_sentiment_values = history.loc[self.dataset_symbol].sentiment.values
         for sentiment in previous_sentiment_values:
             self.update(sentiment)
-            
+
     def update(self, sentiment: float) -&gt; None:
-        # Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
+        # Compare the last sentiment score to buy when sentiment increases.
         if self.latest_sentiment_value is not None:
             self.target_holdings = int(sentiment &gt; self.latest_sentiment_value)
         self.latest_sentiment_value = sentiment
-        
-    def on_data(self, slice: Slice) -&gt; None:
-        # Update trade direction based on updated data
-        if slice.contains_key(self.dataset_symbol):
-            sentiment = slice[self.dataset_symbol].sentiment
+
+    def on_data(self, data: Slice) -&gt; None:
+        # Update trade direction from the latest sentiment data.
+        if self.dataset_symbol in data:
+            sentiment = data[self.dataset_symbol].sentiment
             self.update(sentiment)
-           
-        # Ensure we have security data in the current slice to avoid stale fill
-        if not (slice.contains_key(self.aapl) and slice[self.aapl] is not None):
+        # Require current equity data to avoid stale fills.
+        if self.aapl not in data or data[self.aapl] is None:
             return
-        
-        # Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
+        # Buy when sentiment increases, otherwise liquidate the equity.
         if self.target_holdings != self.portfolio.invested:
             self.set_holdings(self.aapl, self.target_holdings)</pre>
 <pre class="csharp">public class BrainSentimentDataAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol;
+    private Equity _aapl;
     private Symbol _datasetSymbol;
     private decimal? _latestSentimentValue = null;
     private int _targetHoldings = 0;
-    
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        // Requesting the processed longer term (30-day) sentiment score data for sentiment trading
-        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-        _datasetSymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(_symbol).Symbol;
-        
-        // Historical data
+        // Request the processed longer term sentiment score data for sentiment trading.
+        _aapl = AddEquity("AAPL", Resolution.Daily);
+        _datasetSymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(_aapl.Symbol).Symbol;
         var history = History&lt;BrainSentimentIndicator30Day&gt;(_datasetSymbol, 100, Resolution.Daily);
         Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
-        
-        // Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
+        // Warm up historical sentiment values so the signal is immediately tradable.
         var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
         foreach (var sentiment in previousSentimentValues)
         {
@@ -86,31 +75,33 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
         }
     }
 
-    
     public void Update(decimal sentiment)
     {
-        // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
+        // Compare the last sentiment score to buy when sentiment increases.
         if (_latestSentimentValue != null)
         {
             _targetHoldings = sentiment &gt; _latestSentimentValue ? 1 : 0;
         }
         _latestSentimentValue = sentiment;
     }
-    
-    public override void OnData(Slice slice)
+
+    public override void OnData(Slice data)
     {
-        // Update trade direction based on updated data
-        if (slice.ContainsKey(_datasetSymbol))
+        // Update trade direction from the latest sentiment data.
+        if (data.ContainsKey(_datasetSymbol))
         {
-            var sentiment = slice[_datasetSymbol].Sentiment;
+            var sentiment = data[_datasetSymbol].Sentiment;
             Update(sentiment);
         }
-
-        // Ensure we have security data in the current slice to avoid stale fill
-        // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-        if (slice.Bars.ContainsKey(_symbol) &amp;&amp; _targetHoldings == 1 != Portfolio.Invested)
+        // Require current equity data to avoid stale fills.
+        if (!data.Bars.ContainsKey(_aapl.Symbol))
         {
-            SetHoldings(_symbol, _targetHoldings);
+            return;
+        }
+        // Buy when sentiment increases, otherwise liquidate the equity.
+        if (_targetHoldings == 1 != Portfolio.Invested)
+        {
+            SetHoldings(_aapl.Symbol, _targetHoldings);
         }
     }
 }</pre>
@@ -125,157 +116,109 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
 class BrainSentimentDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 9, 10)
-        self.set_cash(100000) 
-        
-        self.settings.minimum_order_margin_portfolio_percentage = 0
-        self.universe_settings.resolution = Resolution.DAILY
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.settings.seed_initial_prices = True
+        self.universe_settings.resolution = Resolution.HOUR
         # Filter base on sentiment data
-        self.add_universe(BrainSentimentIndicatorUniverse, self.universe_selection)
-        
-        self.add_alpha(BrainSentimentAlphaModel())
-        
-        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
-         
-        self.add_risk_management(NullRiskManagementModel())
-        
+        self.add_universe(BrainSentimentIndicatorUniverse, self.universe_selection)        
+        self.add_alpha(BrainSentimentAlphaModel())        
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())         
+        self.add_risk_management(NullRiskManagementModel())        
         self.set_execution(ImmediateExecutionModel())
 
     def universe_selection(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
-        # Filter for any sentiment on last 7 days to trade on sentiment news
-        return [d.symbol for d in alt_coarse \
-        if d.SentimentalArticleMentions7Days is not None and d.SentimentalArticleMentions7Days &gt; 0]
+        # Select the stocks with the most sentiment news in the last 7 days
+        filtered = [d for d in alt_coarse if d.sentimental_article_mentions_7_days]
+        filtered = sorted(filtered, key=lambda d: d.sentimental_article_mentions_7_days)[-50:]
+        return [d.symbol for d in filtered]
 
-        
+
 class BrainSentimentAlphaModel(AlphaModel):
-    
-    symbol_data_by_symbol = {}
+    _securities = []
 
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
         insights = []
-        
-        for symbol, symbol_data in self.symbol_data_by_symbol.items():
-            # Update trade direction based on updated data
-            if slice.contains_key(symbol_data.dataset_symbol) and slice[symbol_data.dataset_symbol] is not None:
-                sentiment = slice[symbol_data.dataset_symbol].sentiment
-                symbol_data.update(sentiment)
-               
-            # Ensure we have security data in the current slice to avoid stale fill
-            if not (slice.contains_key(symbol) and slice[symbol] is not None):
-                continue
-
+        for dataset_symbol, data_point in slice.get(BrainSentimentIndicator30Day).items():
+            security = algorithm.securities[dataset_symbol.underlying]
+            target_direction = InsightDirection.FLAT
+            if security.latest_sentiment_value and data_point.sentiment &gt; security.latest_sentiment_value:
+                target_direction = InsightDirection.UP
+            security.latest_sentiment_value = data_point.sentiment
             # Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-            if symbol_data.target_direction == InsightDirection.UP != algorithm.portfolio[symbol].invested:
-                insights.append(Insight.price(symbol, timedelta(days=100), symbol_data.target_direction))
+            if security.price and target_direction == InsightDirection.UP and not security.invested:
+                insights.append(Insight.price(security, timedelta(100), target_direction))
         return insights
-        
+                
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
         for security in changes.added_securities:
-            symbol = security.symbol
-            self.symbol_data_by_symbol[symbol] = SymbolData(algorithm, symbol)
-        
+            # Subscribe to custom data and store dataset symbol
+            dataset = algorithm.add_data(BrainSentimentIndicator30Day, security, Resolution.DAILY)
+            security.brain_sentiment_data = dataset.symbol
+            security.latest_sentiment_value = None
+            # Historical data
+            history = algorithm.history(dataset, 100, Resolution.DAILY)
+            if not history.empty:
+                # Warm up historical sentiment values, cache for comparing last sentiment score to trade
+                previous_sentiment_values = history.loc[security.brain_sentiment_data].sentiment.values
+                for sentiment in previous_sentiment_values:
+                    security.latest_sentiment_value = sentiment
+            self._securities.append(security)
         for security in changes.removed_securities:
-            symbol_data = self.symbol_data_by_symbol.pop(security.symbol, None)
-            if symbol_data:
-                symbol_data.dispose()
-
-
-class SymbolData:
-    
-    target_direction = InsightDirection.FLAT
-    _latest_sentiment_value = None
-    
-    def __init__(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
-        self.algorithm = algorithm
-        
-        # Requesting the processed longer term (30-day) sentiment score data for sentiment trading
-        self.dataset_symbol = algorithm.add_data(BrainSentimentIndicator30Day, symbol).symbol
-        
-        # Historical data
-        history = algorithm.history(self.dataset_symbol, 100, Resolution.DAILY)
-        if history.empty or 'sentiment' not in history.columns:
-            return
-        
-        # Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
-        previous_sentiment_values = history.loc[self.dataset_symbol].sentiment.values
-        for sentiment in previous_sentiment_values:
-            self.update(sentiment)
-        
-    def dispose(self) -&gt; None:
-        # Unsubscribe from the Brain Sentiment feed for this security to release computational resources
-        self.algorithm.remove_security(self.dataset_symbol)
-        
-    def update(self, sentiment: float) -&gt; None:
-        # Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
-        if self._latest_sentiment_value is not None:
-            if sentiment &gt; self._latest_sentiment_value:
-                self.target_direction = InsightDirection.UP
-            else:
-                self.target_direction = InsightDirection.FLAT
-        self._latest_sentiment_value = sentiment</pre>
+            # Unsubscribe from the Brain Sentiment feed
+            algorithm.remove_security(security.brain_sentiment_data)
+            # Remove from tracking
+            if security in self._securities:
+                self._securities.remove(security)</pre>
 <pre class="csharp">public class BrainSentimentDataAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
-        SetEndDate(2024, 9, 10);
+        SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        Settings.MinimumOrderMarginPortfolioPercentage = 0;
-        UniverseSettings.Resolution = Resolution.Daily;
-        // Filter by sentiment data
-        AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(altCoarse =&gt;
-        {
-            // Filter for any sentiment on last 7 days to trade on sentiment news
-            return from d in altCoarse.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
-                where d.SentimentalArticleMentions7Days &gt; 0m
-                select d.Symbol;
-        });
-        
+        Settings.SeedInitialPrices = true;
+        UniverseSettings.Resolution = Resolution.Hour;
+        // Filter base on sentiment data
+        AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(
+            altCoarse =&gt; altCoarse
+            .Select(d =&gt; d as BrainSentimentIndicatorUniverse)
+            .Where(d =&gt; d.SentimentalArticleMentions7Days != 0m)
+            .OrderBy(d =&gt; d.SentimentalArticleMentions7Days)
+            .TakeLast(50)
+            .Select(d =&gt; d.Symbol)
+        );
         AddAlpha(new BrainSentimentAlphaModel());
-        
         SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
-        
         AddRiskManagement(new NullRiskManagementModel());
-        
         SetExecution(new ImmediateExecutionModel());
     }
 }
-    
-    
+
+
 public class BrainSentimentAlphaModel : AlphaModel
 {
-    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+    private readonly List&lt;Security&gt; _securities = [];
 
     public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
     {
         var insights = new List&lt;Insight&gt;();
-        
-        foreach (var entry in _symbolDataBySymbol)
+        foreach (var (datasetSymbol, dataPoint) in slice.Get&lt;BrainSentimentIndicator30Day&gt;())
         {
-            var symbol = entry.Key;
-            var symbolData = entry.Value;
-
-            // Update trade direction based on updated data
-            if (slice.ContainsKey(symbolData.datasetSymbol)   &amp;&amp; slice[symbolData.datasetSymbol] != null)
+            var security = algorithm.Securities[datasetSymbol.Underlying];
+            var targetDirection = InsightDirection.Flat;
+            var latestSentimentValue = security.Get&lt;decimal?&gt;("LatestSentimentValue");
+            if (latestSentimentValue.HasValue &amp;&amp; dataPoint.Sentiment &gt; latestSentimentValue.Value)
             {
-                var sentiment = slice[symbolData.datasetSymbol].Sentiment;
-                symbolData.Update(sentiment);
+                targetDirection = InsightDirection.Up;
             }
-            
-            // Ensure we have security data in the current slice to avoid stale fill
-            if (!(slice.ContainsKey(symbol)  &amp;&amp; slice[symbol] != null))
-            {
-                continue;
-            }
-
+            security.Set("LatestSentimentValue", dataPoint.Sentiment);
             // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
-            if (symbolData.targetDirection == InsightDirection.Up  &amp;&amp; !algorithm.Portfolio[symbol].Invested)
+            if (security.Price != 0 &amp;&amp; targetDirection == InsightDirection.Up &amp;&amp; !security.Holdings.Invested)
             {
-                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(100), symbolData.targetDirection));
+                insights.Add(Insight.Price(security.Symbol, TimeSpan.FromDays(100), targetDirection));
             }
         }
-        
         return insights;
     }
 
@@ -283,66 +226,33 @@ public class BrainSentimentAlphaModel : AlphaModel
     {
         foreach (var security in changes.AddedSecurities)
         {
-            var symbol = security.Symbol;
-            _symbolDataBySymbol.Add(symbol, new SymbolData(algorithm, symbol));
+            // Subscribe to custom data and store dataset symbol
+            var dataset = algorithm.AddData&lt;BrainSentimentIndicator30Day&gt;(security.Symbol, Resolution.Daily);
+            security.Set("BrainSentimentData", dataset.Symbol);
+            security.Set("LatestSentimentValue", null);
+            // Historical data
+            var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(dataset.Symbol, 100, Resolution.Daily).ToList();
+            if (history.Count() != 0)
+            {
+                // Warm up historical sentiment values, cache for comparing last sentiment score to trade
+                foreach (var sentiment in history.Select(dataPoint =&gt; dataPoint.Sentiment))
+                {
+                    security.Set("LatestSentimentValue", sentiment);
+                }
+            }
+            _securities.Add(security);
         }
 
         foreach (var security in changes.RemovedSecurities)
         {
-            var symbol = security.Symbol;
-            if (_symbolDataBySymbol.ContainsKey(symbol))
+            // Unsubscribe from the Brain Sentiment feed
+            algorithm.RemoveSecurity(security.Get&lt;Symbol&gt;("BrainSentimentData"));
+            // Remove from tracking
+            if (_securities.Contains(security))
             {
-                _symbolDataBySymbol[symbol].dispose();
-                _symbolDataBySymbol.Remove(symbol);
+                _securities.Remove(security);
             }
         }
-    }
-}
-
-
-public class SymbolData
-{
-    public Symbol datasetSymbol;
-    public InsightDirection targetDirection = InsightDirection.Flat;
-    private QCAlgorithm _algorithm;
-    private decimal? _latestSentimentValue = null;
-
-    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
-    {
-        _algorithm = algorithm;
-        
-        // Requesting the processed longer term (30-day) sentiment score data for sentiment trading
-        datasetSymbol = algorithm.AddData&lt;BrainSentimentIndicator30Day&gt;(symbol).Symbol;
-        
-        // Historical data
-        var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(datasetSymbol, 100, Resolution.Daily);
-        if (history.Count() == 0)
-        {
-            return;
-        }
-        
-        // Warm up historical sentiment values, cache for comparing last sentiment score to trade, making it immediately tradable signal
-        var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
-        foreach (var sentiment in previousSentimentValues)
-        {
-            Update(sentiment);
-        }
-    }
-    
-    public void dispose()
-    {
-        // Unsubscribe from the Brain Sentiment feed for this security to release computational resources
-        _algorithm.RemoveSecurity(datasetSymbol);
-    }
-    
-    public void Update(decimal sentiment)
-    {
-        // Comparing the last sentiment score and decide to buy if the sentiment increases to ride the popularity
-        if (_latestSentimentValue != null)
-        {
-            targetDirection = sentiment &gt; _latestSentimentValue ? InsightDirection.Up : InsightDirection.Flat;
-        }
-        _latestSentimentValue = sentiment;
     }
 }</pre>
 </div>

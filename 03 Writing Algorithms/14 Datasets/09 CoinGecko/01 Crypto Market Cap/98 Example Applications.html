@@ -18,74 +18,73 @@ class CoinGeckoAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
+        # Request BTCUSD crypto data for trading.
+        self._crypto = self.add_crypto("BTCUSD")
+        # Request CoinGecko market cap data of BTC for trade signal generation.
+        self._custom_data_symbol = self.add_data(CoinGecko, "BTC").symbol
+        # Save the last two market cap values for capital flow analysis.
+        self._window = RollingWindow(2)
 
-        # Request BTCUSD crypto data for trading
-        self.crypto_symbol = self.add_crypto("BTCUSD").symbol
-        # Request CoinGecko Market Cap data of BTC for trade signal generation
-        self.custom_data_symbol = self.add_data(CoinGecko, "BTC").symbol
-        # Use RollingWindow to save the last 2 market cap data for capital flow analysis
-        self.window = RollingWindow(2)
+    def on_data(self, data: Slice) -&gt; None:
+        # Trade based on updated market cap data.
+        market_cap_data = data.get(CoinGecko)
+        if not market_cap_data or self._custom_data_symbol not in market_cap_data:
+            return
+        # Update the window only when fresh CoinGecko data arrives.
+        self._window.add(market_cap_data[self._custom_data_symbol])
+        if not self._window.is_ready:
+            return
+        # Buy BTCUSD when BTC market cap is increasing and capital is flowing in.
+        if self._window[0].market_cap &gt; self._window[1].market_cap:
+            self.set_holdings(self._crypto, 1)
+        # Sell when capital is flowing out of BTC.
+        else:
+            self.set_holdings(self._crypto, -0.5)
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Trade based on updated market cap data
-        data = slice.get(CoinGecko)
-        if data and self.custom_data_symbol in data:
-            # Update RollingWindow for updated comparison
-            self.window.add(data[self.custom_data_symbol])
-            if not self.window.is_ready:
-                return
-
-            # Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
-            if self.window[0].market_cap &gt; self.window[1].market_cap:
-                self.set_holdings(self.crypto_symbol, 1)
-            # Sell otherwise, since the capital is flowing out and the demand of BTC lowered
-            else:
-                self.set_holdings(self.crypto_symbol, -0.5)
-
-    def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
-        if orderEvent.status == OrderStatus.FILLED:
-            self.debug(f'Purchased Crypto: {orderEvent.symbol}')</pre>
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        if order_event.status == OrderStatus.FILLED:
+            self.debug(f"Purchased Crypto: {order_event.symbol}")</pre>
 <pre class="csharp">public class CoinGeckoAlgorithm : QCAlgorithm
 {
-    private Symbol _cryptoSymbol, _customDataSymbol;
+    private Crypto _crypto;
+    private Symbol _customDataSymbol;
     private RollingWindow&lt;CoinGecko&gt; _window;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-
-        // Request BTCUSD crypto data for trading
-        _cryptoSymbol = AddCrypto("BTCUSD").Symbol;
-        // Request CoinGecko Market Cap data of BTC for trade signal generation
+        // Request BTCUSD crypto data for trading.
+        _crypto = AddCrypto("BTCUSD");
+        // Request CoinGecko market cap data of BTC for trade signal generation.
         _customDataSymbol = AddData&lt;CoinGecko&gt;("BTC").Symbol;
-        // Use RollingWindow to save the last 2 market cap data for capital flow analysis
+        // Save the last two market cap values for capital flow analysis.
         _window = new RollingWindow&lt;CoinGecko&gt;(2);
     }
 
-    public override void OnData(Slice slice)
+    public override void OnData(Slice data)
     {
-        // Trade based on updated market cap data
-        var data = slice.Get&lt;CoinGecko&gt;();
-        if (!data.IsNullOrEmpty() &amp;&amp; data.ContainsKey(_customDataSymbol))
+        // Trade based on updated market cap data.
+        var marketCapData = data.Get&lt;CoinGecko&gt;();
+        if (marketCapData.IsNullOrEmpty() || !marketCapData.ContainsKey(_customDataSymbol))
         {
-            // Update RollingWindow for updated comparison
-            _window.Add(data[_customDataSymbol]);
-            if (!_window.IsReady)
-            {
-                return;
-            }
-
-            // Buy BTCUSD if the market cap of BTC is increasing, which suggests the capital flow towards BTC market and drive up the demand
-            if (_window[0].MarketCap &gt; _window[1].MarketCap)
-            {
-                SetHoldings(_cryptoSymbol, 1);
-            }
-            // Sell otherwise, since the capital is flowing out and the demand of BTC lowered
-            else
-            {
-                SetHoldings(_cryptoSymbol, -0.5m);
-            }
+            return;
+        }
+        // Update the window only when fresh CoinGecko data arrives.
+        _window.Add(marketCapData[_customDataSymbol]);
+        if (!_window.IsReady)
+        {
+            return;
+        }
+        // Buy BTCUSD when BTC market cap is increasing and capital is flowing in.
+        if (_window[0].MarketCap &gt; _window[1].MarketCap)
+        {
+            SetHoldings(_crypto.Symbol, 1);
+        }
+        // Sell when capital is flowing out of BTC.
+        else
+        {
+            SetHoldings(_crypto.Symbol, -0.5m);
         }
     }
 

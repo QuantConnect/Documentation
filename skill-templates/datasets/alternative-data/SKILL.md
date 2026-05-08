@@ -69,7 +69,6 @@ public override void OnData(Slice slice)
 | `SECReport8K` | US SEC Filings | py`report`cs`Report` |
 | `USTreasuryYieldCurveRate` | US Treasury Yield Curve | py`one_month`cs`OneMonth`, py`two_month`cs`TwoMonth`, py`three_month`cs`ThreeMonth`, py`six_month`cs`SixMonth`, py`one_year`cs`OneYear`, py`two_year`cs`TwoYear`, py`three_year`cs`ThreeYear`, py`five_year`cs`FiveYear`, py`seven_year`cs`SevenYear`, py`ten_year`cs`TenYear`, py`twenty_year`cs`TwentyYear`, py`thirty_year`cs`ThirtyYear` |
 | `VIXCentralContango` | VIX Central Contango | py`front_month`cs`FrontMonth`, py`f_1`cs`F1`, py`f_2`cs`F2`, py`f_3`cs`F3`, py`f_4`cs`F4`, py`f_5`cs`F5`, py`f_6`cs`F6`, py`f_7`cs`F7`, py`f_8`cs`F8`, py`f_9`cs`F9`, py`f_10`cs`F10`, py`f_11`cs`F11`, py`f_12`cs`F12`, py`contango_f_2_minus_f_1`cs`Contango_F2_Minus_F1`, py`contango_f_7_minus_f_4`cs`Contango_F7_Minus_F4`, py`contango_f_7_minus_f_4_div_3`cs`Contango_F7_Minus_F4_Div_3`, py`period`cs`Period` |
-| `QuiverWallStreetBets` | WallStreetBets | py`date`cs`Date`, py`mentions`cs`Mentions`, py`rank`cs`Rank`, py`sentiment`cs`Sentiment` |
 
 ## List Type
 
