@@ -12,7 +12,7 @@ class BrainCompanyFilingLanguageMetricsChainedUniverseAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
-        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.resolution = Resolution.MINUTE
         # First universe: top 100 US Equities by dollar volume; emits Universe.UNCHANGED.
         self.add_universe(self._fundamental_filter)
         # Second universe: positive sentiment in latest SEC filings, intersected with the fundamental list.
