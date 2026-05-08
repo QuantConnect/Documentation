@@ -13,7 +13,7 @@ class BrainCompanyFilingLanguageMetricsUniverseAlgorithm(QCAlgorithm):
         self.universe_settings.resolution = Resolution.MINUTE
         # Universe of US Equities with positive sentiment in their latest SEC filings.
         self._universe = self.add_universe(BrainCompanyFilingLanguageMetricsUniverseAll, self._select_assets)
-        # Rebalance shortly after the open so today's universe is locked in.
+        # Rebalance before market open to trade today's universe.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),
