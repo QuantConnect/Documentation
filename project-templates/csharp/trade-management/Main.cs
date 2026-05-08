@@ -75,15 +75,15 @@ public class OneCancelOtherExampleAlgorithm : QCAlgorithm
     }
 
     public override void OnData(Slice slice)
-    { 
-        // If we have open stop loss and take profit orders, we won't place new orders
+    {
+        // If we have open stop loss and take profit orders, we won't place new orders.
         if (_spy.hasOCO || !slice.Bars.TryGetValue(_spy, out TradeBar bar))
             return;
 
-        // If the price is above the EMA, we will buy 75% of the portfolio value
-        // and place the OCO orders to sell it.
-        // Otherwise, we will short 75% of the portfolio value
-        // and place OCO orders to rebuy.
+        // If the price is above the EMA, we will buy 75% of the portfolio value.
+        // And place the OCO orders to sell it.
+        // Otherwise, we will short 75% of the portfolio value.
+        // And place OCO orders to rebuy.
         var ema = _spy.Ema;
         var price = _spy.Price;
         var weight = ema > price ? .75m : -.75m;
@@ -112,7 +112,7 @@ public class OneCancelOtherExampleAlgorithm : QCAlgorithm
                     equity.stopLoss.Cancel();
                     equity.hasOCO = false;
                     break;
-            }            
+            }
         }
     }
 }

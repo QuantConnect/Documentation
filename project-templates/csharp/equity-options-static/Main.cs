@@ -65,7 +65,7 @@ using System.Collections.Concurrent;
 public class EquityOptionExampleAlgorithm : QCAlgorithm
 {
     private Equity _spy;
-    
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
@@ -78,20 +78,20 @@ public class EquityOptionExampleAlgorithm : QCAlgorithm
 
         Schedule.On(DateRules.Every(DayOfWeek.Monday), TimeRules.AfterMarketOpen(_spy, 1), BuyCoveredCall);
     }
-    
+
     /// <summary>
     /// Buy a Covered Call: Buy the underlying and sell the ATM call.
     /// </summary>
     private void BuyCoveredCall()
     {
         var nextFriday = Time.AddDays(4).Date;
-        
+
         var atmCall = OptionChain(_spy)
             .Where(x => x.Right == OptionRight.Call && x.Expiry.Date == nextFriday)
             .OrderBy(x =>  Math.Abs(_spy.Price - x.Strike))
             .FirstOrDefault();
 
-        // If we cannot find a contract expiring on Friday, it is likely a holiday
+        // If we cannot find a contract expiring on Friday, it is likely a holiday.
         // For simplicity, we will not trade and close the underlying position, if any.
         if (atmCall == null)
         {
@@ -101,14 +101,14 @@ public class EquityOptionExampleAlgorithm : QCAlgorithm
 
         var contract = AddOptionContract(atmCall);
         var contractMultiplier = contract.ContractMultiplier;
-        
-        // We will invest 100% of the portfolio value observing the contract multiplier
-        // For example, if 100% of the portfolio value is 345 shares of SPY, we will invest 300
+
+        // We will invest 100% of the portfolio value observing the contract multiplier.
+        // For example, if 100% of the portfolio value is 345 shares of SPY, we will invest 300.
         // Then, we sell 3 contracts of ATM call. If we are exercised, the position is closed.
         var equityOrderQuantity = Math.Floor(CalculateOrderQuantity(_spy, 1d)  / contractMultiplier) * contractMultiplier;
-        // If we are invested in the underlying, the hedge takes into account the final quantity
+        // If we are invested in the underlying, the hedge takes into account the final quantity.
         var atmCallOrderQuantity = -(_spy.Holdings.Quantity + equityOrderQuantity) / contractMultiplier;
-        
+
         if (equityOrderQuantity != 0)
         {
             MarketOrder(_spy, equityOrderQuantity);

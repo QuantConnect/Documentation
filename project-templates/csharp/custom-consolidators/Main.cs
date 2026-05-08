@@ -74,8 +74,8 @@ public class CalendarConsolidatorExampleAlgorithm : QCAlgorithm
         _pair.Ema = new ExponentialMovingAverage(10);
         // Create a QuoteBar consolidator with a custom consolidation period.
         var consolidator = new QuoteBarConsolidator(DailyForexConsolidationPeriod);
-        // You can also create a consolidator with a period of one day and start time of 17
-        // var consolidator = new QuoteBarConsolidator(TimeSpan.FromDays(1), TimeSpan.FromHours(17));
+        // You can also create a consolidator with a period of one day and start time of 17.
+        // Var consolidator = new QuoteBarConsolidator(TimeSpan.FromDays(1), TimeSpan.FromHours(17));.
         // Attach a consolidation handler that will receive the consolidated bars.
         consolidator.DataConsolidated += ConsolidationHandler;
         // Subscribe the consolidator for automatic updates with the prices of the pair.

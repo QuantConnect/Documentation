@@ -78,10 +78,10 @@ public class OptionChainFullExample : QCAlgorithm
         Settings.AutomaticIndicatorWarmUp = true;
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
 
-        // Warm-up the option contracts as soon as it is added to the algorithm
+        // Warm-up the option contracts as soon as it is added to the algorithm.
         Settings.SeedInitialPrices = true;
 
-        // The EMA/price cross will determine we trade ATM contracts 
+        // The EMA/price cross will determine we trade ATM contracts.
         _index = AddIndex("RUT");
         EMA(_index, 60).Updated += TradeTargetDeltaContract;
 
@@ -91,7 +91,7 @@ public class OptionChainFullExample : QCAlgorithm
 
     public void TradeTargetDeltaContract(object sender, IndicatorDataPoint current)
     {
-        // Pace trades every 10 minutes
+        // Pace trades every 10 minutes.
         var lastTrateTime = _lastTicket?.Time ?? DateTime.MinValue;
         if ((UtcTime-lastTrateTime).TotalMinutes < 10) return;
 
@@ -99,7 +99,7 @@ public class OptionChainFullExample : QCAlgorithm
         if (!ema.IsReady) return;
 
         var spot = _index.Price;
-        
+
         if (spot > current && spot > ema[-1])
         {
             var atmCall = GetTargetDeltaContract(OptionRight.Call, spot);
@@ -125,7 +125,7 @@ public class OptionChainFullExample : QCAlgorithm
         var chain = OptionChain(_optionChainSymbol);
         var expiry = chain.Min(x => x.Expiry);
 
-        // We will select the 10 contracts nearest to the money and then select the nearest contract with a given delta
+        // We will select the 10 contracts nearest to the money and then select the nearest contract with a given delta.
         var targetDeltaContract = chain
             .Where(x => x.Expiry == expiry && x.Right == right)
             .OrderBy(x => Math.Abs(spot - x.Strike))
@@ -144,7 +144,7 @@ public class OptionChainFullExample : QCAlgorithm
         {
             return null;
         }
-        
+
         return AddOptionContract(targetDeltaContract.Symbol);
     }
 }

@@ -78,7 +78,7 @@ public class CustomDataTradeProviderAlgorithm : QCAlgorithm
         SetStartDate(2020, 1, 1);
         SetEndDate(2024, 12, 31);
 
-        // Save the data to the object store
+        // Save the data to the object store.
         if (!ObjectStore.ContainsKey("selected_trades.csv"))
             ObjectStore.Save("selected_trades.csv", Content);
 
@@ -122,14 +122,14 @@ public class SelectedTrades : BaseData
         {
             var ticker = data[1];
             var time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
-            // Create the SecurityIdentifier with the point-in-time ticker and the current date
-            // In this example, we trade META in 2020 when its ticker was FB
-            // Then, we will see it when it is META
+            // Create the SecurityIdentifier with the point-in-time ticker and the current date.
+            // In this example, we trade META in 2020 when its ticker was FB.
+            // Then, we will see it when it is META.
             var securityID = SecurityIdentifier.GenerateEquity(ticker, Market.USA, mappingResolveDate: time);
-            
+
             if (securityID.Date.Year < 1998)
             {
-                // Ticker not found in QuantConnect database on this date
+                // Ticker not found in QuantConnect database on this date.
                 return null;
             }
 

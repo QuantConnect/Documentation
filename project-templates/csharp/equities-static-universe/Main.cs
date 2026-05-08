@@ -68,6 +68,7 @@ public class EquitiesStaticTemplateAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        Settings.SeedInitialPrices = true;
         Settings.AutomaticIndicatorWarmUp = true;
         var tickers = new string[] {"SPY", "QQQ", "IWM"};
         foreach (var ticker in tickers)

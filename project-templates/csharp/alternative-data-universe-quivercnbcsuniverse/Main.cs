@@ -15,6 +15,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2024, 9, 1);
             SetEndDate(2024, 12, 31);
             SetCash(100000);
+            Settings.SeedInitialPrices = true;
 
             // Trade daily on CNBC opinion updates.
             UniverseSettings.Resolution = Resolution.Daily;
@@ -45,7 +46,7 @@ namespace QuantConnect.Algorithm.CSharp
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
 
-            SetHoldings(targets, liquidateExistingHoldings: true);
+            SetHoldings(targets, true);
         }
     }
 }

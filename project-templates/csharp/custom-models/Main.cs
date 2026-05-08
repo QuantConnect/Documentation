@@ -67,18 +67,19 @@ public class CustomModelsAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 12);
         SetEndDate(2024, 10, 1);
         SetCash(1000000);
+        Settings.SeedInitialPrices = true;
 
-        // The brokerage model sets the reality models that reflect the brokerage behavior
+        // The brokerage model sets the reality models that reflect the brokerage behavior.
         SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
-        
-        // Override some of the models
-        AddSecurityInitializer(security => 
+
+        // Override some of the models.
+        AddSecurityInitializer(security =>
         {
             security.SetFeeModel(new CustomFeeModel(this));
             security.SetFillModel(new CustomFillModel(this));
             security.SetSlippageModel(new CustomSlippageModel(this));
-            
-            // We can set different models for different asset classes 
+
+            // We can set different models for different asset classes.
             if (security.Type.IsOption())
             {
                 security.SetBuyingPowerModel(BuyingPowerModel.Null);
@@ -89,7 +90,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
             }
         });
 
-        // Request SPY data to trade after we set the model and security initializer
+        // Request SPY data to trade after we set the model and security initializer.
         AddEquity("SPY");
     }
 
@@ -114,7 +115,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
 
         public override OrderEvent MarketFill(Security asset, MarketOrder order)
         {
-            // this model randomly fills market orders
+            // This model randomly fills market orders.
 
             decimal absoluteRemaining;
             if (!_absoluteRemainingByOrderId.TryGetValue(order.Id, out absoluteRemaining))
@@ -156,7 +157,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
 
         public override OrderFee GetOrderFee(OrderFeeParameters parameters)
         {
-            // custom fee math
+            // Custom fee math.
             var fee = Math.Max(
                 1m,
                 parameters.Security.Price*parameters.Order.AbsoluteQuantity*0.00001m);
@@ -177,7 +178,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
 
         public decimal GetSlippageApproximation(Security asset, Order order)
         {
-            // custom slippage math
+            // Custom slippage math.
             var slippage = asset.Price*0.0001m*(decimal) Math.Log10(2*(double) order.AbsoluteQuantity);
 
             _algorithm.Log($"CustomSlippageModel: {slippage}");
@@ -197,7 +198,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
         public override HasSufficientBuyingPowerForOrderResult HasSufficientBuyingPowerForOrder(
             HasSufficientBuyingPowerForOrderParameters parameters)
         {
-            // custom behavior: this model will assume that there is always enough buying power
+            // Custom behavior: this model will assume that there is always enough buying power.
             var hasSufficientBuyingPowerForOrderResult = new HasSufficientBuyingPowerForOrderResult(true);
             _algorithm.Log($"CustomBuyingPowerModel: {hasSufficientBuyingPowerForOrderResult.IsSufficient}");
 
@@ -206,7 +207,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
     }
 
     /// <summary>
-    /// The simple fill model shows how to implement a simpler version of 
+    /// The simple fill model shows how to implement a simpler version of
     /// the most popular order fills: Market, Stop Market and Limit
     /// </summary>
     public class SimpleCustomFillModel : FillModel
@@ -229,8 +230,8 @@ public class CustomModelsAlgorithm : QCAlgorithm
         {
             var tradeBar = asset.Cache.GetData<TradeBar>();
             if (tradeBar != null) return tradeBar;
-            
-            // Tick-resolution data doesn't have TradeBar, use the asset price
+
+            // Tick-resolution data doesn't have TradeBar, use the asset price.
             var price = asset.Price;
             return new TradeBar(asset.LocalTime, asset.Symbol, price, price, price, price, 0);
         }
@@ -254,7 +255,7 @@ public class CustomModelsAlgorithm : QCAlgorithm
 
             var stopPrice = order.StopPrice;
             var tradeBar = GetTradeBar(asset, order.Direction);
-            
+
             return order.Direction switch
             {
                 OrderDirection.Buy => tradeBar.Low < stopPrice

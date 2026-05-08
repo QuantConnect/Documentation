@@ -14,6 +14,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2024, 9, 1);
             SetEndDate(2024, 12, 31);
             SetCash(100000);
+            Settings.SeedInitialPrices = true;
 
             UniverseSettings.Resolution = Resolution.Daily;
             // Universe of large-cap US Equities announcing meaningful buyback intentions.
@@ -41,7 +42,7 @@ namespace QuantConnect.Algorithm.CSharp
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
 
-            SetHoldings(targets, liquidateExistingHoldings: true);
+            SetHoldings(targets, true);
         }
     }
 }

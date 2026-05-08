@@ -75,7 +75,7 @@ public class EquityOptionAlgorithm : QCAlgorithm
         // It provides better accuracy in filtering, and subscribe only to the needed contracts to save computation resources.
         _option.SetFilter(u => u.Straddle(30));
     }
-    
+
     public override void OnData(Slice slice)
     {
         // Only wants the option chain of the selected symbol.
@@ -84,7 +84,7 @@ public class EquityOptionAlgorithm : QCAlgorithm
             // There should only be 1 expiry and 1 strike from the 2 contracts returned, getting from either contract is fine.
             var expiry = chain.First().Expiry;
             var strike = chain.First().Strike;
-    
+
             // Forms a long straddle option strategy using abstraction method ensure accuracy.
             var longStraddle = OptionStrategies.Straddle(_option, strike, expiry);
             Buy(longStraddle, 1);

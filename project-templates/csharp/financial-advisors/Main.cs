@@ -69,10 +69,10 @@ public class FinancialAdvisorAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 12);
         SetEndDate(2024, 10, 1);
 
-        // Financial Advisor is a live trading feature of the Interactive Brokers integration
+        // Financial Advisor is a live trading feature of the Interactive Brokers integration.
         SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
 
-        // Set the default order properties so all orders apply these settings
+        // Set the default order properties so all orders apply these settings.
         DefaultOrderProperties = new InteractiveBrokersOrderProperties()
         {
             FaGroup = "TestGroupEQ",
@@ -99,7 +99,7 @@ public class FinancialAdvisorAlgorithm : QCAlgorithm
         message = $"{Time:yyyyMMdd}: {subject} > {message}";
         Log(message);
         // See https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/notifications
-        // for all notification methods
+        // For all notification methods.
         Notify.Sms("+16191234567", message);
     }
 

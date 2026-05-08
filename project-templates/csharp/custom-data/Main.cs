@@ -87,7 +87,7 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
     {
         public int Timestamp = 0;
         public decimal Open = 0, High = 0, Low = 0, Close = 0, Bid = 0, Ask = 0, WeightedPrice = 0, VolumeBTC = 0, VolumeUSD = 0;
-        
+
         public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
         {
             if (isLiveMode)
@@ -108,8 +108,8 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
             // In live trading, parse the JSON file.
             if (isLiveMode)
             {
-                //Example Line Format:
-                //{"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}
+                // Example Line Format:
+                // {"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}.
                 coin = JsonConvert.DeserializeObject<Bitstamp>(line);
                 coin.EndTime = DateTime.UtcNow.ConvertFromUtc(config.ExchangeTimeZone);
                 coin.Time = coin.EndTime.AddDays(-1);
@@ -118,9 +118,9 @@ public class CustomDataBitstampAlgorithm : QCAlgorithm
             }
 
             // In backtests, parse the CSV file.
-            //Example Line Format:
-            //Date      Open   High    Low     Close   Volume (BTC)    Volume (Currency)   Weighted Price
-            //2011-09-13 5.8    6.0     5.65    5.97    58.37138238,    346.0973893944      5.929230648356
+            // Example Line Format:
+            // Date      Open   High    Low     Close   Volume (BTC)    Volume (Currency)   Weighted Price.
+            // 2011-09-13 5.8    6.0     5.65    5.97    58.37138238,    346.0973893944      5.929230648356.
             if (!char.IsDigit(line[0]))
             {
                 return null;

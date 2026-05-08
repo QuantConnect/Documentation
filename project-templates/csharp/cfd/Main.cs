@@ -70,8 +70,8 @@ public class CfdExampleAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         // Seed the price of each asset with its last known price to avoid trading errors.
         Settings.SeedInitialPrices = true;
-        // Let's select CFD contracts that trade in different market 
-        // hours so the algorithm is always invested.        
+        // Let's select CFD contracts that trade in different market.
+        // Hours so the algorithm is always invested.
         foreach (var ticker in new[] { "DE30EUR", "SG30SGD", "US30USD" })
         {
             // Add the CFD.

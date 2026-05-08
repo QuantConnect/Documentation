@@ -92,8 +92,8 @@ public class ETFUniverseAlgorithm : QCAlgorithm
 
     private IEnumerable<Symbol> ETFConstituentsFilter(IEnumerable<ETFConstituentUniverse> constituents)
     {
-        // Select all QQQ constituents by high ATR value
-        _weightBySymbol.Clear();   
+        // Select all QQQ constituents by high ATR value.
+        _weightBySymbol.Clear();
         constituents.DoForEach(c => _weightBySymbol.Add(c.Symbol, c.Weight ?? 0));
         return _weightBySymbol.Keys;
     }
@@ -110,7 +110,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
             .OrderBy(security => security.Atr)
             .TakeLast(10)
             .Select(security => security.Symbol as Symbol);
-        // We will keep the ETF weights by scale it up to sum 1
+        // We will keep the ETF weights by scale it up to sum 1.
         var sumOfWeight = selected.Sum(x => _weightBySymbol[x]);
         if (sumOfWeight == 0m)
         {
@@ -118,7 +118,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
         }
         Plot("Universe", "Sum Of Weight (%)", sumOfWeight * 100m);
         var targets = selected.Select(x => new PortfolioTarget(x, _weightBySymbol[x] / sumOfWeight)).ToList();
-        // Remove securities that are not top ATR
+        // Remove securities that are not top ATR.
         SetHoldings(targets, true);
     }
 }

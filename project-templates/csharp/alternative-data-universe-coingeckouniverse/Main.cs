@@ -17,6 +17,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2024, 9, 1);
             SetEndDate(2024, 12, 31);
             SetCash(100000);
+            Settings.SeedInitialPrices = true;
             SetAccountCurrency("USD");
 
             // Trade the largest CoinGecko coins on Coinbase quoted in USD.
@@ -56,7 +57,7 @@ namespace QuantConnect.Algorithm.CSharp
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
 
-            SetHoldings(targets, liquidateExistingHoldings: true);
+            SetHoldings(targets, true);
         }
     }
 }

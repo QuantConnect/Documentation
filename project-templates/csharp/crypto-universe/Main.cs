@@ -71,7 +71,7 @@ public class LargeCapCryptoUniverseAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         Settings.SeedInitialPrices = true;
-        // Set the account currency to USDT
+        // Set the account currency to USDT.
         SetAccountCurrency("USDT");
         SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
 

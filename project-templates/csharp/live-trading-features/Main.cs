@@ -84,7 +84,7 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
         message = $"{Time:yyyyMMdd}: {subject} > {message}";
         Log(message);
         // See https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/notifications
-        // for all notification methods
+        // For all notification methods.
         Notify.Sms("+16191234567", message);
     }
 
@@ -148,7 +148,7 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
             NotifyAll($"OnCommand :: brokerage disconnected", $"Cannot place order for {data}");
             return false;
         }
-           
+
         // If we click the email link to confirm the trade, the algorithm will place the order.
         SetHoldings(data.Ticker, data.Size);
         return true;

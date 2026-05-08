@@ -81,20 +81,20 @@ public class ForexExampleAlgorithm : QCAlgorithm
             }
         }
     }
-    
+
     public override void OnData(Slice slice)
     {
         // Ensure we have quote data in the current slice.
         foreach(var (symbol, quoteBar) in slice.QuoteBars)
         {
-            // Bid-ask spread = Ask price - Bid price
+            // Bid-ask spread = Ask price - Bid price.
             var bidAskSpread = quoteBar.Ask.Close - quoteBar.Bid.Close;
             // Update the spread minimum indicator to calculate the lowest bid-ask spread over the last 12 hours.
             dynamic forex = Securities[symbol];
             forex.SpreadLow.Update(quoteBar.EndTime, bidAskSpread);
-        
-            // Trade if the current spread is the lowest bid-ask spread, 
-            // since it is the most efficient, liquid price with lowest slippage.
+
+            // Trade if the current spread is the lowest bid-ask spread,.
+            // Since it is the most efficient, liquid price with lowest slippage.
             if (!forex.Invested && bidAskSpread == forex.SpreadLow.Current.Value)
             {
                 MarketOrder(forex, 1000);

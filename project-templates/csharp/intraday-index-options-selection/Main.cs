@@ -75,13 +75,13 @@ public class OptionChainFullExample : QCAlgorithm
         SetCash(500000);
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
 
-        // Warm-up the option contracts as soon as it is added to the algorithm
+        // Warm-up the option contracts as soon as it is added to the algorithm.
         Settings.SeedInitialPrices = true;
 
         // Create the option chain symbol for the SPXW weekly index option.
         var index = AddIndex("SPX");
         _optionChainSymbol = QuantConnect.Symbol.CreateCanonicalOption(index, "SPXW", Market.USA, "?SPXW");
-        
+
         // Populate the updated option chain immediately to trade with.
         PopulateOptionChain();
 
@@ -99,9 +99,9 @@ public class OptionChainFullExample : QCAlgorithm
         var expiry = chain.Min(x => x.Expiry);
         _chain = [.. chain.Where(x => x.Expiry==expiry)];
     }
-    
+
     public void Filter()
-    {        
+    {
         if (_chain.IsNullOrEmpty())
             return;
         var underlying = Securities[_optionChainSymbol.Underlying];
@@ -120,10 +120,10 @@ public class OptionChainFullExample : QCAlgorithm
         {
             AddOptionContract(contract);
         }
-        // Since we are trading 0DTE, they will expire on end of day
-        // so we don't need to remove them explicitly
+        // Since we are trading 0DTE, they will expire on end of day.
+        // So we don't need to remove them explicitly.
     }
-    
+
     public override void OnData(Slice slice)
     {
         // Only trade on updated data.
@@ -138,8 +138,8 @@ public class OptionChainFullExample : QCAlgorithm
             .FirstOrDefault();
 
         // We will buy the ATM call if we don't have it.
-        // We are not selling the calls we have purchased previously
-        // So, we will buy a lot of contracts if underlying price moves a lot
+        // We are not selling the calls we have purchased previously.
+        // So, we will buy a lot of contracts if underlying price moves a lot.
         if (atmCall != null && !Portfolio[atmCall].Invested)
             MarketOrder(atmCall, 1);
     }

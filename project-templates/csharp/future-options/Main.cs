@@ -82,7 +82,7 @@ public class FutureOptionAlgorithm : QCAlgorithm
         // It simplifies from further filtering and reduce computation on redundant subscription.
         AddFutureOption(_underlying, (u) => u.CallSpread(5, 5, -5));
     }
-    
+
     public override void OnData(Slice slice)
     {
         if (Portfolio.Invested)
@@ -90,17 +90,17 @@ public class FutureOptionAlgorithm : QCAlgorithm
 
         // Create canonical symbol for the mapped future contract, since we need that to access the option chain.
         var symbol = QuantConnect.Symbol.CreateCanonicalOption(_underlying.Mapped);
-    
+
         // Get option chain data for the mapped future only.
         // It requires 2 contracts with different strikes to form a call spread, so we make sure at least 2 contracts are present.
         if (!slice.OptionChains.TryGetValue(symbol, out var chain) || chain.Count() < 2)
             return;
-    
+
         // Separate the contracts by strike, as we need to access their strike.
         var expiry = chain.Min(x => x.Expiry);
         var itmStrike = chain.Min(x => x.Strike);
         var otmStrike = chain.Max(x => x.Strike);
-    
+
         // Use abstraction method to order a bull call spread to avoid manual error.
         var optionStrategy = OptionStrategies.BullCallSpread(symbol, itmStrike, otmStrike, expiry);
         Buy(optionStrategy, 1);

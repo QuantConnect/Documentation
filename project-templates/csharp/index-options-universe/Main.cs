@@ -70,12 +70,13 @@ public class IndexOptionAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        Settings.SeedInitialPrices = true;
         // Subscribe to the option chain.
         _option = AddIndexOption("SPX", "SPXW");
         // Filter the option universe to only select 0DTE options.
         _option.SetFilter(u => u.Expiration(0, 0).Strikes(-1, 1));
         // Filter the option universe by Delta. The last SetFilter call prevails.
-        // _option.SetFilter(optionFilterUniverse => optionFilterUniverse.Delta(0.25m, 0.75m));
+        // _option.SetFilter(optionFilterUniverse => optionFilterUniverse.Delta(0.25m, 0.75m));.
     }
 
     public override void OnData(Slice slice)

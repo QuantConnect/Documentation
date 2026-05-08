@@ -62,7 +62,7 @@
 #endregion
 
 public class BrainMLRankingDataAlgorithm : QCAlgorithm
-{   
+{
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
@@ -70,11 +70,11 @@ public class BrainMLRankingDataAlgorithm : QCAlgorithm
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
         Settings.SeedInitialPrices = true;
-        // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
+        // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking.
         var tickers = new string[] {"AAPL", "TSLA", "MSFT", "F", "KO"};
         foreach (var ticker in tickers)
         {
-            // Requesting data to get 2 days estimated relative ranking
+            // Requesting data to get 2 days estimated relative ranking.
             var equity = AddEquity(ticker, Resolution.Daily);
             AddData<BrainStockRanking2Day>(equity);
         }
@@ -82,7 +82,7 @@ public class BrainMLRankingDataAlgorithm : QCAlgorithm
 
     public override void OnData(Slice slice)
     {
-        // Collect rankings for all symbols for ranking them
+        // Collect rankings for all symbols for ranking them.
         var points = slice.Get<BrainStockRanking2Day>();
         if (points == null)
         {
@@ -91,10 +91,10 @@ public class BrainMLRankingDataAlgorithm : QCAlgorithm
         var sumOfRanks = points.Values.Select(x => Math.Abs(x.Rank)).Sum() * 0.9m;
         if (sumOfRanks == 0) return;
 
-        // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing        
+        // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing.
         points.Values.DoForEach(x => Plot("Rank", x.Symbol.Underlying.Value, x.Rank));
 
-        // Place orders, the better the rank, the higher the estimated return and hence weight
+        // Place orders, the better the rank, the higher the estimated return and hence weight.
         var targets = points.Values.Select(x => new PortfolioTarget(x.Symbol.Underlying, x.Rank / sumOfRanks)).ToList();
         SetHoldings(targets);
     }

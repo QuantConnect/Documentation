@@ -64,15 +64,15 @@ using System.Collections.Concurrent;
 
 public class EmaCrossUniverseSelectionAlgorithm : QCAlgorithm
 {
-    // tolerance to prevent bouncing
+    // Tolerance to prevent bouncing.
     const decimal _tolerance = 0.01m;
     private const int _count = 10;
-    // use Buffer+Count to leave a little in cash
+    // Use Buffer+Count to leave a little in cash.
     private const decimal _targetPercent = 0.09m;
 
     private Universe _universe;
 
-    // holds our coarse fundamental indicators by symbol
+    // Holds our coarse fundamental indicators by symbol.
     private readonly ConcurrentDictionary<Symbol, SelectionData> _averages = [];
 
     /// <summary>
@@ -90,15 +90,15 @@ public class EmaCrossUniverseSelectionAlgorithm : QCAlgorithm
         _universe = AddUniverse(coarse =>
         {
             return (from cf in coarse
-                // grab th SelectionData instance for this symbol
+                // Grab th SelectionData instance for this symbol.
                 let avg = _averages.GetOrAdd(cf.Symbol, sym => new SelectionData())
-                // Update returns true when the indicators are ready, so don't accept until they are
+                // Update returns true when the indicators are ready, so don't accept until they are.
                 where avg.Update(cf.EndTime, cf.AdjustedPrice)
-                // and only pick symbols who have their market cap above 1Bi and 100 day ema over their 300 day ema
+                // And only pick symbols who have their market cap above 1Bi and 100 day ema over their 300 day ema.
                 where cf.MarketCap > 10000000000 && avg.Fast > avg.Slow * (1 + _tolerance)
-                // prefer symbols with a larger delta by percentage between the two averages
+                // Prefer symbols with a larger delta by percentage between the two averages.
                 orderby avg.ScaledDelta descending
-                // we only need to return the symbol and return 'Count' symbols
+                // We only need to return the symbol and return 'Count' symbols.
                 select cf.Symbol).Take(_count);
         });
 
@@ -111,13 +111,13 @@ public class EmaCrossUniverseSelectionAlgorithm : QCAlgorithm
     /// <param name="slice">Slice object keyed by symbol containing the stock data</param>
     public override void OnData(Slice slice)
     {
-        // we'll simply go long each security in the universe
+        // We'll simply go long each security in the universe.
         var targets = _universe.Selected.Where(x => Securities[x].HasData)
             .Select(x => new PortfolioTarget(x, _targetPercent)).ToList();
         SetHoldings(targets, true);
     }
 
-    // class used to improve readability of the coarse selection function
+    // Class used to improve readability of the coarse selection function.
     private class SelectionData
     {
         public readonly ExponentialMovingAverage Fast;
@@ -129,10 +129,10 @@ public class EmaCrossUniverseSelectionAlgorithm : QCAlgorithm
             Slow = new ExponentialMovingAverage(300);
         }
 
-        // computes an object score of how much large the fast is than the slow
+        // Computes an object score of how much large the fast is than the slow.
         public decimal ScaledDelta => (Fast - Slow)/((Fast + Slow)/2m);
 
-        // updates the EMA50 and EMA100 indicators, returning true when they're both ready
+        // Updates the EMA50 and EMA100 indicators, returning true when they're both ready.
         public bool Update(DateTime time, decimal value)
         {
             return Fast.Update(time, value) & Slow.Update(time, value);

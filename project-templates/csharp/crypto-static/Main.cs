@@ -68,7 +68,7 @@ public class CryptoExampleAlgorithm : QCAlgorithm
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        // Set the account current to USDT as we will trade USDT quoted coins
+        // Set the account current to USDT as we will trade USDT quoted coins.
         SetAccountCurrency("USDT", 100000);
         // Set the brokerage and account type to match your brokerage environment for accurate fee and margin behavior.
         SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash);
@@ -83,6 +83,6 @@ public class CryptoExampleAlgorithm : QCAlgorithm
     private void Rebalance()
     {
         var targets = Securities.Keys.Select(x => new PortfolioTarget(x, .3m)).ToList();
-        SetHoldings(targets, liquidateExistingHoldings: true);  
+        SetHoldings(targets, true);
     }
 }

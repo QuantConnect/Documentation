@@ -79,7 +79,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
     private IEnumerable<Symbol> ETFConstituentsFilter(IEnumerable<ETFConstituentUniverse> constituents)
     {
         var atrBySymbol = constituents.Select(
-            c => 
+            c =>
             {
                 var atr = new AverageTrueRange(14);
                 WarmUpIndicator(c.Symbol, atr, Resolution.Daily);
@@ -89,8 +89,8 @@ public class ETFUniverseAlgorithm : QCAlgorithm
             .Take(10)
             .ToDictionary(x => x.Symbol, x => x.ATR);
 
-        // Select all QQQ constituents by high ATR value
-        _weightBySymbol.Clear();   
+        // Select all QQQ constituents by high ATR value.
+        _weightBySymbol.Clear();
         constituents
             .Where(c=> atrBySymbol.ContainsKey(c.Symbol))
             .DoForEach(c => _weightBySymbol.Add(c.Symbol, c.Weight ?? 0));
@@ -100,7 +100,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
 
     private void PlaceOrders()
     {
-        // We will keep the ETF weights by scale it up to sum 1
+        // We will keep the ETF weights by scale it up to sum 1.
         var sumOfWeight = _universe.Selected.Sum(x => _weightBySymbol[x]);
         Plot("Universe", "Sum Of Weight (%)", sumOfWeight * 100m);
         var targets = _universe.Selected.Select(x => new PortfolioTarget(x, _weightBySymbol[x] / sumOfWeight)).ToList();

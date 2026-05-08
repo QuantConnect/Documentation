@@ -97,7 +97,7 @@ public class ChainedUniverseAlgorithm : QCAlgorithm
 
     private void PlaceOrders()
     {
-        // We will keep the ETF weights by scale it up to sum 1
+        // We will keep the ETF weights by scale it up to sum 1.
         var sumOfWeight = _universe.Selected.Sum(x => _weightBySymbol[x]);
         Plot("Universe", "Sum Of Weight (%)", sumOfWeight * 100m);
         var targets = _universe.Selected.Select(x => new PortfolioTarget(x, _weightBySymbol[x] / sumOfWeight)).ToList();

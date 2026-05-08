@@ -69,9 +69,9 @@ using Accord.MachineLearning.VectorMachines.Learning;
 /// </summary>
 public class AccordVectorMachinesAlgorithm : QCAlgorithm
 {
-    // Define the size of the data used to train the model
-    // It will use _lookback sets with _inputSize members
-    // Those members are rate of return
+    // Define the size of the data used to train the model.
+    // It will use _lookback sets with _inputSize members.
+    // Those members are rate of return.
     private const int _lookback = 30;
     private const int _inputSize = 5;
     private Equity _equity;
@@ -82,6 +82,7 @@ public class AccordVectorMachinesAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        Settings.SeedInitialPrices = true;
 
         Accord.Math.Random.Generator.Seed = 0;
 
@@ -104,11 +105,11 @@ public class AccordVectorMachinesAlgorithm : QCAlgorithm
             return;
         }
 
-        // Convert the rolling window of rate of change into the Learn method
+        // Convert the rolling window of rate of change into the Learn method.
         var targets = new double[_lookback];
         var inputs = new double[_lookback][];
 
-        // Use the sign of the returns to predict the direction
+        // Use the sign of the returns to predict the direction.
         for (var i = 0; i < _lookback; i++)
         {
             var returns = new double[_inputSize];
@@ -121,13 +122,13 @@ public class AccordVectorMachinesAlgorithm : QCAlgorithm
             inputs[i] = returns;
         }
 
-        // Train SupportVectorMachine using SetHoldings("SPY", percentage);
+        // Train SupportVectorMachine using SetHoldings("SPY", percentage);.
         var teacher = new LinearCoordinateDescent();
         teacher.Learn(inputs, targets);
 
         var svm = teacher.Model;
 
-        // Compute the value for the last rate of change
+        // Compute the value for the last rate of change.
         var value = svm.Score(new double[] { Math.Sign(_roc.Window[0]) });
         if (value.IsNaNOrZero()) return;
 

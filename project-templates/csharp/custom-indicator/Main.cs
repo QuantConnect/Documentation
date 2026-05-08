@@ -113,33 +113,33 @@ public class CustomIndicatorsAlgorithm : QCAlgorithm
         private RollingWindow<decimal> _positiveMoneyFlow;
         public override bool IsReady => _positiveMoneyFlow.IsReady;
         public int WarmUpPeriod => _positiveMoneyFlow.Size;
-            
+
         public CustomMoneyFlowIndex(int period) : base("CustomMFI")
         {
             _negativeMoneyFlow = new(period);
             _positiveMoneyFlow = new(period);
             _previousTypicalPrice = 0m;
         }
-            
+
         protected override decimal ComputeNextValue(TradeBar input)
         {
             // Estimate the money flow by averaging the price multiplied by volume.
             var typicalPrice = (input.High + input.Low + input.Close) / 3;
             var moneyFlow = typicalPrice * input.Volume;
-            
+
             // We need to avoid double rounding errors.
             _negativeMoneyFlow.Add(typicalPrice < _previousTypicalPrice ? moneyFlow: 0);
             _positiveMoneyFlow.Add(typicalPrice > _previousTypicalPrice ? moneyFlow: 0);
             _previousTypicalPrice = moneyFlow;
-            
+
             // Add the period money flow to calculate the aggregated money flow.
             var positiveMoneyFlowSum = _positiveMoneyFlow.Sum();
             var totalMoneyFlow = positiveMoneyFlowSum + _negativeMoneyFlow.Sum();
-            
+
             // Set the value to be the positive money flow ratio.
             return totalMoneyFlow == 0 ? 100m : 100m * positiveMoneyFlowSum / totalMoneyFlow;
         }
-            
+
         public override void Reset()
         {
             _previousTypicalPrice = 0m;

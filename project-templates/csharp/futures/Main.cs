@@ -97,7 +97,7 @@ public class BasicFutureAlgorithm : QCAlgorithm
             var newSymbol = Symbol(changedEvent.NewSymbol);
             var quantity = Portfolio[oldSymbol].Quantity;
 
-            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
             var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol.Value} -> {newSymbol.Value}";
             Liquidate(symbol: oldSymbol, tag: tag);
             if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);

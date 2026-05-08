@@ -75,10 +75,10 @@ public class OptionChainFullExample : QCAlgorithm
         Settings.AutomaticIndicatorWarmUp = true;
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
 
-        // Warm-up the option contracts as soon as it is added to the algorithm
+        // Warm-up the option contracts as soon as it is added to the algorithm.
         Settings.SeedInitialPrices = true;
 
-        // The EMA/price cross will determine we trade ATM contracts 
+        // The EMA/price cross will determine we trade ATM contracts.
         var index = AddIndex("SPX");
         EMA(index.Symbol, 60).Updated += TradeAtTheMoneyContract;
 
@@ -87,7 +87,7 @@ public class OptionChainFullExample : QCAlgorithm
 
     public void TradeAtTheMoneyContract(object sender, IndicatorDataPoint current)
     {
-        // Pace trades every 10 minutes
+        // Pace trades every 10 minutes.
         var lastTrateTime = _lastTicket?.Time ?? DateTime.MinValue;
         if ((UtcTime-lastTrateTime).TotalMinutes < 10) return;
 
@@ -95,7 +95,7 @@ public class OptionChainFullExample : QCAlgorithm
         if (!ema.IsReady) return;
 
         var spot = Securities[current.Symbol].Price;
-        
+
         if (spot > current && spot > ema[-1])
         {
             var atmCall = GetAtTheMoneyContract(OptionRight.Call, spot);
@@ -129,7 +129,7 @@ public class OptionChainFullExample : QCAlgorithm
         {
             return null;
         }
-        
+
         return AddOptionContract(atm);
     }
 }

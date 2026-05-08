@@ -78,7 +78,7 @@ public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
         UniverseSettings.Resolution = Resolution.Daily;
         // Option trading requires raw price for strike price comparison.
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-        // Universe consists of equities with upcoming earnings events.
+        // Universe consists of Equities with upcoming earnings events.
         AddUniverse<EODHDUpcomingEarnings>((earnings) => {
             foreach(var i in Enumerable.Range(1,5).Reverse())
             {
@@ -99,7 +99,7 @@ public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        // Actions only based on the equity universe changes.
+        // Actions only based on the Equity universe changes.
         foreach (var security in changes.RemovedSecurities.Where(x=> x.Type == SecurityType.Equity))
         {
             // Liquidate any assigned position.
@@ -112,14 +112,14 @@ public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
             }
         }
 
-        // Actions only based on the equity universe changes.
+        // Actions only based on the Equity universe changes.
         foreach (var security in changes.AddedSecurities.Where(x=> x.Type == SecurityType.Equity))
         {
             // Select the option contracts to construct a straddle to trade the volatility.
             var (call, put) = SelectOptionContracts(security);
             if (call == null || put == null)
             {
-                continue;   
+                continue;
             }
             _optionsBySymbol[security] = (call, put);
             // Request the option contract data for trading.
@@ -132,7 +132,7 @@ public class UpcomingEarningsExampleAlgorithm : QCAlgorithm
                     Leg.Create(put, 1)
                 ],
                 1
-            );    
+            );
         }
     }
 
