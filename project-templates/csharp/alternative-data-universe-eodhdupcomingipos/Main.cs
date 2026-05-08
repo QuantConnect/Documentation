@@ -33,7 +33,7 @@ namespace QuantConnect.Algorithm.CSharp
                        select d.Symbol;
             });
 
-            // Rebalance shortly after the open so today's universe is locked in.
+            // Rebalance before market open to trade today's universe.
             Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
         }
 
