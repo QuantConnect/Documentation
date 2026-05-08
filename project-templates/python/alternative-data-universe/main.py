@@ -12,7 +12,7 @@ class UpcomingEarningsExampleAlgorithm(QCAlgorithm):
         # Seed the last price as price since we need to use the underlying price for option contract filtering when it join the universe.
         self.settings.seed_initial_prices = True
         # Trade on daily basis based on daily upcoming earnings signals.
-        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.resolution = Resolution.MINUTE
         # Option trading requires raw price for strike price comparison.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
         # Universe consists of Equities with upcoming earnings events.

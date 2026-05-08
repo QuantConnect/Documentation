@@ -15,7 +15,7 @@ class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         self.universe_settings.leverage = 2
-        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.resolution = Resolution.MINUTE
         def _filter(fundamentals: List[Fundamental]) -> List[Symbol]:
             selected = {}
             for f in fundamentals:

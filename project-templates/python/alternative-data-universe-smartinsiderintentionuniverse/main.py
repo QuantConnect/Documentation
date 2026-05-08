@@ -10,7 +10,7 @@ class SmartInsiderIntentionUniverseAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
-        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.resolution = Resolution.MINUTE
         # Universe of large-cap US Equities announcing meaningful buyback intentions.
         self._universe = self.add_universe(SmartInsiderIntentionUniverse, self._select_assets)
         # Rebalance shortly after the open so today's universe is locked in.

@@ -18,7 +18,7 @@ class CoinGeckoUniverseAlgorithm(QCAlgorithm):
             for x in self.symbol_properties_database.get_symbol_properties_list(self._market)
             if x.value.quote_currency == self.account_currency
         ]
-        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.resolution = Resolution.MINUTE
         # Universe of the top 10 CoinGecko coins by market cap that we can trade.
         self._universe = self.add_universe(CoinGeckoUniverse, "CoinGeckoUniverse", Resolution.DAILY, self._select_assets)
         # Rebalance daily on US trading days, after CoinGecko refreshes overnight.

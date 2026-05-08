@@ -11,7 +11,7 @@ class QuiverCNBCsUniverseAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         # Trade daily on CNBC opinion updates.
-        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.resolution = Resolution.MINUTE
         # Universe of US Equities flagged by 3+ positive CNBC opinions.
         self._universe = self.add_universe(QuiverCNBCsUniverse, self._select_assets)
         # Rebalance shortly after the open so today's universe is locked in.
