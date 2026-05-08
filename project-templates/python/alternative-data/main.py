@@ -15,7 +15,7 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
         tickers = ["AAPL", "TSLA", "MSFT", "F", "KO"]
         for ticker in tickers:
             # Requesting data to get 2 days estimated relative ranking.
-            equity = self.add_equity(ticker, Resolution.DAILY)
+            equity = self.add_equity(ticker)
             self.add_data(BrainStockRanking2Day, equity)
 
     def on_data(self, data: Slice) -> None:

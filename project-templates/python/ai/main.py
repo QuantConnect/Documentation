@@ -12,7 +12,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         # Request SPY data for model training, prediction and trading.
-        self._spy = self.add_equity("SPY", Resolution.DAILY)
+        self._spy = self.add_equity("SPY")
         # Hyperparameter to create the MLP model.
         num_factors = 5
         num_neurons_1 = 10
