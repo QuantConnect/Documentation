@@ -17,7 +17,7 @@ class QuiverGovernmentContractChainedUniverseAlgorithm(QCAlgorithm):
         self.add_universe(self._fundamental_filter)
         # Second universe: 3+ government contracts totalling over $50K, intersected with the fundamental list.
         self._universe = self.add_universe(QuiverGovernmentContractUniverse, self._select_assets)
-        # Rebalance shortly after the open so today's intersection is locked in.
+        # Rebalance before market open to trade today's intersection.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),

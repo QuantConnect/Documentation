@@ -17,7 +17,7 @@ class BrainCompanyFilingLanguageMetricsChainedUniverseAlgorithm(QCAlgorithm):
         self.add_universe(self._fundamental_filter)
         # Second universe: positive sentiment in latest SEC filings, intersected with the fundamental list.
         self._universe = self.add_universe(BrainCompanyFilingLanguageMetricsUniverseAll, self._select_assets)
-        # Rebalance shortly after the open so today's intersection is locked in.
+        # Rebalance before market open to trade today's intersection.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),
