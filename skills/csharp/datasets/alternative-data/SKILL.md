@@ -62,7 +62,6 @@ public override void OnData(Slice slice)
 | `SECReport8K` | US SEC Filings | `Report` |
 | `USTreasuryYieldCurveRate` | US Treasury Yield Curve | `OneMonth`, `TwoMonth`, `ThreeMonth`, `SixMonth`, `OneYear`, `TwoYear`, `ThreeYear`, `FiveYear`, `SevenYear`, `TenYear`, `TwentyYear`, `ThirtyYear` |
 | `VIXCentralContango` | VIX Central Contango | `FrontMonth`, `F1`, `F2`, `F3`, `F4`, `F5`, `F6`, `F7`, `F8`, `F9`, `F10`, `F11`, `F12`, `Contango_F2_Minus_F1`, `Contango_F7_Minus_F4`, `Contango_F7_Minus_F4_Div_3`, `Period` |
-| `QuiverWallStreetBets` | WallStreetBets | `Date`, `Mentions`, `Rank`, `Sentiment` |
 
 ## List Type
 

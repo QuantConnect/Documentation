@@ -18,6 +18,5 @@ description: Use when selecting a dynamic Equity universe from QuantConnect/LEAN
 - `QuiverInsiderTradingUniverse` — Insider Trading
 - `QuiverQuantCongressUniverse` — US Congress Trading
 - `QuiverGovernmentContractUniverse` — US Government Contracts
-- `QuiverWallStreetBetsUniverse` — WallStreetBets
 - `SmartInsiderIntentionUniverse` — Corporate Buybacks
 - `SmartInsiderTransactionUniverse` — Corporate Buybacks
