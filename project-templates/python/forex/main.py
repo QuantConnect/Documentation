@@ -14,7 +14,7 @@ class ForexExampleAlgorithm(QCAlgorithm):
             # Create a Minimum indicator to track the lowest bid-ask spread for the past 12 hours.
             forex.spread_low = Minimum(12*60)
             # Warm up the indicator so it's immediately ready to use.
-            for quote_bar in self.history[QuoteBar](forex, 12*60):
+            for quote_bar in self.history[QuoteBar](forex.symbol, 12*60):
                 forex.spread_low.update(quote_bar.end_time, quote_bar.ask.close - quote_bar.bid.close)
 
     def on_data(self, slice: Slice) -> None:

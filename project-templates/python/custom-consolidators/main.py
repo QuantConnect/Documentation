@@ -22,7 +22,7 @@ class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
         # Register the indicator for automatic updates with the consolidated bars.
         self.register_indicator(self._pair, self._pair.ema, consolidator)
         # Warm up the consolidator and indicator.
-        history = self.history[QuoteBar](self._pair, 29000, Resolution.MINUTE)
+        history = self.history[QuoteBar](self._pair.symbol, 29000, Resolution.MINUTE)
         for bar in history:
             consolidator.update(bar)
     

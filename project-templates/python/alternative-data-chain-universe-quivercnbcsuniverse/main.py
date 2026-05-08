@@ -20,7 +20,7 @@ class QuiverCNBCsChainedUniverseAlgorithm(QCAlgorithm):
         # Rebalance shortly after the open so today's intersection is locked in.
         self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.at(9, 0, 0), self._rebalance)
 
-    def _fundamental_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    def _fundamental_filter(self, fundamental: List[Fundamental]) -> Universe.UnchangedUniverse:
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)
         self._fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.UNCHANGED
