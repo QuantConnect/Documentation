@@ -1,0 +1,96 @@
+<p>To create an automatic indicator for <code>WaveTrendOscillator</code>, call the <code class='csharp'>WTO</code><code class='python'>wto</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>WTO</code><code class='python'>wto</code> method creates a <code>WaveTrendOscillator</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<div class="section-example-container testable">
+<pre class="csharp">public class WaveTrendOscillatorAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private WaveTrendOscillator _wto;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _wto = WTO(_symbol, 10, 21, 4);
+    }
+
+    public override void OnData(Slice data)
+    {
+
+        if (_wto.IsReady)
+        {
+            // The current value of _wto is represented by itself (_wto)
+            // or _wto.Current.Value
+            Plot("WaveTrendOscillator", "wto", _wto);
+            // Plot all properties of abands
+            Plot("WaveTrendOscillator", "channelaverage", _wto.ChannelAverage);
+            Plot("WaveTrendOscillator", "channeldeviation", _wto.ChannelDeviation);
+            Plot("WaveTrendOscillator", "channelindexaverage", _wto.ChannelIndexAverage);
+            Plot("WaveTrendOscillator", "signal", _wto.Signal);
+        }
+    }
+}</pre>
+<pre class="python">class WaveTrendOscillatorAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._wto = self.wto(self._symbol, 10, 21, 4)
+
+    def on_data(self, slice: Slice) -> None:
+
+        if self._wto.is_ready:
+            # The current value of self._wto is represented by self._wto.current.value
+            self.plot("WaveTrendOscillator", "wto", self._wto.current.value)
+            # Plot all attributes of self._wto
+            self.plot("WaveTrendOscillator", "channel_average", self._wto.channel_average.current.value)
+            self.plot("WaveTrendOscillator", "channel_deviation", self._wto.channel_deviation.current.value)
+            self.plot("WaveTrendOscillator", "channel_index_average", self._wto.channel_index_average.current.value)
+            self.plot("WaveTrendOscillator", "signal", self._wto.signal.current.value)</pre></div>
+<p>For more information about this method, see the <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Algorithm_1_1QCAlgorithm.html">QCAlgorithm class</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Algorithm/QCAlgorithm/#QuantConnect.Algorithm.QCAlgorithm.wto">QCAlgorithm class</a>.</p>
+<p>You can manually create a <code>WaveTrendOscillator</code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code class="csharp">Update</code><code class="python">update</code> method. The indicator will only be ready after you prime it with enough data.</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class WaveTrendOscillatorAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private WaveTrendOscillator _wavetrendoscillator;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _wavetrendoscillator = new WaveTrendOscillator(10, 21, 4);
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (data.Bars.TryGetValue(_symbol, out var bar))
+            _wavetrendoscillator.Update(bar);
+
+        if (_wavetrendoscillator.IsReady)
+        {
+            // The current value of _wavetrendoscillator is represented by itself (_wavetrendoscillator)
+            // or _wavetrendoscillator.Current.Value
+            Plot("WaveTrendOscillator", "wavetrendoscillator", _wavetrendoscillator);
+            // Plot all properties of abands
+            Plot("WaveTrendOscillator", "channelaverage", _wavetrendoscillator.ChannelAverage);
+            Plot("WaveTrendOscillator", "channeldeviation", _wavetrendoscillator.ChannelDeviation);
+            Plot("WaveTrendOscillator", "channelindexaverage", _wavetrendoscillator.ChannelIndexAverage);
+            Plot("WaveTrendOscillator", "signal", _wavetrendoscillator.Signal);
+        }
+    }
+}</pre>
+<pre class="python">class WaveTrendOscillatorAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._wavetrendoscillator = WaveTrendOscillator(10, 21, 4)
+
+    def on_data(self, slice: Slice) -> None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self._wavetrendoscillator.update(bar)
+
+        if self._wavetrendoscillator.is_ready:
+            # The current value of self._wavetrendoscillator is represented by self._wavetrendoscillator.current.value
+            self.plot("WaveTrendOscillator", "wavetrendoscillator", self._wavetrendoscillator.current.value)
+            # Plot all attributes of self._wavetrendoscillator
+            self.plot("WaveTrendOscillator", "channel_average", self._wavetrendoscillator.channel_average.current.value)
+            self.plot("WaveTrendOscillator", "channel_deviation", self._wavetrendoscillator.channel_deviation.current.value)
+            self.plot("WaveTrendOscillator", "channel_index_average", self._wavetrendoscillator.channel_index_average.current.value)
+            self.plot("WaveTrendOscillator", "signal", self._wavetrendoscillator.signal.current.value)</pre></div>
+<p>For more information about this indicator, see its <a rel="nofollow" target="_blank" class='csharp' href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Indicators_1_1WaveTrendOscillator.html">reference</a><a rel="nofollow" target="_blank" class='python' href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Indicators/WaveTrendOscillator">reference</a>.</p>
