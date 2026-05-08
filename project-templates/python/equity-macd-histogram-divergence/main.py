@@ -9,7 +9,7 @@ class EquityMacdHistogramDivergenceAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Add AAPL with daily resolution.
-        self._equity = self.add_equity("AAPL", Resolution.DAILY)
+        self._equity = self.add_equity("AAPL")
         # Create MACD indicator with standard parameters.
         self._macd = self.macd(self._equity, 12, 26, 9, MovingAverageType.EXPONENTIAL, Resolution.DAILY)
         # Warm up the indicator and its windows using historical data.
