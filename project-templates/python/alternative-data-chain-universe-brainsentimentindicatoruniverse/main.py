@@ -12,20 +12,20 @@ class BrainSentimentIndicatorChainedUniverseAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         self.universe_settings.resolution = Resolution.DAILY
-        # First universe: top US Equities by dollar volume.
+        # Add a fundamental universe to track the most liquid US Equities by dollar volume.
         self.add_universe(self._fundamental_filter)
-        # Second universe: positive sentiment with active mention coverage, intersected with the fundamental list.
+        # Add a Brain Sentiment universe, restricted to high-sentiment names within the fundamental list.
         self._universe = self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
-        # Rebalance shortly after the open so today's intersection is locked in.
+        # Rebalance shortly after the open.
         self.schedule.on(
             self.date_rules.every_day("SPY"), 
             self.time_rules.at(9, 0), 
             self._rebalance
         )
 
-    def _fundamental_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
+    def _fundamental_filter(self, fundamental: List[Fundamental]) -> Universe.UnchangedUniverse:
         self._fundamental = [c.symbol for c in sorted(fundamental, key=lambda x: x.dollar_volume)[-100:]]
-        return []
+        return Universe.UNCHANGED
 
     def _select_assets(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:
         # Keep only names with active mention coverage and positive sentiment.
@@ -39,7 +39,7 @@ class BrainSentimentIndicatorChainedUniverseAlgorithm(QCAlgorithm):
     def _rebalance(self) -> None:
         if not self._universe.selected:
             return
-        # Enter the universe equally weighted across all selected assets. 
+        # Enter the universe equally weighted across all selected assets.
         weight = 1 / len(self._universe.selected)
         targets = [PortfolioTarget(symbol, weight) for symbol in self._universe.selected]
         self.set_holdings(targets, True)
