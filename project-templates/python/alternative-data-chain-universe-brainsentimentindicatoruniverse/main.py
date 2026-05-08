@@ -16,7 +16,7 @@ class BrainSentimentIndicatorChainedUniverseAlgorithm(QCAlgorithm):
         self.add_universe(self._fundamental_filter)
         # Add a Brain Sentiment universe, restricted to high-sentiment names within the fundamental list.
         self._universe = self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
-        # Rebalance shortly after the open.
+        # Rebalance before market open.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),

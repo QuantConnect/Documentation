@@ -39,7 +39,7 @@ namespace QuantConnect.Algorithm.CSharp
                 return _fundamental.Intersect(alt);
             });
 
-            // Rebalance shortly after the open so today's intersection is locked in.
+            // Rebalance before market open to trade today's intersection.
             Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
         }
 
