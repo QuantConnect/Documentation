@@ -2,8 +2,9 @@
 from AlgorithmImports import *
 # endregion
 
+
 class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
-    
+
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
@@ -13,8 +14,8 @@ class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
         self._pair.ema = ExponentialMovingAverage(10)
         # Create a QuoteBar consolidator with a custom consolidation period.
         consolidator = QuoteBarConsolidator(self._daily_forex_consolidation_period)
-        # You can also create a consolidator with a period of one day and start time of 17
-        # consolidator = QuoteBarConsolidator(timedelta(1), timedelta(hours=17))
+        # You can also create a consolidator with a period of one day and start time of 17.
+        # Consolidator = QuoteBarConsolidator(timedelta(1), timedelta(hours=17)).
         # Attach a consolidation handler that will receive the consolidated bars.
         consolidator.data_consolidated += self._consolidation_handler
         # Subscribe the consolidator for automatic updates with the prices of the pair.
@@ -25,7 +26,7 @@ class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
         history = self.history[QuoteBar](self._pair.symbol, 29000, Resolution.MINUTE)
         for bar in history:
             consolidator.update(bar)
-    
+
     # Define the consolidation period.
     def _daily_forex_consolidation_period(self, dt: datetime) -> CalendarInfo:
         # Set the start of the bar to be 5 PM ET.
@@ -44,7 +45,6 @@ class CalendarConsolidatorExampleAlgorithm(QCAlgorithm):
         # Plot the closing price and the EMA.
         self.plot(consolidated_bar.symbol.value, 'Close', consolidated_bar.close)
         self.plot(consolidated_bar.symbol.value, 'EMA', self._pair.ema.current.value)
-
         if not self._pair.holdings.is_long and consolidated_bar.close > self._pair.ema.current.value:
             self.set_holdings(self._pair, 1)
         if consolidated_bar.close < self._pair.ema.current.value:

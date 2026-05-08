@@ -2,27 +2,27 @@
 from AlgorithmImports import *
 # endregion
 
+
 class LiveTradingFeaturesAlgorithm(QCAlgorithm):
     _connected = False
-    
+
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 12)
         self.set_end_date(2024, 10, 1)
-        self.set_cash(1000000)
-
+        self.set_cash(1_000_000)
+        self.settings.seed_initial_prices = True
         self.settings.automatic_indicator_warm_up = True
-
         # Request SPY data to trade.
         self._spy = self.add_equity("SPY")
         # Create an EMA indicator to generate trade signals.
         self._spy.ema = self.ema(self._spy, 20, Resolution.DAILY)
-    
+
     def _notify_all(self, subject: str, message: str) -> None:
         self.notify.email("email@address.com", subject, message)
         message = f"{self.time:yyyyMMdd}: {subject} > {message}"
         self.log(message)
         # See https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/notifications
-        # for all notification methods
+        # For all notification methods.
         self.notify.sms("+16191234567", message)
 
     def on_brokerage_disconnect(self) -> None:
@@ -40,8 +40,8 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
             case _:
                 self.log(str(message_event))
 
-    def on_data(self, slice: Slice) -> None:
-        self._notify_ema_cross(slice)
+    def on_data(self, data: Slice) -> None:
+        self._notify_ema_cross(data)
 
     def _notify_ema_cross(self, slice: Slice) -> None:
         if not self.live_mode:

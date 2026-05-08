@@ -2,20 +2,22 @@
 from AlgorithmImports import *
 # endregion
 
+
 class CustomDataBitstampAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
         self.set_start_date(2020, 9, 1)
         self.set_end_date(2020, 12, 31)
-        self.set_cash(100000)
+        self.set_cash(100_000)
+        self.settings.seed_initial_prices = True
         # Define the "type" of our generic data:
         self._btc = self.add_data(Bitstamp, "BTC")
         # Get some historical data.
         history = self.history(Bitstamp, self._btc, 200, Resolution.DAILY)
 
-    def on_data(self, slice: Slice) -> None:
+    def on_data(self, data: Slice) -> None:
         # Get the data of the current day.
-        data = slice.get(self._btc)
+        data = data.get(self._btc)
         if not data:
             return
         self.plot(self._btc.symbol.value, 'Price', data.close)
@@ -27,7 +29,7 @@ class Bitstamp(PythonData):
         if is_live_mode:
             return SubscriptionDataSource('https://www.bitstamp.net/api/ticker/', SubscriptionTransportMedium.REST)
         return SubscriptionDataSource(
-            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv", 
+            "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv",
             SubscriptionTransportMedium.REMOTE_FILE
         )
 
@@ -39,9 +41,9 @@ class Bitstamp(PythonData):
         # In live trading, parse the JSON file.
         if is_live_mode:
             # Example Line Format:
-            # {"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}
+            # {"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}.
             live_btc = json.loads(line)
-            # If value is zero, return None
+            # If value is zero, return None.
             coin.value = float(live_btc["last"])
             if coin.value == 0:
                 return None
@@ -58,15 +60,14 @@ class Bitstamp(PythonData):
             coin["VolumeBTC"] = float(live_btc["volume"])
             coin["WeightedPrice"] = float(live_btc["vwap"])
             return coin
-
         # In backtests, parse the CSV file.
         # Example Line Format:
-        # Date      Open   High    Low     Close   Volume (BTC)    Volume (Currency)   Weighted Price
-        # 2011-09-13 5.8    6.0     5.65    5.97    58.37138238,    346.0973893944      5.929230648356
+        # Date      Open   High    Low     Close   Volume (BTC)    Volume (Currency)   Weighted Price.
+        # 2011-09-13 5.8    6.0     5.65    5.97    58.37138238,    346.0973893944      5.929230648356.
         if not line[0].isdigit():
             return None
         data = line.split(',')
-        # If value is zero, return None
+        # If value is zero, return None.
         coin.value = float(data[4])
         if coin.value == 0:
             return None

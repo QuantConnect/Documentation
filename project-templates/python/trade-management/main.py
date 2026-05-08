@@ -2,6 +2,7 @@
 from AlgorithmImports import *
 # endregion
 
+
 class OneCancelOtherExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
@@ -18,22 +19,21 @@ class OneCancelOtherExampleAlgorithm(QCAlgorithm):
         bar = data.bars.get(self._spy)
         if not bar:
             return
-        # If the price is above the EMA, we will buy 75% of the portfolio value
-        # and place the OCO orders to sell it.
-        # Otherwise, we will short 75% of the portfolio value
-        # and place OCO orders to rebuy.
+        # If the price is above the EMA, we will buy 75% of the portfolio value.
+        # And place the OCO orders to sell it.
+        # Otherwise, we will short 75% of the portfolio value.
+        # And place OCO orders to rebuy.
         ema = self._spy.ema.current.value
         price = bar.close
         weight =  0.75 if ema > price else -.75
         stop_price = bar.close * (.95 if ema > price else 1.05)
         limit_price = bar.close * (1.05 if ema > price else .95)
-
         quantity = self.calculate_order_quantity(self._spy, weight)
         self.market_order(self._spy, quantity)
         self._spy.stop_loss = self.stop_market_order(self._spy, -quantity, stop_price)
         self._spy.take_profit = self.limit_order(self._spy, -quantity, limit_price)
         self._spy.has_oco = True
-    
+
     def on_order_event(self, order_event: OrderEvent) -> None:
         if order_event.status == OrderStatus.FILLED:
             equity = self.securities[order_event.symbol]

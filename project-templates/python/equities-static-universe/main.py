@@ -2,19 +2,25 @@
 from AlgorithmImports import *
 # endregion
 
+
 class EquitiesStaticTemplateAlgorithm(QCAlgorithm):
     _tolerance = 0.0025
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
+        self.set_cash(100_000)
+        self.settings.seed_initial_prices = True
         self.settings.automatic_indicator_warm_up = True
         for ticker in ["SPY", "QQQ", "IWM"]:
             equity = self.add_equity(ticker)
             equity.macd = self.macd(equity, 12, 26, 9, MovingAverageType.EXPONENTIAL, Resolution.DAILY)
             self.plot_indicator(ticker, equity.macd)
-        self.schedule.on(self.date_rules.every_day('SPY'), self.time_rules.after_market_open('SPY', 1), self._rebalance)
+        self.schedule.on(
+            self.date_rules.every_day('SPY'),
+            self.time_rules.after_market_open('SPY', 1),
+            self._rebalance
+        )
 
     def _rebalance(self) -> None:
         for security in self.securities.values():

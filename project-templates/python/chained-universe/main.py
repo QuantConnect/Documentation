@@ -2,21 +2,25 @@
 from AlgorithmImports import *
 # endregion
 
+
 class ChainedUniverseAlgorithm(QCAlgorithm):
     _weight_by_symbol: dict[Symbol, float] = {}
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
+        self.set_cash(100_000)
         self.settings.seed_initial_prices = True
-
         # Select QQQ constituents first, then by fundamental data.
         self._universe = self.add_universe(
-            self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter), 
+            self.universe.etf("QQQ", Market.USA, self.universe_settings, self._etf_constituents_filter),
             self._fundamental_selection
         )
-        self.schedule.on(self.date_rules.every_day("QQQ"), self.time_rules.before_market_open("QQQ", 30), self._place_orders)
+        self.schedule.on(
+            self.date_rules.every_day("QQQ"),
+            self.time_rules.before_market_open("QQQ", 30),
+            self._place_orders
+        )
 
     def _etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -> List[Symbol]:
         # Select all QQQ constituents.

@@ -2,6 +2,7 @@
 from AlgorithmImports import *
 # endregion
 
+
 class ForexExampleAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
@@ -17,16 +18,15 @@ class ForexExampleAlgorithm(QCAlgorithm):
             for quote_bar in self.history[QuoteBar](forex.symbol, 12*60):
                 forex.spread_low.update(quote_bar.end_time, quote_bar.ask.close - quote_bar.bid.close)
 
-    def on_data(self, slice: Slice) -> None:
-        # Ensure we have quote data in the current slice.
-        for symbol, quote_bar in slice.quote_bars.items():
-            # Bid-ask spread = Ask price - Bid price
+    def on_data(self, data: Slice) -> None:
+        # Ensure we have quote data in the current data.
+        for symbol, quote_bar in data.quote_bars.items():
+            # Bid-ask spread = Ask price - Bid price.
             bid_ask_spread = round(quote_bar.ask.close - quote_bar.bid.close, 6)
             # Update the spread minimum indicator to calculate the lowest bid-ask spread over the last 12 hours.
             forex = self.securities[symbol]
             forex.spread_low.update(quote_bar.end_time, bid_ask_spread)
-        
-            # Trade if the current spread is the lowest bid-ask spread, 
-            # since it is the most efficient, liquid price with lowest slippage.
+            # Trade if the current spread is the lowest bid-ask spread,.
+            # Since it is the most efficient, liquid price with lowest slippage.
             if not forex.invested and bid_ask_spread == forex.spread_low.current.value:
                 self.market_order(forex, 1000)

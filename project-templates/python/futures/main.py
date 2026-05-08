@@ -2,6 +2,7 @@
 from AlgorithmImports import *
 # endregion
 
+
 class BasicFutureAlgorithm(QCAlgorithm):
 
     def initialize(self) -> None:
@@ -28,8 +29,7 @@ class BasicFutureAlgorithm(QCAlgorithm):
             old_symbol = self.symbol(changed_event.old_symbol)
             new_symbol = self.symbol(changed_event.new_symbol)
             quantity = self.portfolio[old_symbol].quantity
-
-            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+            # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract.
             tag = f"Rollover - Symbol changed at {self.time}: {old_symbol.value} -> {new_symbol.value}"
             self.liquidate(old_symbol, tag=tag)
             if quantity: self.market_order(new_symbol, quantity, tag=tag)
