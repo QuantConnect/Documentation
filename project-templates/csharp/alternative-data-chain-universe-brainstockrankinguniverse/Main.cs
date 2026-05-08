@@ -19,7 +19,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
 
-            UniverseSettings.Resolution = Resolution.Daily;
+            UniverseSettings.Resolution = Resolution.Minute;
             // First universe: top 100 US Equities by dollar volume; emits Universe.Unchanged.
             AddUniverse(fundamental =>
             {
