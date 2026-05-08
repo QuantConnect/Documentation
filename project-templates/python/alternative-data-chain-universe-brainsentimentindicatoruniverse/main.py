@@ -18,8 +18,8 @@ class BrainSentimentIndicatorChainedUniverseAlgorithm(QCAlgorithm):
         self._universe = self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
         # Rebalance shortly after the open.
         self.schedule.on(
-            self.date_rules.every_day("SPY"), 
-            self.time_rules.at(9, 0), 
+            self.date_rules.every_day("SPY"),
+            self.time_rules.at(9, 0),
             self._rebalance
         )
 
