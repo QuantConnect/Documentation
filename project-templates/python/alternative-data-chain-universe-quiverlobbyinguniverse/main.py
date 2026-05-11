@@ -18,7 +18,7 @@ class QuiverLobbyingChainedUniverseAlgorithm(QCAlgorithm):
         # Second universe: $100K+ corporate lobbying spend, intersected with the fundamental list.
         self._universe = self.add_universe(QuiverLobbyingUniverse, "QuiverLobbyingUniverse",
                                            Resolution.DAILY, self._select_assets)
-        # Rebalance shortly after the open so today's intersection is locked in.
+        # Rebalance before market open to trade today's intersection.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),

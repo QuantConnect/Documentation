@@ -36,7 +36,7 @@ namespace QuantConnect.Algorithm.CSharp
                           select d.Symbol;
                 return _fundamental.Intersect(alt);
             });
-            // Rebalance daily at 9:00 AM to update portfolio with current universe.
+            // Rebalance before market open to trade today's intersection.
             Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
         }
 
