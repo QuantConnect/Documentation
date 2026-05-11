@@ -49,9 +49,16 @@ namespace QuantConnect.Algorithm.CSharp
             {
                 return;
             }
-            var weight = 1m / _universe.Selected.Count;
-            var targets = _universe.Selected
+            // Filter for securities with valid prices.
+            var securities = _universe.Selected
                 .Where(symbol => Securities[symbol].Price > 0)
+                .ToList();
+            if (securities.Count == 0)
+            {
+                return;
+            }
+            var weight = 1m / securities.Count;
+            var targets = securities
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
             SetHoldings(targets, true);
