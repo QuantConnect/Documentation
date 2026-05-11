@@ -30,8 +30,8 @@ class BrainSentimentIndicatorUniverseAlgorithm(QCAlgorithm):
     def _select_assets(self, data: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:
         # Keep names with both active mention coverage and positive 7-day sentiment.
         alt = [d.symbol for d in data
-               if d.total_article_mentions_7_days and d.total_article_mentions_7_days > 0
-               and d.sentiment_7_days and d.sentiment_7_days > 0]
+               if d.total_article_mentions_7_days and d.total_article_mentions_7_days > 0 and
+               d.sentiment_7_days and d.sentiment_7_days > 0]
         return [s for s in self._fundamental if s in alt]
 
     def _rebalance(self) -> None:
