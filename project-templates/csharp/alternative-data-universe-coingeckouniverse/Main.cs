@@ -18,45 +18,43 @@ namespace QuantConnect.Algorithm.CSharp
             SetEndDate(2024, 12, 31);
             SetCash(100000);
             SetAccountCurrency("USD");
-
-            // Trade the largest CoinGecko coins on Coinbase quoted in USD.
+            SetTimeZone(TimeZones.Utc);
+            Settings.MinimumOrderMarginPortfolioPercentage = 0;
+            // Filter for crypto assets on Coinbase that are quoted in USD.
             _market = Market.Coinbase;
             _marketPairs = SymbolPropertiesDatabase.GetSymbolPropertiesList(_market)
                 .Where(x => x.Value.QuoteCurrency == AccountCurrency)
                 .Select(x => x.Key.Symbol)
                 .ToList();
-
-            UniverseSettings.Resolution = Resolution.Daily;
-            // Universe of the top 10 CoinGecko coins by market cap that we can trade.
-            _universe = AddUniverse<CoinGecko>("CoinGeckoUniverse", Resolution.Daily, data =>
-            {
-                return data
+            UniverseSettings.Resolution = Resolution.Hour;
+            // Add a CoinGecko universe to select the top 10 coins by market cap.
+            _universe = AddUniverse<CoinGeckoUniverse>(
+                // Filter coins that are quoted in account currency and available on the market.
+                // Sort by market cap and return the top 10 as tradable Symbols.
+                data => data
                     .OfType<CoinGecko>()
-                    // Keep coins quoted in our account currency on the chosen brokerage.
                     .Where(c => _marketPairs.Contains(c.Coin + AccountCurrency))
-                    // Take the 10 largest by market cap and create their tradable Symbols.
                     .OrderByDescending(c => c.MarketCap)
                     .Take(10)
-                    .Select(c => c.CreateSymbol(_market, AccountCurrency));
-            });
-
-            // Rebalance daily on US trading days, after CoinGecko refreshes overnight.
-            Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
+                    .Select(c => c.CreateSymbol(_market, AccountCurrency))
+            );
+            // Schedule daily rebalancing at 9 AM UTC.
+            Schedule.On(DateRules.EveryDay(), TimeRules.At(9, 0), Rebalance);
         }
 
         private void Rebalance()
         {
+            // Create equal weight portfolio targets and liquidate any removed assets.
             if (_universe.Selected.Count == 0)
             {
                 return;
             }
-
             var weight = 1m / _universe.Selected.Count;
             var targets = _universe.Selected
+                .Where(symbol => Securities[symbol].Price > 0)
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
-
-            SetHoldings(targets, liquidateExistingHoldings: true);
+            SetHoldings(targets, true);
         }
     }
 }
