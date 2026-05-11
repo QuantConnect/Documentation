@@ -36,7 +36,7 @@ namespace QuantConnect.Algorithm.CSharp
                     .Select(d => d.Symbol)
                     .Where(symbol => _fundamental.Contains(symbol))
             );
-            // Schedule daily rebalancing at 9:00 AM after market open.
+            // Schedule daily rebalancing at 9:00 AM before market open.
             Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0), Rebalance);
         }
 
@@ -46,10 +46,9 @@ namespace QuantConnect.Algorithm.CSharp
             {
                 return;
             }
-            // Calculate equal weights for all selected securities with valid prices.
+            // Calculate equal weights for all selected securities.
             var weight = 1m / _universe.Selected.Count;
             var targets = _universe.Selected
-                .Where(symbol => Securities[symbol].Price > 0)
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
             SetHoldings(targets, true);
