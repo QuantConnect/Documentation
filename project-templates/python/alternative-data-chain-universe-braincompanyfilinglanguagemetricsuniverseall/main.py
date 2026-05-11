@@ -4,7 +4,6 @@ from AlgorithmImports import *
 
 
 class BrainCompanyFilingLanguageMetricsChainedUniverseAlgorithm(QCAlgorithm):
-
     _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
