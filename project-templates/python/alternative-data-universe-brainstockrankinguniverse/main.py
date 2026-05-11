@@ -15,7 +15,7 @@ class BrainStockRankingUniverseAlgorithm(QCAlgorithm):
         self.add_universe(self._fundamental_filter)
         # Add a Brain Stock Ranking universe, restricted to high-ranking names within the fundamental list.
         self._universe = self.add_universe(BrainStockRankingUniverse, self._select_assets)
-        # Schedule daily rebalancing at 9:00 AM after market open.
+        # Schedule daily rebalancing at 9:00 AM before market open.
         self.schedule.on(
             self.date_rules.every_day("SPY"), 
             self.time_rules.at(9, 0), 
@@ -38,7 +38,7 @@ class BrainStockRankingUniverseAlgorithm(QCAlgorithm):
     def _rebalance(self) -> None:
         if not self._universe.selected:
             return
-        # Calculate equal weights for all selected securities with valid prices.
+        # Calculate equal weights for all selected securities.
         weight = 1 / len(self._universe.selected)
-        targets = [PortfolioTarget(symbol, weight) for symbol in self._universe.selected if self.securities[symbol].price]
+        targets = [PortfolioTarget(symbol, weight) for symbol in self._universe.selected]
         self.set_holdings(targets, True)
