@@ -4,7 +4,6 @@ from AlgorithmImports import *
 
 
 class EODHDUpcomingDividendsChainedUniverseAlgorithm(QCAlgorithm):
-
     _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
@@ -13,11 +12,11 @@ class EODHDUpcomingDividendsChainedUniverseAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         self.universe_settings.resolution = Resolution.MINUTE
-        # First universe: top 100 US Equities by dollar volume; emits Universe.UNCHANGED.
+        # Add a Fundamental Universe selecting the top 100 US Equities by dollar volume.
         self.add_universe(self._fundamental_filter)
-        # Second universe: ex-dividend in the next day with a $0.05+ payout, intersected with the fundamental list.
+        # Add an EODHD Universe for upcoming dividends intersected with the fundamental list.
         self._universe = self.add_universe(EODHDUpcomingDividends, self._select_assets)
-        # Rebalance before market open to trade today's intersection.
+        # Schedule daily rebalancing at 9 AM to trade the universe intersection.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),
@@ -30,7 +29,7 @@ class EODHDUpcomingDividendsChainedUniverseAlgorithm(QCAlgorithm):
         return Universe.UNCHANGED
 
     def _select_assets(self, alt_coarse: List[EODHDUpcomingDividends]) -> List[Symbol]:
-        # Keep names with a dividend over $0.05 paying within one day.
+        # Filter for assets with dividends over $0.05 paying within one day.
         alt = [d.symbol for d in alt_coarse
                if d.dividend_date and d.dividend and
                d.dividend_date <= self.time + timedelta(1) and d.dividend > 0.05]
