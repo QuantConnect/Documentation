@@ -9,7 +9,7 @@ namespace QuantConnect.Algorithm.CSharp
 {
     public class BrainSentimentIndicatorChainedUniverseAlgorithm : QCAlgorithm
     {
-        private List<Symbol> _fundamental = new();
+        private List<Symbol> _fundamental = [];
         private Universe _universe;
 
         public override void Initialize()
@@ -18,7 +18,6 @@ namespace QuantConnect.Algorithm.CSharp
             SetEndDate(2024, 12, 31);
             SetCash(100000);
             Settings.SeedInitialPrices = true;
-
             UniverseSettings.Resolution = Resolution.Minute;
             // First universe: top 100 US Equities by dollar volume; emits Universe.Unchanged.
             AddUniverse(fundamental =>
@@ -37,7 +36,6 @@ namespace QuantConnect.Algorithm.CSharp
                           select d.Symbol;
                 return _fundamental.Intersect(alt);
             });
-
             // Rebalance before market open to trade today's intersection.
             Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
         }
@@ -48,12 +46,10 @@ namespace QuantConnect.Algorithm.CSharp
             {
                 return;
             }
-
             var weight = 1m / _universe.Selected.Count;
             var targets = _universe.Selected
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
-
             SetHoldings(targets, true);
         }
     }
