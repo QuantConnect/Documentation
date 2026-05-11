@@ -40,6 +40,10 @@ class CoinGeckoUniverseAlgorithm(QCAlgorithm):
         # Create equal weight portfolio targets and liquidate any removed assets.
         if not self._universe.selected:
             return
-        weight = 1 / len(self._universe.selected)
-        targets = [PortfolioTarget(symbol, weight) for symbol in self._universe.selected if self.securities[symbol].price]
+        # Filter for securities with valid prices.
+        securities = [s for s in self._universe.selected if self.securities[s].price > 0]
+        if not securities:
+            return
+        weight = 1 / len(securities)
+        targets = [PortfolioTarget(symbol, weight) for symbol in securities]
         self.set_holdings(targets, True)
