@@ -14,20 +14,23 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2024, 9, 1);
             SetEndDate(2024, 12, 31);
             SetCash(100000);
-
+            Settings.SeedInitialPrices = true;
             UniverseSettings.Resolution = Resolution.Daily;
-            // Universe of US Equities with positive sentiment in their latest SEC filings.
+            // Add a universe of US Equities with positive sentiment in their latest SEC filings.
             _universe = AddUniverse<BrainCompanyFilingLanguageMetricsUniverseAll>(data =>
             {
-                // Keep names with positive sentiment in both the report and MD&A sections.
+                // Filter for assets with positive sentiment in both the report and MD&A sections.
                 return from d in data.OfType<BrainCompanyFilingLanguageMetricsUniverseAll>()
-                       where d.ReportSentiment.Sentiment > 0m
+                       where d.ReportSentiment != null
+                          && d.ReportSentiment.Sentiment.HasValue
+                          && d.ReportSentiment.Sentiment > 0m
+                          && d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations != null
+                          && d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment.HasValue
                           && d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment > 0m
                        select d.Symbol;
             });
-
-            // Rebalance shortly after the open so today's universe is locked in.
-            Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
+            // Schedule daily rebalancing at 9:00 AM before market open.
+            Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0), Rebalance);
         }
 
         private void Rebalance()
@@ -36,13 +39,13 @@ namespace QuantConnect.Algorithm.CSharp
             {
                 return;
             }
-
             var weight = 1m / _universe.Selected.Count;
             var targets = _universe.Selected
+                .Where(symbol => Securities[symbol].Price > 0)
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
 
-            SetHoldings(targets, liquidateExistingHoldings: true);
+            SetHoldings(targets, true);
         }
     }
 }
