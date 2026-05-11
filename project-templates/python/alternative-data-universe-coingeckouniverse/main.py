@@ -21,7 +21,7 @@ class CoinGeckoUniverseAlgorithm(QCAlgorithm):
         ]
         self.universe_settings.resolution = Resolution.HOUR
         # Add a CoinGecko universe to select the top 10 coins by market cap.
-        self._universe = self.add_universe(CoinGeckoUniverse, "CoinGeckoUniverse", Resolution.HOUR, self._select_assets)
+        self._universe = self.add_universe(CoinGeckoUniverse, "CoinGeckoUniverse", Resolution.DAILY, self._select_assets)
         # Schedule daily rebalancing at 9 AM UTC.
         self.schedule.on(
             self.date_rules.every_day(), 
