@@ -38,6 +38,10 @@ namespace QuantConnect.Algorithm.CSharp
             }
 
             var securities = _universe.Selected.Where(s => Securities[s].Price > 0).ToList();
+            if (securities.Count == 0)
+            {
+                return;
+            }
             var weight = 1m / securities.Count;
             var targets = securities
                 .Select(symbol => new PortfolioTarget(symbol, weight))
