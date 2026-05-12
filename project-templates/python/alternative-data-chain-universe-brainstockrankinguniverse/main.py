@@ -4,6 +4,7 @@ from AlgorithmImports import *
 
 
 class BrainStockRankingChainedUniverseAlgorithm(QCAlgorithm):
+
     _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
