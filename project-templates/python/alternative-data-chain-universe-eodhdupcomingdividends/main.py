@@ -4,6 +4,7 @@ from AlgorithmImports import *
 
 
 class EODHDUpcomingDividendsChainedUniverseAlgorithm(QCAlgorithm):
+    
     _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
