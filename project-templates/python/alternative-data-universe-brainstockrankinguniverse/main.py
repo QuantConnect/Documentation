@@ -10,7 +10,7 @@ class BrainStockRankingUniverseAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
-        # Add a Brain Stock Ranking universe, restricted to high-ranking names within the fundamental list.
+        # Add a Brain Stock Ranking universe, restricted to high-ranking names with strong multi-horizon signals.
         self._universe = self.add_universe(BrainStockRankingUniverse, self._select_assets)
         # Schedule daily rebalancing at 9:00 AM before market open.
         self.schedule.on(
