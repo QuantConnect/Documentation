@@ -1,7 +1,82 @@
-<p>The following example demonstrates creating, reading, updating, deleting, and listing agent tasks; deploying a task; and reading, prompting, stopping, and deleting a deployment through the cloud API.</p>
+<p>The following example demonstrates listing, creating, reading, and updating an agent; creating, reading, updating, deleting, and listing agent tasks; deploying a task; and reading, prompting, stopping, and deleting a deployment through the cloud API.</p>
 
 <div class="section-example-container">
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
+
+### List Agents
+# Send a POST request to the /agents/list endpoint to check for an existing "My Claude" agent
+response = post(f'{BASE_URL}/agents/list', headers=get_headers(), json={
+    "organizationId": ORGANIZATION_ID  # Organization whose agents to list
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Search the returned agents for one already named "My Claude"
+my_claude = next((a for a in result.get('agents', []) if a['name'] == 'My Claude'), None)
+# Check if the request was successful and print the list
+if result['success']:
+    print("List of Agents:")
+    print(result)
+
+### Create Agent (only when "My Claude" does not exist yet)
+if not my_claude:
+    # Send a POST request to the /agents/create endpoint to create a new agent
+    response = post(f'{BASE_URL}/agents/create', headers=get_headers(), json={
+        "organizationId": ORGANIZATION_ID,                        # Organization that owns the agent
+        "name": "Agent Placeholder",                              # Placeholder name; renamed below
+        "description": "Customize your assistant's capabilities.",
+        "systemPrompt": "I am a bot",                             # System prompt for the agent
+        "model": "claude-opus-4-7",                               # Model identifier the agent runs on
+        "reasoningEffort": "high",                                # Reasoning effort: low | medium | high
+        "maxTurns": 100,                                          # Max agent turns per deployment
+        "toolChoice": "auto",                                     # Tool selection policy
+        "public": False,                                          # Keep the agent private
+        "useQCC": True                                            # Use the QuantConnect Cloud LLM provider
+    })
+    # Parse the JSON response into python managable dict
+    result = response.json()
+    # Capture the created agent
+    my_claude = result['agent']
+    # Check if the request was successful and print the result
+    if result['success']:
+        print("Agent Created Successfully:")
+        print(result)
+
+    ### Update Agent (rename the new agent to "My Claude")
+    # Send a POST request to the /agents/update endpoint to rename the agent
+    response = post(f'{BASE_URL}/agents/update', headers=get_headers(), json={
+        "agentId": my_claude['id'],  # ID of the agent to update
+        "name": "My Claude"          # New name for the agent
+    })
+    # Parse the JSON response into python managable dict
+    result = response.json()
+    # Check if the request was successful and print the result
+    if result['success']:
+        print("Agent Updated Successfully:")
+        print(result)
+
+# Capture the agent ID for downstream calls
+agent_id = my_claude['id']
+
+### Read Agent
+# Send a POST request to the /agents/read endpoint and check the model the agent runs on
+response = post(f'{BASE_URL}/agents/read', headers=get_headers(), json={
+    "agentId": agent_id  # ID of the agent to read
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the agent's model
+if result['success']:
+    print(f"Agent model: {result['agent']['model']}")
+    print(result)
+
+### Delete Agent (left here for reference; uncomment to delete the agent)
+# response = post(f'{BASE_URL}/agents/delete', headers=get_headers(), json={
+#     "agentId": agent_id  # ID of the agent to delete
+# })
+# result = response.json()
+# if result['success']:
+#     print("Agent Deleted Successfully:")
+#     print(result)
 
 ### Create Task
 # Send a POST request to the /agents/tasks/create endpoint to create a task
