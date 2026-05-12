@@ -42,7 +42,6 @@ namespace QuantConnect.Algorithm.CSharp
             {
                 return;
             }
-
             var weight = 1m / securities.Count;
             var targets = securities
                 .Select(symbol => new PortfolioTarget(symbol, weight))
