@@ -14,14 +14,15 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2024, 9, 1);
             SetEndDate(2024, 12, 31);
             SetCash(100000);
+            Settings.SeedInitialPrices = true;
 
             UniverseSettings.Resolution = Resolution.Daily;
             // Universe of US Equities going ex-dividend in the next day with a meaningful payout.
             _universe = AddUniverse<EODHDUpcomingDividends>(data =>
             {
-                // Keep names with a dividend over $0.05 paying within one day.
+                // Keep names with a dividend over $0.75 paying within one day.
                 return from d in data.OfType<EODHDUpcomingDividends>()
-                       where d.DividendDate <= Time.AddDays(1) && d.Dividend > 0.05m
+                       where d.DividendDate <= Time.AddDays(1) && d.Dividend > 0.75m
                        select d.Symbol;
             });
 
@@ -36,8 +37,9 @@ namespace QuantConnect.Algorithm.CSharp
                 return;
             }
 
-            var weight = 1m / _universe.Selected.Count;
-            var targets = _universe.Selected
+            var securities = _universe.Selected.Where(s => Securities[s].Price > 0).ToList();
+            var weight = 1m / securities.Count;
+            var targets = securities
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();
 
