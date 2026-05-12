@@ -12,11 +12,11 @@ class BrainStockRankingChainedUniverseAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         self.universe_settings.resolution = Resolution.MINUTE
-        # Select the top 100 US equities by dollar volume for fundamental filtering.
+        # First universe: top 100 US Equities by dollar volume; emits Universe.UNCHANGED.
         self.add_universe(self._fundamental_filter)
-        # Filter for stocks with positive Brain ML rankings across all horizons.
+        # Second universe: positive Brain ML rankings across 2-, 3-, and 5-day horizons, intersected with the fundamental list.
         self._universe = self.add_universe(BrainStockRankingUniverse, self._select_assets)
-        # Rebalance daily before market open to trade the selected universe.
+        # Rebalance before market open to trade today's intersection.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),
@@ -29,7 +29,7 @@ class BrainStockRankingChainedUniverseAlgorithm(QCAlgorithm):
         return Universe.UNCHANGED
 
     def _select_assets(self, alt_coarse: List[BrainStockRankingUniverse]) -> List[Symbol]:
-        # Keep stocks with positive rankings across all three horizons.
+        # Keep names with consistent positive momentum across all three horizons.
         alt = [d.symbol for d in alt_coarse
                if d.rank_2_days and d.rank_2_days > 0 and
                d.rank_3_days and d.rank_3_days > 0 and
