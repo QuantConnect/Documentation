@@ -26,7 +26,8 @@ class EODHDUpcomingDividendsUniverseAlgorithm(QCAlgorithm):
         if not self._universe.selected:
             return
         securities = [s for s in self._universe.selected if self.securities[s].price]
-
+        if not securities:
+            return
         weight = 1 / len(securities)
         targets = [PortfolioTarget(symbol, weight) for symbol in securities]
 
