@@ -1,0 +1,30 @@
+<p>
+  A structured output is a JSON schema that constrains what the assistant returns.
+  When you specify one, the assistant produces a response that conforms to the schema instead of free-form prose.
+  This is the difference between an assistant that says "the residuals look stationary, with a p-value around 0.03" and one that returns <code>{"stationary": true, "p_value": 0.03}</code>.
+</p>
+<p>
+  Use a structured output when something downstream consumes the result: another assistant in a chain, a custom API response handler, or just a human who needs to quickly scan for the key insight.
+  Without a schema, the next step has to parse prose, which fails the moment the wording shifts.
+</p>
+<p>
+  To use one, define the JSON schema in the <span class="page-section-name">Output Schema</span> field of the assistant configuration.
+  Keep the schema as flat as the next step needs.
+  Nested schemas are valid but add room for the assistant to drift from the shape you wanted.
+</p>
+<p>The schema that produces the stationarity output above looks like this:</p>
+
+<pre><code>{
+  "type": "object",
+  "properties": {
+    "stationary": {
+      "type": "boolean",
+      "description": "Whether the residuals pass an ADF stationarity test."
+    },
+    "p_value": {
+      "type": "number",
+      "description": "The p-value from the ADF test."
+    }
+  },
+  "required": ["stationary", "p_value"]
+}</code></pre>
