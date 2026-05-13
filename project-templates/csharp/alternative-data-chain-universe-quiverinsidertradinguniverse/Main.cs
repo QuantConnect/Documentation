@@ -9,7 +9,7 @@ namespace QuantConnect.Algorithm.CSharp
 {
     public class QuiverInsiderTradingChainedUniverseAlgorithm : QCAlgorithm
     {
-        private List<Symbol> _fundamental = new();
+        private List<Fundamental> _fundamental = [];
         private Universe _universe;
 
         public override void Initialize()
@@ -20,36 +20,30 @@ namespace QuantConnect.Algorithm.CSharp
             Settings.SeedInitialPrices = true;
 
             UniverseSettings.Resolution = Resolution.Minute;
-            // First universe: top 100 US Equities by dollar volume; emits Universe.Unchanged.
+            // First universe: store all US Equity fundamentals; emits Universe.Unchanged.
             AddUniverse(fundamental =>
             {
-                _fundamental = (from c in fundamental
-                                orderby c.DollarVolume descending
-                                select c.Symbol).Take(100).ToList();
+                _fundamental = [..fundamental];
                 return Universe.Unchanged;
             });
-            // Second universe: 10 largest insider-trading dollar volumes, intersected with the fundamental list.
+            // Second universe: 10 largest insider-trading dollar volumes, ranked by dollar volume.
             _universe = AddUniverse<QuiverInsiderTradingUniverse>(altCoarse =>
             {
                 // Aggregate insider dollar volume per ticker and keep the 10 largest.
-                var dollarVolume = new Dictionary<Symbol, decimal>();
-                foreach (var d in altCoarse.OfType<QuiverInsiderTradingUniverse>())
-                {
-                    if (d.PricePerShare == null || d.PricePerShare == 0m)
-                    {
-                        continue;
-                    }
-                    if (!dollarVolume.ContainsKey(d.Symbol))
-                    {
-                        dollarVolume[d.Symbol] = 0m;
-                    }
-                    dollarVolume[d.Symbol] += (d.Shares ?? 0m) * d.PricePerShare.Value;
-                }
-                var alt = dollarVolume
-                    .OrderByDescending(kvp => kvp.Value)
+                var alt = altCoarse.OfType<QuiverInsiderTradingUniverse>()
+                    .Where(d => d.PricePerShare.HasValue && d.PricePerShare.Value != 0m)
+                    .GroupBy(d => d.Symbol)
+                    .Select(g => new { Symbol = g.Key, DollarVolume = g.Sum(d => (d.Shares ?? 0m) * d.PricePerShare.Value) })
+                    .OrderByDescending(x => x.DollarVolume)
                     .Take(10)
-                    .Select(kvp => kvp.Key);
-                return _fundamental.Intersect(alt);
+                    .Select(x => x.Symbol)
+                    .ToHashSet();
+                Plot("Universe", "Raw", alt.Count);
+                return _fundamental
+                    .Where(c => alt.Contains(c.Symbol))
+                    .OrderByDescending(c => c.DollarVolume)
+                    .Select(c => c.Symbol)
+                    .Take(100);
             });
 
             // Rebalance before market open to trade today's intersection.
@@ -58,7 +52,7 @@ namespace QuantConnect.Algorithm.CSharp
 
         private void Rebalance()
         {
-            if (_universe.Selected == null || _universe.Selected.Count == 0)
+            if (_universe.Selected.Count == 0)
             {
                 return;
             }
