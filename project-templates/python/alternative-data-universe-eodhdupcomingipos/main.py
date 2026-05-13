@@ -1,6 +1,5 @@
 # region imports
 from AlgorithmImports import *
-from QuantConnect.DataSource.EODHD import DealType
 # endregion
 
 class EODHDUpcomingIPOsUniverseAlgorithm(QCAlgorithm):
@@ -20,7 +19,7 @@ class EODHDUpcomingIPOsUniverseAlgorithm(QCAlgorithm):
     def _select_assets(self, data: List[EODHDUpcomingIPOs]) -> List[Symbol]:
         # Keep expected/priced IPOs with a confirmed date and a >$1 minimum across the price band.
         return [d.symbol for d in data
-                if d.ipo_date and d.deal_type in [DealType.EXPECTED, DealType.PRICED]
+                if d.ipo_date and d.deal_type in [EODHD.DealType.EXPECTED, EODHD.DealType.PRICED]
                 and (prices := [x for x in [d.lowest_price, d.highest_price, d.offer_price] if x])
                 and min(prices) > 1]
 

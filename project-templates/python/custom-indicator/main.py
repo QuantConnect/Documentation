@@ -9,7 +9,7 @@ class CustomIndicatorsAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         # Request daily SPY data to feed the indicators to generate trade signals and trade.
-        self._spy = self.add_equity("SPY")
+        self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW)
         # Create a custom money flow index to generate a trade signal.
         self._custom_mfi = CustomMoneyFlowIndex(20)
         # Warm up for immediate usage of indicators.

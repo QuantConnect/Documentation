@@ -24,11 +24,14 @@ namespace QuantConnect.Algorithm.CSharp
             {
                 // Keep expected/priced IPOs with a confirmed date and an above-$1 price band.
                 return from d in data.OfType<EODHDUpcomingIPOs>()
+                       let prices = new[] { d.LowestPrice, d.HighestPrice, d.OfferPrice }
+                                        .Where(x => x.HasValue)
+                                        .Select(x => x.Value)
+                                        .ToList()
                        where _dealTypesWanted.Contains(d.DealType)
                           && d.IpoDate.HasValue
-                          && new[] { d.LowestPrice, d.HighestPrice, d.OfferPrice }
-                                .Where(x => x.HasValue)
-                                .Min().Value > 1m
+                          && prices.Count > 0
+                          && prices.Min() > 1m
                        select d.Symbol;
             });
 
