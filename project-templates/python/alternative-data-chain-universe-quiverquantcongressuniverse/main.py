@@ -5,7 +5,7 @@ from AlgorithmImports import *
 
 class QuiverQuantCongressChainedUniverseAlgorithm(QCAlgorithm):
 
-    _fundamental = []
+    _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
