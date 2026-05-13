@@ -41,7 +41,7 @@ class CoinGeckoUniverseAlgorithm(QCAlgorithm):
         if not self._universe.selected:
             return
         # Filter for securities with valid prices.
-        securities = [s for s in self._universe.selected if self.securities[s].price > 0]
+        securities = [s for s in self._universe.selected if self.securities[s].price]
         if not securities:
             return
         weight = 1 / len(securities)
