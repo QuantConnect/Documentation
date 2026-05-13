@@ -8,6 +8,7 @@ class QuiverQuantCongressUniverseAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        self.settings.seed_initial_prices = True
 
         self.universe_settings.resolution = Resolution.DAILY
         # Universe of US Equities recently bought by US Congress members in trades over $200K.
