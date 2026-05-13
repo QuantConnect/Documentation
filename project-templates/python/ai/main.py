@@ -39,7 +39,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.week_start(), self.time_rules.at(8, 0), self._my_training_method)
 
-    def _get_features_and_labels(self, lookback=5):
+    def _get_features_and_labels(self, lookback: int = 5) -> tuple[np.ndarray, np.ndarray]:
         lookback_series = []
         # Train and predict on N-period differencing data which is more normalized and stationary.
         data = pd.Series([bar.close for bar in self._spy.session][::-1])
@@ -55,7 +55,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         # Prepare the processed training data.
         features, labels = self._get_features_and_labels()
         # Define the loss function using MSE for this example.
-        def loss_mse(target_y, predicted_y):
+        def loss_mse(target_y: np.ndarray, predicted_y: tf.Tensor) -> tf.Tensor:
             return tf.reduce_mean(tf.square(target_y - predicted_y))
         # Train the model with Adam optimizer.
         optimizer = tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
@@ -65,7 +65,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
             jac = t.gradient(loss, self._model.trainable_weights)
             optimizer.apply_gradients(zip(jac, self._model.trainable_weights))
 
-    def on_data(self, data) -> None:
+    def on_data(self, data: Slice) -> None:
         if data.bars:
             # Get prediction using the updated features.
             new_features = self._get_features_and_labels()[0]
