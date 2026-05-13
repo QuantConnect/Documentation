@@ -85,7 +85,7 @@ public class EmaCrossUniverseSelectionAlgorithm : QCAlgorithm
         SetCash(100000);
         Settings.SeedInitialPrices = true;
         UniverseSettings.Leverage = 2.0m;
-        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Resolution = Resolution.Minute;
 
         _universe = AddUniverse(coarse =>
         {
