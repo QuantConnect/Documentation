@@ -1,0 +1,99 @@
+<p>The following example assistants configurations demonstrate common use cases.</p>
+
+<h4>Example 1: News Summarizer</h4>
+<p>This example assistant reads the latest oil news once a day and emails you a summary.</p>
+
+<p>System prompt:</p>
+<blockquote>
+  <p>
+    Read the financial news from the past 24 hours about crude oil, OPEC, and US energy policy.
+    Filter to the items that materially affect the oil price.
+    Write a summary of three to five bullets, each one sentence, naming the event and why it matters.
+    Send the summary by email.
+  </p>
+</blockquote>
+
+<p>Tools:</p>
+<ul>
+  <li><code>financial_data_news_articles</code></li>
+  <li><code>financial_data_web_get</code></li>
+  <li><code>send_email_notification</code></li>
+</ul>
+
+<p>Schedule: Daily 30 minutes before US market open.</p>
+
+
+<h4>Exmaple 2: ML Trainer</h4>
+<p>This example assistant runs a research notebook daily, evaluates the fit, and saves the model to the <a href='/docs/v2/cloud-platform/object-store'>Object Store</a> if it passes a quality bar.</p>
+
+<p>System prompt:</p>
+<blockquote>
+  <p>
+    Execute the model_training notebook in the current project.
+    Read the fit metrics from the last cell's output.
+    If the R-squared is above 0.4 and the residuals pass an ADF stationarity test, serialize the trained model and save it to the Object Store under the key "latest_model".
+    If the fit fails either check, do not overwrite the existing model and send an email summarizing the failure.
+  </p>
+</blockquote>
+
+<p>Tools:</p>
+<ul>
+  <li><code>jupyter_read_notebook</code></li>
+  <li><code>jupyter_execute_notebook</code></li>
+  <li><code>jupyter_read_cell</code></li>
+  <li><code>object_store_set</code></li>
+  <li><code>send_email_notification</code></li>
+</ul>
+
+<p>Schedule: Daily after US market close.</p>
+
+
+<h4>Example 3: Optimization Stability Monitor</h4>
+<p>This example assistant runs a weekly optimization on the project, measures how much the Sharpe ratios vary across the parameter combinations, and sends a Telegram alert only when that variation has grown enough to suggest the strategy is becoming sensitive to its parameters.</p>
+
+<p>System prompt:</p>
+<blockquote>
+  <p>
+    Run an optimization on the current project.
+    Read the resulting backtests and compute the standard deviation of their Sharpe ratios across all the parameter combinations.
+    Compare to the previous standard deviation stored in the Object Store under the key "param_stability_std".
+    If the new value is more than 30% above the previous, classify the parameters as less_stable and send a Telegram alert with the structured diagnosis.
+    Otherwise, classify as stable and do not send any notification.
+    Save the new standard deviation to the Object Store either way.
+  </p>
+</blockquote>
+
+<p>Tools:</p>
+<ul>
+  <li><code>create_optimization</code></li>
+  <li><code>read_optimization</code></li>
+  <li><code>object_store_get</code></li>
+  <li><code>object_store_set</code></li>
+  <li><code>send_telegram_notification</code></li>
+</ul>
+
+<p>Schedule: Weekly on Sunday at noon.</p>
+
+<p>Output schema:</p>
+<pre><code>{
+  "type": "object",
+  "properties": {
+    "verdict": {
+      "type": "string",
+      "enum": ["stable", "less_stable"]
+    },
+    "current_sharpe_std": {
+      "type": "number",
+      "description": "Standard deviation of Sharpe ratios across this week's optimization."
+    },
+    "previous_sharpe_std": {
+      "type": "number",
+      "description": "Standard deviation from the previous run, read from the Object Store."
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "What action to take, in one sentence."
+    }
+  },
+  "required": ["verdict", "current_sharpe_std", "previous_sharpe_std", "recommendation"]
+}</code></pre>
