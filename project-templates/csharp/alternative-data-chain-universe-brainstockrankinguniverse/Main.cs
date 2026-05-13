@@ -9,7 +9,7 @@ namespace QuantConnect.Algorithm.CSharp
 {
     public class BrainStockRankingChainedUniverseAlgorithm : QCAlgorithm
     {
-        private List<Symbol> _fundamental = [];
+        private List<Fundamental> _fundamental = [];
         private Universe _universe;
 
         public override void Initialize()
@@ -19,22 +19,26 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             Settings.SeedInitialPrices = true;
             UniverseSettings.Resolution = Resolution.Minute;
-            // First universe selects top 100 US Equities by dollar volume.
+            // First universe: store all US Equity fundamentals; emits Universe.Unchanged.
             AddUniverse(fundamental =>
             {
-                _fundamental = (from c in fundamental
-                                orderby c.DollarVolume descending
-                                select c.Symbol).Take(100).ToList();
+                _fundamental = [..fundamental];
                 return Universe.Unchanged;
             });
-            // Second universe filters for positive Brain ML rankings across all horizons.
+            // Second universe: positive Brain ML rankings across 2-, 3-, and 5-day horizons, ranked by dollar volume.
             _universe = AddUniverse<BrainStockRankingUniverse>(altCoarse =>
             {
-                // Keep symbols with positive rankings across 2-day, 3-day, and 5-day horizons.
-                var alt = from d in altCoarse.OfType<BrainStockRankingUniverse>()
-                          where d.Rank2Days > 0m && d.Rank3Days > 0m && d.Rank5Days > 0m
-                          select d.Symbol;
-                return _fundamental.Intersect(alt);
+                // Keep names with consistent positive momentum across all three horizons.
+                var alt = altCoarse.OfType<BrainStockRankingUniverse>()
+                    .Where(d => d.Rank2Days > 0m && d.Rank3Days > 0m && d.Rank5Days > 0m)
+                    .Select(d => d.Symbol)
+                    .ToHashSet();
+                Plot("Universe", "Raw", alt.Count);
+                return _fundamental
+                    .Where(c => alt.Contains(c.Symbol))
+                    .OrderByDescending(c => c.DollarVolume)
+                    .Select(c => c.Symbol)
+                    .Take(100);
             });
             // Rebalance before market open to trade today's intersection.
             Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
@@ -42,11 +46,11 @@ namespace QuantConnect.Algorithm.CSharp
 
         private void Rebalance()
         {
-            if (_universe.Selected == null || _universe.Selected.Count == 0)
+            if (_universe.Selected.Count == 0)
             {
                 return;
             }
-            var weight = 1m / _universe.Selected.Count;
+            var weight = _universe.Selected.Count >= 10 ? 1m / _universe.Selected.Count : 0.1m;
             var targets = _universe.Selected
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();

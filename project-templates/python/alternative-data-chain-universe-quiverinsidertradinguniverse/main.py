@@ -5,7 +5,7 @@ from AlgorithmImports import *
 
 class QuiverInsiderTradingChainedUniverseAlgorithm(QCAlgorithm):
 
-    _fundamental: list[Symbol] = []
+    _fundamental: List[Fundamental] = []
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
@@ -13,9 +13,9 @@ class QuiverInsiderTradingChainedUniverseAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         self.settings.seed_initial_prices = True
         self.universe_settings.resolution = Resolution.MINUTE
-        # First universe: top 100 US Equities by dollar volume; emits Universe.UNCHANGED.
+        # First universe: store all US Equity fundamentals; emits Universe.UNCHANGED.
         self.add_universe(self._fundamental_filter)
-        # Second universe: 10 largest insider-trading dollar volumes, intersected with the fundamental list.
+        # Second universe: 10 largest insider-trading dollar volumes, ranked by dollar volume.
         self._universe = self.add_universe(QuiverInsiderTradingUniverse, self._select_assets)
         # Rebalance before market open to trade today's intersection.
         self.schedule.on(
@@ -25,8 +25,7 @@ class QuiverInsiderTradingChainedUniverseAlgorithm(QCAlgorithm):
         )
 
     def _fundamental_filter(self, fundamental: List[Fundamental]) -> Universe.UnchangedUniverse:
-        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume)
-        self._fundamental = [c.symbol for c in sorted_by_dollar_volume[-100:]]
+        self._fundamental = fundamental
         return Universe.UNCHANGED
 
     def _select_assets(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -> List[Symbol]:
@@ -36,8 +35,13 @@ class QuiverInsiderTradingChainedUniverseAlgorithm(QCAlgorithm):
             if not d.price_per_share:
                 continue
             dollar_volume[d.symbol] = dollar_volume.get(d.symbol, 0) + (d.shares or 0) * d.price_per_share
-        alt = [s for s, _ in sorted(dollar_volume.items(), key=lambda kv: kv[1])[-10:]]
-        return [s for s in self._fundamental if s in alt]
+        alt = {s for s, _ in sorted(dollar_volume.items(), key=lambda kv: kv[1])[-10:]}
+        self.plot('Universe', 'Raw', len(alt))
+        # Among the matches, keep the 100 most liquid by dollar volume.
+        return [c.symbol for c in sorted(
+            [c for c in self._fundamental if c.symbol in alt],
+            key=lambda c: c.dollar_volume, reverse=True
+        )[:100]]
 
     def _rebalance(self) -> None:
         if not self._universe.selected:

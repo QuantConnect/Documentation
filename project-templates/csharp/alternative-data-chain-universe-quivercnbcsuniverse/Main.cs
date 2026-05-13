@@ -10,7 +10,7 @@ namespace QuantConnect.Algorithm.CSharp
 {
     public class QuiverCNBCsChainedUniverseAlgorithm : QCAlgorithm
     {
-        private List<Symbol> _fundamental = new();
+        private List<Fundamental> _fundamental = [];
         private Universe _universe;
 
         public override void Initialize()
@@ -24,19 +24,24 @@ namespace QuantConnect.Algorithm.CSharp
             // First universe: top 100 US Equities by dollar volume; emits Universe.Unchanged.
             AddUniverse(fundamental =>
             {
-                _fundamental = (from c in fundamental
-                                orderby c.DollarVolume descending
-                                select c.Symbol).Take(100).ToList();
+                _fundamental = [..fundamental];
                 return Universe.Unchanged;
             });
             // Second universe: 3+ BUY CNBC opinions, intersected with the fundamental list.
             _universe = AddUniverse<QuiverCNBCsUniverse>(altCoarse =>
             {
-                // Group raw CNBC opinions by ticker and keep names with 3+ BUY recommendations.
-                var alt = from g in altCoarse.OfType<QuiverCNBCsUniverse>().GroupBy(x => x.Symbol)
-                          where g.Count(x => x.Direction == OrderDirection.Buy) >= 3
-                          select g.Key;
-                return _fundamental.Intersect(alt);
+                // Group raw CNBC opinions by ticker and keep names with 2+ BUY recommendations.
+                var alt = altCoarse.OfType<QuiverCNBCsUniverse>()
+                    .GroupBy(x => x.Symbol)
+                    .Where(g => g.Count(x => x.Direction == OrderDirection.Buy) >= 2)
+                    .Select(g => g.Key)
+                    .ToHashSet();
+                Plot("Universe", "Raw", alt.Count);
+                return _fundamental
+                    .Where(c => alt.Contains(c.Symbol))
+                    .OrderByDescending(c => c.DollarVolume)
+                    .Select(c => c.Symbol)
+                    .Take(100);
             });
 
             // Rebalance before market open to trade today's intersection.
@@ -45,12 +50,12 @@ namespace QuantConnect.Algorithm.CSharp
 
         private void Rebalance()
         {
-            if (_universe.Selected == null || _universe.Selected.Count == 0)
+            if (_universe.Selected.Count == 0)
             {
                 return;
             }
 
-            var weight = 1m / _universe.Selected.Count;
+            var weight = _universe.Selected.Count >= 10 ? 1m / _universe.Selected.Count : 0.1m;
             var targets = _universe.Selected
                 .Select(symbol => new PortfolioTarget(symbol, weight))
                 .ToList();

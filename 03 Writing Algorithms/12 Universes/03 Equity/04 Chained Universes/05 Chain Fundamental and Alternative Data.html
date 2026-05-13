@@ -7,90 +7,96 @@
  <a href="/docs/v2/writing-algorithms/datasets/quiver-quantitative/cnbc-trading#08-Universe-Selection">
   QuiverCNBCsUniverse alternative universe
  </a>
- . It first selects the 100 most liquid US Equities and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.
+ . It stores every US Equity fundamental, intersects them with the names CNBC commentator Jim Cramer mentions, and trades the 100 most liquid intersection members each morning.
 </p>
 <div class="section-example-container testable">
  <pre class="csharp">public class ChainedUniverseAlgorithm : QCAlgorithm
 {
-    private List&lt;Symbol&gt; _fundamental = new();
+    private List&lt;Fundamental&gt; _fundamental = [];
+    private Universe _universe;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-
-        // Filter the top 100 liquid equities of the last trading day, and save the symbols for the next filtering.
+        Settings.SeedInitialPrices = true;
+        UniverseSettings.Resolution = Resolution.Minute;
+        // First universe: store all US Equity fundamentals; emits Universe.Unchanged.
         AddUniverse(fundamental =&gt;
         {
-            _fundamental = (from c in fundamental
-                orderby c.DollarVolume descending
-                select c.Symbol).Take(100).ToList();
+            _fundamental = [..fundamental];
             return Universe.Unchanged;
         });
-        // Filter the equities being commented on by CNBC analyst Cramer, then select the ones that intersect with the fundamental universe.
-        AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
+        // Second universe: equities mentioned by Cramer, ranked by dollar volume.
+        _universe = AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
         {
-            var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
-                where d.Traders.ToLower().Contains("cramer")
-                select d.Symbol;
-            return _fundamental.Intersect(followers);
+            var alt = altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
+                .Where(d =&gt; d.Traders.ToLower().Contains("cramer"))
+                .Select(d =&gt; d.Symbol)
+                .ToHashSet();
+            Plot("Universe", "Raw", alt.Count);
+            return _fundamental
+                .Where(c =&gt; alt.Contains(c.Symbol))
+                .OrderByDescending(c =&gt; c.DollarVolume)
+                .Select(c =&gt; c.Symbol)
+                .Take(100);
         });
+        // Rebalance before market open to trade today's intersection.
+        Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(9, 0, 0), Rebalance);
     }
 
-    public override void OnSecuritiesChanged(SecurityChanges changes)
+    private void Rebalance()
     {
-        // Request CNBC data for the selected stocks.
-        foreach (var added in changes.AddedSecurities)
+        if (_universe.Selected.Count == 0)
         {
-            AddData&lt;QuiverCNBCs&gt;(added.Symbol);
+            return;
         }
-    }
-
-    public override void OnData(Slice data)
-    {
-        foreach (var dataPoint in data.Get&lt;QuiverCNBCs&gt;().SelectMany(x=&gt; x.Value.OfType&lt;QuiverCNBC&gt;()))
-        {
-            Debug($"{dataPoint.Symbol} traders at {data.Time}: {dataPoint.Traders}");
-        }
+        var weight = _universe.Selected.Count &gt;= 10 ? 1m / _universe.Selected.Count : 0.1m;
+        var targets = _universe.Selected
+            .Select(symbol =&gt; new PortfolioTarget(symbol, weight))
+            .ToList();
+        SetHoldings(targets, true);
     }
 }</pre>
 <pre class="python">from AlgorithmImports import *
 
+
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
-    _fundamental = []
+    _fundamental: List[Fundamental] = []
 
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        self.add_universe(self._fundamental_filter_function)
-        self.add_universe(QuiverCNBCsUniverse, self._mad_money_selection)
-    
-    def _fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        # Filter the top 100 liquid equities of the last trading day, and save the symbols for the next filtering.
-        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True) 
-        self._fundamental = [c.symbol for c in sorted_by_dollar_volume[:100]]
+        self.settings.seed_initial_prices = True
+        self.universe_settings.resolution = Resolution.MINUTE
+        # First universe: store all US Equity fundamentals; emits Universe.UNCHANGED.
+        self.add_universe(self._fundamental_filter)
+        # Second universe: equities mentioned by Cramer, ranked by dollar volume.
+        self._universe = self.add_universe(QuiverCNBCsUniverse, self._select_assets)
+        # Rebalance before market open to trade today's intersection.
+        self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.at(9, 0, 0), self._rebalance)
+
+    def _fundamental_filter(self, fundamental: List[Fundamental]) -&gt; Universe.UnchangedUniverse:
+        self._fundamental = fundamental
         return Universe.UNCHANGED
-    
-    def _mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
-        # Filter the equities being commented on by CNBC analyst Cramer, then select the ones that intersect with the fundamental universe.
-        madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
-        return list(set(self._fundamental) &amp; set(madmoney))
-    
-    def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Request CNBC data for the selected stocks.
-        for added in changes.added_securities:
-            self.add_data(QuiverCNBCs, added.symbol)
-    
-    def on_data(self, data: Slice) -&gt; None:
-        # Prices in the slice from the universe selection
-        # Alternative data in a slice from OnSecuritiesChanged Addition
-        # for ticker,bar in data.bars.items():
-        #     pass
-        for dataset_symbol, data_points in data.get(QuiverCNBCs).items():
-            for data_point in data_points:
-                self.debug(f"{dataset_symbol} traders at {data.time}: {data_point.traders}")
+
+    def _select_assets(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+        # Keep symbols mentioned by Cramer.
+        alt = {d.symbol for d in alt_coarse if 'cramer' in d.traders.lower()}
+        self.plot('Universe', 'Raw', len(alt))
+        return [c.symbol for c in sorted(
+            [c for c in self._fundamental if c.symbol in alt],
+            key=lambda c: c.dollar_volume, reverse=True
+        )[:100]]
+
+    def _rebalance(self) -&gt; None:
+        if not self._universe.selected:
+            return
+        weight = min(1 / len(self._universe.selected), 0.1)
+        targets = [PortfolioTarget(symbol, weight) for symbol in self._universe.selected]
+        self.set_holdings(targets, True)
 </pre>
 </div>
