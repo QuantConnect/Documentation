@@ -431,6 +431,30 @@
 			"folder": "crypto-fred-rates-toggle",
 			"description": "Rotates between BTCUSD and gold-backed PAXGUSD on Kraken based on the 3-month change in the FRED Fed Funds Rate — long BTC when easing, gold when hiking or flat.",
 			"tags": ["Crypto", "alternative-data", "macro", "regime-switch", "indicators", "history", "fred", "us-federal-reserve"]
+		},
+		{
+			"folder": "equity-pairs-trading-cointegration",
+			"name": "Equity Pairs Trading (Cointegration)",
+			"description": "Trades the spread between KO and PEP using a 60-day OLS hedge ratio and z-score thresholds for entries/exits.",
+			"spec": "Assets: KO, PEP. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Compute hedge ratio via 60-day rolling OLS on closes; z-score the spread; long-spread when z<-2 (long KO, short PEP); short-spread when z>2; exit when |z|<0.5. Demonstrates: history requests for OLS, RollingWindow, dollar-neutral sizing. Edge case: re-fit hedge ratio weekly.",
+			"tags": ["Equity", "pairs-trading", "statistical-arbitrage", "history"],
+			"reference_template": "history-and-etf-universe"
+		},
+		{
+			"folder": "equity-momentum-cross-sectional-decile",
+			"name": "Equity Cross-Sectional Momentum Decile",
+			"description": "Selects the top decile of S&P 500 stocks by 12-1 month momentum and rebalances monthly into an equal-weight long portfolio.",
+			"spec": "Universe: S&P 500 (etf-constituents on SPY) capped at 100 by dollar volume. Minute. 2022-01-01 to 2024-12-31, $250k. Compute 252-21 day return (12-1 momentum) via history. Monthly schedule selects top decile (~10 names) and equal-weights. Demonstrates: ETF universe, history-based factor, monthly rebalance, set_holdings on top decile.",
+			"tags": ["Equity", "momentum", "etf-universe", "factor"],
+			"reference_template": "history-and-etf-universe"
+		},
+		{
+			"folder": "equity-roc-momentum-rank",
+			"name": "Equity ROC Momentum Rank",
+			"description": "Ranks 10 sector ETFs by 60-day ROC monthly and equal-weights the top 3 with a scheduled rebalance.",
+			"spec": "Assets: XLK,XLF,XLE,XLV,XLI,XLB,XLY,XLP,XLU,XLRE. Daily. 2022-01-01 to 2024-12-31, $200k. ROC(60). Monthly schedule (first trading day) ranks ETFs and equal-weights the top 3. Demonstrates: multi-symbol indicator dictionary, sector rotation, scheduled monthly rebalance. Edge case: liquidate names that drop out of the top 3.",
+			"tags": ["Equity", "indicators", "roc", "sector-rotation"],
+			"reference_template": "equities-static-universe"
 		}
 	]
 }
