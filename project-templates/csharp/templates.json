@@ -471,6 +471,38 @@
 			"spec": "Assets: SPY, TLT. Minute. 2022-01-01 to 2024-12-31, $100k. Set holdings 60/40 on first bar; schedule a quarterly rebalance (first business day of Jan/Apr/Jul/Oct) to retarget. Demonstrates: scheduled events with quarter_start rule, portfolio rebalancing logic, simple set_holdings. Edge case: drift threshold of 5% to skip no-op rebalances.",
 			"tags": ["Equity", "asset-allocation", "scheduled-event", "rebalance"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-all-weather-portfolio",
+			"name": "Equity All-Weather Portfolio",
+			"description": "Implements Ray Dalio's All-Weather: 30% SPY, 40% TLT, 15% IEF, 7.5% GLD, 7.5% DBC with annual rebalance.",
+			"spec": "Assets: SPY, TLT, IEF, GLD, DBC. Minute. 2022-01-01 to 2024-12-31, $200k. Set target weights on first bar; annual schedule retargets. Demonstrates: multi-asset allocation, scheduled annual rebalance, holdings drift monitoring. Edge case: skip GLD/DBC if missing in early data.",
+			"tags": ["Equity", "all-weather", "asset-allocation", "etf"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-opening-range-breakout",
+			"name": "Equity Opening Range Breakout",
+			"description": "Trades SPY breakouts of the 30-minute opening range, going long above the high and short below the low until end of day.",
+			"spec": "Asset: SPY. Minute resolution. 2024-09-01 to 2024-12-31, $100k. Build opening range 9:30-10:00; long on first cross above range high; short on first cross below range low. Force liquidate at 15:55. Demonstrates: minute resolution, scheduled events for ORB window, end-of-day flat. Edge case: only one trade per day.",
+			"tags": ["Equity", "opening-range-breakout", "intraday", "scheduled-event"],
+			"reference_template": "intraday-indicator-scans"
+		},
+		{
+			"folder": "equity-turn-of-month-effect",
+			"name": "Equity Turn-of-Month Effect",
+			"description": "Holds SPY only on the last 4 and first 3 trading days of each month and stays in cash otherwise.",
+			"spec": "Asset: SPY. Minute. 2022-01-01 to 2024-12-31, $100k. Use trading calendar to identify last 4 and first 3 trading days of each month; hold SPY on those days, otherwise liquidate. Demonstrates: trading calendar API, scheduled events with custom date logic. Edge case: handle month boundary spanning weekends/holidays.",
+			"tags": ["Equity", "calendar-anomaly", "scheduled-event", "trading-calendar"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-monthly-roc-rotation",
+			"name": "Equity Monthly ROC Rotation",
+			"description": "Rotates monthly into the 3 ETFs (SPY, EFA, EEM, AGG, GLD) with the highest 60-day ROC, equal-weighted.",
+			"spec": "Assets: SPY, EFA, EEM, AGG, GLD. Minute. 2022-01-01 to 2024-12-31, $100k. ROC(60) per ETF. Monthly schedule picks top 3 and equal-weights; liquidates the others. Demonstrates: ROC across asset classes, monthly schedule, set_holdings 1/3 each. Edge case: hold cash if all ROCs negative.",
+			"tags": ["Equity", "asset-rotation", "roc", "scheduled-event"],
+			"reference_template": "equities-static-universe"
 		}
 	]
 }
