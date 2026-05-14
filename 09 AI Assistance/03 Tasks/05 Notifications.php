@@ -1,6 +1,6 @@
 <p>
   When a task runs, you can see the output in the conversation view.
-  To be notified when a task competes or encounters an error, you can set up some notifications.
+  To be notified when a task completes or encounters an error, you can set up some notifications.
   We offer email, SMS, and Telegram notifications.
 </p>
 
