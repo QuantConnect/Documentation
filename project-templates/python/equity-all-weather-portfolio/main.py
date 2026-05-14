@@ -18,7 +18,6 @@ class AllWeatherPortfolioAlgorithm(QCAlgorithm):
             "DBC": 0.075,
         }
 
-        self._symbols = {}
         for ticker, target in targets.items():
             security = self.add_equity(ticker, Resolution.MINUTE)
             security.target = target

@@ -35,7 +35,7 @@ class SP500Momentum(QCAlgorithm):
             self._rebalance,
         )
 
-    def _select_assets(self, fundamentals: list[Fundamental]):
+    def _select_assets(self, fundamentals: list[Fundamental]) -> list[Symbol] | Universe.UnchangedUniverse:
         # Stream each constituent's adjusted price into its momentum indicator.
         ready = [
             f for f in fundamentals

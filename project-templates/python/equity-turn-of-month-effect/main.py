@@ -12,7 +12,7 @@ class MonthlyEdgeStrategy(QCAlgorithm):
         self.set_cash(100000)
 
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
-        self._month_trading_days = []
+        self._month_trading_days: list[date] = []
         self._current_month = None
 
         self.schedule.on(
@@ -39,7 +39,7 @@ class MonthlyEdgeStrategy(QCAlgorithm):
         elif not is_hold and self.portfolio[self._spy].invested:
             self.liquidate(self._spy)
 
-    def _get_month_trading_days(self, anchor_date):
+    def _get_month_trading_days(self, anchor_date: date) -> list[date]:
         start = datetime(anchor_date.year, anchor_date.month, 1)
         last_day = calendar.monthrange(anchor_date.year, anchor_date.month)[1]
         end = datetime(anchor_date.year, anchor_date.month, last_day)
