@@ -455,6 +455,22 @@
 			"spec": "Assets: XLK,XLF,XLE,XLV,XLI,XLB,XLY,XLP,XLU,XLRE. Daily. 2022-01-01 to 2024-12-31, $200k. ROC(60). Monthly schedule (first trading day) ranks ETFs and equal-weights the top 3. Demonstrates: multi-symbol indicator dictionary, sector rotation, scheduled monthly rebalance. Edge case: liquidate names that drop out of the top 3.",
 			"tags": ["Equity", "indicators", "roc", "sector-rotation"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-cmf-money-flow",
+			"name": "Equity Chaikin Money Flow",
+			"description": "Trades XLF using ChaikinMoneyFlow(20) — long when CMF > 0.1 and short when CMF < -0.1, flat in between.",
+			"spec": "Asset: XLF. Minute resolution. 2022-01-01 to 2024-12-31, $100k. ChaikinMoneyFlow(20). Long when CMF > 0.10; short when CMF < -0.10; flat in the dead zone. Demonstrates: CMF volume indicator, threshold-based regime, plotting indicator on subchart. Edge case: rebalance only on signal change.",
+			"tags": ["Equity", "indicators", "cmf", "volume"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-sixty-forty-portfolio",
+			"name": "Equity 60/40 Portfolio",
+			"description": "Holds a static 60% SPY / 40% TLT allocation with quarterly rebalance back to target weights.",
+			"spec": "Assets: SPY, TLT. Minute. 2022-01-01 to 2024-12-31, $100k. Set holdings 60/40 on first bar; schedule a quarterly rebalance (first business day of Jan/Apr/Jul/Oct) to retarget. Demonstrates: scheduled events with quarter_start rule, portfolio rebalancing logic, simple set_holdings. Edge case: drift threshold of 5% to skip no-op rebalances.",
+			"tags": ["Equity", "asset-allocation", "scheduled-event", "rebalance"],
+			"reference_template": "equities-static-universe"
 		}
 	]
 }

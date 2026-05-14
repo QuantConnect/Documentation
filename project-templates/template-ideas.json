@@ -4,7 +4,7 @@
       "folder": "equity-atr-volatility-stop",
       "name": "Equity ATR Volatility Stop",
       "description": "Holds SPY long with an ATR(14) chandelier-style trailing stop set 3x ATR below the trailing high.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. ATR(14). Buy on first bar; maintain trailing high; if close < trailing_high - 3*ATR, liquidate and re-enter on next bar. Demonstrates: ATR indicator, manual trailing-stop pattern, plotting stop level. Edge case: reset trailing high after each liquidation.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. ATR(14). Buy on first bar; maintain trailing high; if close < trailing_high - 3*ATR, liquidate and re-enter on next bar. Demonstrates: ATR indicator, manual trailing-stop pattern, plotting stop level. Edge case: reset trailing high after each liquidation.",
       "tags": [
         "Equity",
         "indicators",
@@ -17,7 +17,7 @@
       "folder": "equity-obv-divergence",
       "name": "Equity OBV Divergence",
       "description": "Detects bullish/bearish On-Balance Volume divergence on SPY versus a 20-day price ROC and trades reversals.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. OBV indicator and ROC(20) on price. Bullish divergence: price ROC < 0 but OBV ROC > 0 -> long. Bearish opposite -> short. Demonstrates: OBV automatic indicator, IndicatorExtensions to compute ROC of OBV, divergence logic. Edge case: require 5-day confirmation.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. OBV indicator and ROC(20) on price. Bullish divergence: price ROC < 0 but OBV ROC > 0 -> long. Bearish opposite -> short. Demonstrates: OBV automatic indicator, IndicatorExtensions to compute ROC of OBV, divergence logic. Edge case: require 5-day confirmation.",
       "tags": [
         "Equity",
         "indicators",
@@ -27,23 +27,10 @@
       "reference_template": "equities-static-universe"
     },
     {
-      "folder": "equity-cmf-money-flow",
-      "name": "Equity Chaikin Money Flow",
-      "description": "Trades XLF using ChaikinMoneyFlow(20) — long when CMF > 0.1 and short when CMF < -0.1, flat in between.",
-      "spec": "Asset: XLF. Daily resolution. 2022-01-01 to 2024-12-31, $100k. ChaikinMoneyFlow(20). Long when CMF > 0.10; short when CMF < -0.10; flat in the dead zone. Demonstrates: CMF volume indicator, threshold-based regime, plotting indicator on subchart. Edge case: rebalance only on signal change.",
-      "tags": [
-        "Equity",
-        "indicators",
-        "cmf",
-        "volume"
-      ],
-      "reference_template": "equities-static-universe"
-    },
-    {
       "folder": "equity-fisher-transform-reversal",
       "name": "Equity Fisher Transform Reversal",
       "description": "Trades NDX-tracking QQQ on FisherTransform extreme readings, fading values above 2.0 and below -2.0.",
-      "spec": "Asset: QQQ. Daily resolution. 2022-01-01 to 2024-12-31, $100k. FisherTransform(10). Short when value > 2 and turning down; long when < -2 and turning up; exit on cross of 0. Demonstrates: FisherTransform indicator, RollingWindow on indicator value to detect turns. Edge case: only one position at a time.",
+      "spec": "Asset: QQQ. Minute resolution. 2022-01-01 to 2024-12-31, $100k. FisherTransform(10). Short when value > 2 and turning down; long when < -2 and turning up; exit on cross of 0. Demonstrates: FisherTransform indicator, RollingWindow on indicator value to detect turns. Edge case: only one position at a time.",
       "tags": [
         "Equity",
         "indicators",
@@ -56,7 +43,7 @@
       "folder": "equity-aroon-trend",
       "name": "Equity Aroon Trend",
       "description": "Trades SPY using AroonOscillator(25); enters long on cross above +50 and exits on cross below -50.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. AroonOscillator(25). Long when oscillator crosses above 50; exit when it crosses below -50. Demonstrates: Aroon indicator, threshold crossing pattern, plotting oscillator on subchart. Edge case: do not flip short — long-only.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. AroonOscillator(25). Long when oscillator crosses above 50; exit when it crosses below -50. Demonstrates: Aroon indicator, threshold crossing pattern, plotting oscillator on subchart. Edge case: do not flip short — long-only.",
       "tags": [
         "Equity",
         "indicators",
@@ -69,7 +56,7 @@
       "folder": "equity-williams-percent-r",
       "name": "Equity Williams %R",
       "description": "Trades IWM with WilliamsPercentR(14): long entries below -80 and exits above -20.",
-      "spec": "Asset: IWM. Daily resolution. 2022-01-01 to 2024-12-31, $100k. WilliamsPercentR(14). Long when %R < -80; exit when %R > -20. Demonstrates: Williams %R indicator, oversold reversion logic, plotting against -80/-20 reference lines. Edge case: hold cap of 5 trading days.",
+      "spec": "Asset: IWM. Minute resolution. 2022-01-01 to 2024-12-31, $100k. WilliamsPercentR(14). Long when %R < -80; exit when %R > -20. Demonstrates: Williams %R indicator, oversold reversion logic, plotting against -80/-20 reference lines. Edge case: hold cap of 5 trading days.",
       "tags": [
         "Equity",
         "indicators",
@@ -82,7 +69,7 @@
       "folder": "equity-cci-overbought",
       "name": "Equity Commodity Channel Index",
       "description": "Trades XLE on CCI(20) — long when CCI < -100 and exit at 0; short when CCI > 100 and cover at 0.",
-      "spec": "Asset: XLE. Daily resolution. 2022-01-01 to 2024-12-31, $100k. CommodityChannelIndex(20). Long when CCI < -100; short when CCI > 100; both exit at 0. Demonstrates: CCI indicator, mean-reversion with explicit short side, sector ETF. Edge case: skip orders during low-volatility (ATR filter).",
+      "spec": "Asset: XLE. Minute resolution. 2022-01-01 to 2024-12-31, $100k. CommodityChannelIndex(20). Long when CCI < -100; short when CCI > 100; both exit at 0. Demonstrates: CCI indicator, mean-reversion with explicit short side, sector ETF. Edge case: skip orders during low-volatility (ATR filter).",
       "tags": [
         "Equity",
         "indicators",
@@ -95,7 +82,7 @@
       "folder": "equity-mfi-divergence",
       "name": "Equity Money Flow Index",
       "description": "Uses the built-in MFI(14) on SPY for overbought/oversold reversion — distinct from the existing custom-indicator template.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. Built-in MoneyFlowIndex(14) (NOT custom). Long when MFI < 20; short when MFI > 80; exit at 50. Demonstrates: built-in MFI indicator (vs custom), automatic warm-up, plotting against thresholds. Edge case: do nothing while indicator is_ready False.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Built-in MoneyFlowIndex(14) (NOT custom). Long when MFI < 20; short when MFI > 80; exit at 50. Demonstrates: built-in MFI indicator (vs custom), automatic warm-up, plotting against thresholds. Edge case: do nothing while indicator is_ready False.",
       "tags": [
         "Equity",
         "indicators",
@@ -108,7 +95,7 @@
       "folder": "equity-tom-demark-sequential",
       "name": "Equity Tom DeMark Sequential",
       "description": "Trades SPY using TDSequential setup counts — buy on a 9-count buy setup and sell on a 9-count sell setup.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. Built-in TDSequential indicator (or custom 9-count if unavailable). Long on completed buy-setup of 9; flat/short on completed sell-setup. Demonstrates: pattern-based indicator, RollingWindow over closes, indicator plotting with annotations. Edge case: cancel partial setups on opposite-side bar.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Built-in TDSequential indicator (or custom 9-count if unavailable). Long on completed buy-setup of 9; flat/short on completed sell-setup. Demonstrates: pattern-based indicator, RollingWindow over closes, indicator plotting with annotations. Edge case: cancel partial setups on opposite-side bar.",
       "tags": [
         "Equity",
         "indicators",
@@ -121,7 +108,7 @@
       "folder": "equity-kama-adaptive-trend",
       "name": "Equity Kaufman Adaptive Moving Average",
       "description": "Trades QQQ using KaufmanAdaptiveMovingAverage(10,2,30) crossover with the close price.",
-      "spec": "Asset: QQQ. Daily resolution. 2022-01-01 to 2024-12-31, $100k. KaufmanAdaptiveMovingAverage(10,2,30). Long when close crosses above KAMA; flat when close crosses below. Demonstrates: KAMA indicator, adaptive smoothing, plotting overlay. Edge case: ignore signals during the warm-up period.",
+      "spec": "Asset: QQQ. Minute resolution. 2022-01-01 to 2024-12-31, $100k. KaufmanAdaptiveMovingAverage(10,2,30). Long when close crosses above KAMA; flat when close crosses below. Demonstrates: KAMA indicator, adaptive smoothing, plotting overlay. Edge case: ignore signals during the warm-up period.",
       "tags": [
         "Equity",
         "indicators",
@@ -134,7 +121,7 @@
       "folder": "equity-hull-moving-average-cross",
       "name": "Equity Hull Moving Average Cross",
       "description": "Trades SPY using HullMovingAverage(20) and HullMovingAverage(50) crossover signals.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. HullMovingAverage(20) and HullMovingAverage(50). Long on HMA20 cross above HMA50; flat/short on HMA20 cross below HMA50. Demonstrates: Hull MA indicator (low-lag MA), classical dual-MA cross. Edge case: minimum 1-bar gap between flips.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. HullMovingAverage(20) and HullMovingAverage(50). Long on HMA20 cross above HMA50; flat/short on HMA20 cross below HMA50. Demonstrates: Hull MA indicator (low-lag MA), classical dual-MA cross. Edge case: minimum 1-bar gap between flips.",
       "tags": [
         "Equity",
         "indicators",
@@ -147,7 +134,7 @@
       "folder": "equity-fractal-adaptive-ma",
       "name": "Equity Fractal Adaptive Moving Average",
       "description": "Trades SPY using FractalAdaptiveMovingAverage(16) crossover with closing price.",
-      "spec": "Asset: SPY. Daily resolution. 2022-01-01 to 2024-12-31, $100k. FractalAdaptiveMovingAverage(16). Long when close > FRAMA; flat when close < FRAMA. Demonstrates: FRAMA indicator (Hurst-based adaptive), plotting overlay, automatic warm-up. Edge case: only rebalance once per day.",
+      "spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. FractalAdaptiveMovingAverage(16). Long when close > FRAMA; flat when close < FRAMA. Demonstrates: FRAMA indicator (Hurst-based adaptive), plotting overlay, automatic warm-up. Edge case: only rebalance once per day.",
       "tags": [
         "Equity",
         "indicators",
@@ -160,7 +147,7 @@
       "folder": "equity-trix-momentum",
       "name": "Equity TRIX Momentum",
       "description": "Trades AAPL with TRIX(15) signal-line crossings — long on TRIX cross above 0, exit on cross below 0.",
-      "spec": "Asset: AAPL. Daily resolution. 2022-01-01 to 2024-12-31, $100k. TRIX(15) and a 9-period SMA signal. Long on TRIX cross above signal AND TRIX > 0; exit on cross below signal. Demonstrates: TRIX indicator, IndicatorExtensions.SMA on indicator output. Edge case: skip orders within first 30 bars.",
+      "spec": "Asset: AAPL. Minute resolution. 2022-01-01 to 2024-12-31, $100k. TRIX(15) and a 9-period SMA signal. Long on TRIX cross above signal AND TRIX > 0; exit on cross below signal. Demonstrates: TRIX indicator, IndicatorExtensions.SMA on indicator output. Edge case: skip orders within first 30 bars.",
       "tags": [
         "Equity",
         "indicators",
@@ -212,7 +199,7 @@
       "folder": "equity-dual-momentum-asset-class",
       "name": "Equity Dual Momentum",
       "description": "Implements Antonacci dual momentum across SPY, EFA, and AGG: pick the top 12-month return, fall back to AGG if absolute momentum is negative.",
-      "spec": "Assets: SPY, EFA, AGG. Daily resolution. 2022-01-01 to 2024-12-31, $100k. Monthly: compute 12-month return for each; pick the highest; if highest <= AGG return then hold AGG; else hold winner 100%. Demonstrates: history-based momentum, monthly schedule, conditional hold. Edge case: rebalance only on first trading day of month.",
+      "spec": "Assets: SPY, EFA, AGG. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Monthly: compute 12-month return for each; pick the highest; if highest <= AGG return then hold AGG; else hold winner 100%. Demonstrates: history-based momentum, monthly schedule, conditional hold. Edge case: rebalance only on first trading day of month.",
       "tags": [
         "Equity",
         "dual-momentum",
@@ -220,19 +207,6 @@
         "history"
       ],
       "reference_template": "history-and-etf-universe"
-    },
-    {
-      "folder": "equity-sixty-forty-portfolio",
-      "name": "Equity 60/40 Portfolio",
-      "description": "Holds a static 60% SPY / 40% TLT allocation with quarterly rebalance back to target weights.",
-      "spec": "Assets: SPY, TLT. Daily. 2022-01-01 to 2024-12-31, $100k. Set holdings 60/40 on first bar; schedule a quarterly rebalance (first business day of Jan/Apr/Jul/Oct) to retarget. Demonstrates: scheduled events with month_start rule, portfolio rebalancing logic, simple set_holdings. Edge case: drift threshold of 5% to skip no-op rebalances.",
-      "tags": [
-        "Equity",
-        "asset-allocation",
-        "scheduled-event",
-        "rebalance"
-      ],
-      "reference_template": "equities-static-universe"
     },
     {
       "folder": "equity-permanent-portfolio",
@@ -251,7 +225,7 @@
       "folder": "equity-all-weather-portfolio",
       "name": "Equity All-Weather Portfolio",
       "description": "Implements Ray Dalio's All-Weather: 30% SPY, 40% TLT, 15% IEF, 7.5% GLD, 7.5% DBC with annual rebalance.",
-      "spec": "Assets: SPY, TLT, IEF, GLD, DBC. Daily. 2022-01-01 to 2024-12-31, $200k. Set target weights on first bar; annual schedule retargets. Demonstrates: multi-asset allocation, scheduled annual rebalance, holdings drift monitoring. Edge case: skip GLD/DBC if missing in early data.",
+      "spec": "Assets: SPY, TLT, IEF, GLD, DBC. Minute. 2022-01-01 to 2024-12-31, $200k. Set target weights on first bar; annual schedule retargets. Demonstrates: multi-asset allocation, scheduled annual rebalance, holdings drift monitoring. Edge case: skip GLD/DBC if missing in early data.",
       "tags": [
         "Equity",
         "all-weather",
