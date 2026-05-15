@@ -17,7 +17,7 @@ class SP500Momentum(QCAlgorithm):
         self._top_decile_pct = 0.1
 
         # One momentum indicator per constituent, fed from the universe stream.
-        self._momentum_by_symbol = {}
+        self._momentum_by_symbol: dict[Symbol, MomentumPercent] = {}
 
         # Chain SPY ETF constituents into a fundamental universe.
         self.universe_settings.resolution = Resolution.MINUTE
@@ -35,7 +35,7 @@ class SP500Momentum(QCAlgorithm):
             self._rebalance,
         )
 
-    def _select_assets(self, fundamentals: list[Fundamental]):
+    def _select_assets(self, fundamentals: list[Fundamental]) -> list[Symbol] | Universe.UnchangedUniverse:
         # Stream each constituent's adjusted price into its momentum indicator.
         ready = [
             f for f in fundamentals
