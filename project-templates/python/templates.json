@@ -583,6 +583,30 @@
 			"folder": "custom-models",
 			"description": "Replaces the default fee, fill, slippage, and buying-power models through a security initializer.",
 			"tags": ["reality-models", "slippage", "fill-model", "fee-model", "Equity"]
+		},
+		{
+			"folder": "equity-permanent-portfolio",
+			"name": "Equity Permanent Portfolio",
+			"description": "Holds 25% each of SPY, TLT, GLD, and SHY with annual rebalance — Browne's Permanent Portfolio.",
+			"spec": "Assets: SPY, TLT, GLD, SHY. Minute. 2022-01-01 to 2024-12-31, $100k. Equal-weight 25% on first bar; annual rebalance every January 2nd. Demonstrates: 4-asset allocation, annual scheduled event, scheduled-event rule chaining. Edge case: skip rebalance if drift < 3% from target.",
+			"tags": ["Equity", "permanent-portfolio", "asset-allocation", "scheduled-event"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-dual-momentum-asset-class",
+			"name": "Equity Dual Momentum",
+			"description": "Implements Antonacci dual momentum across SPY, EFA, and AGG: pick the top 12-month return, fall back to AGG if absolute momentum is negative.",
+			"spec": "Assets: SPY, EFA, AGG. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Monthly: compute 12-month return for each; pick the highest; if highest <= AGG return then hold AGG; else hold winner 100%. Demonstrates: history-based momentum, monthly schedule, conditional hold. Edge case: rebalance only on first trading day of month.",
+			"tags": ["Equity", "dual-momentum", "asset-allocation", "history"],
+			"reference_template": "history-and-etf-universe"
+		},
+		{
+			"folder": "equity-dollar-cost-averaging",
+			"name": "Equity Dollar Cost Averaging",
+			"description": "Buys $5,000 worth of VOO every Monday morning regardless of price, accumulating shares over the backtest.",
+			"spec": "Asset: VOO. Minute. 2022-01-01 to 2024-12-31, $200k starting cash. Schedule: every Monday after market open buy VOO with $5,000 of cash via market_order using calculate_order_quantity. Demonstrates: weekly schedule, fixed-dollar buys, calculate_order_quantity, no liquidation. Edge case: skip if insufficient cash; never sell.",
+			"tags": ["Equity", "dca", "scheduled-event", "buy-and-hold"],
+			"reference_template": "equities-static-universe"
 		}
 	]
 }
