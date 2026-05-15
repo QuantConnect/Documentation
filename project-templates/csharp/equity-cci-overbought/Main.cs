@@ -1,0 +1,143 @@
+#region imports
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Globalization;
+    using System.Drawing;
+    using QuantConnect;
+    using QuantConnect.Algorithm.Framework;
+    using QuantConnect.Algorithm.Framework.Selection;
+    using QuantConnect.Algorithm.Framework.Alphas;
+    using QuantConnect.Algorithm.Framework.Portfolio;
+    using QuantConnect.Algorithm.Framework.Portfolio.SignalExports;
+    using QuantConnect.Algorithm.Framework.Execution;
+    using QuantConnect.Algorithm.Framework.Risk;
+    using QuantConnect.Algorithm.Selection;
+    using QuantConnect.Api;
+    using QuantConnect.Parameters;
+    using QuantConnect.Benchmarks;
+    using QuantConnect.Brokerages;
+    using QuantConnect.Commands;
+    using QuantConnect.Configuration;
+    using QuantConnect.Util;
+    using QuantConnect.Interfaces;
+    using QuantConnect.Algorithm;
+    using QuantConnect.Indicators;
+    using QuantConnect.Data;
+    using QuantConnect.Data.Auxiliary;
+    using QuantConnect.Data.Consolidators;
+    using QuantConnect.Data.Custom;
+    using QuantConnect.Data.Custom.IconicTypes;
+    using QuantConnect.DataSource;
+    using QuantConnect.Data.Fundamental;
+    using QuantConnect.Data.Market;
+    using QuantConnect.Data.Shortable;
+    using QuantConnect.Data.UniverseSelection;
+    using QuantConnect.Notifications;
+    using QuantConnect.Orders;
+    using QuantConnect.Orders.Fees;
+    using QuantConnect.Orders.Fills;
+    using QuantConnect.Orders.OptionExercise;
+    using QuantConnect.Orders.Slippage;
+    using QuantConnect.Orders.TimeInForces;
+    using QuantConnect.Python;
+    using QuantConnect.Scheduling;
+    using QuantConnect.Securities;
+    using QuantConnect.Securities.Equity;
+    using QuantConnect.Securities.Future;
+    using QuantConnect.Securities.Option;
+    using QuantConnect.Securities.Positions;
+    using QuantConnect.Securities.Forex;
+    using QuantConnect.Securities.Crypto;
+    using QuantConnect.Securities.CryptoFuture;
+    using QuantConnect.Securities.IndexOption;
+    using QuantConnect.Securities.Interfaces;
+    using QuantConnect.Securities.Volatility;
+    using QuantConnect.Storage;
+    using QuantConnect.Statistics;
+    using QCAlgorithmFramework = QuantConnect.Algorithm.QCAlgorithm;
+    using QCAlgorithmFrameworkBridge = QuantConnect.Algorithm.QCAlgorithm;
+    using Calendar = QuantConnect.Data.Consolidators.Calendar;
+#endregion
+public class XleCciMeanReversionAlgorithm : QCAlgorithm
+{
+    private const decimal _atrThreshold = 0.01m;
+
+    private Equity _xle;
+    private CommodityChannelIndex _cci;
+    private AverageTrueRange _atr;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        Settings.AutomaticIndicatorWarmUp = true;
+
+        _xle = AddEquity("XLE", Resolution.Minute);
+
+        _cci = CCI(_xle.Symbol, 20, MovingAverageType.Simple, Resolution.Daily);
+        _atr = ATR(_xle.Symbol, 14, MovingAverageType.Simple, Resolution.Daily);
+
+        PlotIndicator("CCI", _cci);
+
+        Schedule.On(
+            DateRules.EveryDay(_xle.Symbol),
+            TimeRules.AfterMarketOpen(_xle.Symbol, 1),
+            Rebalance
+        );
+    }
+
+    private void Rebalance()
+    {
+        if (!_cci.IsReady || !_atr.IsReady)
+        {
+            return;
+        }
+
+        var price = Securities[_xle.Symbol].Price;
+        if (price == 0m)
+        {
+            return;
+        }
+
+        var atrRatio = _atr.Current.Value / price;
+        Plot("ATR Ratio", "Ratio", atrRatio);
+        Plot("ATR Ratio", "Threshold", _atrThreshold);
+        if (atrRatio < _atrThreshold)
+        {
+            return;
+        }
+
+        var cci = _cci.Current.Value;
+        var holdings = _xle.Holdings.Quantity;
+
+        // Exit long at CCI >= 0
+        if (holdings > 0 && cci >= 0m)
+        {
+            Liquidate(_xle.Symbol, tag: $"Exit long XLE at CCI = {cci:F2}");
+            holdings = 0;
+        }
+
+        // Cover short at CCI <= 0
+        if (holdings < 0 && cci <= 0m)
+        {
+            Liquidate(_xle.Symbol, tag: $"Cover short XLE at CCI = {cci:F2}");
+            holdings = 0;
+        }
+
+        // Enter new positions
+        if (holdings == 0)
+        {
+            if (cci < -100m)
+            {
+                SetHoldings(_xle.Symbol, 1.0m, tag: $"Long XLE at CCI = {cci:F2}");
+            }
+            else if (cci > 100m)
+            {
+                SetHoldings(_xle.Symbol, -1.0m, tag: $"Short XLE at CCI = {cci:F2}");
+            }
+        }
+    }
+}

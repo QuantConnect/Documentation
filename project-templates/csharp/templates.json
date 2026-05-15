@@ -551,6 +551,38 @@
 			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. OBV indicator and ROC(20) on price. Bullish divergence: price ROC < 0 but OBV ROC > 0 -> long. Bearish opposite -> short. Demonstrates: OBV automatic indicator, IndicatorExtensions to compute ROC of OBV, divergence logic. Edge case: require 5-day confirmation.",
 			"tags": ["Equity", "indicators", "obv", "divergence"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-atr-volatility-stop",
+			"name": "Equity ATR Volatility Stop",
+			"description": "Holds SPY long with an ATR(14) chandelier-style trailing stop set 3x ATR below the trailing high.",
+			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. ATR(14). Buy on first bar; maintain trailing high; if close < trailing_high - 3*ATR, liquidate and re-enter on next bar. Demonstrates: ATR indicator, manual trailing-stop pattern, plotting stop level. Edge case: reset trailing high after each liquidation.",
+			"tags": ["Equity", "indicators", "atr", "trailing-stop"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-aroon-trend",
+			"name": "Equity Aroon Trend",
+			"description": "Trades SPY using AroonOscillator(25); enters long on cross above +50 and exits on cross below -50.",
+			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. AroonOscillator(25). Long when oscillator crosses above 50; exit when it crosses below -50. Demonstrates: Aroon indicator, threshold crossing pattern, plotting oscillator on subchart. Edge case: do not flip short — long-only.",
+			"tags": ["Equity", "indicators", "aroon", "trend"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-cci-overbought",
+			"name": "Equity Commodity Channel Index",
+			"description": "Trades XLE on CCI(20) — long when CCI < -100 and exit at 0; short when CCI > 100 and cover at 0.",
+			"spec": "Asset: XLE. Minute resolution. 2022-01-01 to 2024-12-31, $100k. CommodityChannelIndex(20). Long when CCI < -100; short when CCI > 100; both exit at 0. Demonstrates: CCI indicator, mean-reversion with explicit short side, sector ETF. Edge case: skip orders during low-volatility (ATR filter).",
+			"tags": ["Equity", "indicators", "cci", "mean-reversion"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-williams-percent-r",
+			"name": "Equity Williams %R",
+			"description": "Trades IWM with WilliamsPercentR(14): long entries below -80 and exits above -20.",
+			"spec": "Asset: IWM. Minute resolution. 2022-01-01 to 2024-12-31, $100k. WilliamsPercentR(14). Long when %R < -80; exit when %R > -20. Demonstrates: Williams %R indicator, oversold reversion logic, plotting against -80/-20 reference lines. Edge case: hold cap of 5 trading days.",
+			"tags": ["Equity", "indicators", "williams-r", "oscillator"],
+			"reference_template": "equities-static-universe"
 		}
 	]
 }
