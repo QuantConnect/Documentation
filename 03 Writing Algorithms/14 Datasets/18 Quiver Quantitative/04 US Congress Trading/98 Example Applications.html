@@ -15,57 +15,50 @@ class QuiverCongressDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-
-        # Requesting data per underlying data to subscribe to updated congress members' trade information
-        aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
-        quiver_congress_symbol = self.add_data(QuiverCongress, aapl).symbol
-
-        # Historical data
+        # Subscribe to Congress trading updates for the underlying equity.
+        equity = self.add_equity("AAPL", Resolution.DAILY)
+        quiver_congress_symbol = self.add_data(QuiverCongress, equity).symbol
+        # Warm up the custom dataset with recent Congress trading history.
         history = self.history(QuiverCongress, quiver_congress_symbol, 60, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from our history request");
+        self.debug(f"We got {len(history)} items from our history request")
 
-    def on_data(self, slice: Slice) -&gt; None:
-        congress_by_symbol = slice.Get(QuiverCongress)
-
-        # Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+    def on_data(self, data: Slice) -&gt; None:
+        congress_by_symbol = data.get(QuiverCongress)
+        # Estimate sentiment for each security from the net direction of Congress trades.
         net_quantity_by_symbol = {}
         for symbol, points in congress_by_symbol.items():
             symbol = symbol.underlying
             if symbol not in net_quantity_by_symbol:
                 net_quantity_by_symbol[symbol] = 0
-            # Voting weight is by order size
+            # Weight each vote by order size.
             for point in points:
                 net_quantity_by_symbol[symbol] += (1 if point.transaction == OrderDirection.BUY else -1) * point.amount
-            
         for symbol, net_quantity in net_quantity_by_symbol.items():
             if net_quantity == 0:
                 self.liquidate(symbol)
                 continue
-            # Buy when Congress members have bought, short otherwise
+            # Follow net Congress buying direction and short net selling direction.
             self.set_holdings(symbol, 1 if net_quantity &gt; 0 else -1)</pre>
 <pre class="csharp">public class QuiverCongressDataAlgorithm : QCAlgorithm
 {
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        // Requesting data per underlying data to subscribe to updated congress members' trade information
-        var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-        var quiverCongressSymbol = AddData&lt;QuiverCongress&gt;(aapl).Symbol;
-
-        // Historical data
+        // Subscribe to Congress trading updates for the underlying equity.
+        var equity = AddEquity("AAPL", Resolution.Daily);
+        var quiverCongressSymbol = AddData&lt;QuiverCongress&gt;(equity).Symbol;
+        // Warm up the custom dataset with recent Congress trading history.
         var history = History&lt;QuiverCongress&gt;(quiverCongressSymbol, 60, Resolution.Daily);
         Debug($"We got {history.Count()} items from our history request");
     }
 
-    
-    public override void OnData(Slice slice)
+    public override void OnData(Slice data)
     {
-        var congressBySymbol = slice.Get&lt;QuiverCongress&gt;();
-        
-        // Determine net direction of Congress trades for each security to estimate the sentiment direction due to political factor
+        var congressBySymbol = data.Get&lt;QuiverCongress&gt;();
+        // Estimate sentiment for each security from the net direction of Congress trades.
         var netQuantityBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
         foreach (var (s, points) in congressBySymbol)
         {
@@ -74,13 +67,12 @@ class QuiverCongressDataAlgorithm(QCAlgorithm):
             {
                 netQuantityBySymbol[symbol] = 0m;
             }
-            // Voting weight is by order size
-            foreach(QuiverCongressDataPoint point in points)
+            // Weight each vote by order size.
+            foreach (QuiverCongressDataPoint point in points)
             {
                 netQuantityBySymbol[symbol] += (point.Transaction == OrderDirection.Buy ? 1 : -1) * (point.Amount ?? 0m);
             }
         }
-        
         foreach (var (symbol, netQuantity) in netQuantityBySymbol)
         {
             if (netQuantity == 0)
@@ -88,7 +80,7 @@ class QuiverCongressDataAlgorithm(QCAlgorithm):
                 Liquidate(symbol);
                 continue;
             }
-            // Buy when Congress members have bought, short otherwise
+            // Follow net Congress buying direction and short net selling direction.
             SetHoldings(symbol, netQuantity &gt; 0 ? 1 : -1);
         }
     }

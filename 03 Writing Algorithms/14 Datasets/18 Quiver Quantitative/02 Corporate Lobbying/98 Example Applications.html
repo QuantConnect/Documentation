@@ -14,55 +14,55 @@ class QuiverLobbyingDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
-        # Subscribe to lobbying data for AAPL to generate trade signal
-        self._dataset_symbol = self.add_data(QuiverLobbyings, self._symbol).symbol
-
-        # history request
+        self._equity = self.add_equity("AAPL", Resolution.DAILY)
+        self.settings.seed_initial_prices = True
+        # Subscribe to lobbying data for AAPL to generate the trade signal.
+        self._dataset_symbol = self.add_data(QuiverLobbyings, self._equity).symbol
+        # Request recent history to confirm the custom data subscription.
         history = self.history(self._dataset_symbol, 10, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from historical data request of {self._dataset_symbol}.")
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Trade only base on lobbying data
-        for lobbyings in slice.get(QuiverLobbyings).values():
-            # Buy if over 50000 lobbying amount, suggesting a favored political prospect and sentiment
+    def on_data(self, data: Slice) -&gt; None:
+        # Trade only based on lobbying data.
+        for lobbyings in data.get(QuiverLobbyings).values():
+            # Buy when lobbying amount is over 50000, suggesting favorable political sentiment.
             if any([lobbying.amount &gt; 50000 for lobbying in lobbyings]):
-                self.set_holdings(self._symbol, 1)
-            # Sell if below 10000 lobbying amount, suggesting a less favorable political prospect and sentiment
+                self.set_holdings(self._equity, 1)
+            # Sell when lobbying amount is below 10000, suggesting less favorable political sentiment.
             elif any([lobbying.amount &lt; 10000 for lobbying in lobbyings]):
-                self.set_holdings(self._symbol, -1)</pre>
+                self.set_holdings(self._equity, -1)</pre>
 <pre class="csharp">public class QuiverLobbyingAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol, _datasetSymbol;
+    private Equity _equity;
+    private Symbol _datasetSymbol;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        _symbol = AddEquity("AAPL").Symbol;
-        // Subscribe to lobbying data for AAPL to generate trade signal
-        _datasetSymbol = AddData&lt;QuiverLobbyings&gt;(_symbol).Symbol;
-
-        // history request
-        var history = History&lt;QuiverLobbyings&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+        _equity = AddEquity("AAPL", Resolution.Daily);
+        // Subscribe to lobbying data for AAPL to generate the trade signal.
+        _datasetSymbol = AddData&lt;QuiverLobbyings&gt;(_equity.Symbol).Symbol;
+        // Request recent history to confirm the custom data subscription.
+        var history = History&lt;QuiverLobbyings&gt;([_datasetSymbol], 10, Resolution.Daily);
         Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
     }
 
-    public override void OnData(Slice slice)
+    public override void OnData(Slice data)
     {
-        // Trade only base on lobbying data
-        foreach (var kvp in slice.Get&lt;QuiverLobbyings&gt;())
+        // Trade only based on lobbying data.
+        foreach (var kvp in data.Get&lt;QuiverLobbyings&gt;())
         {
             var lobbyings = kvp.Value;
-            // Buy if over 50000 lobbying amount, suggesting a favored political prospect and sentiment
-            if (lobbyings.Any(lobbying =&gt; ((QuiverLobbying) lobbying).Amount &gt;= 50000m))
+            // Buy when lobbying amount is over 50000, suggesting favorable political sentiment.
+            if (lobbyings.Any(lobbying =&gt; ((QuiverLobbying) lobbying).Amount &gt; 50000m))
             {
-                SetHoldings(_symbol, 1);
+                SetHoldings(_equity.Symbol, 1);
             }
-            // Sell if below 10000 lobbying amount, suggesting a less favorable political prospect and sentiment
-            else if (lobbyings.Any(lobbying =&gt; ((QuiverLobbying) lobbying).Amount &lt;= 10000m))
+            // Sell when lobbying amount is below 10000, suggesting less favorable political sentiment.
+            else if (lobbyings.Any(lobbying =&gt; ((QuiverLobbying) lobbying).Amount &lt; 10000m))
             {
-                SetHoldings(_symbol, -1);
+                SetHoldings(_equity.Symbol, -1);
             }
         }
     }

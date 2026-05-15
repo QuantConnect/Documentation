@@ -1,0 +1,215 @@
+<p>The BLS dataset provides unique alternative data that the  US government releases. Example applications of this dataset include the following strategies: </p>
+
+<ul><li>Monitoring month-over-month changes in nonfarm payrolls and sector employment to identify economic regime shifts.
+</li>
+<li>Tracking the inflation rate of gasoline to forecast the performance of electric vehicle (EV) manufacturers on the premise that rising gas prices will increase the revenue and stock prices of EV companies.</li>
+<li>Combining CPI, PPI, and CES data to build composite economic health indicators.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm rotates to an energy ETF when energy prices are rising faster than core CPI. Otherwise, it holds the market benchmark.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class BLSEconomicSurveysAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2026, 3, 1)
+        self.set_cash(100000)
+        # Add some Equities to trade.
+        self._market = self.add_equity('SPY')
+        self._energy = self.add_equity('XLE')
+        # Add the BLS CPI survey data.
+        self._cpi = self.add_data(BLSEconomicSurveysCpi, "CPI").symbol
+        # Add a warm-up period so we have the most recent CPI survey on deployment.
+        self._target = None
+        self.set_warm_up(timedelta(60))
+
+    def on_data(self, data: Slice):
+        # Check for CPI data.
+        if data.contains_key(self._cpi):
+            cpi = data.get(BLSEconomicSurveysCpi, self._cpi)
+            # Simple signal: if energy CPI is rising faster than core, rotate to the energy ETF.
+            if cpi.energy is not None and cpi.core_cpi is not None and cpi.energy &gt; cpi.core_cpi * 1.5:
+                self._target = self._energy
+            else:
+                self._target = self._market
+        # Rebalance whenever the target changes.
+        if not self.is_warming_up and self._target and not self._target.invested:
+            self.set_holdings(self._target, 1, True)
+</pre>
+<pre class="csharp">public class BLSEconomicSurveysAlgorithm: QCAlgorithm
+{
+    private Equity _market, _energy, _target;
+    private Symbol _cpi;
+
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2026, 3, 1);
+        SetCash(100000);
+        // Add some Equities to trade.
+        _market = AddEquity("SPY");
+        _energy = AddEquity("XLE");
+        // Add the BLS CPI survey data.
+        _cpi = AddData&lt;BLSEconomicSurveysCpi&gt;("CPI").Symbol;
+        // Add a warm-up period so we have the most recent CPI survey on deployment.
+        SetWarmUp(TimeSpan.FromDays(60));
+    }
+
+    public override void OnData(Slice data)
+    {
+        // Check for CPI data.
+        if (data.ContainsKey(_cpi))
+        {
+            var cpi = data.Get&lt;BLSEconomicSurveysCpi&gt;(_cpi);
+            // Simple signal: if energy CPI is rising faster than core, rotate to the energy ETF.
+            if (cpi.Energy.HasValue &amp;&amp; cpi.CoreCpi.HasValue &amp;&amp; 
+                cpi.Energy.Value &gt; cpi.CoreCpi.Value * 1.5m)
+            {
+                _target = _energy;
+            }
+            else
+            {
+                _target = _market;
+            }
+        }
+        // Rebalance whenever the target changes.
+        if (!IsWarmingUp &amp;&amp; !_target.Invested)
+        {
+            SetHoldings(_target, 1.0m, true);
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm rotates to energy stocks in the OEF ETF when energy prices are rising faster than core CPI. Otherwise, it holds an equal-weighted portfolio of the ETF's constituents.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class BLSEconomicSurveysAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2023, 1, 1)
+        self.set_end_date(2026, 3, 1)
+        self.set_cash(100000)
+        # Add the framework models.
+        self.add_universe_selection(ETFConstituentsUniverseSelectionModel('OEF'))
+        self.add_alpha(CpiAlphaModel(self))
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+
+
+class MyAlphaModel(AlphaModel):
+
+    def __init__(self, algorithm):
+        # Set up a member to track the universe.
+        self._universe = []
+        # Add the BLS CPI survey data.
+        self._cpi = algorithm.add_data(BLSEconomicSurveysCpi, "CPI").symbol
+
+    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; List[Insight]:
+        # Get the latest CPI survey.
+        if data.contains_key(self._cpi):
+            cpi = data.get(BLSEconomicSurveysCpi, self._cpi)
+            # Simple signal: if energy CPI is rising faster than core, rotate to the energy stocks.
+            target_energy = cpi.energy is not None and cpi.core_cpi is not None and cpi.energy &gt; cpi.core_cpi * 1.5:
+            securities = []
+            for security in self._universe:
+                if target_energy:
+                    if security.fundamentals.asset_classification.morningstar_sector_code == MorningstarSectorCode.ENERGY:
+                        securities.append(security)
+                else: 
+                    securities.append(security)
+            # Emit monthly insights for the selected stocks.
+            return [Insight.price(s, timedelta(35), InsightDirection.UP, weight=1/len(securities)) for s in securities]
+        return []
+
+    # As assets enter and leave the universe, update our self._universe member.
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            self._universe.append(security)
+        for security in changes.removed_securities:
+            self._universe.remove(security)
+
+
+</pre>
+<pre class="csharp">public class BLSEconomicSurveysAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2023, 1, 1);
+        SetEndDate(2026, 3, 1);
+        SetCash(100000);
+        // Add the framework models.
+        AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("OEF"));
+        AddAlpha(new CpiAlphaModel(this));
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+    }
+}
+
+public class CpiAlphaModel : AlphaModel
+{
+    private readonly Symbol _cpi;
+    private readonly List&lt;Security&gt; _universe = new List&lt;Security&gt;();
+
+    public CpiAlphaModel(QCAlgorithm algorithm)
+    {
+        // Add the BLS CPI survey data.
+        _cpiSymbol = algorithm.AddData&lt;BLSEconomicSurveysCpi&gt;("CPI").Symbol;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        // Get the latest CPI survey.
+        if (data.ContainsKey(_cpi))
+        {
+            var cpi = data.Get&lt;BLSEconomicSurveysCpi&gt;(_cpi);
+            // Simple signal: if energy CPI is rising faster than core (energy &gt; 1.5 * core)
+            var targetEnergy = cpi.Energy.HasValue 
+                             &amp;&amp; cpi.CoreCpi.HasValue 
+                             &amp;&amp; cpi.Energy.Value &gt; cpi.CoreCpi.Value * 1.5;
+            var securities = new List&lt;Security&gt;();
+            foreach (var security in _universe)
+            {
+                if (targetEnergy)
+                {
+                    if (security.Fundamentals.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Energy)
+                    {
+                        securities.Add(security);
+                    }
+                }
+                else
+                {
+                    securities.Add(security);
+                }
+            }
+
+            if (securities.Count &gt; 0)
+            {
+                // Emit monthly insights for the selected stocks.
+                return securities.Select(s =&gt; 
+                    Insight.Price(s, TimeSpan.FromDays(35), InsightDirection.Up, weight: 1.0m / securities.Count)
+                );
+            }
+        }
+        return Enumerable.Empty&lt;Insight&gt;();
+    }
+
+    // As assets enter and leave the universe, update our _universe member.
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _universe.Add(security);
+        }
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _universe.Remove(security);
+        }
+    }
+}</pre>
+</div>

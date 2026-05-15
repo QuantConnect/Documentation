@@ -14,38 +14,33 @@ The Upcoming Splits dataset provides timely notifications about upcoming share s
 
 
 class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
-    
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         # Seed the price of each asset with its last known price to avoid trading errors.
         self.settings.seed_initial_prices = True
-        # Universe consists of equities with upcoming splits events.
+        # Select equities with upcoming split events.
         self._universe = self.add_universe(EODHDUpcomingSplits, self.selection)
-        # Add a Scheduled Event to rebalance the portfolio every morning
-        # based on upcoming splits signals.
+        # Add a Scheduled Event to rebalance the portfolio every morning based on upcoming split signals.
         spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
         self.schedule.on(
-            self.date_rules.every_day(spy), 
-            self.time_rules.after_market_open(spy, 1), 
+            self.date_rules.every_day(spy),
+            self.time_rules.after_market_open(spy, 1),
             self._rebalance
         )
-    
+
     def selection(self, splits: List[EODHDUpcomingSplits]) -&gt; List[Symbol]:
-        # Split (more shares with lower price) will make the stock more affordable and drive up the demand.
-        # Hence, include all stocks that will have a split within the next 7 days.
-        # Note that spliting up the stock means the split factor &gt; 1.
+        # Select splits that increase share count and make each share more affordable.
         return [x.symbol for x in splits if x.split_factor &gt; 1]
-    
+
     def _rebalance(self) -&gt; None:
         # Equally invest in each member of the universe to evenly dissipate the capital risk.
         symbols = [s for s in self._universe.selected if self.securities[s].price]
         total_count = len(symbols)
         targets = [PortfolioTarget(symbol, 1. / total_count) for symbol in symbols]
-        self.set_holdings(targets, liquidate_existing_holdings=True)
-
-</pre>
+        self.set_holdings(targets, True)</pre>
 <pre class="csharp">public class UpcomingSplitsExampleAlgorithm : QCAlgorithm
 {
     private Universe _universe;
@@ -57,17 +52,14 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         SetCash(100000);
         // Seed the price of each asset with its last known price to avoid trading errors.
         Settings.SeedInitialPrices = true;
-        // Universe consists of equities with upcoming earnings events.
-        _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;((splits) =&gt; {
-            return splits
-                // Split (more shares with lower price) will make the stock more affordable and drive up the demand.
-                // Hence, include all stocks that will have a split within the next 7 days.
-                // Note that spliting up the stock means the split factor &gt; 1.
-                .Where(datum =&gt; (datum as EODHDUpcomingSplits).SplitFactor &gt; 1)
-                .Select(datum =&gt; datum.Symbol);
-        });
-        // Add a Scheduled Event to rebalance the portfolio every morning
-        // based on upcoming splits signals.
+        // Select splits that increase share count and make each share more affordable.
+        _universe = AddUniverse&lt;EODHDUpcomingSplits&gt;(
+            splits =&gt; splits
+                .OfType&lt;EODHDUpcomingSplits&gt;()
+                .Where(split =&gt; split.SplitFactor &gt; 1)
+                .Select(split =&gt; split.Symbol)
+        );
+        // Add a Scheduled Event to rebalance the portfolio every morning based on upcoming split signals.
         var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
         Schedule.On(DateRules.EveryDay(spy), TimeRules.AfterMarketOpen(spy, 1), Rebalance);
     }
@@ -80,7 +72,7 @@ class UpcomingSplitsExampleAlgorithm(QCAlgorithm):
         var targets = symbols
             .Select(symbol =&gt; new PortfolioTarget(symbol, 1m / totalCount))
             .ToList();
-        SetHoldings(targets, liquidateExistingHoldings: true);
+        SetHoldings(targets, true);
     }
 }</pre>
 </div>

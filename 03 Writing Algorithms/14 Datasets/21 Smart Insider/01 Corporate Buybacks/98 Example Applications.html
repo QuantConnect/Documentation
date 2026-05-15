@@ -14,69 +14,57 @@ class CorporateBuybacksDataAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
- 
-        self.aapl = self.add_equity("AAPL", Resolution.MINUTE).symbol
-        
-        # Requesting insider trade intention news and actual trades to estimate the return, since insiders may have better information of the future confidence
-        self.smart_insider_intention = self.add_data(SmartInsiderIntention, self.aapl).symbol
-        self.smart_insider_transaction = self.add_data(SmartInsiderTransaction, self.aapl).symbol
-        
-        # Historical data
-        history = self.history(self.smart_insider_intention, 365, Resolution.DAILY)
+        self._equity = self.add_equity("AAPL", Resolution.DAILY)
+        # Request insider trade intention news and actual trades because insiders may have better information about future prospects.
+        self._smart_insider_intention_data = self.add_data(SmartInsiderIntention, self._equity).symbol
+        self._smart_insider_transaction_data = self.add_data(SmartInsiderTransaction, self._equity).symbol
+        # Warm up custom data subscriptions with historical data.
+        history = self.history(self._smart_insider_intention_data, 365, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for intentions")
-        
-        history = self.history(self.smart_insider_transaction, 365, Resolution.DAILY)
+        history = self.history(self._smart_insider_transaction_data, 365, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for transactions")
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Buy Apple whenever we receive a buyback intention or transaction notification, given the insiders may have confidence in the future to buy more
-        # This news may stimulate market popularity
-        if slice.contains_key(self.smart_insider_intention) or slice.contains_key(self.smart_insider_transaction):
-            self.set_holdings(self.aapl, 1)
-            self.entry_time = self.time
-        
-        # Liquidate holdings 3 days after the latest entry
-        # The market popularity and possible overbrought is cooled
-        if self.portfolio.invested and self.time &gt;= self.entry_time + timedelta(days=3):
+    def on_data(self, data: Slice) -&gt; None:
+        # Buy Apple when insider buyback events suggest stronger sentiment and potential market attention.
+        if self._smart_insider_intention_data in data or self._smart_insider_transaction_data in data:
+            self.set_holdings(self._equity, 1)
+            self._entry_time = self.time
+        # Liquidate after three days so the position exits once the event reaction has cooled.
+        if self.portfolio.invested and self.time &gt;= self._entry_time + timedelta(days=3):
             self.liquidate()</pre><pre class="csharp">public class CorporateBuybacksDataAlgorithm : QCAlgorithm
 {
-    private Symbol _aapl;
-    private Symbol _smartInsiderIntention;
-    private Symbol _smartInsiderTransaction;
+    private Equity _equity;
+    private Symbol _smartInsiderIntentionData;
+    private Symbol _smartInsiderTransactionData;
     private DateTime _entryTime;
-    
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-        
-        // Requesting insider trade intention news and actual trades to estimate the return, since insiders may have better information of the future confidence
-        _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
-        _smartInsiderTransaction = AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
-        
-        // Historical data
-        var intentionHistory = History&lt;SmartInsiderIntention&gt;(_smartInsiderIntention, 365, Resolution.Daily);
-        Debug($"We got {intentionHistory.Count()} items from our history request for intentions");
-        
-        var transactionHistory = History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransaction, 365, Resolution.Daily);
-        Debug($"We got {transactionHistory.Count()} items from our history request for transactions");
+        _equity = AddEquity("AAPL", Resolution.Daily);
+        // Request insider trade intention news and actual trades because insiders may have better information about future prospects.
+        _smartInsiderIntentionData = AddData&lt;SmartInsiderIntention&gt;(_equity.Symbol).Symbol;
+        _smartInsiderTransactionData = AddData&lt;SmartInsiderTransaction&gt;(_equity.Symbol).Symbol;
+        // Warm up custom data subscriptions with historical data.
+        var intentionHistory = History&lt;SmartInsiderIntention&gt;(_smartInsiderIntentionData, TimeSpan.FromDays(365), Resolution.Daily);
+        var intentionCount = intentionHistory.Count();
+        Debug($"We got {intentionCount} items from our history request for intentions");
+        var transactionHistory = History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransactionData, TimeSpan.FromDays(365), Resolution.Daily);
+        var transactionCount = transactionHistory.Count();
+        Debug($"We got {transactionCount} items from our history request for transactions");
     }
 
-    public override void OnData(Slice slice)
+    public override void OnData(Slice data)
     {
-        // Buy Apple whenever we receive a buyback intention or transaction notification, given the insiders may have confidence in the future to buy more
-        // This news may stimulate market popularity
-        if (slice.ContainsKey(_smartInsiderIntention) || slice.ContainsKey(_smartInsiderTransaction))
+        // Buy Apple when insider buyback events suggest stronger sentiment and potential market attention.
+        if (data.ContainsKey(_smartInsiderIntentionData) || data.ContainsKey(_smartInsiderTransactionData))
         {
-            SetHoldings(_aapl, 1);
+            SetHoldings(_equity.Symbol, 1);
             _entryTime = Time;
         }
-
-        // Liquidate holdings 3 days after the latest entry
-        // The market popularity and possible overbrought is cooled
+        // Liquidate after three days so the position exits once the event reaction has cooled.
         if (Portfolio.Invested &amp;&amp; Time &gt;= _entryTime + TimeSpan.FromDays(3))
         {
             Liquidate();
