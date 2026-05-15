@@ -22,7 +22,7 @@ class LowPePbHighRoeAlgorithm(QCAlgorithm):
             self._rebalance
         )
     
-    def _select_fundamentals(self, fundamentals: List[Fundamental]) -> List[Symbol]:
+    def _select_fundamentals(self, fundamentals: List[Fundamental]) -> List[Symbol] | Universe.UnchangedUniverse:
         filtered = []
         for f in fundamentals:
             pe = f.valuation_ratios.pe_ratio
