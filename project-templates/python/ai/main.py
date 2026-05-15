@@ -1,5 +1,6 @@
 # region imports
 import tensorflow as tf
+import numpy.typing as npt
 from AlgorithmImports import *
 # endregion
 
@@ -39,7 +40,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         # Recalibrate the model weekly to ensure its accuracy on the updated domain.
         self.train(self.date_rules.week_start(), self.time_rules.at(8, 0), self._my_training_method)
 
-    def _get_features_and_labels(self, lookback: int = 5) -> tuple[np.ndarray, np.ndarray]:
+    def _get_features_and_labels(self, lookback: int = 5) -> tuple[npt.NDArray[Any], npt.NDArray[Any]]:
         lookback_series = []
         # Train and predict on N-period differencing data which is more normalized and stationary.
         data = pd.Series([bar.close for bar in self._spy.session][::-1])
@@ -55,7 +56,7 @@ class TensorFlowAlgorithm(QCAlgorithm):
         # Prepare the processed training data.
         features, labels = self._get_features_and_labels()
         # Define the loss function using MSE for this example.
-        def loss_mse(target_y: np.ndarray, predicted_y: tf.Tensor) -> tf.Tensor:
+        def loss_mse(target_y: npt.NDArray[Any], predicted_y: tf.Tensor) -> tf.Tensor:
             return tf.reduce_mean(tf.square(target_y - predicted_y))
         # Train the model with Adam optimizer.
         optimizer = tf.keras.optimizers.Adam(learning_rate=self._learning_rate)
