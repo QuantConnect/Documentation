@@ -503,6 +503,14 @@
 			"spec": "Assets: SPY, EFA, EEM, AGG, GLD. Minute. 2022-01-01 to 2024-12-31, $100k. ROC(60) per ETF. Monthly schedule picks top 3 and equal-weights; liquidates the others. Demonstrates: ROC across asset classes, monthly schedule, set_holdings 1/3 each. Edge case: hold cash if all ROCs negative.",
 			"tags": ["Equity", "asset-rotation", "roc", "scheduled-event"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "dataset-blockchain-bitcoin-metadata",
+			"name": "Dataset: Blockchain Bitcoin Metadata",
+			"description": "Trades BTCUSD long when 30-day Bitcoin block-time metadata trends down (faster blocks => more activity), flat when up.",
+			"spec": "Asset: BTCUSD on Coinbase + BitcoinMetadata custom data. Minute. 2023-01-01 to 2024-12-31, $100k. add_data(BitcoinMetadata) for block time and difficulty fields. ROC(30) of average block time; long BTCUSD when ROC < 0, flat when > 0. Demonstrates: Blockchain Bitcoin Metadata dataset, on-chain regime switch (distinct from MVRV/hashrate templates). Edge case: handle stale data.",
+			"tags": ["Crypto", "alternative-data", "blockchain", "btc"],
+			"reference_template": "alternative-data-universe-coingeckouniverse"
 		}
 	]
 }
