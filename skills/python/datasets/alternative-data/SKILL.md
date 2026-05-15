@@ -43,13 +43,17 @@ def on_data(self, slice: Slice) -> None:
 | `EstimizeEstimate` | Estimize | `id`, `ticker`, `fiscal_year`, `fiscal_quarter`, `created_at`, `eps`, `revenue`, `user_name`, `analyst_id`, `flagged` |
 | `EstimizeRelease` | Estimize | `id`, `fiscal_year`, `fiscal_quarter`, `release_date`, `eps`, `revenue`, `wall_street_eps_estimate`, `wall_street_revenue_estimate`, `consensus_eps_estimate`, `consensus_revenue_estimate`, `consensus_weighted_eps_estimate`, `consensus_weighted_revenue_estimate` |
 | `FearGreedIndex` | Fear and Greed | `spx`, `spx_sma`, `market_momentum`, `stocks_at_yearly_highs`, `stocks_at_yearly_lows`, `total_for_strength`, `net_yearly_highs_and_lows`, `stock_price_strength`, `stocks_up_daily`, `stocks_down_daily`, `total_for_breadth`, `mc_clellan_summation_index`, `stock_price_breadth`, `put_call_ratio_daily`, `put_call_ratio_sma`, `put_call_ratio_normalized`, `vix`, `vix_sma`, `market_volatility`, `stock_returns`, `bond_returns`, `stock_bond_return_difference`, `safe_haven_demand`, `junk_bond_yield`, `investment_grade_bond_yield`, `bond_yield_spread`, `junk_bond_demand`, `qc_index`, `cnn_index` |
-| `QuiverInsiderTrading` | Insider Trading | `name`, `shares`, `price_per_share`, `shares_owned_following` |
+| `QuiverInsiderTrading` | Insider Trading | `date`, `file_date`, `transaction_code`, `price_per_share`, `shares`, `shares_owned_following`, `acquired_disposed_code`, `direct_or_indirect_ownership`, `officer_title`, `is_director`, `is_officer`, `is_ten_percent_owner`, `is_other` |
 | `ExtractAlphaTacticalModel` | Tactical | `reversal`, `factor_momentum`, `liquidity_shock`, `seasonality`, `score` |
 | `TiingoNews` | Tiingo News Feed | `source`, `crawl_date`, `url`, `published_date`, `tags`, `description`, `title`, `article_id`, `symbols` |
 | `EODHDUpcomingDividends` | Upcoming Dividends | `dividend_date`, `declaration_date`, `report_date`, `payment_date`, `dividend` |
 | `EODHDUpcomingEarnings` | Upcoming Earnings | `report_date`, `report_time`, `estimate` |
 | `EODHDUpcomingIPOs` | Upcoming IPOs | `name`, `exchange`, `ipo_date`, `filing_date`, `amended_date`, `lowest_price`, `highest_price`, `offer_price`, `shares`, `deal_type` |
 | `EODHDUpcomingSplits` | Upcoming Splits | `split_date`, `optionable`, `split_factor` |
+| `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `value` |
+| `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `value` |
+| `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `value` |
+| `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `value` |
 | `USEnergy` | US Energy Information Administration (EIA) | `value` |
 | `Fred` | US Federal Reserve (FRED) | `value` |
 | `QuiverGovernmentContract` | US Government Contracts | `description`, `agency`, `amount` |
@@ -72,7 +76,7 @@ def on_data(self, slice: Slice) -> None:
 
 | Class | Dataset | Properties |
 | --- | --- | --- |
-| `QuiverCNBCs`->`QuiverCNBC` | CNBC Trading | `notes`, `direction`, `traders` |
+| `QuiverCNBCs`->`QuiverCNBC` | CNBC Trading | `notes`, `direction`, `traders`, `advice_date` |
 | `QuiverLobbyings`->`QuiverLobbying` | Corporate Lobbying | `client`, `issue`, `specific_issue`, `amount` |
 | `EODHDEconomicEvents`->`EODHDEconomicEvent` | Economic Events | `event_type`, `event_period`, `country`, `event_time`, `previous`, `estimate` |
 | `EODHDMacroIndicators`->`EODHDMacroIndicator` | Macroeconomics Indicators | `indicator`, `country`, `frequency` |
