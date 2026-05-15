@@ -511,6 +511,22 @@
 			"spec": "Asset: BTCUSD on Coinbase + BitcoinMetadata custom data. Minute. 2023-01-01 to 2024-12-31, $100k. add_data(BitcoinMetadata) for block time and difficulty fields. ROC(30) of average block time; long BTCUSD when ROC < 0, flat when > 0. Demonstrates: Blockchain Bitcoin Metadata dataset, on-chain regime switch (distinct from MVRV/hashrate templates). Edge case: handle stale data.",
 			"tags": ["Crypto", "alternative-data", "blockchain", "btc"],
 			"reference_template": "alternative-data-universe-coingeckouniverse"
+		},
+		{
+			"folder": "live-commands-listener",
+			"name": "Live: Commands Listener",
+			"description": "Pauses/resumes an SPY EMA cross strategy via the on_command handler, with pause state persisted in the Object Store.",
+			"spec": "Asset: SPY. Minute. 2024-09-01 to 2024-12-31, $100k. Override on_command(data): when data.command=='pause', set self._paused = data.paused and persist via object_store. EMA(50)/EMA(200) trades only when not paused. Demonstrates: on_command pattern with direct algorithm-attribute mutation. Edge case: restore pause state across restarts from Object Store.",
+			"tags": ["Equity", "live-trading", "commands", "object-store"],
+			"reference_template": "live-trading-features"
+		},
+		{
+			"folder": "live-notifications-telegram-webhook",
+			"name": "Live: Telegram Webhook Notifications",
+			"description": "Sends notifications to a Telegram bot via notify.web on every trade fill.",
+			"spec": "Asset: SPY. Minute. 2024-09-01 to 2024-12-31, $100k. EMA(50)/EMA(200) cross. On on_order_event(filled) call notify.web('https://api.telegram.org/...', headers={...}, body='...'). Demonstrates: notify.web for arbitrary HTTP webhook (different from email/SMS in live-trading-features). Edge case: stub URL in backtest mode.",
+			"tags": ["Equity", "live-trading", "notifications", "webhook"],
+			"reference_template": "live-trading-features"
 		}
 	]
 }
