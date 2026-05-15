@@ -13,103 +13,91 @@ The Brain ML Stock Ranking dataset enables you to test strategies using the mach
 
 
 class BrainMLRankingDataAlgorithm(QCAlgorithm):
+
     def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000) 
-        # Seed the price of each asset with its last known price to avoid trading errors.
+        self.set_cash(100000)
+        # Seed initial prices to avoid trading errors before fresh market data arrives.
         self.settings.seed_initial_prices = True
-        # We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
+        # Select liquid large-cap equities to support credible ranking comparisons.
         tickers = ["AAPL", "TSLA", "MSFT", "F", "KO"]
-        self.symbol_by_dataset_symbol = {}
+        self.equity_by_dataset_symbol = {}
         for ticker in tickers:
-            # Requesting data to get 2 days estimated relative ranking
-            symbol = self.add_equity(ticker, Resolution.DAILY).symbol
-            dataset_symbol = self.add_data(BrainStockRanking2Day, symbol).symbol
-            self.symbol_by_dataset_symbol[dataset_symbol] = symbol
-            
-            # Historical data
+            # Subscribe to each equity and its two-day estimated relative ranking data.
+            equity = self.add_equity(ticker, Resolution.DAILY)
+            dataset_symbol = self.add_data(BrainStockRanking2Day, equity).symbol
+            self.equity_by_dataset_symbol[dataset_symbol] = equity
+            # Request historical ranking data to inspect subscription coverage.
             history = self.history(dataset_symbol, 365, Resolution.DAILY)
-            self.debug(f"We got {len(history)} items from our history request for {symbol}")
-        
-    def on_data(self, slice: Slice) -&gt; None:
-        # Collect rankings for all selected symbols for ranking them
-        points = slice.Get(BrainStockRanking2Day)
-        if points is None:
+            self.debug(f"We got {len(history)} items from our history request for {equity}")
+
+    def on_data(self, data: Slice) -&gt; None:
+        # Collect ranking points for all selected equities before assigning weights.
+        points = data.get(BrainStockRanking2Day)
+        if not points:
             return
-        symbols = []
-        ranks = []
-        for point in points.Values:
-            symbols.append(self.symbol_by_dataset_symbol[point.symbol])
-            ranks.append(point.rank)
-        
-        # Rank each symbol's Brain ML ranking relative to each other for positional sizing
-        if len(ranks) == 0:
+        rank_by_equity = {}
+        for dataset_symbol, point in points.items():
+            rank_by_equity[self.equity_by_dataset_symbol[dataset_symbol]] = point.rank
+        if not rank_by_equity:
             return
-        ranks = [sorted(ranks).index(rank) + 1 for rank in ranks]
-        
-        # Place orders according to the ML ranking, the better the rank, the higher the estimated return and hence weight
-        for i, rank in enumerate(ranks):
-            weight = rank / sum(ranks)
-            self.set_holdings(symbols[i], weight)</pre>
+        # Convert raw ranking values into comparable position sizes.
+        sorted_ranks = sorted(rank_by_equity.values())
+        ranked = {equity: sorted_ranks.index(rank) + 1 for equity, rank in rank_by_equity.items()}
+        # Allocate more capital to equities with stronger estimated return rankings.
+        total = sum(ranked.values())
+        for equity, rank in ranked.items():
+            self.set_holdings(equity.symbol, rank / total)</pre>
 <pre class="csharp">public class BrainMLRankingDataAlgorithm : QCAlgorithm
 {
-    private Dictionary&lt;Symbol, Symbol&gt; _symbolByDatasetSymbol = new Dictionary&lt;Symbol, Symbol&gt;();
-    
+    private readonly Dictionary&lt;Symbol, Equity&gt; _equityByDatasetSymbol = [];
+
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // Seed the price of each asset with its last known price to avoid trading errors.
+        // Seed initial prices to avoid trading errors before fresh market data arrives.
         Settings.SeedInitialPrices = true;
-        // We cherry picked 5 largest stocks, high trading volume provides better information and credibility for ML ranking
-        var tickers = new List&lt;string&gt;() {"AAPL", "TSLA", "MSFT", "F", "KO"};
+        // Select liquid large-cap equities to support credible ranking comparisons.
+        var tickers = new List&lt;string&gt; {"AAPL", "TSLA", "MSFT", "F", "KO"};
         foreach (var ticker in tickers)
         {
-            // Requesting data to get 2 days estimated relative ranking
-            var symbol = AddEquity(ticker, Resolution.Daily).Symbol;
-            var datasetSymbol = AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
-            _symbolByDatasetSymbol.Add(datasetSymbol, symbol);
-            
-            // Historical data
+            // Subscribe to each equity and its two-day estimated relative ranking data.
+            var equity = AddEquity(ticker, Resolution.Daily);
+            var datasetSymbol = AddData&lt;BrainStockRanking2Day&gt;(equity.Symbol).Symbol;
+            _equityByDatasetSymbol.Add(datasetSymbol, equity);
+            // Request historical ranking data to inspect subscription coverage.
             var history = History&lt;BrainStockRanking2Day&gt;(datasetSymbol, 365, Resolution.Daily);
-            Debug($"We got {history.Count()} items from our history request for {symbol}");
+            Debug($"We got {history.Count()} items from our history request for {equity}");
         }
     }
 
     public override void OnData(Slice slice)
     {
-        // Collect rankings for all symbols for ranking them
+        // Collect ranking points for all selected equities before assigning weights.
         var points = slice.Get&lt;BrainStockRanking2Day&gt;();
-        if (points == null)
+        if (points == null || points.Count == 0)
         {
             return;
         }
-        var symbols = new List&lt;Symbol&gt;();
-        var ranks = new List&lt;decimal&gt;();
-        foreach (var point in points.Values)
+        var rankByEquity = new Dictionary&lt;Equity, decimal&gt;();
+        foreach (var (datasetSymbol, point) in points)
         {
-            symbols.Add(_symbolByDatasetSymbol[point.Symbol]);
-            ranks.Add(point.Rank);
+            rankByEquity[_equityByDatasetSymbol[datasetSymbol]] = point.Rank;
         }
-        
-        // Rank each symbol's Brain ML ranking relative to the other symbols for positional sizing
-        if (ranks.Count() == 0) return;
-        var sortedRanksTemp = new List&lt;decimal&gt;(ranks); 
-        sortedRanksTemp.Sort();
-        var sortedRanks = new List&lt;decimal&gt;();
-        for (var i = 0; i &lt; symbols.Count(); i++)
+        // Convert raw ranking values into comparable position sizes.
+        var sortedRanks = rankByEquity.Values.OrderBy(r =&gt; r).ToList();
+        var ranked = rankByEquity.ToDictionary(
+            kvp =&gt; kvp.Key,
+            kvp =&gt; (decimal)(sortedRanks.IndexOf(kvp.Value) + 1)
+        );
+        // Allocate more capital to equities with stronger estimated return rankings.
+        var total = ranked.Values.Sum();
+        foreach (var (equity, rank) in ranked)
         {
-            sortedRanks.Add(sortedRanksTemp.IndexOf(ranks[i]) + 1);
-        }
-        
-        // Place orders, the better the rank, the higher the estimated return and hence weight
-        for (var i = 0; i &lt; symbols.Count(); i++)
-        {
-            var rank = sortedRanks[i];
-            var weight = rank / sortedRanks.Sum();
-            SetHoldings(symbols[i], weight);
+            SetHoldings(equity.Symbol, rank / total);
         }
     }
 }</pre>

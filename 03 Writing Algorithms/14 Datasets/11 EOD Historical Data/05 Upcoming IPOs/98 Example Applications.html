@@ -20,30 +20,30 @@ class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
-        # Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
+        # Filter for new stocks with EODHDUpcomingIPOs to trade first-day hype.
         self._universe = self.add_universe(EODHDUpcomingIPOs, self.selection)
 
     def selection(self, ipos: List[EODHDUpcomingIPOs]) -&gt; List[Symbol]:
-        # Select the stocks that IPO starts today and traded in Nasdaq
+        # Select stocks with IPO dates by tomorrow on Nasdaq.
         return [
-            x.symbol for x in ipos 
-            if (x.ipo_date and 
-                x.ipo_date &lt;= self.time + timedelta(1) and 
+            x.symbol for x in ipos
+            if (x.ipo_date and
+                x.ipo_date &lt;= self.time + timedelta(1) and
                 x.exchange == Exchange.NASDAQ)
         ]
 
-    def on_data(self, slice: Slice) -&gt; None:
-        # Invest in new stocks and trade on their first day for their hype.
-        # Equally invest in each new stocks to evenly dissipate the capital risk.
+    def on_data(self, data: Slice) -&gt; None:
+        # Invest in new stocks to trade first-day hype.
+        # Equally invest in each new stock to distribute capital risk.
         for symbol in self._universe.selected:
             security = self.securities[symbol]
             if not security.holdings.invested and security.price:
-                self.set_holdings(symbol, 0.1/len(self._universe.selected))
+                self.set_holdings(symbol, 0.1 / len(self._universe.selected))
 
     def on_securities_changed(self, changes: SecurityChanges) -&gt; None:
-        # Liquidate the new stocks traded today/yesterday to capitalize the first-day hype.
-        for removed in changes.removed_securities:
-            self.liquidate(removed.symbol)</pre>
+        # Liquidate new stocks traded today or yesterday to capitalize on first-day hype.
+        for security in changes.removed_securities:
+            self.liquidate(security)</pre>
 <pre class="csharp">public class UpcomingIPOsExampleAlgorithm : QCAlgorithm
 {
     private Universe _universe;
@@ -53,35 +53,34 @@ class UpcomingIPOsExampleAlgorithm(QCAlgorithm):
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        
-        // Filter for new stocks to trade their hype using EODHDUpcomingIPOs.
-        _universe = AddUniverse&lt;EODHDUpcomingIPOs&gt;(ipos =&gt; 
-            ipos.Select(x =&gt; x as EODHDUpcomingIPOs)
+        // Filter for new stocks with EODHDUpcomingIPOs to trade first-day hype.
+        _universe = AddUniverse&lt;EODHDUpcomingIPOs&gt;(ipos =&gt;
+            ipos.OfType&lt;EODHDUpcomingIPOs&gt;()
                 .Where(x =&gt; x.IpoDate &lt;= Time.AddDays(1) &amp;&amp; x.Exchange == Exchange.NASDAQ)
                 .Select(x =&gt; x.Symbol)
         );
     }
 
-    public override void OnData(Slice slice)
+    public override void OnData(Slice data)
     {
-        // Invest in new stocks and trade on their first day for their hype.
-        // Equally invest in each new stocks to evenly dissipate the capital risk.
+        // Invest in new stocks to trade first-day hype.
+        // Equally invest in each new stock to distribute capital risk.
         foreach (var symbol in _universe.Selected)
         {
             var security = Securities[symbol];
             if (!security.Holdings.Invested &amp;&amp; security.Price != 0)
             {
-                SetHoldings(symbol, 0.1m/_universe.Selected.Count);
+                SetHoldings(symbol, 0.1m / _universe.Selected.Count);
             }
         }
     }
 
     public override void OnSecuritiesChanged(SecurityChanges changes)
     {
-        // Liquidate the new stocks traded today/yesterday to capitalize the first-day hype.
-        foreach (var removed in changes.RemovedSecurities)
+        // Liquidate new stocks traded today or yesterday to capitalize on first-day hype.
+        foreach (var security in changes.RemovedSecurities)
         {
-            Liquidate(removed.Symbol);
+            Liquidate(security.Symbol);
         }
     }
 }</pre>

@@ -9,61 +9,60 @@
 
 
 class QuiverInsiderTradingAlgorithm(QCAlgorithm):
-    
-    def initialize(self):
+
+    def initialize(self) -&gt; None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self._symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
-        # Subscribe to insider trade data for AAPL to generate trade signal
-        self.dataset_symbol = self.add_data(QuiverInsiderTrading, self._symbol).symbol
+        self._equity = self.add_equity("AAPL", Resolution.DAILY)
+        # Subscribe to insider trade data for AAPL to generate trade signals.
+        self._dataset_symbol = self.add_data(QuiverInsiderTrading, self._equity).symbol
+        # Warm up the custom data subscription with recent history.
+        history = self.history(self._dataset_symbol, 10, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self._dataset_symbol}.")
 
-        # history request
-        history = self.history(self.dataset_symbol, 10, Resolution.DAILY)
-        self.debug(f"We got {len(history)} items from historical data request of {self.dataset_symbol}.")
-
-    def on_data(self, slice: Slice) -&gt; None:
-        # Trade only base on insider trade data
-        for insider_trades in slice.Get(QuiverInsiderTrading).values():
+    def on_data(self, data: Slice) -&gt; None:
+        # Trade only from insider trade data.
+        for insider_trades in data.get(QuiverInsiderTrading).values():
             for insider_trade in insider_trades:
-                # Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
+                # Buy when insiders purchase shares because it may signal confidence in future prices.
                 if insider_trade.shares &gt; 0:
-                    self.set_holdings(self._symbol, 1)
-                # Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
+                    self.set_holdings(self._equity, 1)
+                # Liquidate when insiders sell shares because it may signal weaker future confidence.
                 else:
-                    self.liquidate(self._symbol)</pre>
+                    self.liquidate(self._equity)</pre>
 <pre class="csharp">public class QuiverInsiderTradingAlgorithm : QCAlgorithm
 {
-    private Symbol _symbol, _datasetSymbol;
+    private Equity _equity;
+    private Symbol _datasetSymbol;
 
     public override void Initialize()
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
-        _symbol = AddEquity("AAPL").Symbol;
-        // Subscribe to insider trade data for AAPL to generate trade signal
-        _datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(_symbol).Symbol;
-
-        // history request
-        var history = History&lt;QuiverInsiderTrading&gt;(new[] {_datasetSymbol}, 10, Resolution.Daily);
+        _equity = AddEquity("AAPL", Resolution.Daily);
+        // Subscribe to insider trade data for AAPL to generate trade signals.
+        _datasetSymbol = AddData&lt;QuiverInsiderTrading&gt;(_equity.Symbol).Symbol;
+        // Warm up the custom data subscription with recent history.
+        var history = History&lt;QuiverInsiderTrading&gt;([_datasetSymbol], 10, Resolution.Daily);
         Debug($"We got {history.Count()} items from historical data request of {_datasetSymbol}.");
     }
 
-    public override void OnData(Slice slice)
+    public override void OnData(Slice data)
     {
-        // Trade only base on insider trade data
-        foreach (var kvp in slice.Get&lt;QuiverInsiderTrading&gt;())
+        // Trade only from insider trade data.
+        foreach (var kvp in data.Get&lt;QuiverInsiderTrading&gt;())
         {
             foreach (QuiverInsiderTrading insiderTrade in kvp.Value)
             {
-                // Any buy insider trade will result in buying, assuming insider have confidence in stock price with more informed information and projection
+                // Buy when insiders purchase shares because it may signal confidence in future prices.
                 if (insiderTrade.Shares &gt; 0)
                 {
-                    SetHoldings(_symbol, 1);
+                    SetHoldings(_equity.Symbol, 1);
                 }
-                // Any sell insider trade will result in liquidation, assuming insiders believe the stock price has reached maximum or poor future confidence
+                // Liquidate when insiders sell shares because it may signal weaker future confidence.
                 else
                 {
-                    Liquidate(_symbol);
+                    Liquidate(_equity.Symbol);
                 }
             }
         }
