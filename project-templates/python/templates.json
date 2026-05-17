@@ -1,364 +1,24 @@
 {
 	"templates": [
 		{
-			"name": "Equities Static Universe",
-			"folder": "equities-static-universe",
-			"description": "Simple template with a fixed list of assets, indicators, and a scheduled event.",
-			"tags": ["indicators", "scheduled-event", "Equity"]
+			"name": "Equity Parabolic SAR Trailing Stop",
+			"folder": "equity-parabolic-sar-trailing",
+			"description": "Trades SPY long-only with Parabolic SAR providing dynamic trailing-stop levels and re-entries.",
+			"tags": ["Equity", "indicators", "parabolic-sar", "trailing-stop", "indicator-plotting"]
 		},
 		{
-			"name": "Equities Universe",
-			"folder": "equities-universe",
-			"description": "Fundamental universe selecting top undervalued large-caps ranked by an EMA100/EMA300 cross, rebalanced daily.",
-			"tags": ["fundamentals", "indicators", "universe", "Equity"]
-		},
-		{
-			"name": "Chained Universe",
-			"folder": "chained-universe",
-			"description": "Chains an ETF-constituents universe (QQQ) into a fundamental PE filter to select the most undervalued stocks.",
-			"tags": ["universe", "etf", "Equity", "fundamentals", "chained-universe"]
-		},
-		{
-			"name": "History and ETF Universe",
-			"folder": "history-and-etf-universe",
-			"description": "Selects QQQ constituents, ranks them by a daily ATR, and rebalances using ETF weights.",
-			"tags": ["universe", "Equity", "etf", "indicators", "history"]
-		},
-		{
-			"name": "Intraday Indicator Scans",
-			"folder": "intraday-indicator-scans",
-			"description": "Scans QQQ constituents every 15 minutes with a minute-resolution ATR to select the most volatile constituents intraday.",
-			"tags": ["universe", "intraday", "Equity", "etf", "indicators"]
-		},
-		{
-			"name": "Custom Indicator",
-			"folder": "custom-indicator",
-			"description": "Implements a custom Money Flow Index indicator and trades SPY on its signals.",
-			"tags": ["indicators", "custom-indicator", "Equity"]
-		},
-		{
-			"name": "Custom Consolidators",
-			"folder": "custom-consolidators",
-			"description": "Builds a calendar-based QuoteBar consolidator anchored to 5 PM ET, applies an EMA on the consolidated Forex bars, and trades crossovers.",
-			"tags": ["indicators", "custom-consolidators", "consolidators", "Forex"]
-		},
-		{
-			"name": "Custom Data",
-			"folder": "custom-data",
-			"description": "Defines a custom data source type that ingests Bitstamp data and plots daily Bitcoin prices.",
-			"tags": ["python-data", "custom-data", "Crypto"]
-		},
-		{
-			"name": "Custom Data with Ticker Mapping",
-			"folder": "custom-data-ticker-mapping",
-			"description": "Loads custom data tied to an Equity whose ticker changed (FB to META) using point-in-time SecurityIdentifier mapping from the Object Store.",
-			"tags": ["ticker-mapping", "custom-data", "object-store", "Equity"]
-		},
-		{
-			"name": "Custom Models",
-			"folder": "custom-models",
-			"description": "Replaces the default fee, fill, slippage, and buying-power models through a security initializer.",
-			"tags": ["reality-models", "slippage", "fill-model", "fee-model", "Equity"]
-		},
-		{
-			"name": "Forex",
-			"folder": "forex",
-			"description": "Trades three Forex pairs using a Minimum indicator on the bid-ask spread to enter when spreads are tightest.",
-			"tags": ["bid-ask-spread", "indicators", "quote-bars", "Forex"]
-		},
-		{
-			"name": "CFD",
-			"folder": "cfd",
-			"description": "Trades CFDs across German, Asian, and US index markets with Scheduled Events aligned to each market's hours.",
-			"tags": ["market-hours", "scheduled-event", "Cfd"]
-		},
-		{
-			"name": "Crypto Static Universe",
-			"folder": "crypto-static",
-			"description": "Trades a fixed list of Cryptocurrencies on Bitfinex at minute resolution with a weekly rebalance.",
-			"tags": ["position-sizing", "scheduled-event", "Crypto"]
-		},
-		{
-			"name": "Crypto Universe",
-			"folder": "crypto-universe",
-			"description": "Selects the top 10 Cryptos by USD volume on Coinbase and rebalances daily at noon.",
-			"tags": ["universe", "scheduled-event", "Crypto"]
-		},
-		{
-			"name": "Crypto Futures",
-			"folder": "crypto-futures",
-			"description": "Trades Crypto Futures (BTC, ETH, LTC) on Binance margin in USDT with weekly rebalancing and margin-interest tracking.",
-			"tags": ["charting", "margin", "CryptoFuture"]
-		},
-		{
-			"name": "Futures",
-			"folder": "futures",
-			"description": "Trades the continuous E-mini SP 500 Future and rolls between contract months on SymbolChangedEvents.",
-			"tags": ["contract-rolling", "continuous-contracts", "indices", "Future"]
-		},
-		{
-			"name": "Equity Options Static",
-			"folder": "equity-options-static",
-			"description": "Trades a fixed SPY Equity Option chain, constructing and rebalancing a covered call on a weekly schedule.",
-			"tags": ["Option", "scheduled-event", "covered-call"]
-		},
-		{
-			"name": "Equity Options Universe",
-			"folder": "equity-options-universe",
-			"description": "Filters SPY weekly Equity Options to ATM calls and puts and executes a long straddle.",
-			"tags": ["Option", "straddle", "option-strategies"]
-		},
-		{
-			"name": "Index Options Static",
-			"folder": "index-options-static",
-			"description": "Trades SPX Index Options, buying the ATM contract with the closest expiration.",
-			"tags": ["option-chain", "IndexOption", "spx"]
-		},
-		{
-			"name": "Index Options Universe",
-			"folder": "index-options-universe",
-			"description": "Filters the SPXW Index Option chain to 0DTE strikes near ATM and buys the call with the lower strike.",
-			"tags": ["option-filter", "0dte", "IndexOption"]
-		},
-		{
-			"name": "Intraday Index Options Selection",
-			"folder": "intraday-index-options-selection",
-			"description": "Loads the SPX weekly chain daily and re-filters ATM calls every 5 minutes to trade as contracts update intraday.",
-			"tags": ["0dte", "IndexOption", "intraday"]
-		},
-		{
-			"name": "Intraday Greeks-Based Options Selection",
-			"folder": "intraday-greeks-based-options-selection",
-			"description": "Selects RUT Index Options intraday by target delta from EMA-driven signals with paced order submission.",
-			"tags": ["intraday", "IndexOption", "greeks"]
-		},
-		{
-			"name": "Future Options",
-			"folder": "future-options",
-			"description": "Builds a bull call spread on E-mini SP500 Future Options.",
-			"tags": ["FutureOption", "option-strategies"]
-		},
-		{
-			"name": "Alternative Data",
-			"folder": "alternative-data",
-			"description": "Ranks Equities with the Brain ML Ranking dataset and sizes positions from predicted returns via portfolio targets.",
-			"tags": ["position-sizing", "Equity", "machine-learning", "alternative-data", "ranking", "brain", "brain-ml-stock-ranking"]
-		},
-		{
-			"name": "Alternative Data Universe",
-			"folder": "alternative-data-universe",
-			"description": "Uses EODHD upcoming-earnings data to select Equities and trades straddles around earnings announcements.",
-			"tags": ["Option", "universe", "alternative-data", "earnings", "eod-historical-data", "upcoming-earnings"]
-		},
-		{
-			"name": "Alternative Data Universe for CNBC Trading",
-			"folder": "alternative-data-universe-quivercnbcsuniverse",
-			"description": "Selects US Equities with 3+ BUY recommendations from CNBC personalities and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "cnbc-trading"]
-		},
-		{
-			"name": "Alternative Data Universe for Brain Language Metrics on Company Filings",
-			"folder": "alternative-data-universe-braincompanyfilinglanguagemetricsuniverseall",
-			"description": "Selects US Equities with positive sentiment in both the report and MD&A sections of their latest SEC filings and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "brain", "brain-language-metrics-on-company-filings"]
-		},
-		{
-			"name": "Alternative Data Universe for Brain ML Stock Ranking",
-			"folder": "alternative-data-universe-brainstockrankinguniverse",
-			"description": "Selects US Equities with positive Brain ML rankings across 2-, 3-, and 5-day horizons and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "brain", "brain-ml-stock-ranking"]
-		},
-		{
-			"name": "Alternative Data Universe for Brain Sentiment Indicator",
-			"folder": "alternative-data-universe-brainsentimentindicatoruniverse",
-			"description": "Selects US Equities with positive 7-day media sentiment and active mention coverage and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "brain", "brain-sentiment-indicator"]
-		},
-		{
-			"name": "Alternative Data Universe for CoinGecko Crypto Market Cap",
-			"folder": "alternative-data-universe-coingeckouniverse",
-			"description": "Selects the top 10 Cryptocurrencies by CoinGecko market cap that are tradable on Coinbase and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Crypto", "coingecko", "crypto-market-cap"]
-		},
-		{
-			"name": "Alternative Data Universe for EODHD Upcoming Dividends",
-			"folder": "alternative-data-universe-eodhdupcomingdividends",
-			"description": "Selects US Equities going ex-dividend in the next day with a payout above $0.05 and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "dividends", "Equity", "eod-historical-data", "upcoming-dividends"]
-		},
-		{
-			"name": "Alternative Data Universe for EODHD Upcoming Earnings",
-			"folder": "alternative-data-universe-eodhdupcomingearnings",
-			"description": "Selects US Equities reporting earnings in the next 3 days with a positive analyst estimate and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "earnings", "Equity", "eod-historical-data", "upcoming-earnings"]
-		},
-		{
-			"name": "Alternative Data Universe for EODHD Upcoming IPOs",
-			"folder": "alternative-data-universe-eodhdupcomingipos",
-			"description": "Selects expected/priced non-penny IPOs with a confirmed IPO date and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "ipos", "Equity", "eod-historical-data", "upcoming-ipos"]
-		},
-		{
-			"name": "Alternative Data Universe for EODHD Upcoming Splits",
-			"folder": "alternative-data-universe-eodhdupcomingsplits",
-			"description": "Selects US Equities with a forward split in the next 3 days and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["splits", "universe", "alternative-data", "Equity", "eod-historical-data", "upcoming-splits"]
-		},
-		{
-			"name": "Alternative Data Universe for Corporate Lobbying",
-			"folder": "alternative-data-universe-quiverlobbyinguniverse",
-			"description": "Selects US Equities whose corporate lobbying spend totals at least $100K and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "corporate-lobbying"]
-		},
-		{
-			"name": "Alternative Data Universe for Insider Trading",
-			"folder": "alternative-data-universe-quiverinsidertradinguniverse",
-			"description": "Selects the 10 US Equities with the largest insider-trading dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "insider-trading"]
-		},
-		{
-			"name": "Alternative Data Universe for US Congress Trading",
-			"folder": "alternative-data-universe-quiverquantcongressuniverse",
-			"description": "Selects US Equities recently bought by US Congress members in trades over $200K and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "us-congress-trading"]
-		},
-		{
-			"name": "Alternative Data Universe for US Government Contracts",
-			"folder": "alternative-data-universe-quivergovernmentcontractuniverse",
-			"description": "Selects US Equities with at least 3 government contracts totalling over $50K and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "us-government-contracts"]
-		},
-		{
-			"name": "Alternative Data Universe for Smart Insider Intentions",
-			"folder": "alternative-data-universe-smartinsiderintentionuniverse",
-			"description": "Selects $100M+ market-cap US Equities announcing buyback intentions over 0.5% of shares and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "smart-insider", "corporate-buybacks"]
-		},
-		{
-			"name": "Alternative Data Universe for Smart Insider Transactions",
-			"folder": "alternative-data-universe-smartinsidertransactionuniverse",
-			"description": "Selects $100M+ market-cap US Equities executing buybacks over 0.5% of shares and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["universe", "alternative-data", "Equity", "smart-insider", "corporate-buybacks"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for CNBC Trading",
-			"folder": "alternative-data-chain-universe-quivercnbcsuniverse",
-			"description": "Selects US Equities with 3+ BUY recommendations from CNBC personalities from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "cnbc-trading"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Brain Language Metrics on Company Filings",
-			"folder": "alternative-data-chain-universe-braincompanyfilinglanguagemetricsuniverseall",
-			"description": "Selects US Equities with positive sentiment in both the report and MD&A sections of their latest SEC filings from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "brain", "brain-language-metrics-on-company-filings"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Brain ML Stock Ranking",
-			"folder": "alternative-data-chain-universe-brainstockrankinguniverse",
-			"description": "Selects US Equities with positive Brain ML rankings across 2-, 3-, and 5-day horizons from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "brain", "brain-ml-stock-ranking"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Brain Sentiment Indicator",
-			"folder": "alternative-data-chain-universe-brainsentimentindicatoruniverse",
-			"description": "Selects US Equities with positive 7-day media sentiment and active mention coverage from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "brain", "brain-sentiment-indicator"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for EODHD Upcoming Dividends",
-			"folder": "alternative-data-chain-universe-eodhdupcomingdividends",
-			"description": "Selects US Equities going ex-dividend in the next day with a payout above $0.05 from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "dividends", "eod-historical-data", "upcoming-dividends"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for EODHD Upcoming Earnings",
-			"folder": "alternative-data-chain-universe-eodhdupcomingearnings",
-			"description": "Selects US Equities reporting earnings in the next 3 days with a positive analyst estimate from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "earnings", "eod-historical-data", "upcoming-earnings"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for EODHD Upcoming IPOs",
-			"folder": "alternative-data-chain-universe-eodhdupcomingipos",
-			"description": "Selects expected/priced non-penny IPOs with a confirmed IPO date from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "ipos", "eod-historical-data", "upcoming-ipos"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for EODHD Upcoming Splits",
-			"folder": "alternative-data-chain-universe-eodhdupcomingsplits",
-			"description": "Selects US Equities with a forward split in the next 3 days from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "splits", "eod-historical-data", "upcoming-splits"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Corporate Lobbying",
-			"folder": "alternative-data-chain-universe-quiverlobbyinguniverse",
-			"description": "Selects US Equities whose corporate lobbying spend totals at least $100K from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "corporate-lobbying"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Insider Trading",
-			"folder": "alternative-data-chain-universe-quiverinsidertradinguniverse",
-			"description": "Selects the 10 US Equities with the largest insider-trading dollar volume from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "insider-trading"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for US Congress Trading",
-			"folder": "alternative-data-chain-universe-quiverquantcongressuniverse",
-			"description": "Selects US Equities recently bought by US Congress members in trades over $200K from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "us-congress-trading"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for US Government Contracts",
-			"folder": "alternative-data-chain-universe-quivergovernmentcontractuniverse",
-			"description": "Selects US Equities with at least 3 government contracts totalling over $50K from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "us-government-contracts"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Smart Insider Intentions",
-			"folder": "alternative-data-chain-universe-smartinsiderintentionuniverse",
-			"description": "Selects $100M+ market-cap US Equities announcing buyback intentions over 0.5% of shares from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "smart-insider", "corporate-buybacks"]
-		},
-		{
-			"name": "Alternative Data Chained Universe for Smart Insider Transactions",
-			"folder": "alternative-data-chain-universe-smartinsidertransactionuniverse",
-			"description": "Selects $100M+ market-cap US Equities executing buybacks over 0.5% of shares from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
-			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "smart-insider", "corporate-buybacks"]
-		},
-		{
-			"name": "AI",
-			"folder": "ai",
-			"description": "Trains a TensorFlow MLP weekly on warmed-up history to predict SPY direction.",
-			"tags": ["machine-learning", "tensorflow", "indicators", "Equity"]
-		},
-		{
-			"name": "Trade Management",
-			"folder": "trade-management",
-			"description": "Implements a One-Cancels-Other (OCO) pattern with a market order entry and paired stop-loss and take-profit orders, where one of the paired orders cancels when the other fills.",
-			"tags": ["order-tickets", "take-profit", "oco-orders", "stop-loss", "order-management", "Equity"]
-		},
-		{
-			"name": "Financial Advisors",
-			"folder": "financial-advisors",
-			"description": "Demonstrates Interactive Brokers Financial Advisor group/account allocations via order properties along with live brokerage messages.",
-			"tags": ["interactive-brokers", "order-properties", "financial-advisor", "live-trading", "notifications", "Equity", "brokerage-messages"]
-		},
-		{
-			"name": "Live Trading Features",
-			"folder": "live-trading-features",
-			"description": "Demonstrates live email and SMS notifications, brokerage disconnect/reconnect handling, and commands.",
-			"tags": ["live-trading", "sms", "notifications", "Equity", "emails", "commands", "brokerage-messages"]
+			"folder": "equity-aroon-trend",
+			"name": "Equity Aroon Trend",
+			"description": "Trades SPY using AroonOscillator(25); enters long on cross above +50 and exits on cross below -50.",
+			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. AroonOscillator(25). Long when oscillator crosses above 50; exit when it crosses below -50. Demonstrates: Aroon indicator, threshold crossing pattern, plotting oscillator on subchart. Edge case: do not flip short â€” long-only.",
+			"tags": ["Equity", "indicators", "aroon", "trend"],
+			"reference_template": "equities-static-universe"
 		},
 		{
 			"name": "Equity Bollinger Mean Reversion",
 			"folder": "equity-bollinger-mean-reversion",
-			"description": "Trades SPY on a 20-period, 2-standard-deviation Bollinger Bands mean-reversion signal — buys when price closes below the lower band and liquidates on a return to the middle band — with a daily scheduled rebalance.",
+			"description": "Trades SPY on a 20-period, 2-standard-deviation Bollinger Bands mean-reversion signal â€” buys when price closes below the lower band and liquidates on a return to the middle band â€” with a daily scheduled rebalance.",
 			"tags": ["Equity", "indicators", "bollinger-bands", "mean-reversion", "z-score"]
-		},
-		{
-			"name": "Option SPY Iron Condor",
-			"folder": "option-iron-condor-spy",
-			"description": "Sells weekly SPY iron condors with short strikes ~10 delta and long wings 3 strikes wider.",
-			"tags": ["Option", "iron-condor", "option-strategies", "weekly"]
 		},
 		{
 			"name": "Equity RSI Overbought/Oversold",
@@ -367,86 +27,58 @@
 			"tags": ["Equity", "indicators", "rsi", "intraday"]
 		},
 		{
-			"name": "Equity MACD Histogram Divergence",
-			"folder": "equity-macd-histogram-divergence",
-			"description": "Detects MACD histogram divergence on AAPL and trades crossovers of the signal line, holding until the histogram flips sign.",
-			"tags": ["Equity", "indicators", "macd", "indicator-plotting", "indicator-history"]
-		},
-		{
 			"name": "Equity Stochastic Oscillator",
 			"folder": "equity-stochastic-oscillator",
 			"description": "Trades IWM with a 14/3/3 Stochastic oscillator, going long on %K crossing %D from below 20 and exiting on a cross from above 80.",
 			"tags": ["Equity", "indicators", "stochastic", "oscillator", "indicator-history"]
 		},
 		{
-			"name": "Equity Donchian Turtle Breakout",
-			"folder": "equity-donchian-breakout-turtle",
-			"description": "Implements a 20/10 Donchian channel turtle breakout on a basket of liquid US ETFs with ATR-based position sizing.",
-			"tags": ["Equity", "indicators", "donchian", "turtle", "atr", "position-sizing"]
+			"name": "Crypto Static Universe",
+			"folder": "crypto-static",
+			"description": "Trades a fixed list of Cryptocurrencies on Bitfinex at minute resolution with a weekly rebalance.",
+			"tags": ["position-sizing", "scheduled-event", "Crypto"]
 		},
 		{
-			"name": "Equity SuperTrend Trend Following",
-			"folder": "equity-supertrend-trend-following",
-			"description": "Trades SPY with a 10-period 3x ATR SuperTrend, flipping long/short on direction changes of the band.",
-			"tags": ["Equity", "indicators", "supertrend", "indicator-event-handler"]
+			"name": "Index Options Universe",
+			"folder": "index-options-universe",
+			"description": "Filters the SPXW Index Option chain to 0DTE strikes near ATM and buys the call with the lower strike.",
+			"tags": ["option-filter", "0dte", "IndexOption"]
 		},
 		{
-			"name": "Crypto On-Chain Network Activity",
-			"folder": "crypto-onchain-network-activity",
-			"description": "Holds BTCUSD long when both Bitcoin transaction count and hash rate are above their 30-day SMAs (demand and supply expanding); flat otherwise.",
-			"tags": ["Crypto", "alternative-data", "blockchain", "btc", "bitcoin-metadata"]
+			"name": "CFD",
+			"folder": "cfd",
+			"description": "Trades CFDs across German, Asian, and US index markets with Scheduled Events aligned to each market's hours.",
+			"tags": ["market-hours", "scheduled-event", "Cfd"]
 		},
 		{
-			"name": "Equity Parabolic SAR Trailing Stop",
-			"folder": "equity-parabolic-sar-trailing",
-			"description": "Trades SPY long-only with Parabolic SAR providing dynamic trailing-stop levels and re-entries.",
-			"tags": ["Equity", "indicators", "parabolic-sar", "trailing-stop", "indicator-plotting"]
+			"name": "Equities Static Universe",
+			"folder": "equities-static-universe",
+			"description": "Simple template with a fixed list of assets, indicators, and a scheduled event.",
+			"tags": ["indicators", "scheduled-event", "Equity"]
+		},
+		{
+			"name": "Equity Options Universe",
+			"folder": "equity-options-universe",
+			"description": "Filters SPY weekly Equity Options to ATM calls and puts and executes a long straddle.",
+			"tags": ["Option", "straddle", "option-strategies"]
+		},
+		{
+			"name": "Crypto Futures",
+			"folder": "crypto-futures",
+			"description": "Trades Crypto Futures (BTC, ETH, LTC) on Binance margin in USDT with weekly rebalancing and margin-interest tracking.",
+			"tags": ["charting", "margin", "CryptoFuture"]
+		},
+		{
+			"name": "Alternative Data Universe for EODHD Upcoming Splits",
+			"folder": "alternative-data-universe-eodhdupcomingsplits",
+			"description": "Selects US Equities with a forward split in the next 3 days and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["splits", "universe", "alternative-data", "Equity", "eod-historical-data", "upcoming-splits"]
 		},
 		{
 			"name": "Equity ADX Trend Filter",
 			"folder": "equity-adx-trend-filter",
 			"description": "Combines a 50/200 EMA crossover signal with an ADX(14) > 25 filter to trade SPY only in trending regimes.",
 			"tags": ["Equity", "indicators", "adx", "trend-filter", "indicator-plotting", "scheduled-event", "indicator-extensions"]
-		},
-		{
-			"name": "Equity Ichimoku Cloud",
-			"folder": "equity-ichimoku-cloud",
-			"description": "Trades QQQ using the Ichimoku Kinko Hyo cloud, entering long on Tenkan/Kijun bullish cross above the cloud.",
-			"tags": ["Equity", "indicators", "ichimoku", "indicator-plotting", "scheduled-event", "indicator-history"]
-		},
-		{
-			"name": "Equity Keltner Squeeze Breakout",
-			"folder": "equity-keltner-squeeze",
-			"description": "Trades a basket of US ETFs on Bollinger-inside-Keltner squeeze releases — long on a close above the upper Bollinger Band, short below the lower, exiting at the midline.",
-			"tags": ["Equity", "indicators", "keltner", "squeeze", "bollinger-bands", "scheduled-event"]
-		},
-		{
-			"name": "Equity Country GDP Growth Rotation",
-			"folder": "dataset-eodhd-macro-indicators",
-			"description": "Equal-weights the 3 country ETFs with the highest annual GDP growth from a basket of 8 major economies, using the EODHD Macro Indicators dataset.",
-			"tags": ["Equity", "alternative-data", "macro", "etf", "rotation", "eod-historical-data", "macro-indicators"]
-		},
-		{
-			"name": "Crypto BTC vs PAXG Fed Funds Toggle",
-			"folder": "crypto-fred-rates-toggle",
-			"description": "Rotates between BTCUSD and gold-backed PAXGUSD on Kraken based on the 3-month change in the FRED Fed Funds Rate — long BTC when easing, gold when hiking or flat.",
-			"tags": ["Crypto", "alternative-data", "macro", "regime-switch", "indicators", "history", "fred", "us-federal-reserve"]
-		},
-		{
-			"folder": "equity-pairs-trading-cointegration",
-			"name": "Equity Pairs Trading (Cointegration)",
-			"description": "Trades the spread between KO and PEP using a 60-day OLS hedge ratio and z-score thresholds for entries/exits.",
-			"spec": "Assets: KO, PEP. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Compute hedge ratio via 60-day rolling OLS on closes; z-score the spread; long-spread when z<-2 (long KO, short PEP); short-spread when z>2; exit when |z|<0.5. Demonstrates: history requests for OLS, RollingWindow, dollar-neutral sizing. Edge case: re-fit hedge ratio weekly.",
-			"tags": ["Equity", "pairs-trading", "statistical-arbitrage", "history"],
-			"reference_template": "history-and-etf-universe"
-		},
-		{
-			"folder": "equity-momentum-cross-sectional-decile",
-			"name": "Equity Cross-Sectional Momentum Decile",
-			"description": "Selects the top decile of S&P 500 stocks by 12-1 month momentum and rebalances monthly into an equal-weight long portfolio.",
-			"spec": "Universe: S&P 500 (etf-constituents on SPY) capped at 100 by dollar volume. Minute. 2022-01-01 to 2024-12-31, $250k. Compute 252-21 day return (12-1 momentum) via history. Monthly schedule selects top decile (~10 names) and equal-weights. Demonstrates: ETF universe, history-based factor, monthly rebalance, set_holdings on top decile.",
-			"tags": ["Equity", "momentum", "etf-universe", "factor"],
-			"reference_template": "history-and-etf-universe"
 		},
 		{
 			"folder": "equity-roc-momentum-rank",
@@ -457,12 +89,10 @@
 			"reference_template": "equities-static-universe"
 		},
 		{
-			"folder": "equity-cmf-money-flow",
-			"name": "Equity Chaikin Money Flow",
-			"description": "Trades XLF using ChaikinMoneyFlow(20) — long when CMF > 0.1 and short when CMF < -0.1, flat in between.",
-			"spec": "Asset: XLF. Minute resolution. 2022-01-01 to 2024-12-31, $100k. ChaikinMoneyFlow(20). Long when CMF > 0.10; short when CMF < -0.10; flat in the dead zone. Demonstrates: CMF volume indicator, threshold-based regime, plotting indicator on subchart. Edge case: rebalance only on signal change.",
-			"tags": ["Equity", "indicators", "cmf", "volume"],
-			"reference_template": "equities-static-universe"
+			"name": "Alternative Data Universe for US Congress Trading",
+			"folder": "alternative-data-universe-quiverquantcongressuniverse",
+			"description": "Selects US Equities recently bought by US Congress members in trades over $200K and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "us-congress-trading"]
 		},
 		{
 			"folder": "equity-sixty-forty-portfolio",
@@ -473,28 +103,16 @@
 			"reference_template": "equities-static-universe"
 		},
 		{
-			"folder": "equity-all-weather-portfolio",
-			"name": "Equity All-Weather Portfolio",
-			"description": "Implements Ray Dalio's All-Weather: 30% SPY, 40% TLT, 15% IEF, 7.5% GLD, 7.5% DBC with annual rebalance.",
-			"spec": "Assets: SPY, TLT, IEF, GLD, DBC. Minute. 2022-01-01 to 2024-12-31, $200k. Set target weights on first bar; annual schedule retargets. Demonstrates: multi-asset allocation, scheduled annual rebalance, holdings drift monitoring. Edge case: skip GLD/DBC if missing in early data.",
-			"tags": ["Equity", "all-weather", "asset-allocation", "etf"],
-			"reference_template": "equities-static-universe"
+			"name": "Alternative Data Universe for EODHD Upcoming IPOs",
+			"folder": "alternative-data-universe-eodhdupcomingipos",
+			"description": "Selects expected/priced non-penny IPOs with a confirmed IPO date and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "ipos", "Equity", "eod-historical-data", "upcoming-ipos"]
 		},
 		{
-			"folder": "equity-opening-range-breakout",
-			"name": "Equity Opening Range Breakout",
-			"description": "Trades SPY breakouts of the 30-minute opening range, going long above the high and short below the low until end of day.",
-			"spec": "Asset: SPY. Minute resolution. 2024-09-01 to 2024-12-31, $100k. Build opening range 9:30-10:00; long on first cross above range high; short on first cross below range low. Force liquidate at 15:55. Demonstrates: minute resolution, scheduled events for ORB window, end-of-day flat. Edge case: only one trade per day.",
-			"tags": ["Equity", "opening-range-breakout", "intraday", "scheduled-event"],
-			"reference_template": "intraday-indicator-scans"
-		},
-		{
-			"folder": "equity-turn-of-month-effect",
-			"name": "Equity Turn-of-Month Effect",
-			"description": "Holds SPY only on the last 4 and first 3 trading days of each month and stays in cash otherwise.",
-			"spec": "Asset: SPY. Minute. 2022-01-01 to 2024-12-31, $100k. Use trading calendar to identify last 4 and first 3 trading days of each month; hold SPY on those days, otherwise liquidate. Demonstrates: trading calendar API, scheduled events with custom date logic. Edge case: handle month boundary spanning weekends/holidays.",
-			"tags": ["Equity", "calendar-anomaly", "scheduled-event", "trading-calendar"],
-			"reference_template": "equities-static-universe"
+			"name": "Alternative Data Universe for Corporate Lobbying",
+			"folder": "alternative-data-universe-quiverlobbyinguniverse",
+			"description": "Selects US Equities whose corporate lobbying spend totals at least $100K and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "corporate-lobbying"]
 		},
 		{
 			"folder": "equity-monthly-roc-rotation",
@@ -505,30 +123,6 @@
 			"reference_template": "equities-static-universe"
 		},
 		{
-			"folder": "dataset-blockchain-bitcoin-metadata",
-			"name": "Dataset: Blockchain Bitcoin Metadata",
-			"description": "Trades BTCUSD long when 30-day Bitcoin block-time metadata trends down (faster blocks => more activity), flat when up.",
-			"spec": "Asset: BTCUSD on Coinbase + BitcoinMetadata custom data. Minute. 2023-01-01 to 2024-12-31, $100k. add_data(BitcoinMetadata) for block time and difficulty fields. ROC(30) of average block time; long BTCUSD when ROC < 0, flat when > 0. Demonstrates: Blockchain Bitcoin Metadata dataset, on-chain regime switch (distinct from MVRV/hashrate templates). Edge case: handle stale data.",
-			"tags": ["Crypto", "alternative-data", "blockchain", "btc"],
-			"reference_template": "alternative-data-universe-coingeckouniverse"
-		},
-		{
-			"folder": "live-commands-listener",
-			"name": "Live: Commands Listener",
-			"description": "Pauses/resumes an SPY EMA cross strategy via the on_command handler, with pause state persisted in the Object Store.",
-			"spec": "Asset: SPY. Minute. 2024-09-01 to 2024-12-31, $100k. Override on_command(data): when data.command=='pause', set self._paused = data.paused and persist via object_store. EMA(50)/EMA(200) trades only when not paused. Demonstrates: on_command pattern with direct algorithm-attribute mutation. Edge case: restore pause state across restarts from Object Store.",
-			"tags": ["Equity", "live-trading", "commands", "object-store"],
-			"reference_template": "live-trading-features"
-		},
-		{
-			"folder": "live-notifications-telegram-webhook",
-			"name": "Live: Telegram Webhook Notifications",
-			"description": "Sends notifications to a Telegram bot via notify.web on every trade fill.",
-			"spec": "Asset: SPY. Minute. 2024-09-01 to 2024-12-31, $100k. EMA(50)/EMA(200) cross. On on_order_event(filled) call notify.web('https://api.telegram.org/...', headers={...}, body='...'). Demonstrates: notify.web for arbitrary HTTP webhook (different from email/SMS in live-trading-features). Edge case: stub URL in backtest mode.",
-			"tags": ["Equity", "live-trading", "notifications", "webhook"],
-			"reference_template": "live-trading-features"
-		},
-		{
 			"folder": "equity-fisher-transform-reversal",
 			"name": "Equity Fisher Transform Reversal",
 			"description": "Trades NDX-tracking QQQ on FisherTransform extreme readings, fading values above 2.0 and below -2.0.",
@@ -537,20 +131,84 @@
 			"reference_template": "equities-static-universe"
 		},
 		{
-			"folder": "equity-value-pe-pb-quality",
-			"name": "Equity Value/Quality Composite",
-			"description": "Selects S&P 500 names by a composite of low PE, low PB, and high ROE; equal-weights the top 20 monthly.",
-			"spec": "Universe: fundamental. Daily. 2022-01-01 to 2024-12-31, $250k. Rank by z-score of (-PE, -PB, +ROE) and combine equally; pick top 20 names. Monthly rebalance. Demonstrates: fundamental data, multi-factor composite, equal-weight. Edge case: skip names with missing fundamentals (use is_finite checks).",
-			"tags": ["Equity", "value-factor", "quality-factor", "fundamentals"],
-			"reference_template": "equities-universe"
+			"name": "Alternative Data Universe for Brain ML Stock Ranking",
+			"folder": "alternative-data-universe-brainstockrankinguniverse",
+			"description": "Selects US Equities with positive Brain ML rankings across 2-, 3-, and 5-day horizons and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "brain", "brain-ml-stock-ranking"]
 		},
 		{
-			"folder": "equity-obv-divergence",
-			"name": "Equity OBV Divergence",
-			"description": "Detects bullish/bearish On-Balance Volume divergence on SPY versus a 20-day price ROC and trades reversals.",
-			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. OBV indicator and ROC(20) on price. Bullish divergence: price ROC < 0 but OBV ROC > 0 -> long. Bearish opposite -> short. Demonstrates: OBV automatic indicator, IndicatorExtensions to compute ROC of OBV, divergence logic. Edge case: require 5-day confirmation.",
-			"tags": ["Equity", "indicators", "obv", "divergence"],
+			"name": "Crypto Universe",
+			"folder": "crypto-universe",
+			"description": "Selects the top 10 Cryptos by USD volume on Coinbase and rebalances daily at noon.",
+			"tags": ["universe", "scheduled-event", "Crypto"]
+		},
+		{
+			"name": "Alternative Data Universe for EODHD Upcoming Earnings",
+			"folder": "alternative-data-universe-eodhdupcomingearnings",
+			"description": "Selects US Equities reporting earnings in the next 3 days with a positive analyst estimate and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "earnings", "Equity", "eod-historical-data", "upcoming-earnings"]
+		},
+		{
+			"name": "Alternative Data Universe for EODHD Upcoming Dividends",
+			"folder": "alternative-data-universe-eodhdupcomingdividends",
+			"description": "Selects US Equities going ex-dividend in the next day with a payout above $0.05 and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "dividends", "Equity", "eod-historical-data", "upcoming-dividends"]
+		},
+		{
+			"name": "Alternative Data Universe for US Government Contracts",
+			"folder": "alternative-data-universe-quivergovernmentcontractuniverse",
+			"description": "Selects US Equities with at least 3 government contracts totalling over $50K and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "us-government-contracts"]
+		},
+		{
+			"name": "Alternative Data Universe for Insider Trading",
+			"folder": "alternative-data-universe-quiverinsidertradinguniverse",
+			"description": "Selects the 10 US Equities with the largest insider-trading dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "insider-trading"]
+		},
+		{
+			"folder": "equity-cmf-money-flow",
+			"name": "Equity Chaikin Money Flow",
+			"description": "Trades XLF using ChaikinMoneyFlow(20) â€” long when CMF > 0.1 and short when CMF < -0.1, flat in between.",
+			"spec": "Asset: XLF. Minute resolution. 2022-01-01 to 2024-12-31, $100k. ChaikinMoneyFlow(20). Long when CMF > 0.10; short when CMF < -0.10; flat in the dead zone. Demonstrates: CMF volume indicator, threshold-based regime, plotting indicator on subchart. Edge case: rebalance only on signal change.",
+			"tags": ["Equity", "indicators", "cmf", "volume"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"name": "Alternative Data Universe for Smart Insider Transactions",
+			"folder": "alternative-data-universe-smartinsidertransactionuniverse",
+			"description": "Selects $100M+ market-cap US Equities executing buybacks over 0.5% of shares and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "smart-insider", "corporate-buybacks"]
+		},
+		{
+			"name": "Alternative Data Universe for Smart Insider Intentions",
+			"folder": "alternative-data-universe-smartinsiderintentionuniverse",
+			"description": "Selects $100M+ market-cap US Equities announcing buyback intentions over 0.5% of shares and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "smart-insider", "corporate-buybacks"]
+		},
+		{
+			"name": "Futures",
+			"folder": "futures",
+			"description": "Trades the continuous E-mini SP 500 Future and rolls between contract months on SymbolChangedEvents.",
+			"tags": ["contract-rolling", "continuous-contracts", "indices", "Future"]
+		},
+		{
+			"name": "Forex",
+			"folder": "forex",
+			"description": "Trades three Forex pairs using a Minimum indicator on the bid-ask spread to enter when spreads are tightest.",
+			"tags": ["bid-ask-spread", "indicators", "quote-bars", "Forex"]
+		},
+		{
+			"name": "Alternative Data",
+			"folder": "alternative-data",
+			"description": "Ranks Equities with the Brain ML Ranking dataset and sizes positions from predicted returns via portfolio targets.",
+			"tags": ["position-sizing", "Equity", "machine-learning", "alternative-data", "ranking", "brain", "brain-ml-stock-ranking"]
+		},
+		{
+			"name": "Alternative Data Universe for Brain Sentiment Indicator",
+			"folder": "alternative-data-universe-brainsentimentindicatoruniverse",
+			"description": "Selects US Equities with positive 7-day media sentiment and active mention coverage and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "brain", "brain-sentiment-indicator"]
 		},
 		{
 			"folder": "equity-atr-volatility-stop",
@@ -561,20 +219,74 @@
 			"reference_template": "equities-static-universe"
 		},
 		{
-			"folder": "equity-aroon-trend",
-			"name": "Equity Aroon Trend",
-			"description": "Trades SPY using AroonOscillator(25); enters long on cross above +50 and exits on cross below -50.",
-			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. AroonOscillator(25). Long when oscillator crosses above 50; exit when it crosses below -50. Demonstrates: Aroon indicator, threshold crossing pattern, plotting oscillator on subchart. Edge case: do not flip short — long-only.",
-			"tags": ["Equity", "indicators", "aroon", "trend"],
+			"name": "Equity Donchian Turtle Breakout",
+			"folder": "equity-donchian-breakout-turtle",
+			"description": "Implements a 20/10 Donchian channel turtle breakout on a basket of liquid US ETFs with ATR-based position sizing.",
+			"tags": ["Equity", "indicators", "donchian", "turtle", "atr", "position-sizing"]
+		},
+		{
+			"name": "Alternative Data Universe for CNBC Trading",
+			"folder": "alternative-data-universe-quivercnbcsuniverse",
+			"description": "Selects US Equities with 3+ BUY recommendations from CNBC personalities and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "quiver-quantitative", "cnbc-trading"]
+		},
+		{
+			"name": "Crypto BTC vs PAXG Fed Funds Toggle",
+			"folder": "crypto-fred-rates-toggle",
+			"description": "Rotates between BTCUSD and gold-backed PAXGUSD on Kraken based on the 3-month change in the FRED Fed Funds Rate â€” long BTC when easing, gold when hiking or flat.",
+			"tags": ["Crypto", "alternative-data", "macro", "regime-switch", "indicators", "history", "fred", "us-federal-reserve"]
+		},
+		{
+			"folder": "equity-turn-of-month-effect",
+			"name": "Equity Turn-of-Month Effect",
+			"description": "Holds SPY only on the last 4 and first 3 trading days of each month and stays in cash otherwise.",
+			"spec": "Asset: SPY. Minute. 2022-01-01 to 2024-12-31, $100k. Use trading calendar to identify last 4 and first 3 trading days of each month; hold SPY on those days, otherwise liquidate. Demonstrates: trading calendar API, scheduled events with custom date logic. Edge case: handle month boundary spanning weekends/holidays.",
+			"tags": ["Equity", "calendar-anomaly", "scheduled-event", "trading-calendar"],
 			"reference_template": "equities-static-universe"
 		},
 		{
-			"folder": "equity-cci-overbought",
-			"name": "Equity Commodity Channel Index",
-			"description": "Trades XLE on CCI(20) — long when CCI < -100 and exit at 0; short when CCI > 100 and cover at 0.",
-			"spec": "Asset: XLE. Minute resolution. 2022-01-01 to 2024-12-31, $100k. CommodityChannelIndex(20). Long when CCI < -100; short when CCI > 100; both exit at 0. Demonstrates: CCI indicator, mean-reversion with explicit short side, sector ETF. Edge case: skip orders during low-volatility (ATR filter).",
-			"tags": ["Equity", "indicators", "cci", "mean-reversion"],
-			"reference_template": "equities-static-universe"
+			"name": "History and ETF Universe",
+			"folder": "history-and-etf-universe",
+			"description": "Selects QQQ constituents, ranks them by a daily ATR, and rebalances using ETF weights.",
+			"tags": ["universe", "Equity", "etf", "indicators", "history"]
+		},
+		{
+			"folder": "live-notifications-telegram-webhook",
+			"name": "Live: Telegram Webhook Notifications",
+			"description": "Sends notifications to a Telegram bot via notify.web on every trade fill.",
+			"spec": "Asset: SPY. Minute. 2024-09-01 to 2024-12-31, $100k. EMA(50)/EMA(200) cross. On on_order_event(filled) call notify.web('https://api.telegram.org/...', headers={...}, body='...'). Demonstrates: notify.web for arbitrary HTTP webhook (different from email/SMS in live-trading-features). Edge case: stub URL in backtest mode.",
+			"tags": ["Equity", "live-trading", "notifications", "webhook"],
+			"reference_template": "live-trading-features"
+		},
+		{
+			"name": "Alternative Data Universe for Brain Language Metrics on Company Filings",
+			"folder": "alternative-data-universe-braincompanyfilinglanguagemetricsuniverseall",
+			"description": "Selects US Equities with positive sentiment in both the report and MD&A sections of their latest SEC filings and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Equity", "brain", "brain-language-metrics-on-company-filings"]
+		},
+		{
+			"name": "Chained Universe",
+			"folder": "chained-universe",
+			"description": "Chains an ETF-constituents universe (QQQ) into a fundamental PE filter to select the most undervalued stocks.",
+			"tags": ["universe", "etf", "Equity", "fundamentals", "chained-universe"]
+		},
+		{
+			"name": "Trade Management",
+			"folder": "trade-management",
+			"description": "Implements a One-Cancels-Other (OCO) pattern with a market order entry and paired stop-loss and take-profit orders, where one of the paired orders cancels when the other fills.",
+			"tags": ["order-tickets", "take-profit", "oco-orders", "stop-loss", "order-management", "Equity"]
+		},
+		{
+			"name": "Equity MACD Histogram Divergence",
+			"folder": "equity-macd-histogram-divergence",
+			"description": "Detects MACD histogram divergence on AAPL and trades crossovers of the signal line, holding until the histogram flips sign.",
+			"tags": ["Equity", "indicators", "macd", "indicator-plotting", "indicator-history"]
+		},
+		{
+			"name": "Equity SuperTrend Trend Following",
+			"folder": "equity-supertrend-trend-following",
+			"description": "Trades SPY with a 10-period 3x ATR SuperTrend, flipping long/short on direction changes of the band.",
+			"tags": ["Equity", "indicators", "supertrend", "indicator-event-handler"]
 		},
 		{
 			"folder": "equity-williams-percent-r",
@@ -583,6 +295,294 @@
 			"spec": "Asset: IWM. Minute resolution. 2022-01-01 to 2024-12-31, $100k. WilliamsPercentR(14). Long when %R < -80; exit when %R > -20. Demonstrates: Williams %R indicator, oversold reversion logic, plotting against -80/-20 reference lines. Edge case: hold cap of 5 trading days.",
 			"tags": ["Equity", "indicators", "williams-r", "oscillator"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"name": "Crypto On-Chain Network Activity",
+			"folder": "crypto-onchain-network-activity",
+			"description": "Holds BTCUSD long when both Bitcoin transaction count and hash rate are above their 30-day SMAs (demand and supply expanding); flat otherwise.",
+			"tags": ["Crypto", "alternative-data", "blockchain", "btc", "bitcoin-metadata"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for EODHD Upcoming Dividends",
+			"folder": "alternative-data-chain-universe-eodhdupcomingdividends",
+			"description": "Selects US Equities going ex-dividend in the next day with a payout above $0.05 from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "dividends", "eod-historical-data", "upcoming-dividends"]
+		},
+		{
+			"folder": "equity-cci-overbought",
+			"name": "Equity Commodity Channel Index",
+			"description": "Trades XLE on CCI(20) â€” long when CCI < -100 and exit at 0; short when CCI > 100 and cover at 0.",
+			"spec": "Asset: XLE. Minute resolution. 2022-01-01 to 2024-12-31, $100k. CommodityChannelIndex(20). Long when CCI < -100; short when CCI > 100; both exit at 0. Demonstrates: CCI indicator, mean-reversion with explicit short side, sector ETF. Edge case: skip orders during low-volatility (ATR filter).",
+			"tags": ["Equity", "indicators", "cci", "mean-reversion"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"name": "Alternative Data Chained Universe for US Congress Trading",
+			"folder": "alternative-data-chain-universe-quiverquantcongressuniverse",
+			"description": "Selects US Equities recently bought by US Congress members in trades over $200K from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "us-congress-trading"]
+		},
+		{
+			"name": "Financial Advisors",
+			"folder": "financial-advisors",
+			"description": "Demonstrates Interactive Brokers Financial Advisor group/account allocations via order properties along with live brokerage messages.",
+			"tags": ["interactive-brokers", "order-properties", "financial-advisor", "live-trading", "notifications", "Equity", "brokerage-messages"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for Brain Sentiment Indicator",
+			"folder": "alternative-data-chain-universe-brainsentimentindicatoruniverse",
+			"description": "Selects US Equities with positive 7-day media sentiment and active mention coverage from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "brain", "brain-sentiment-indicator"]
+		},
+		{
+			"name": "Future Options",
+			"folder": "future-options",
+			"description": "Builds a bull call spread on E-mini SP500 Future Options.",
+			"tags": ["FutureOption", "option-strategies"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for EODHD Upcoming Splits",
+			"folder": "alternative-data-chain-universe-eodhdupcomingsplits",
+			"description": "Selects US Equities with a forward split in the next 3 days from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "splits", "eod-historical-data", "upcoming-splits"]
+		},
+		{
+			"folder": "equity-opening-range-breakout",
+			"name": "Equity Opening Range Breakout",
+			"description": "Trades SPY breakouts of the 30-minute opening range, going long above the high and short below the low until end of day.",
+			"spec": "Asset: SPY. Minute resolution. 2024-09-01 to 2024-12-31, $100k. Build opening range 9:30-10:00; long on first cross above range high; short on first cross below range low. Force liquidate at 15:55. Demonstrates: minute resolution, scheduled events for ORB window, end-of-day flat. Edge case: only one trade per day.",
+			"tags": ["Equity", "opening-range-breakout", "intraday", "scheduled-event"],
+			"reference_template": "intraday-indicator-scans"
+		},
+		{
+			"name": "Alternative Data Chained Universe for Brain ML Stock Ranking",
+			"folder": "alternative-data-chain-universe-brainstockrankinguniverse",
+			"description": "Selects US Equities with positive Brain ML rankings across 2-, 3-, and 5-day horizons from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "brain", "brain-ml-stock-ranking"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for EODHD Upcoming Earnings",
+			"folder": "alternative-data-chain-universe-eodhdupcomingearnings",
+			"description": "Selects US Equities reporting earnings in the next 3 days with a positive analyst estimate from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "earnings", "eod-historical-data", "upcoming-earnings"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for Smart Insider Transactions",
+			"folder": "alternative-data-chain-universe-smartinsidertransactionuniverse",
+			"description": "Selects $100M+ market-cap US Equities executing buybacks over 0.5% of shares from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "smart-insider", "corporate-buybacks"]
+		},
+		{
+			"folder": "dataset-blockchain-bitcoin-metadata",
+			"name": "Dataset: Blockchain Bitcoin Metadata",
+			"description": "Trades BTCUSD long when 30-day Bitcoin block-time metadata trends down (faster blocks => more activity), flat when up.",
+			"spec": "Asset: BTCUSD on Coinbase + BitcoinMetadata custom data. Minute. 2023-01-01 to 2024-12-31, $100k. add_data(BitcoinMetadata) for block time and difficulty fields. ROC(30) of average block time; long BTCUSD when ROC < 0, flat when > 0. Demonstrates: Blockchain Bitcoin Metadata dataset, on-chain regime switch (distinct from MVRV/hashrate templates). Edge case: handle stale data.",
+			"tags": ["Crypto", "alternative-data", "blockchain", "btc"],
+			"reference_template": "alternative-data-universe-coingeckouniverse"
+		},
+		{
+			"name": "Alternative Data Chained Universe for Smart Insider Intentions",
+			"folder": "alternative-data-chain-universe-smartinsiderintentionuniverse",
+			"description": "Selects $100M+ market-cap US Equities announcing buyback intentions over 0.5% of shares from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "smart-insider", "corporate-buybacks"]
+		},
+		{
+			"name": "Intraday Indicator Scans",
+			"folder": "intraday-indicator-scans",
+			"description": "Scans QQQ constituents every 15 minutes with a minute-resolution ATR to select the most volatile constituents intraday.",
+			"tags": ["universe", "intraday", "Equity", "etf", "indicators"]
+		},
+		{
+			"name": "Equity Ichimoku Cloud",
+			"folder": "equity-ichimoku-cloud",
+			"description": "Trades QQQ using the Ichimoku Kinko Hyo cloud, entering long on Tenkan/Kijun bullish cross above the cloud.",
+			"tags": ["Equity", "indicators", "ichimoku", "indicator-plotting", "scheduled-event", "indicator-history"]
+		},
+		{
+			"name": "Equity Country GDP Growth Rotation",
+			"folder": "dataset-eodhd-macro-indicators",
+			"description": "Equal-weights the 3 country ETFs with the highest annual GDP growth from a basket of 8 major economies, using the EODHD Macro Indicators dataset.",
+			"tags": ["Equity", "alternative-data", "macro", "etf", "rotation", "eod-historical-data", "macro-indicators"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for CNBC Trading",
+			"folder": "alternative-data-chain-universe-quivercnbcsuniverse",
+			"description": "Selects US Equities with 3+ BUY recommendations from CNBC personalities from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "cnbc-trading"]
+		},
+		{
+			"name": "Alternative Data Universe for CoinGecko Crypto Market Cap",
+			"folder": "alternative-data-universe-coingeckouniverse",
+			"description": "Selects the top 10 Cryptocurrencies by CoinGecko market cap that are tradable on Coinbase and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["universe", "alternative-data", "Crypto", "coingecko", "crypto-market-cap"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for Corporate Lobbying",
+			"folder": "alternative-data-chain-universe-quiverlobbyinguniverse",
+			"description": "Selects US Equities whose corporate lobbying spend totals at least $100K from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "corporate-lobbying"]
+		},
+		{
+			"name": "Index Options Static",
+			"folder": "index-options-static",
+			"description": "Trades SPX Index Options, buying the ATM contract with the closest expiration.",
+			"tags": ["option-chain", "IndexOption", "spx"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for US Government Contracts",
+			"folder": "alternative-data-chain-universe-quivergovernmentcontractuniverse",
+			"description": "Selects US Equities with at least 3 government contracts totalling over $50K from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "us-government-contracts"]
+		},
+		{
+			"name": "Alternative Data Chained Universe for Insider Trading",
+			"folder": "alternative-data-chain-universe-quiverinsidertradinguniverse",
+			"description": "Selects the 10 US Equities with the largest insider-trading dollar volume from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "quiver-quantitative", "insider-trading"]
+		},
+		{
+			"name": "Custom Data with Ticker Mapping",
+			"folder": "custom-data-ticker-mapping",
+			"description": "Loads custom data tied to an Equity whose ticker changed (FB to META) using point-in-time SecurityIdentifier mapping from the Object Store.",
+			"tags": ["ticker-mapping", "custom-data", "object-store", "Equity"]
+		},
+		{
+			"folder": "equity-obv-divergence",
+			"name": "Equity OBV Divergence",
+			"description": "Detects bullish/bearish On-Balance Volume divergence on SPY versus a 20-day price ROC and trades reversals.",
+			"spec": "Asset: SPY. Minute resolution. 2022-01-01 to 2024-12-31, $100k. OBV indicator and ROC(20) on price. Bullish divergence: price ROC < 0 but OBV ROC > 0 -> long. Bearish opposite -> short. Demonstrates: OBV automatic indicator, IndicatorExtensions to compute ROC of OBV, divergence logic. Edge case: require 5-day confirmation.",
+			"tags": ["Equity", "indicators", "obv", "divergence"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"name": "Alternative Data Chained Universe for Brain Language Metrics on Company Filings",
+			"folder": "alternative-data-chain-universe-braincompanyfilinglanguagemetricsuniverseall",
+			"description": "Selects US Equities with positive sentiment in both the report and MD&A sections of their latest SEC filings from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "brain", "brain-language-metrics-on-company-filings"]
+		},
+		{
+			"name": "Equity Options Static",
+			"folder": "equity-options-static",
+			"description": "Trades a fixed SPY Equity Option chain, constructing and rebalancing a covered call on a weekly schedule.",
+			"tags": ["Option", "scheduled-event", "covered-call"]
+		},
+		{
+			"folder": "equity-momentum-cross-sectional-decile",
+			"name": "Equity Cross-Sectional Momentum Decile",
+			"description": "Selects the top decile of S&P 500 stocks by 12-1 month momentum and rebalances monthly into an equal-weight long portfolio.",
+			"spec": "Universe: S&P 500 (etf-constituents on SPY) capped at 100 by dollar volume. Minute. 2022-01-01 to 2024-12-31, $250k. Compute 252-21 day return (12-1 momentum) via history. Monthly schedule selects top decile (~10 names) and equal-weights. Demonstrates: ETF universe, history-based factor, monthly rebalance, set_holdings on top decile.",
+			"tags": ["Equity", "momentum", "etf-universe", "factor"],
+			"reference_template": "history-and-etf-universe"
+		},
+		{
+			"name": "Custom Consolidators",
+			"folder": "custom-consolidators",
+			"description": "Builds a calendar-based QuoteBar consolidator anchored to 5 PM ET, applies an EMA on the consolidated Forex bars, and trades crossovers.",
+			"tags": ["indicators", "custom-consolidators", "consolidators", "Forex"]
+		},
+		{
+			"folder": "equity-all-weather-portfolio",
+			"name": "Equity All-Weather Portfolio",
+			"description": "Implements Ray Dalio's All-Weather: 30% SPY, 40% TLT, 15% IEF, 7.5% GLD, 7.5% DBC with annual rebalance.",
+			"spec": "Assets: SPY, TLT, IEF, GLD, DBC. Minute. 2022-01-01 to 2024-12-31, $200k. Set target weights on first bar; annual schedule retargets. Demonstrates: multi-asset allocation, scheduled annual rebalance, holdings drift monitoring. Edge case: skip GLD/DBC if missing in early data.",
+			"tags": ["Equity", "all-weather", "asset-allocation", "etf"],
+			"reference_template": "equities-static-universe"
+		},
+		{
+			"name": "Equities Universe",
+			"folder": "equities-universe",
+			"description": "Fundamental universe selecting top undervalued large-caps ranked by an EMA100/EMA300 cross, rebalanced daily.",
+			"tags": ["fundamentals", "indicators", "universe", "Equity"]
+		},
+		{
+			"folder": "live-commands-listener",
+			"name": "Live: Commands Listener",
+			"description": "Pauses/resumes an SPY EMA cross strategy via the on_command handler, with pause state persisted in the Object Store.",
+			"spec": "Asset: SPY. Minute. 2024-09-01 to 2024-12-31, $100k. Override on_command(data): when data.command=='pause', set self._paused = data.paused and persist via object_store. EMA(50)/EMA(200) trades only when not paused. Demonstrates: on_command pattern with direct algorithm-attribute mutation. Edge case: restore pause state across restarts from Object Store.",
+			"tags": ["Equity", "live-trading", "commands", "object-store"],
+			"reference_template": "live-trading-features"
+		},
+		{
+			"name": "Equity Keltner Squeeze Breakout",
+			"folder": "equity-keltner-squeeze",
+			"description": "Trades a basket of US ETFs on Bollinger-inside-Keltner squeeze releases â€” long on a close above the upper Bollinger Band, short below the lower, exiting at the midline.",
+			"tags": ["Equity", "indicators", "keltner", "squeeze", "bollinger-bands", "scheduled-event"]
+		},
+		{
+			"folder": "equity-value-pe-pb-quality",
+			"name": "Equity Value/Quality Composite",
+			"description": "Selects S&P 500 names by a composite of low PE, low PB, and high ROE; equal-weights the top 20 monthly.",
+			"spec": "Universe: fundamental. Daily. 2022-01-01 to 2024-12-31, $250k. Rank by z-score of (-PE, -PB, +ROE) and combine equally; pick top 20 names. Monthly rebalance. Demonstrates: fundamental data, multi-factor composite, equal-weight. Edge case: skip names with missing fundamentals (use is_finite checks).",
+			"tags": ["Equity", "value-factor", "quality-factor", "fundamentals"],
+			"reference_template": "equities-universe"
+		},
+		{
+			"name": "Alternative Data Chained Universe for EODHD Upcoming IPOs",
+			"folder": "alternative-data-chain-universe-eodhdupcomingipos",
+			"description": "Selects expected/priced non-penny IPOs with a confirmed IPO date from the top 100 US Equities by dollar volume and equal-weights them with a daily scheduled rebalance.",
+			"tags": ["alternative-data", "universe", "chained-universe", "Equity", "ipos", "eod-historical-data", "upcoming-ipos"]
+		},
+		{
+			"name": "Option SPY Iron Condor",
+			"folder": "option-iron-condor-spy",
+			"description": "Sells weekly SPY iron condors with short strikes ~10 delta and long wings 3 strikes wider.",
+			"tags": ["Option", "iron-condor", "option-strategies", "weekly"]
+		},
+		{
+			"name": "Live Trading Features",
+			"folder": "live-trading-features",
+			"description": "Demonstrates live email and SMS notifications, brokerage disconnect/reconnect handling, and commands.",
+			"tags": ["live-trading", "sms", "notifications", "Equity", "emails", "commands", "brokerage-messages"]
+		},
+		{
+			"name": "Custom Indicator",
+			"folder": "custom-indicator",
+			"description": "Implements a custom Money Flow Index indicator and trades SPY on its signals.",
+			"tags": ["indicators", "custom-indicator", "Equity"]
+		},
+		{
+			"name": "Intraday Greeks-Based Options Selection",
+			"folder": "intraday-greeks-based-options-selection",
+			"description": "Selects RUT Index Options intraday by target delta from EMA-driven signals with paced order submission.",
+			"tags": ["intraday", "IndexOption", "greeks"]
+		},
+		{
+			"name": "Custom Data",
+			"folder": "custom-data",
+			"description": "Defines a custom data source type that ingests Bitstamp data and plots daily Bitcoin prices.",
+			"tags": ["python-data", "custom-data", "Crypto"]
+		},
+		{
+			"name": "Intraday Index Options Selection",
+			"folder": "intraday-index-options-selection",
+			"description": "Loads the SPX weekly chain daily and re-filters ATM calls every 5 minutes to trade as contracts update intraday.",
+			"tags": ["0dte", "IndexOption", "intraday"]
+		},
+		{
+			"name": "AI",
+			"folder": "ai",
+			"description": "Trains a TensorFlow MLP weekly on warmed-up history to predict SPY direction.",
+			"tags": ["machine-learning", "tensorflow", "indicators", "Equity"]
+		},
+		{
+			"folder": "equity-pairs-trading-cointegration",
+			"name": "Equity Pairs Trading (Cointegration)",
+			"description": "Trades the spread between KO and PEP using a 60-day OLS hedge ratio and z-score thresholds for entries/exits.",
+			"spec": "Assets: KO, PEP. Minute resolution. 2022-01-01 to 2024-12-31, $100k. Compute hedge ratio via 60-day rolling OLS on closes; z-score the spread; long-spread when z<-2 (long KO, short PEP); short-spread when z>2; exit when |z|<0.5. Demonstrates: history requests for OLS, RollingWindow, dollar-neutral sizing. Edge case: re-fit hedge ratio weekly.",
+			"tags": ["Equity", "pairs-trading", "statistical-arbitrage", "history"],
+			"reference_template": "history-and-etf-universe"
+		},
+		{
+			"name": "Alternative Data Universe",
+			"folder": "alternative-data-universe",
+			"description": "Uses EODHD upcoming-earnings data to select Equities and trades straddles around earnings announcements.",
+			"tags": ["Option", "universe", "alternative-data", "earnings", "eod-historical-data", "upcoming-earnings"]
+		},
+		{
+			"name": "Custom Models",
+			"folder": "custom-models",
+			"description": "Replaces the default fee, fill, slippage, and buying-power models through a security initializer.",
+			"tags": ["reality-models", "slippage", "fill-model", "fee-model", "Equity"]
 		}
 	]
 }
