@@ -103,6 +103,7 @@ SECTION_REPLACEMENTS = [
     ("mixed mode consolidators", "mixed-mode consolidators"),
     ("Multi Alpha",  "Multi-Alpha"),
     ("Self Managed", "Self-Managed"),
+    ("Sub Assistant", "Sub-Assistant"),
     ("Margin3F",     "Margin%3F"),
     ("Greeks3F",     "Greeks%3F"),
     ("Smile3F",      "Smile%3F"),
