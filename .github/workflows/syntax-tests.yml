@@ -3,17 +3,20 @@ name: Syntax Tests
 on:
   push:
     paths:
-      - 'project-templates/python/**'
+      - 'project-templates/**'
       - '.github/workflows/syntax-tests.yml'
   pull_request:
     branches: [master]
     paths:
-      - 'project-templates/python/**'
+      - 'project-templates/**'
       - '.github/workflows/syntax-tests.yml'
 
 jobs:
   build:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -36,11 +39,33 @@ jobs:
           docker run -d \
             --workdir /__w/Documentation/Documentation \
             -v /home/runner/work:/__w \
+            -e DOCS_TEMPLATE_USER_ID=${{ secrets.QUANTCONNECT_USER_ID }} \
+            -e DOCS_TEMPLATE_USER_TOKEN="${{ secrets.QUANTCONNECT_API_TOKEN }}" \
+            -e DOCS_TEMPLATE_ORG_ID=${{ secrets.DOCUMENTATION_ORG_ID }} \
             --name test-container \
             quantconnect/lean:foundation \
             tail -f /dev/null
 
       - name: Run Syntax Test
         run: |
-          runInContainer bash -c "pip install --no-cache-dir quantconnect-stubs types-requests==2.32.* types-pytz==2025.2.0.* mypy==1.20.2"
+          runInContainer bash -c "pip install --no-cache-dir quantconnect-stubs requests types-requests==2.32.* types-pytz==2025.2.0.* mypy==1.20.2"
           runInContainer python -u project-templates/python/run_syntax_check.py
+
+      - name: Run Project Match Check
+        run: |
+          runInContainer python -u project-templates/run_project_match_check.py
+
+      - name: Open PR for templates.json changes
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: auto/update-template-project-ids
+          title: Update templates.json with new project IDs
+          commit-message: Update templates.json with new project IDs
+          body: |
+            Project IDs created automatically by the `Run Project Match Check`
+            step in the `Syntax Tests` workflow. Merge to keep cloud project
+            IDs in sync with the templates in this repo.
+          add-paths: |
+            project-templates/templates.json
+          delete-branch: true
