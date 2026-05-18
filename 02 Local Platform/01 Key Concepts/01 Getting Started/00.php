@@ -64,7 +64,7 @@
             power on-premises quantitative research.</p>
 
         <p>We encourage a hybrid “cloud + local” workflow, so you can use right tool for each stage of your development
-            process. With the Local Platform, you can create, debug, and run projects on premise while using your own
+            process. With the Local Platform, you can create, debug, and run projects on-premises while using your own
             on-site tools. With the Cloud Platform you can deploy backtests at scale and harness our massive data
             library at low cost.</p>
         <hr />
