@@ -57,11 +57,11 @@
                     alt="Local Platform" />
             </div>
         </div>
-        <p style="margin-top: 2rem;">The Local Platform enables you to seamlessly develop quant strategies on-premise and in QuantConnect Cloud,
+        <p style="margin-top: 2rem;">The Local Platform enables you to seamlessly develop quant strategies on-premises and in QuantConnect Cloud,
             getting the best of both environments. With Local Platform, you can harness your local version control,
             autocomplete, and coding tools with the full power of a scalable cloud at your finger tips. We intend to
             keep complete feature parity with our cloud environment, allowing you to harness cloud or local datasets to
-            power on-premise quantitative research.</p>
+            power on-premises quantitative research.</p>
 
         <p>We encourage a hybrid “cloud + local” workflow, so you can use right tool for each stage of your development
             process. With the Local Platform, you can create, debug, and run projects on premise while using your own
