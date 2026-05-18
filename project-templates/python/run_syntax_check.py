@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import sys
 import time
@@ -6,24 +8,26 @@ import re
 from pathlib import Path
 from subprocess import run
 from multiprocessing import Pool, Lock, freeze_support
+from multiprocessing.synchronize import Lock as LockType
 
-target_files = []
-lock = None
+target_files: list[str] = []
+lock: LockType | None = None
 start_time = time.time()
 
 LOG_PATH = Path(__file__).resolve().parent / "syntax-check.log"
 
 
-def init_pool(l):
+def init_pool(l: LockType) -> None:
     global lock
     lock = l
 
-def log(message: str):
+def log(message: str) -> None:
     print(message)
     with open(LOG_PATH, "a") as file:
         file.write(message)
 
-def sync_log(message: str):
+def sync_log(message: str) -> None:
+    assert lock is not None
     with lock:
         log(message)
 
@@ -34,7 +38,7 @@ for subdir, dirs, files_in_folder in os.walk("./project-templates/python"):
             target_files.append(file_path)
 target_files.sort()
 
-def adjust_file_contents(target_file: str):
+def adjust_file_contents(target_file: str) -> tempfile._TemporaryFileWrapper[bytes] | None:
     try:
         file = Path(target_file)
         file_content = file.read_text(encoding='utf-8')
@@ -110,7 +114,7 @@ def should_ignore(line: str, prev_line_ignored: bool) -> bool:
     return False
 
 
-def run_syntax_check(target_file: str):
+def run_syntax_check(target_file: str) -> bool:
     tmp_file = adjust_file_contents(target_file)
     if not tmp_file:
         return False
