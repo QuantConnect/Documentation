@@ -24,8 +24,9 @@ local runs, from ``~/.lean/credentials``:
                                                      documentation org)
 
 Usage:
-    python run_project_match_check.py            # check every template
-    python run_project_match_check.py <folder>   # check just one folder
+    python run_project_match_check.py                 # check every template
+    python run_project_match_check.py <folder>        # check just one folder
+    python run_project_match_check.py --no-backtest   # upload only, no compile/backtest
 """
 
 import argparse
@@ -68,13 +69,15 @@ USER_ID, USER_TOKEN, ORG_ID = _load_credentials()
 BASE_URL = "https://www.quantconnect.com/api/v2"
 COLLABORATOR_USER_IDS = ["alexandre_catarino"]
 
-WORKERS_PER_LANG = 3
+WORKERS_PER_LANG = 1
 RETRY_ATTEMPTS = 5
 COMPILE_POLL_SEC = 2
 COMPILE_MAX_ATTEMPTS = 90          # ~3 minutes
 BACKTEST_POLL_SEC = 10
 BACKTEST_MAX_ATTEMPTS = 360        # ~1 hour
 REQUEST_TIMEOUT_SEC = 60
+
+SKIP_BACKTEST = False  # set by --no-backtest in main()
 
 TEMPLATES_ROOT = Path(__file__).resolve().parent
 TEMPLATES_FILE = TEMPLATES_ROOT / "templates.json"
@@ -283,6 +286,9 @@ def process_template(entry: dict[str, Any], lang_key: str) -> CheckResult:
             log(f"{label}: project {project_id} differs from local — uploading")
         
         update_file(project_id, cfg["filename"], local_code)
+        if SKIP_BACKTEST:
+            log(f"{label}: project {project_id} uploaded (backtest skipped)")
+            return CheckResult(folder, lang_key, project_id, created, True, "")
         compile_id = compile_project(project_id)
         bt = run_backtest(project_id, compile_id, f"match-check-{int(time.time())}")
         err = validate_backtest(bt)
@@ -336,7 +342,13 @@ def main() -> int:
         "folder", nargs="?",
         help="Optional folder name; if given, only that template is checked.",
     )
+    parser.add_argument(
+        "--no-backtest", action="store_true",
+        help="Create/upload projects but skip compile and backtest.",
+    )
     args = parser.parse_args()
+    global SKIP_BACKTEST
+    SKIP_BACKTEST = args.no_backtest
 
     data = json.loads(TEMPLATES_FILE.read_text(encoding="utf-8"))
     templates: list[dict[str, Any]] = data["templates"]
