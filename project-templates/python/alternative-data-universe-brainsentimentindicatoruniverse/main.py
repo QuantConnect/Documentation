@@ -2,20 +2,21 @@
 from AlgorithmImports import *
 # endregion
 
+
 class BrainSentimentIndicatorUniverseAlgorithm(QCAlgorithm):
     _fundamental: list[Symbol] = []
 
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
-
+        self.set_cash(100_000)
+        self.settings.seed_initial_prices = True
         self.universe_settings.resolution = Resolution.DAILY
         # Add a fundamental universe to track the most liquid US Equities by dollar volume.
         self.add_universe(self._fundamental_filter)
         # Add a Brain Sentiment universe, restricted to high-sentiment names within the fundamental list.
         self._universe = self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)
-        # Rebalance shortly after the open so today's universe is locked in.
+        # Rebalance every day at 9am.
         self.schedule.on(
             self.date_rules.every_day("SPY"),
             self.time_rules.at(9, 0),
@@ -23,7 +24,7 @@ class BrainSentimentIndicatorUniverseAlgorithm(QCAlgorithm):
         )
 
     def _fundamental_filter(self, fundamental: List[Fundamental]) -> Universe.UnchangedUniverse:
-        self._fundamental = [c.symbol for c in sorted(fundamental, key=lambda x: x.dollar_volume)[-100:]]
+        self._fundamental = [f.symbol for f in sorted(fundamental, key=lambda f: f.dollar_volume)[-100:]]
         return Universe.UNCHANGED
 
     def _select_assets(self, data: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:
@@ -37,7 +38,7 @@ class BrainSentimentIndicatorUniverseAlgorithm(QCAlgorithm):
         if not self._universe.selected:
             return
         # Filter to only securities with valid prices.
-        tradeable = [s for s in self._universe.selected if self.securities[s].price > 0]
+        tradeable = [s for s in self._universe.selected if self.securities[s].price]
         if not tradeable:
             return
         weight = 1 / len(tradeable)
