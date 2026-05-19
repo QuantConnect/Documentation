@@ -3,6 +3,7 @@ import shutil
 import importlib.util
 
 from overload_merger import OverloadMerger
+from property_normalizer import PropertyNormalizer
 from documentation import Documentation
 
 # Inputs:
@@ -19,9 +20,12 @@ def copy_dir(src, dst):
 def main():
     # Copy the quantconnect-python-stubs files.
     copy_dir(
-        importlib.util.find_spec("QuantConnect").submodule_search_locations[0], 
+        importlib.util.find_spec("QuantConnect").submodule_search_locations[0],
         DEFAULT_DST + '/QuantConnect'
     )
+    # Rewrite "callable property" patterns in the stubs as overloaded
+    # methods so they're documented as methods, not attributes.
+    PropertyNormalizer().process_dir(DEFAULT_DST)
     # Write the non-overload (concrete) method signatures to sibling
     # .py files in the stubs directory.
     OverloadMerger().process_dir(DEFAULT_DST)
