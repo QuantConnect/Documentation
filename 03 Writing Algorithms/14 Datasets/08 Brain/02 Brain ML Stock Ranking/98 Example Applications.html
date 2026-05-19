@@ -296,7 +296,7 @@ for (symbol, time), row in history.iterrows():
 
 # Add Universe Selection
 def universe_selection(alt_coarse: List[BrainStockRankingUniverse]) -&gt; List[Symbol]:
-    return [d.symbol for d in sorted(alt_coarse, key=lambda x: x.Rank2Days, reverse=True)[:10]]
+    return [d.symbol for d in sorted(alt_coarse, key=lambda x: x.rank_2_days, reverse=True)[:10]]
 
 universe = qb.add_universe(BrainStockRankingUniverse, universe_selection)
 
@@ -304,5 +304,5 @@ universe = qb.add_universe(BrainStockRankingUniverse, universe_selection)
 universe_history = qb.universe_history(universe, qb.time-timedelta(5), qb.time)
 for (_, time), ranks in universe_history.items():
     for rank in ranks:
-        print(f"{rank.symbol} 2-day rank at {rank.end_time}: {rank.Rank2Days}")</pre>
+        print(f"{rank.symbol} 2-day rank at {rank.end_time}: {rank.rank_2_days}")</pre>
 </div>

@@ -223,24 +223,24 @@ foreach (var universeDay in universeHistory)
      <pre class="python">qb = QuantBook()
 
 # Requesting Data
-aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol
-symbol = qb.AddData(BrainCompanyFilingLanguageMetrics10K, aapl).Symbol
+aapl = qb.add_equity("AAPL", Resolution.DAILY).symbol
+symbol = qb.add_data(BrainCompanyFilingLanguageMetrics10K, aapl).symbol
 
 # Historical data
-history = qb.History(BrainCompanyFilingLanguageMetrics10K, symbol, 180, Resolution.Daily)
+history = qb.history(BrainCompanyFilingLanguageMetrics10K, symbol, 180, Resolution.DAILY)
 for (symbol, time), row in history.iterrows():
-    print(f"{symbol} sentiment at {time}: {row['reportsentiment'].Sentiment}")
+    print(f"{symbol} sentiment at {time}: {row['reportsentimentsentiment']}")
 
 # Add Universe Selection
-def UniverseSelection(alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverse10K]) -&gt; List[Symbol]:
-    return [d.Symbol for d in sorted([x for x in alt_coarse if x.ReportSentiment.Sentiment],
-        key=lambda x: x.ReportSentiment.Sentiment, reverse=True)[:10]]
+def universe_selection(alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverse10K]) -&gt; List[Symbol]:
+    return [d.symbol for d in sorted([x for x in alt_coarse if x.report_sentiment.sentiment],
+        key=lambda x: x.report_sentiment.sentiment, reverse=True)[:10]]
 
-universe = qb.AddUniverse(BrainCompanyFilingLanguageMetricsUniverse10K, UniverseSelection)
+universe = qb.add_universe(BrainCompanyFilingLanguageMetricsUniverse10K, universe_selection)
 
 # Historical Universe data
-universe_history = qb.UniverseHistory(universe, qb.Time-timedelta(10), qb.Time)
+universe_history = qb.universe_history(universe, qb.time-timedelta(10), qb.time)
 for (_, time), universeDay in universe_history.items():
     for language_metrics in universeDay:
-        print(f"{language_metrics.Symbol} sentiment at {language_metrics.EndTime}: {language_metrics.ReportSentiment.Sentiment}")</pre>
+        print(f"{language_metrics.symbol} sentiment at {language_metrics.end_time}: {language_metrics.report_sentiment.sentiment}")</pre>
 </div>

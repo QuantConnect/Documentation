@@ -241,44 +241,44 @@ foreach (var transactions in transactionHistory)
 qb = QuantBook()
 
 # Requesting Data
-symbol = qb.AddEquity("AAPL").Symbol
-intention_symbol = qb.AddData(SmartInsiderIntention, symbol).Symbol
-transaction_symbol = qb.AddData(SmartInsiderTransaction, symbol).Symbol
+symbol = qb.add_equity("AAPL").symbol
+intention_symbol = qb.add_data(SmartInsiderIntention, symbol).symbol
+transaction_symbol = qb.add_data(SmartInsiderTransaction, symbol).symbol
 
 # Historical data
-intention_history = qb.History(SmartInsiderIntention, intention_symbol, 300, Resolution.Daily)
+intention_history = qb.history(SmartInsiderIntention, intention_symbol, 300, Resolution.DAILY)
 for (symbol, time), row in intention_history.iterrows():
     if isnan(row['amountvalue']): continue
     print(f"{symbol} amount value at {time}: {row['amountvalue']}")
 
-transaction_history = qb.History(SmartInsiderTransaction, transaction_symbol, 300, Resolution.Daily)
+transaction_history = qb.history(SmartInsiderTransaction, transaction_symbol, 300, Resolution.DAILY)
 for (symbol, time), row in transaction_history.iterrows():
     if isnan(row['amount']): continue
     print(f"{symbol} amount at {time}: {row['amount']}")
 
 # Add Universe Selection for SmartInsiderIntention
-def IntentionSelection(alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
-    return [d.Symbol for d in sorted([x for x in alt_coarse if x.AmountValue],
-        key=lambda x: x.AmountValue, reverse=True)[:10]]
+def intention_selection(alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in sorted([x for x in alt_coarse if x.amount_value],
+        key=lambda x: x.amount_value, reverse=True)[:10]]
 
-intention_universe  = qb.AddUniverse(SmartInsiderIntentionUniverse, IntentionSelection)
+intention_universe  = qb.add_universe(SmartInsiderIntentionUniverse, intention_selection)
 
 # Historical Universe data
-intention_universe_history = qb.UniverseHistory(intention_universe, qb.Time-timedelta(10), qb.Time)
+intention_universe_history = qb.universe_history(intention_universe, qb.time-timedelta(10), qb.time)
 for (_, time), intentions in intention_universe_history.items():
     for intention in intentions:
-        print(f"{intention.Symbol.Value} amount value at {intention.EndTime}: {intention.AmountValue}")
+        print(f"{intention.symbol.value} amount value at {intention.end_time}: {intention.amount_value}")
 
 # Add Universe Selection for SmartInsiderTransaction
-def IntentionSelection(alt_coarse: List[SmartInsiderTransactionUniverse]) -&gt; List[Symbol]:
-    return [d.Symbol for d in sorted([x for x in alt_coarse if x.Amount],
-        key=lambda x: x.Amount, reverse=True)[:10]]
+def intention_selection(alt_coarse: List[SmartInsiderTransactionUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in sorted([x for x in alt_coarse if x.amount],
+        key=lambda x: x.amount, reverse=True)[:10]]
 
-transaction_universe  = qb.AddUniverse(SmartInsiderTransactionUniverse, IntentionSelection)
+transaction_universe  = qb.add_universe(SmartInsiderTransactionUniverse, intention_selection)
 
 # Historical Universe data
-transaction_universe_history = qb.UniverseHistory(transaction_universe, qb.Time-timedelta(10), qb.Time)
+transaction_universe_history = qb.universe_history(transaction_universe, qb.time-timedelta(10), qb.time)
 for (_, time), transactions in transaction_universe_history.items():
     for transaction in transactions:
-        print(f"{transaction.Symbol.Value} amount at {transaction.EndTime}: {transaction.Amount}")</pre>
+        print(f"{transaction.symbol.value} amount at {transaction.end_time}: {transaction.amount}")</pre>
 </div>

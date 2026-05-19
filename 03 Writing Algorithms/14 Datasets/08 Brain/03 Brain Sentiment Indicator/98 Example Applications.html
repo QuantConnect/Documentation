@@ -306,8 +306,8 @@ for (symbol, time), row in history.iterrows():
 
 # Add Universe Selection
 def universe_selection(alt_coarse: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
-    return [d.symbol for d in sorted([x for x in alt_coarse if x.SentimentalArticleMentions7Days], 
-        key=lambda x: x.SentimentalArticleMentions7Days, reverse=True)[:10]]
+    return [d.symbol for d in sorted([x for x in alt_coarse if x.sentimental_article_mentions_7_days], 
+        key=lambda x: x.sentimental_article_mentions_7_days, reverse=True)[:10]]
 
 universe = qb.add_universe(BrainSentimentIndicatorUniverse, universe_selection)
 
@@ -315,5 +315,5 @@ universe = qb.add_universe(BrainSentimentIndicatorUniverse, universe_selection)
 universe_history = qb.universe_history(universe, qb.time-timedelta(5), qb.time)
 for (_, time), sentiments in universe_history.items():
     for sentiment in sentiments:
-        print(f"{sentiment.symbol} 7-day sentiment at {sentiment.end_time}: {sentiment.SentimentalArticleMentions7Days}")</pre>
+        print(f"{sentiment.symbol} 7-day sentiment at {sentiment.end_time}: {sentiment.sentimental_article_mentions_7_days}")</pre>
 </div>
