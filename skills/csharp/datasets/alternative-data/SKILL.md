@@ -47,13 +47,17 @@ public override void OnData(Slice slice)
 | `EstimizeEstimate` | Estimize | `Id`, `Ticker`, `FiscalYear`, `FiscalQuarter`, `CreatedAt`, `Eps`, `Revenue`, `UserName`, `AnalystId`, `Flagged` |
 | `EstimizeRelease` | Estimize | `Id`, `FiscalYear`, `FiscalQuarter`, `ReleaseDate`, `Eps`, `Revenue`, `WallStreetEpsEstimate`, `WallStreetRevenueEstimate`, `ConsensusEpsEstimate`, `ConsensusRevenueEstimate`, `ConsensusWeightedEpsEstimate`, `ConsensusWeightedRevenueEstimate` |
 | `FearGreedIndex` | Fear and Greed | `Spx`, `SpxSma`, `MarketMomentum`, `StocksAtYearlyHighs`, `StocksAtYearlyLows`, `TotalForStrength`, `NetYearlyHighsAndLows`, `StockPriceStrength`, `StocksUpDaily`, `StocksDownDaily`, `TotalForBreadth`, `McClellanSummationIndex`, `StockPriceBreadth`, `PutCallRatioDaily`, `PutCallRatioSma`, `PutCallRatioNormalized`, `Vix`, `VixSma`, `MarketVolatility`, `StockReturns`, `BondReturns`, `StockBondReturnDifference`, `SafeHavenDemand`, `JunkBondYield`, `InvestmentGradeBondYield`, `BondYieldSpread`, `JunkBondDemand`, `QCIndex`, `CNNIndex` |
-| `QuiverInsiderTrading` | Insider Trading | `Name`, `Shares`, `PricePerShare`, `SharesOwnedFollowing` |
+| `QuiverInsiderTrading` | Insider Trading | `Date`, `FileDate`, `TransactionCode`, `PricePerShare`, `Shares`, `SharesOwnedFollowing`, `AcquiredDisposedCode`, `DirectOrIndirectOwnership`, `Name`, `OfficerTitle`, `IsDirector`, `IsOfficer`, `IsTenPercentOwner`, `IsOther` |
 | `ExtractAlphaTacticalModel` | Tactical | `Reversal`, `FactorMomentum`, `LiquidityShock`, `Seasonality`, `Score` |
 | `TiingoNews` | Tiingo News Feed | `Source`, `CrawlDate`, `Url`, `PublishedDate`, `Tags`, `Description`, `Title`, `ArticleID`, `Symbols` |
 | `EODHDUpcomingDividends` | Upcoming Dividends | `DividendDate`, `DeclarationDate`, `ReportDate`, `PaymentDate`, `Dividend` |
 | `EODHDUpcomingEarnings` | Upcoming Earnings | `ReportDate`, `ReportTime`, `Estimate` |
 | `EODHDUpcomingIPOs` | Upcoming IPOs | `Name`, `Exchange`, `IpoDate`, `FilingDate`, `AmendedDate`, `LowestPrice`, `HighestPrice`, `OfferPrice`, `Shares`, `DealType` |
 | `EODHDUpcomingSplits` | Upcoming Splits | `SplitDate`, `Optionable`, `SplitFactor` |
+| `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `Value` |
+| `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `Value` |
+| `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `Value` |
+| `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `Value` |
 | `USEnergy` | US Energy Information Administration (EIA) | `Value` |
 | `Fred` | US Federal Reserve (FRED) | `Value` |
 | `QuiverGovernmentContract` | US Government Contracts | `Description`, `Agency`, `Amount` |
@@ -82,7 +86,7 @@ public override void OnData(Slice slice)
 
 | Class | Dataset | Properties |
 | --- | --- | --- |
-| `QuiverCNBCs`->`QuiverCNBC` | CNBC Trading | `Notes`, `Direction`, `Traders` |
+| `QuiverCNBCs`->`QuiverCNBC` | CNBC Trading | `Notes`, `Direction`, `Traders`, `AdviceDate` |
 | `QuiverLobbyings`->`QuiverLobbying` | Corporate Lobbying | `Client`, `Issue`, `SpecificIssue`, `Amount` |
 | `EODHDEconomicEvents`->`EODHDEconomicEvent` | Economic Events | `EventType`, `EventPeriod`, `Country`, `EventTime`, `Previous`, `Estimate` |
 | `EODHDMacroIndicators`->`EODHDMacroIndicator` | Macroeconomics Indicators | `Indicator`, `Country`, `Frequency` |
