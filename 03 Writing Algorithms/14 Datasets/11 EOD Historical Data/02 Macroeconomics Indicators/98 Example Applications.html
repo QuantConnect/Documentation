@@ -18,16 +18,16 @@ class EODHDMacroIndicatorsAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
-        self.equity_symbol = self.add_equity("SPY", Resolution.Daily).symbol
+        self.equity_symbol = self.add_equity("SPY", Resolution.DAILY).symbol
 
         ticker = EODHD.MacroIndicators.UnitedStates.GDP_GROWTH_ANNUAL
-        self.dataset_symbol = self.add_data(EODHDMacroIndicators, ticker).Symbol
+        self.dataset_symbol = self.add_data(EODHDMacroIndicators, ticker).symbol
 
     def on_data(self, slice):
         indicators = slice.get(EODHDMacroIndicators).get(self.dataset_symbol)
         if indicators:
             gdp = indicators.data[0].value
-            self.SetHoldings(self.equity_symbol, 1 if gdp &gt; 0 else -1)</pre>
+            self.set_holdings(self.equity_symbol, 1 if gdp &gt; 0 else -1)</pre>
 <pre class="csharp">public class EODHDMacroIndicatorsAlgorithm : QCAlgorithm
 {
     private Symbol _equitySymbol, _datasetSymbol;
