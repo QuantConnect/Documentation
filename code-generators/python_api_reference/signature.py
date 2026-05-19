@@ -54,10 +54,13 @@ class Signature:
                     (param_info.default is None or param_info.default.strip() == "")):
                     param_info.default = default
 
-        # Define some empty lists to track the required and optional 
+        # Define some empty lists to track the required and optional
         # parameters.
         required_parts: List[str] = []
         optional_parts: List[str] = []
+        # Python allows at most one *args and one **kwargs in a signature,
+        # so we only emit the first vararg/varkw seen across overloads.
+        emitted_kinds: set = set()
 
         def _to_optional_annotation(types: List[str]) -> str:
             if "None" in types:
@@ -80,9 +83,13 @@ class Signature:
 
             # For starred params, never add None and never set a default.
             if is_star:
+                if param_info.kind in emitted_kinds:
+                    # Skip — Python allows only one *args / **kwargs.
+                    continue
+                emitted_kinds.add(param_info.kind)
                 ann = " | ".join(types) if types else ""
                 part = f"{param_info.name}: {ann}" if ann else param_info.name
-                # place starred params after requireds; they’re 
+                # place starred params after requireds; they’re
                 # inherently optional
                 optional_parts.append(part)
                 continue
