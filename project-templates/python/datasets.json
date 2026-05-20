@@ -9,11 +9,8 @@
             "examples": {
                 "init": "self._equity = self.add_equity('AAPL', Resolution.DAILY)",
                 "history": "split_history = self.history[Split](self._equity, timedelta(5*365))",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "split_history = qb.history(Split, equity, timedelta(5*365))",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.splits.contains_key(self._equity.symbol):\n        split = slice.splits[self._equity.symbol]\n        self.log(f'Split: {split.symbol}\\t{split.split_factor}\\t{split.reference_price}')"
             }
         },
         {
@@ -25,11 +22,8 @@
             "examples": {
                 "init": "future = self.add_future(Futures.Indices.SP_500_E_MINI, data_mapping_mode=DataMappingMode.OPEN_INTEREST, data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO, contract_depth_offset=0)",
                 "history": "history = self.history[SymbolChangedEvent](future.symbol, timedelta(365))",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(SymbolChangedEvent, future.symbol, datetime(2023, 1, 1), datetime(2025, 1, 1))",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    changed_event = slice.symbol_changed_events.get(future.symbol)\n    if changed_event:\n        old_symbol = changed_event.old_symbol\n        new_symbol = self.add_future_contract(changed_event.new_symbol).symbol\n        self.log(f'Rollover at {self.time}: {old_symbol} -> {new_symbol}')"
             }
         },
         {
@@ -39,13 +33,11 @@
             "reach": "30,000 US Equities",
             "url": "quantconnect-us-coarse-universe-constituents",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self._universe = self.add_universe(self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:\n    sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)[:3]\n    for cf in sorted_by_dollar_volume:\n        self.debug(f'{cf.end_time} :: {cf.symbol} : {cf.adjusted_price} :: {cf.dollar_volume}')\n\n    return [ x.symbol for x in sorted_by_dollar_volume]",
-                "research-history": "",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "fundamentals = self.securities[symbol].fundamentals"
             }
         },
         {
@@ -55,13 +47,11 @@
             "reach": "2,650 US ETF Listings",
             "url": "quantconnect-us-etf-constituents",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self._universe = self.add_universe(self.universe.etf('SPY', self.universe_settings, self._select_assets))",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, constituents: List[ETFConstituentUniverse]) -> List[Symbol]:\n    for c in constituents:\n        self.debug(f'{c.end_time} :: {c.last_update} :: {c.weight} :: {c.shares_held} :: {c.market_value}')\n    return [x.symbol for x in constituents]",
-                "research-history": "",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "for c in constituents:\n    self.debug(f'{c.end_time} :: {c.symbol} :: {c.weight} :: {c.shares_held} :: {c.market_value}')"
             }
         },
         {
@@ -71,13 +61,11 @@
             "reach": "4 contracts",
             "url": "quantconnect-international-future-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self._future = self.add_future(Futures.Indices.HANG_SENG)",
                 "universe-history": "history = self.history(FutureUniverse, self._future.symbol, 5, flatten=True)",
                 "universe-filter": "self._future.set_filter(0, 90)",
-                "research-history": "",
-                "research-universe-history": "history = qb.history(FutureUniverse, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), flatten=True)"
+                "research-universe-history": "history = qb.history(FutureUniverse, future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1), flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    chain = slice.futures_chains.get(self._future.symbol)\n    if chain:\n        for contract in chain:\n            self.log(f'{contract.symbol} price at {slice.time}: {contract.last_price}')"
             }
         },
         {
@@ -87,13 +75,11 @@
             "reach": "15 Monthly Future Contracts",
             "url": "quantconnect-us-future-option-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self.add_future_option(self._future.symbol, self._option_filter)",
                 "universe-history": "history = self.history(Symbol.create_canonical_option(self._future.mapped), timedelta(10), flatten=True)",
                 "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by strike, and expiration\n    return universe.strikes(-1, 1)",
-                "research-history": "",
-                "research-universe-history": "history = qb.history(Symbol.create_canonical_option(future.mapped), datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)"
+                "research-universe-history": "history = qb.history(Symbol.create_canonical_option(future.mapped), datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)",
+                "usage": "for chain in history:\n    for contract in chain.data:\n        delta = contract.greeks.delta\n        iv = contract.implied_volatility"
             }
         },
         {
@@ -103,13 +89,11 @@
             "reach": "157 Most Liquid Futures",
             "url": "quantconnect-us-future-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self._future = self.add_future(Futures.Metals.GOLD)",
                 "universe-history": "history = self.history[FutureUniverse](self._future.symbol, 5)",
                 "universe-filter": "self._future.set_filter(lambda universe: universe.standards_only().front_month())",
-                "research-history": "",
-                "research-universe-history": "history = qb.history[FutureUniverse](future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1))"
+                "research-universe-history": "history = qb.history[FutureUniverse](future.symbol, datetime(2025, 1, 1), datetime(2025, 4, 1))",
+                "usage": "for chain in history:\n    for contract in chain:\n        self.log(f'{contract.symbol} open interest: {contract.open_interest}')"
             }
         },
         {
@@ -119,13 +103,11 @@
             "reach": "4,000 Equity Options",
             "url": "quantconnect-us-equity-option-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self._option = self.add_option('GOOG')",
                 "universe-history": "history = self.history[OptionUniverse](self._option.symbol, timedelta(3))",
                 "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe \\\n        .delta(0.5, 1.5) \\\n        .gamma(0.0001, 0.0006) \\\n        .vega(0.01, 1.5) \\\n        .theta(-2.0, -0.5) \\\n        .rho(0.5, 3.0) \\\n        .implied_volatility(1, 3) \\\n        .open_interest(100,500)",
-                "research-history": "",
-                "research-universe-history": "history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)"
+                "research-universe-history": "history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)",
+                "usage": "for chain in history:\n    for contract in chain.data:\n        delta = contract.greeks.delta\n        iv = contract.implied_volatility"
             }
         },
         {
@@ -135,13 +117,11 @@
             "reach": "7 Index Options",
             "url": "quantconnect-us-index-option-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "self._option = self.add_index_option(self.index_symbol)",
                 "universe-history": "history = self.history(self._option.symbol, timedelta(3))",
                 "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe \\\n        .delta(0.5, 1.5) \\\n        .gamma(0.0001, 0.0006) \\\n        .vega(0.01, 1.5) \\\n        .theta(-2.0, -0.5) \\\n        .rho(0.5, 3.0) \\\n        .implied_volatility(1, 3) \\\n        .open_interest(100,500)",
-                "research-history": "",
-                "research-universe-history": "history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))"
+                "research-universe-history": "history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))",
+                "usage": "for chain in history:\n    for contract in chain.data:\n        delta = contract.greeks.delta\n        iv = contract.implied_volatility"
             }
         },
         {
@@ -153,11 +133,8 @@
             "examples": {
                 "init": "self._equity.set_shortable_provider(InteractiveBrokersShortableProvider())",
                 "history": "self._equity.shortable_provider.shortable_quantity(self._equity.symbol, self.time - timedelta(1))",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "equity.shortable_provider.shortable_quantity(equity.symbol, qb.time - timedelta(1))",
-                "research-universe-history": ""
+                "usage": "shortable_provider = self.securities[self._equity.symbol].shortable_provider\nshortable_quantity = shortable_provider.shortable_quantity(self._equity.symbol, self.time)\nis_shortable = self.shortable(self._equity.symbol, 100)"
             }
         },
         {
@@ -173,7 +150,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:\n    return [f.symbol for f in fundamental if f.price > 10 and f.valuation_ratios.pe_ratio > 30]",
                 "research-history": "history = qb.get_fundamental(equity.symbol, 'ValuationRatios.pe_ratios', datetime(2021, 1, 1), datetime(2021, 7, 1))",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "fundamentals = self.securities[self._equity.symbol].fundamentals"
             }
         },
         {
@@ -185,11 +163,8 @@
             "examples": {
                 "init": "self._equity = self.add_equity('AAPL', Resolution.MINUTE)",
                 "history": "history = self.history(self._equity.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(equity.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._equity.symbol in slice.bars:\n        trade_bar = slice.bars[self._equity.symbol]\n        self.log(f'{self._equity.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -201,11 +176,8 @@
             "examples": {
                 "init": "option_contract = self.add_option_contract(contract.symbol)",
                 "history": "history = self.history(option_contract.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(option_contract.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    chain = slice.option_chains.get(option_contract.symbol.canonical)\n    if chain:\n        for contract in chain:\n            self.log(f'{contract.symbol} price at {slice.time}: {contract.last_price}')"
             }
         },
         {
@@ -221,7 +193,8 @@
                 "universe-history": "history = self.history(self.future_symbol, start=self.time - timedelta(days=15), end=self.time, resolution=Resolution.MINUTE, fill_forward=False, extended_market_hours=False, data_mapping_mode=DataMappingMode.OPEN_INTEREST, data_normalization_mode=DataNormalizationMode.RAW, contract_depth_offset=0)",
                 "universe-filter": "future.set_filter(0, 90)",
                 "research-history": "history = qb.history(future_contract.symbol, 100, Resolution.MINUTE)",
-                "research-universe-history": "history = qb.future_history(future.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))"
+                "research-universe-history": "history = qb.future_history(future.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if future_contract.symbol in slice.bars:\n        trade_bar = slice.bars[future_contract.symbol]\n        self.log(f'{future_contract.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -237,7 +210,8 @@
                 "universe-history": "history = self.history(Symbol.create_canonical_option(self._future.mapped), timedelta(10), flatten=True)",
                 "universe-filter": "lambda universe: universe.strikes(-5, +5)",
                 "research-history": "history = qb.history(option.symbol, 100, Resolution.MINUTE)",
-                "research-universe-history": "history = qb.option_history(future_contract_symbol, start_date, future_contract_symbol.id.date, Resolution.HOUR)"
+                "research-universe-history": "history = qb.option_history(future_contract_symbol, start_date, future_contract_symbol.id.date, Resolution.HOUR)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    for canonical_fop_symbol, chain in slice.option_chains.items():\n        for contract in chain:\n            self.log(f'{contract.symbol} price at {slice.time}: {contract.last_price}')"
             }
         },
         {
@@ -253,7 +227,8 @@
                 "universe-history": "history = self.history(self._option.symbol, 5, flatten=True)",
                 "universe-filter": "self._option.set_filter(-2, 2, 0, 90)",
                 "research-history": "history = qb.history(contract.symbol, 100, Resolution.MINUTE)",
-                "research-universe-history": "history = qb.option_history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))"
+                "research-universe-history": "history = qb.option_history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    chain = slice.option_chains.get(index_option.symbol.canonical)\n    if chain:\n        for contract in chain:\n            self.log(f'{contract.symbol} price at {slice.time}: {contract.last_price}')"
             }
         },
         {
@@ -269,7 +244,8 @@
                 "universe-history": "history = self.history(self._future.symbol, start=self.time - timedelta(days=15), end=self.time, resolution=Resolution.MINUTE, fill_forward=False, extended_market_hours=False, data_mapping_mode=DataMappingMode.OPEN_INTEREST, data_normalization_mode=DataNormalizationMode.RAW, contract_depth_offset=0)",
                 "universe-filter": "self._future.set_filter(0, 90)",
                 "research-history": "history = qb.history(future_contract.symbol, timedelta(10))",
-                "research-universe-history": "history = qb.future_history(future.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))"
+                "research-universe-history": "history = qb.future_history(future.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if future_contract.symbol in slice.bars:\n        trade_bar = slice.bars[future_contract.symbol]\n        self.log(f'{future_contract.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -281,11 +257,8 @@
             "examples": {
                 "init": "equity.benzinga_symbol = self.add_data(BenzingaNews, equity.symbol).symbol",
                 "history": "history = self.history(equity.benzinga_symbol, 10, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(benzinga_symbol, timedelta(10))",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.benzinga_symbol):\n        article = slice[equity.benzinga_symbol]\n        self.log(f'{equity.benzinga_symbol} title at {slice.time}: {article.title}')"
             }
         },
         {
@@ -297,11 +270,8 @@
             "examples": {
                 "init": "equity.tiingo_symbol = self.add_data(TiingoNews, equity.symbol).symbol",
                 "history": "history = self.history(equity.tiingo_symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(tiingo_symbol, timedelta(10))",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.tiingo_symbol):\n        article = slice[equity.tiingo_symbol]\n        self.log(f'{equity.tiingo_symbol} description at {slice.time}: {article.description}')"
             }
         },
         {
@@ -317,7 +287,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, earnings: List[EODHDUpcomingEarnings]) -> List[Symbol]:\n    return [d.symbol for d in earnings if d.report_date <= self.time + timedelta(3) and d.estimate > 0]",
                 "research-history": "history = qb.history(upcoming_earnings, timedelta(100))",
-                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    upcoming_earnings = slice.get(EODHDUpcomingEarnings).get(self._upcoming_earnings)\n    if upcoming_earnings:\n        self.log(f'{self._upcoming_earnings} reports at {upcoming_earnings.report_date} with estimated EPS {upcoming_earnings.estimate}')"
             }
         },
         {
@@ -333,7 +304,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, ipos: List[EODHDUpcomingIPOs]) -> List[Symbol]:\n    # confirmed non-penny stock IPO that launches within 7 days.\n    return [d.symbol for d in ipos if d.deal_type in [DealType.EXPECTED, DealType.PRICED] and d.ipo_date and min(x for x in [d.lowest_price, d.highest_price, d.offer_price] if x) > 1]",
                 "research-history": "history = qb.history(upcoming_ipos, timedelta(100))",
-                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    for equity_symbol, data_point in slice.get(EODHDUpcomingIPOs).items():\n        self.log(f'{equity_symbol} IPO at {data_point.ipo_date} price {data_point.offer_price} shares {data_point.shares}')"
             }
         },
         {
@@ -349,7 +321,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, splits: List[EODHDUpcomingSplits]) -> List[Symbol]:\n    return [d.symbol for d in splits if d.split_date <= self.time + timedelta(3) and d.split_factor > 1]",
                 "research-history": "history = qb.history(upcoming_splits, timedelta(100))",
-                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    upcoming_splits = slice.get(EODHDUpcomingSplits)\n    if upcoming_splits and self._upcoming_splits in upcoming_splits:\n        data_point = upcoming_splits[self._upcoming_splits]\n        self.log(f'{self._upcoming_splits} will split at {data_point.split_date} factor {data_point.split_factor}')"
             }
         },
         {
@@ -361,11 +334,8 @@
             "examples": {
                 "init": "self._economic_events = self.add_data(EODHDEconomicEvents, ticker).symbol",
                 "history": "history = self.history[EODHDEconomicEvents](self._economic_events, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "self.history(EODHDEconomicEvents, economic_events, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    events = slice.get(EODHDEconomicEvents).get(self._economic_events)\n    if events:\n        for event in events:\n            self.log(f'{event.event_type} of {event.country} at {event.event_time} estimate {event.estimate}')"
             }
         },
         {
@@ -381,7 +351,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverQuantCongresssUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n        if d.amount > 200000 and d.transaction == OrderDirection.BUY]",
                 "research-history": "history = qb.history(quiver_congress_symbol, 60, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.congress_symbol):\n        data_points = slice[equity.congress_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.congress_symbol} transaction amount at {slice.time}: {data_point.amount}')"
             }
         },
         {
@@ -397,7 +368,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.percentage > 0.005 \\\n                and d.usd_market_cap > 100000000]",
                 "research-history": "history = qb.history(insider_intention_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.insider_intention):\n        data_point = slice[equity.insider_intention]\n        self.log(f'{equity.insider_intention} intention amount at {slice.time}: {data_point.amount}')"
             }
         },
         {
@@ -409,11 +381,8 @@
             "examples": {
                 "init": "self._regalytics_symbol = self.add_data(RegalyticsRegulatoryArticles, 'REG').symbol",
                 "history": "history = self.history(self._regalytics_symbol, 100, Resolution.DAILY, flatten=True)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(regalytics_symbol, 100, Resolution.DAILY, flatten=True)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._regalytics_symbol):\n        data_points = slice[self._regalytics_symbol]\n        for data_point in data_points:\n            self.log(f'{self._regalytics_symbol} title at {slice.time}: {data_point.title}')"
             }
         },
         {
@@ -429,7 +398,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.total_article_mentions7_days > 0 \\\n                and d.sentiment7_days]",
                 "research-history": "history = qb.history(BrainSentimentIndicator30Day, equity.symbol, 30, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.brain_sentiment_symbol):\n        data_point = slice[equity.brain_sentiment_symbol]\n        self.log(f'{equity.brain_sentiment_symbol} sentiment at {slice.time}: {data_point.sentiment}')"
             }
         },
         {
@@ -445,7 +415,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[BrainStockRankingUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.rank2_days > 0 \\\n                and d.rank3_days > 0 \\\n                and d.rank5_days > 0]",
                 "research-history": "history = qb.history(BrainStockRanking2Day, equity.symbol, 30, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.brain_stock_ranking):\n        data_point = slice[equity.brain_stock_ranking]\n        self.log(f'{equity.brain_stock_ranking} rank at {slice.time}: {data_point.rank}')"
             }
         },
         {
@@ -461,7 +432,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverseAll]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.report_sentiment.sentiment > 0 \\\n                and d.management_discussion_analyasis_of_financial_condition_and_results_of_operations.sentiment > 0]",
                 "research-history": "history = qb.history(BrainCompanyFilingLanguageMetrics10K, equity.symbol, 365, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.filing_metrics):\n        data_point = slice[equity.filing_metrics]\n        self.log(f'{equity.filing_metrics} report sentiment at {slice.time}: {data_point.report_sentiment.sentiment}')"
             }
         },
         {
@@ -473,11 +445,8 @@
             "examples": {
                 "init": "equity.estimize_consensus_symbol = self.add_data(EstimizeConsensus, equity.symbol).symbol",
                 "history": "history = self.history(equity.estimize_consensus_symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(estimize_consensus_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.estimize_consensus_symbol):\n        data_point = slice[equity.estimize_consensus_symbol]\n        self.log(f'{equity.estimize_consensus_symbol} mean at {slice.time}: {data_point.mean}')"
             }
         },
         {
@@ -489,11 +458,8 @@
             "examples": {
                 "init": "equity.true_beats_symbol = self.add_data(ExtractAlphaTrueBeats, equity.symbol).symbol",
                 "history": "history = self.history(equity.true_beats_symbol, 100, Resolution.DAILY, flatten=True)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(true_beats_symbol, 100, Resolution.DAILY, flatten=True)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.true_beats_symbol):\n        data_point = slice[equity.true_beats_symbol]\n        self.log(f'{equity.true_beats_symbol} true beat at {slice.time}: {data_point.true_beat}')"
             }
         },
         {
@@ -505,11 +471,8 @@
             "examples": {
                 "init": "equity.tactical_symbol = self.add_data(ExtractAlphaTacticalModel, equity.symbol).symbol",
                 "history": "history = self.history(equity.tactical_symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(tactical_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.tactical_symbol):\n        data_point = slice[equity.tactical_symbol]\n        self.log(f'{equity.tactical_symbol} score at {slice.time}: {data_point.score}')"
             }
         },
         {
@@ -521,11 +484,8 @@
             "examples": {
                 "init": "equity.cross_asset_model = self.add_data(ExtractAlphaCrossAssetModel, equity.symbol).symbol",
                 "history": "history = self.history(equity.cross_asset_model, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(cross_asset_model_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.cross_asset_model):\n        data_point = slice[equity.cross_asset_model]\n        self.log(f'{equity.cross_asset_model} score at {slice.time}: {data_point.score}')"
             }
         },
         {
@@ -537,11 +497,8 @@
             "examples": {
                 "init": "equity.factor_bundle = self.add_data(KavoutCompositeFactorBundle, equity.symbol).symbol",
                 "history": "history = self.history(equity.factor_bundle, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(factor_bundle_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.factor_bundle):\n        data_point = slice[equity.factor_bundle]\n        self.log(f'{equity.factor_bundle} momentum at {slice.time}: {data_point.momentum}')"
             }
         },
         {
@@ -557,7 +514,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:\n    cnbc_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n        \n        if symbol not in cnbc_data_by_symbol:\n            cnbc_data_by_symbol[symbol] = []\n        cnbc_data_by_symbol[symbol].append(datum)\n    \n    # define our selection criteria\n    return [symbol for symbol, d in cnbc_data_by_symbol.items()\n            if len([x for x in d if x.direction == OrderDirection.BUY]) >= 3]",
                 "research-history": "history = qb.history(cnbc_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.cnbc_symbol):\n        data_points = slice[equity.cnbc_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.cnbc_symbol} direction at {slice.time}: {data_point.direction}')"
             }
         },
         {
@@ -573,7 +531,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coase: List[QuiverGovernmentContractUniverse]) -> List[Symbol]:\n    gov_contract_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n        \n        if symbol not in gov_contract_data_by_symbol:\n            gov_contract_data_by_symbol[symbol] = []\n        gov_contract_data_by_symbol[symbol].append(datum)\n    \n    return [symbol for symbol, d in gov_contract_data_by_symbol.items()\n            if len(d) >= 3 and sum([x.amount for x in d]) > 50000]",
                 "research-history": "history = qb.history(govt_contracts_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.govt_contracts):\n        data_points = slice[equity.govt_contracts]\n        for data_point in data_points:\n            self.log(f'{equity.govt_contracts} amount at {slice.time}: {data_point.amount}')"
             }
         },
         {
@@ -589,7 +548,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverLobbyingUniverse]) -> List[Symbol]:\n    lobby_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n        \n        if symbol not in lobby_data_by_symbol:\n            lobby_data_by_symbol[symbol] = []\n        lobby_data_by_symbol[symbol].append(datum)\n    \n    return [symbol for symbol, d in lobby_data_by_symbol.items()\n            if sum([x.amount for x in d]) >= 100000]",
                 "research-history": "history = qb.history(lobbying_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.lobbying_symbol):\n        data_points = slice[equity.lobbying_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.lobbying_symbol} amount at {slice.time}: {data_point.amount}')"
             }
         },
         {
@@ -605,7 +565,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -> List[Symbol]:\n    dollar_volume_by_symbol = {}\n    for data in alt_coarse:\n        symbol = data.symbol\n        if not data.price_per_share:\n            continue\n        if symbol not in dollar_volume_by_symbol:\n            dollar_volume_by_symbol[symbol] = 0\n        dollar_volume_by_symbol[symbol] += (data.shares or 0) * data.price_per_share\n    return [\n        symbol for symbol, _ in sorted(dollar_volume_by_symbol.items(), key=lambda kvp: kvp[1])[-10:]\n    ]",
                 "research-history": "history = qb.history(insider_trading_symbol, 60, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.insider_symbol):\n        data_points = slice[equity.insider_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.insider_symbol} shares at {slice.time}: {data_point.shares}')"
             }
         },
         {
@@ -617,11 +578,8 @@
             "examples": {
                 "init": "equity.wiki_page_views = self.add_data(BrainWikipediaPageViews, equity.symbol).symbol",
                 "history": "history = self.history(equity.wiki_page_views, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = self.history(wiki_page_views_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.wiki_page_views):\n        data_point = slice[equity.wiki_page_views]\n        self.log(f'{equity.wiki_page_views} views at {slice.time}: {data_point.NumberViews1}, {data_point.Buzz1}')"
             }
         },
         {
@@ -633,11 +591,8 @@
             "examples": {
                 "init": "equity.report_8k_symbol = self.add_data(SECReport8K, equity.symbol).symbol",
                 "history": "history = self.history(equity.report_8k_symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(report_8k_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.report_8k_symbol):\n        data_point = slice[equity.report_8k_symbol]\n        self.log(f'{equity.report_8k_symbol} report count at {slice.time}: {len(data_point.report.documents)}')"
             }
         },
         {
@@ -649,11 +604,8 @@
             "examples": {
                 "init": "self._peak_to_trough = self.add_data(Fred, Fred.OECDRecessionIndicators.UNITED_STATES_FROM_PEAK_THROUGH_THE_TROUGH, Resolution.DAILY).symbol",
                 "history": "history = self.history(self._peak_to_trough, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(peak_to_trough_symbol, 365, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._peak_to_trough):\n        data_point = slice[self._peak_to_trough]\n        self.log(f'{self._peak_to_trough} value at {slice.time}: {data_point.value}')"
             }
         },
         {
@@ -665,11 +617,8 @@
             "examples": {
                 "init": "self._bitcoin_chain_symbol = self.add_data(NasdaqDataLink, 'QDL/BCHAIN', Resolution.DAILY).symbol",
                 "history": "history = self.history(self._bitcoin_chain_symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "from io import StringIO\ndata = qb.download('https://data.nasdaq.com/api/v3/datatables/QDL/BCHAIN.csv?')\nhistory = pd.read_csv(StringIO(data), index_col=0)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    point = slice.get(self._bitcoin_chain_symbol)\n    if point:\n        self.log(f'{self._bitcoin_chain_symbol} value at {slice.time}: {point.value}')"
             }
         },
         {
@@ -685,7 +634,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, universe_day):\n    return [c.symbol for c in universe_day if c.volume >= 100 and c.volume_in_usd > 10000]",
                 "research-history": "history = qb.history(crypto.symbol, 30, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto.symbol]\n        self.log(f'{self._crypto.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -697,11 +647,8 @@
             "examples": {
                 "init": "self._crypto_future = self.add_crypto_future('BTCUSDT', Resolution.MINUTE, Market.BYBIT)",
                 "history": "history = self.history(self._crypto_future.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(crypto_future.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto_future.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto_future.symbol]\n        self.log(f'{self._crypto_future.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -713,11 +660,8 @@
             "examples": {
                 "init": "self._crypto_future = self.add_crypto_future('BTCUSDT', Resolution.MINUTE, Market.BYBIT)",
                 "history": "history = self.history[MarginInterestRate](self._crypto_future.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(MarginInterestRate, crypto_future.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto_future.symbol in slice.margin_interest_rates:\n        interest_rate = slice.margin_interest_rates[self._crypto_future.symbol].interest_rate\n        self.log(f'{self._crypto_future.symbol} interest rate at {slice.time}: {interest_rate}')"
             }
         },
         {
@@ -729,11 +673,8 @@
             "examples": {
                 "init": "self._fear_greed_symbol = self.add_data(FearGreedIndex, 'FG').symbol",
                 "history": "history = self.history(self._fear_greed_symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(fear_greed_symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._fear_greed_symbol):\n        data_point = slice[self._fear_greed_symbol]\n        self.log(f'{self._fear_greed_symbol} value at {slice.time}: {data_point.value}')"
             }
         },
         {
@@ -745,11 +686,8 @@
             "examples": {
                 "init": "self._forex = self.add_forex('EURUSD', Resolution.MINUTE)",
                 "history": "history = self.history(self._forex.symbol, 100, Resolution.MINUTE)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(forex.symbol, 100, Resolution.MINUTE)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._forex.symbol in slice.quote_bars:\n        quote_bar = slice.quote_bars[self._forex.symbol]\n        self.log(f'{self._forex.symbol} bid at {slice.time}: {quote_bar.bid.close}')"
             }
         },
         {
@@ -761,11 +699,8 @@
             "examples": {
                 "init": "self._cfd = self.add_cfd('DE30EUR')",
                 "history": "history = self.history(self._cfd.symbol, 100, Resolution.MINUTE)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(cfd.symbol, 100, Resolution.MINUTE)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._cfd.symbol in slice.quote_bars:\n        quote_bar = slice.quote_bars[self._cfd.symbol]\n        self.log(f'{self._cfd.symbol} bid at {slice.time}: {quote_bar.bid.close}')"
             }
         },
         {
@@ -781,7 +716,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, universe_day):\n    return [c.symbol for c in universe_day if c.volume >= 100 and c.volume_in_usd > 10000]",
                 "research-history": "history = qb.history(crypto.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto.symbol]\n        self.log(f'{self._crypto.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -797,7 +733,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, universe_day):\n    return [c.symbol for c in universe_day if c.volume >= 100 and c.volume_in_usd > 10000]",
                 "research-history": "history = qb.history(symbol, 30, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto.symbol]\n        self.log(f'{self._crypto.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -813,7 +750,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, universe_day):\n    return [c.symbol for c in universe_day if c.volume >= 100 and c.volume_in_usd > 10000]",
                 "research-history": "history = self.history(crypto.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto.symbol]\n        self.log(f'{self._crypto.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -829,7 +767,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, universe_day):\n    return [c.symbol for c in universe_day if c.volume >= 100 and c.volume_in_usd > 10000]",
                 "research-history": "history = self.history(crypto.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto.symbol]\n        self.log(f'{self._crypto.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -845,7 +784,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, universe_day):\n    return [c.symbol for c in universe_day if c.volume >= 100 and c.volume_in_usd > 10000]",
                 "research-history": "history = qb.history(self._crypto.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto.symbol]\n        self.log(f'{self._crypto.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -857,11 +797,8 @@
             "examples": {
                 "init": "self._crypto_future = self.add_crypto_future('BTCBUSD', Resolution.MINUTE)",
                 "history": "history = self.history(self._crypto_future.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(crypto_future.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto_future.symbol in slice.bars:\n        trade_bar = slice.bars[self._crypto_future.symbol]\n        self.log(f'{self._crypto_future.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -873,11 +810,8 @@
             "examples": {
                 "init": "self._crypto_future = self.add_crypto_future('BTCBUSD', Resolution.MINUTE)",
                 "history": "history = self.history[MarginInterestRate](self._crypto_future.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(MarginInterestRate, crypto_future.symbol, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._crypto_future.symbol in slice.margin_interest_rates:\n        interest_rate = slice.margin_interest_rates[self._crypto_future.symbol].interest_rate\n        self.log(f'{self._crypto_future.symbol} interest rate at {slice.time}: {interest_rate}')"
             }
         },
         {
@@ -887,13 +821,9 @@
             "reach": "1 Country: US",
             "url": "us-interest-rate",
             "examples": {
-                "init": "",
                 "history": "historical_interest_rate = self.risk_free_interest_rate_model.get_interest_rate(self.time - timedelta(30))",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "historical_interest_rate = qb.risk_free_interest_rate_model.get_interest_rate(qb.time - timedelta(30))",
-                "research-universe-history": ""
+                "usage": "interest_rate = self.risk_free_interest_rate_model.get_interest_rate(self.time)"
             }
         },
         {
@@ -905,11 +835,8 @@
             "examples": {
                 "init": "self._macro_indicator = self.add_data(EODHDMacroIndicators, EODHD.MacroIndicators.UnitedStates.GDP_CURRENT_USD).symbol",
                 "history": "history = self.history[EODHDMacroIndicators](self._macro_indicator, timedelta(365)))",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(macro_indicator, timedelta(365), flatten=True)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._macro_indicator):\n        data_point = slice[self._macro_indicator]\n        self.log(f'{data_point.indicator} of {data_point.country} at {data_point.time}: {data_point.value}')"
             }
         },
         {
@@ -925,7 +852,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, dividends: List[EODHDUpcomingDividends]) -> List[Symbol]:\n    return [d.symbol for d in dividends if d.dividend_date <= self.time + timedelta(1) and d.dividend > 0.05]",
                 "research-history": "qb.history(upcoming_dividends, timedelta(100))",
-                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    upcoming_dividends = slice.get(EODHDUpcomingDividends)\n    if upcoming_dividends and self._upcoming_dividends in upcoming_dividends:\n        data_point = upcoming_dividends[self._upcoming_dividends]\n        self.log(f'{self._upcoming_dividends} dividend at {data_point.dividend_date} per share ${data_point.dividend}')"
             }
         },
         {
@@ -937,11 +865,8 @@
             "examples": {
                 "init": "self._us_energy = self.add_data(USEnergy, USEnergy.Petroleum.UnitedStates.WEEKLY_NET_IMPORTS_OF_TOTAL_PETROLEUM_PRODUCTS).symbol",
                 "history": "history = self.history(self._us_energy, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(us_energy, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._us_energy):\n        data_point = slice[self._us_energy]\n        self.log(f'{self._us_energy} value at {slice.time}: {data_point.value}')"
             }
         },
         {
@@ -953,11 +878,8 @@
             "examples": {
                 "init": "self._yield_curve = self.add_data(USTreasuryYieldCurveRate, 'USTYCR').symbol",
                 "history": "history = self.history(self._yield_curve, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(yield_curve, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._yield_curve):\n        data_point = slice[self._yield_curve]\n        self.log(f'{self._yield_curve} one month at {slice.time}: {data_point.one_month}')"
             }
         },
         {
@@ -969,11 +891,8 @@
             "examples": {
                 "init": "self._vix_contango = self.add_data(VIXCentralContango, 'VX', Resolution.DAILY).symbol",
                 "history": "history = self.history(self._vix_contango, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = self.history(vix_contango, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._vix_contango):\n        data_point = slice[self._vix_contango]\n        self.log(f'{self._vix_contango} front month at {slice.time}: {data_point.front_month}')"
             }
         },
         {
@@ -985,11 +904,8 @@
             "examples": {
                 "init": "self._index = self.add_index('VIX')",
                 "history": "history = self.history(self._index.symbol, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(index, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._index.symbol in slice.bars:\n        trade_bar = slice.bars[self._index.symbol]\n        self.log(f'{self._index.symbol} close at {slice.time}: {trade_bar.close}')"
             }
         },
         {
@@ -1001,11 +917,8 @@
             "examples": {
                 "init": "self._btcusd.metadata = self.add_data(BitcoinMetadata, self._btcusd.symbol).symbol",
                 "history": "history = self.history(self._btcusd.metadata, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(bitcoin_metadata, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._btcusd.metadata):\n        data_point = slice[self._btcusd.metadata]\n        self.log(f'{self._btcusd.metadata} miner revenue at {slice.time}: {data_point.miners_revenue}')"
             }
         },
         {
@@ -1021,7 +934,8 @@
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, data: List[CoinGecko]) -> List[Symbol]:\n    for datum in data:\n        self.debug(f'{datum.coin},{datum.market_cap},{datum.price}')\n\n    # Select the coins that our brokerage supports and have a quote currency that matches\n    # our account currency.\n    tradable_coins = [d for d in data if d.coin + self.account_currency in self._market_pairs]\n    # Select the largest coins and create their Symbol objects.\n    return [\n        c.create_symbol(self._market, self.account_currency) \n        for c in sorted(tradable_coins, key=lambda x: x.market_cap)[-10:]\n    ]",
                 "research-history": "history = self.history(coin_gecko, 100, Resolution.DAILY)",
-                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._coin_gecko):\n        data_point = slice[self._coin_gecko]\n        self.log(f'{self._coin_gecko} market cap at {slice.time}: {data_point.market_cap}')"
             }
         },
         {
@@ -1033,11 +947,8 @@
             "examples": {
                 "init": "self._usda_apples = self.add_data(USDAFruitAndVegetables, USDAFruitAndVegetable.Symbols.Apples, Resolution.DAILY).symbol",
                 "history": "history = self.history(self._usda_apples, datetime(2013, 1, 1), self.time, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(usda_apples, datetime(2013, 1, 1), self.time, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._usda_apples):\n        collection = slice[self._usda_apples]\n        for data in collection.data:\n            self.log(f'{self._usda_apples} [{data.form}]: ${data.price_per_cup_equivalent}')"
             }
         },
         {
@@ -1049,11 +960,8 @@
             "examples": {
                 "init": "self._cpi = self.add_data(BLSEconomicSurveysCpi, 'CPI').symbol",
                 "history": "history = self.history(self._cpi, 100, Resolution.DAILY)",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "history = qb.history(cpi, 100, Resolution.DAILY)",
-                "research-universe-history": ""
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if self._cpi in slice:\n        cpi = slice[self._cpi]\n        self.log(f'{self._cpi} all items at {slice.time}: {cpi.all_items}')"
             }
         }
     ]

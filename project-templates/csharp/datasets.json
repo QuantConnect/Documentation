@@ -9,11 +9,8 @@
             "examples": {
                 "init": "_equity = AddEquity(\"AAPL\", Resolution.Daily);",
                 "history": "var splitHistory = History<Split>(_equity.Symbol, TimeSpan.FromDays(5*365));",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var splitHistory = qb.History<Split>(equity.Symbol, TimeSpan.FromDays(5*365));",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Splits.ContainsKey(_equity.Symbol))\n    {\n        var split = slice.Splits[_equity.Symbol];\n        Log($\"Split: {split.Symbol}\\t{split.SplitFactor}\\t{split.ReferencePrice}\");\n    }\n}"
             }
         },
         {
@@ -25,11 +22,8 @@
             "examples": {
                 "init": "var future = AddFuture(Futures.Indices.SP500EMini, dataMappingMode: DataMappingMode.OpenInterest, dataNormalizationMode: DataNormalizationMode.BackwardsRatio, contractDepthOffset: 0);",
                 "history": "var history = History<SymbolChangedEvent>(future.Symbol, TimeSpan.FromDays(365));",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<SymbolChangedEvent>(future.Symbol, new DateTime(2023, 1, 1), new DateTime(2025, 1, 1));",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.SymbolChangedEvents.TryGetValue(future.Symbol, out var changedEvent))\n    {\n        var oldSymbol = changedEvent.OldSymbol;\n        var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;\n        Log($\"Rollover at {Time}: {oldSymbol} -> {newSymbol}\");\n    }\n}"
             }
         },
         {
@@ -39,13 +33,11 @@
             "reach": "30,000 US Equities",
             "url": "quantconnect-us-coarse-universe-constituents",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "_universe = AddUniverse(SelectAssets);",
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "public IEnumerable<Symbol> SelectAssets(IEnumerable<Fundamental> fundamental)\n{\n    var sortedByDollarVolume = fundamental.OrderByDescending(x => x.DollarVolume).Take(3).ToList();\n    foreach (var cf in sortedByDollarVolume)\n    {\n        Debug($\"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}\");\n    }\n    return sortedByDollarVolume.Select(x => x.Symbol);\n}",
-                "research-history": "",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "var fundamentals = Securities[symbol].Fundamentals;"
             }
         },
         {
@@ -55,13 +47,11 @@
             "reach": "2,650 US ETF Listings",
             "url": "quantconnect-us-etf-constituents",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "_universe = AddUniverse(Universe.ETF(\"SPY\", UniverseSettings, SelectAssets));",
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "public IEnumerable<Symbol> SelectAssets(IEnumerable<ETFConstituentUniverse> constituents)\n{\n    foreach (var c in constituents)\n    {\n        Debug($\"{c.EndTime} :: {c.LastUpdate} :: {c.Weight} :: {c.SharesHeld} :: {c.MarketValue}\");\n    }\n    return constituents.Select(c => c.Symbol);\n}",
-                "research-history": "",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "foreach (var c in constituents)\n{\n    Debug($\"{c.EndTime} :: {c.Symbol} :: {c.Weight} :: {c.SharesHeld} :: {c.MarketValue}\");\n}"
             }
         },
         {
@@ -71,13 +61,11 @@
             "reach": "4 contracts",
             "url": "quantconnect-international-future-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "_future = AddFuture(Futures.Indices.HangSeng);",
                 "universe-history": "var history = History<FutureUniverse>(_future.Symbol, 5);",
                 "universe-filter": "_future.SetFilter(0, 90);",
-                "research-history": "",
-                "research-universe-history": "var history = qb.History<FutureUniverse>(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));"
+                "research-universe-history": "var history = qb.History<FutureUniverse>(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.FuturesChains.TryGetValue(_future.Symbol, out var chain))\n    {\n        foreach (var contract in chain)\n        {\n            Log($\"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}\");\n        }\n    }\n}"
             }
         },
         {
@@ -87,13 +75,11 @@
             "reach": "15 Monthly Future Contracts",
             "url": "quantconnect-us-future-option-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "AddFutureOption(_future.Symbol, OptionFilter);",
                 "universe-history": "var history = History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped), TimeSpan.FromDays(10));",
                 "universe-filter": "private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)\n{\n    // Contracts can be filtered by strike, and expiration\n    return universe.Strikes(-1, 1);\n}",
-                "research-history": "",
-                "research-universe-history": "var history = qb.History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(future.Mapped), new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));"
+                "research-universe-history": "var history = qb.History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(future.Mapped), new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));",
+                "usage": "foreach (var chain in history)\n{\n    foreach (OptionUniverse contract in chain.Data)\n    {\n        var delta = contract.Greeks.Delta;\n        var iv = contract.ImpliedVolatility;\n    }\n}"
             }
         },
         {
@@ -103,13 +89,11 @@
             "reach": "157 Most Liquid Futures",
             "url": "quantconnect-us-future-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "_future = AddFuture(Futures.Metals.Gold);",
                 "universe-history": "var history = History<FutureUniverse>(_future.Symbol, 5);",
                 "universe-filter": "_future.SetFilter((universe) => universe.StandardsOnly().FrontMonth());",
-                "research-history": "",
-                "research-universe-history": "var history = qb.History<FutureUniverse>(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));"
+                "research-universe-history": "var history = qb.History<FutureUniverse>(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));",
+                "usage": "foreach (var chain in history)\n{\n    foreach (var contract in chain)\n    {\n        Log($\"{contract.Symbol} open interest: {contract.OpenInterest}\");\n    }\n}"
             }
         },
         {
@@ -119,13 +103,11 @@
             "reach": "4,000 Equity Options",
             "url": "quantconnect-us-equity-option-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "var option = AddOption(\"GOOG\");\n_optionSymbol = option.Symbol;",
                 "universe-history": "var history = History<OptionUniverse>(_optionSymbol, TimeSpan.FromDays(3));",
                 "universe-filter": "private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)\n{\n    // Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe\n        .Delta(0.5m, 1.5m)\n        .Gamma(0.0001m, 0.0006m)\n        .Vega(0.01m, 1.5m)\n        .Theta(-2.0m, -0.5m)\n        .Rho(0.5m, 3.0m)\n        .ImpliedVolatility(1.0m, 3.0m)\n        .OpenInterest(100, 500);\n}",
-                "research-history": "",
-                "research-universe-history": "var history = qb.History<OptionUniverse>(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));"
+                "research-universe-history": "var history = qb.History<OptionUniverse>(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));",
+                "usage": "foreach (var chain in history)\n{\n    foreach (OptionUniverse contract in chain.Data)\n    {\n        var delta = contract.Greeks.Delta;\n        var iv = contract.ImpliedVolatility;\n    }\n}"
             }
         },
         {
@@ -135,13 +117,11 @@
             "reach": "7 Index Options",
             "url": "quantconnect-us-index-option-universe",
             "examples": {
-                "init": "",
-                "history": "",
                 "universe-init": "var standardOption = AddIndexOption(_indexSymbol);\n_standardOptionSymbol = standardOption.Symbol;",
                 "universe-history": "var history = History<OptionUniverse>(_standardOptionSymbol, TimeSpan.FromDays(3));",
                 "universe-filter": "private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)\n{\n    // Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe\n        .Delta(0.5m, 1.5m)\n        .Gamma(0.0001m, 0.0006m)\n        .Vega(0.01m, 1.5m)\n        .Theta(-2.0m, -0.5m)\n        .Rho(0.5m, 3.0m)\n        .ImpliedVolatility(1.0m, 3.0m)\n        .OpenInterest(100, 500);\n}",
-                "research-history": "",
-                "research-universe-history": "var history = qb.History<OptionUniverse>(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));"
+                "research-universe-history": "var history = qb.History<OptionUniverse>(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));",
+                "usage": "foreach (var chain in history)\n{\n    foreach (OptionUniverse contract in chain.Data)\n    {\n        var delta = contract.Greeks.Delta;\n        var iv = contract.ImpliedVolatility;\n    }\n}"
             }
         },
         {
@@ -153,11 +133,8 @@
             "examples": {
                 "init": "_equity.SetShortableProvider(new InteractiveBrokersShortableProvider());",
                 "history": "var shortableQuantity = _equity.ShortableProvider.ShortableQuantity(_equity.Symbol, Time - TimeSpan.FromDays(1));",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var shortableQuantity = equity.ShortableProvider.ShortableQuantity(equity.Symbol, qb.Time - TimeSpan.FromDays(1));",
-                "research-universe-history": ""
+                "usage": "var shortableProvider = Securities[_equity.Symbol].ShortableProvider;\nvar shortableQuantity = shortableProvider.ShortableQuantity(_equity.Symbol, Time);\nvar isShortable = Shortable(_equity.Symbol, 100);"
             }
         },
         {
@@ -173,7 +150,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "public IEnumerable<Symbol> SelectAssets(IEnumerable<Fundamental> fundamental)\n{\n    return fundamental.Where(f => f.Price > 10 && f.ValuationRatios.PERatio > 30).Select(f => f.Symbol);\n}",
                 "research-history": "var history = qb.GetFundamental(equity.Symbol, \"ValuationRatios.PERatio\", new DateTime(2021, 1, 1), new DateTime(2021, 7, 1));",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "var fundamentals = Securities[_equity.Symbol].Fundamentals;"
             }
         },
         {
@@ -185,11 +163,8 @@
             "examples": {
                 "init": "_equity = AddEquity(\"AAPL\", Resolution.Minute);",
                 "history": "var history = History(_equity.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(equity.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_equity.Symbol))\n    {\n        var tradeBar = slice.Bars[_equity.Symbol];\n        Log($\"{_equity.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -201,11 +176,8 @@
             "examples": {
                 "init": "var optionContract = AddOptionContract(contract.Symbol);",
                 "history": "var history = History(optionContract.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(optionContract.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.OptionChains.TryGetValue(optionContract.Symbol.Canonical, out var chain))\n    {\n        foreach (var contract in chain)\n        {\n            Log($\"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}\");\n        }\n    }\n}"
             }
         },
         {
@@ -221,7 +193,8 @@
                 "universe-history": "var history = History(new[] { _futureSymbol }, start: Time - TimeSpan.FromDays(15), end: Time, resolution: Resolution.Minute, fillForward: false, extendedMarketHours: false, dataMappingMode: DataMappingMode.OpenInterest, dataNormalizationMode: DataNormalizationMode.Raw, contractDepthOffset: 0);",
                 "universe-filter": "future.SetFilter(0, 90);",
                 "research-history": "var history = qb.History(futureContract.Symbol, 100, Resolution.Minute);",
-                "research-universe-history": "var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));"
+                "research-universe-history": "var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.TryGetValue(futureContract.Symbol, out var tradeBar))\n    {\n        Log($\"{futureContract.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -237,7 +210,8 @@
                 "universe-history": "var history = History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped), TimeSpan.FromDays(10));",
                 "universe-filter": "universe => universe.Strikes(-5, +5)",
                 "research-history": "var history = qb.History(option.Symbol, 100, Resolution.Minute);",
-                "research-universe-history": "var history = qb.OptionHistory(futureContractSymbol, startDate, futureContractSymbol.ID.Date, Resolution.Hour);"
+                "research-universe-history": "var history = qb.OptionHistory(futureContractSymbol, startDate, futureContractSymbol.ID.Date, Resolution.Hour);",
+                "usage": "public override void OnData(Slice slice)\n{\n    foreach (var kvp in slice.OptionChains)\n    {\n        var chain = kvp.Value;\n        foreach (var contract in chain)\n        {\n            Log($\"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}\");\n        }\n    }\n}"
             }
         },
         {
@@ -253,7 +227,8 @@
                 "universe-history": "var history = History<OptionUniverse>(_optionSymbol, 5);",
                 "universe-filter": "option.SetFilter(-2, 2, 0, 90);",
                 "research-history": "var history = qb.History(contract.Symbol, 100, Resolution.Minute);",
-                "research-universe-history": "var history = qb.OptionHistory(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));"
+                "research-universe-history": "var history = qb.OptionHistory(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.OptionChains.TryGetValue(indexOption.Symbol.Canonical, out var chain))\n    {\n        foreach (var contract in chain)\n        {\n            Log($\"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}\");\n        }\n    }\n}"
             }
         },
         {
@@ -269,7 +244,8 @@
                 "universe-history": "var history = History(new[] { _future.Symbol }, start: Time - TimeSpan.FromDays(15), end: Time, resolution: Resolution.Minute, fillForward: false, extendedMarketHours: false, dataMappingMode: DataMappingMode.OpenInterest, dataNormalizationMode: DataNormalizationMode.Raw, contractDepthOffset: 0);",
                 "universe-filter": "_future.SetFilter(0, 90);",
                 "research-history": "var history = qb.History(futureContract.Symbol, TimeSpan.FromDays(10));",
-                "research-universe-history": "var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));"
+                "research-universe-history": "var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.TryGetValue(futureContract.Symbol, out var tradeBar))\n    {\n        Log($\"{futureContract.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -281,11 +257,8 @@
             "examples": {
                 "init": "var benzingaSymbol = AddData<BenzingaNews>(_equity.Symbol).Symbol;",
                 "history": "var history = History<BenzingaNews>(benzingaSymbol, 10, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<BenzingaNews>(benzingaSymbol, TimeSpan.FromDays(10));",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(benzingaSymbol))\n    {\n        var article = slice[benzingaSymbol];\n        Log($\"{benzingaSymbol} title at {slice.Time}: {article.Title}\");\n    }\n}"
             }
         },
         {
@@ -297,11 +270,8 @@
             "examples": {
                 "init": "var tiingoSymbol = AddData<TiingoNews>(_equity.Symbol).Symbol;",
                 "history": "var history = History<TiingoNews>(tiingoSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<TiingoNews>(tiingoSymbol, TimeSpan.FromDays(10));",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(tiingoSymbol))\n    {\n        var article = slice[tiingoSymbol];\n        Log($\"{tiingoSymbol} description at {slice.Time}: {article.Description}\");\n    }\n}"
             }
         },
         {
@@ -317,7 +287,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<EODHDUpcomingEarnings> earnings)\n{\n    return from d in earnings\n           where d.ReportDate <= Time.AddDays(3) && d.Estimate > 0m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<EODHDUpcomingEarnings>(TimeSpan.FromDays(100), Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    var upcomingEarnings = slice.Get<EODHDUpcomingEarnings>();\n    if (upcomingEarnings.TryGetValue(_upcomingEarnings, out var dataPoint))\n    {\n        Log($\"{_upcomingEarnings} reports at {dataPoint.ReportDate} with estimated EPS {dataPoint.Estimate}\");\n    }\n}"
             }
         },
         {
@@ -333,7 +304,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private static readonly List<DealType> _dealTypesWanted = new() { DealType.Expected, DealType.Priced };\n\nprivate IEnumerable<Symbol> SelectAssets(IEnumerable<EODHDUpcomingIPOs> ipos)\n{\n    // confirmed non-penny stock IPO that launches within 7 days.\n    return from d in ipos\n           where _dealTypesWanted.Contains(d.DealType)\n                && d.IpoDate.HasValue\n                && new[] { d.LowestPrice, d.HighestPrice, d.OfferPrice }.Where(x => x.HasValue).Min().Value > 1m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<EODHDUpcomingIPOs>(TimeSpan.FromDays(100), Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    foreach (var kvp in slice.Get<EODHDUpcomingIPOs>())\n    {\n        var equitySymbol = kvp.Key;\n        var dataPoint = kvp.Value;\n        Log($\"{equitySymbol} IPO at {dataPoint.IPODate} price {dataPoint.OfferPrice} shares {dataPoint.Shares}\");\n    }\n}"
             }
         },
         {
@@ -349,7 +321,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<EODHDUpcomingSplits> splits)\n{\n    return from d in splits\n           where d.SplitDate <= Time.AddDays(3) && d.SplitFactor > 1m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<EODHDUpcomingSplits>(TimeSpan.FromDays(100), Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    var upcomingSplits = slice.Get<EODHDUpcomingSplits>();\n    if (upcomingSplits.TryGetValue(_upcomingSplits, out var dataPoint))\n    {\n        Log($\"{_upcomingSplits} will split at {dataPoint.SplitDate} factor {dataPoint.SplitFactor}\");\n    }\n}"
             }
         },
         {
@@ -361,11 +334,8 @@
             "examples": {
                 "init": "_economicEvents = AddData<EODHDEconomicEvents>(ticker).Symbol;",
                 "history": "var history = History<EODHDEconomicEvents>(_economicEvents, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<EODHDEconomicEvents>(economicEvents, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Get<EODHDEconomicEvents>().TryGetValue(_economicEvents, out var economicEvents))\n    {\n        foreach (EODHDEconomicEvent economicEvent in economicEvents)\n        {\n            Log($\"{economicEvent.EventType} of {economicEvent.Country} at {economicEvent.EventTime} estimate {economicEvent.Estimate}\");\n        }\n    }\n}"
             }
         },
         {
@@ -381,7 +351,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<QuiverCongressDataPoint>()\n           where d.Amount > 200000m && d.Transaction == OrderDirection.Buy\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<QuiverCongress>(congressSymbol, 60, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(congressSymbol))\n    {\n        var dataPoints = slice[congressSymbol];\n        foreach (var dataPoint in dataPoints)\n        {\n            Log($\"{congressSymbol} transaction amount at {slice.Time}: {dataPoint.Amount}\");\n        }\n    }\n}"
             }
         },
         {
@@ -397,7 +368,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<SmartInsiderIntentionUniverse>()\n           where d.Percentage > 0.005m && d.USDMarketCap > 100000000m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<SmartInsiderIntention>(insiderIntentionSymbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(insiderIntention))\n    {\n        var dataPoint = slice[insiderIntention];\n        Log($\"{insiderIntention} intention amount at {slice.Time}: {dataPoint.Amount}\");\n    }\n}"
             }
         },
         {
@@ -409,11 +381,8 @@
             "examples": {
                 "init": "_regalyticsSymbol = AddData<RegalyticsRegulatoryArticles>(\"REG\").Symbol;",
                 "history": "var history = History<RegalyticsRegulatoryArticles>(_regalyticsSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<RegalyticsRegulatoryArticles>(regalyticsSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_regalyticsSymbol))\n    {\n        var dataPoints = slice[_regalyticsSymbol];\n        foreach (var dataPoint in dataPoints)\n        {\n            Log($\"{_regalyticsSymbol} title at {slice.Time}: {dataPoint.Title}\");\n        }\n    }\n}"
             }
         },
         {
@@ -429,7 +398,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<BrainSentimentIndicatorUniverse>()\n           where d.TotalArticleMentions7Days > 0m && d.Sentiment7Days > 0m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<BrainSentimentIndicator30Day>(equity.Symbol, 30, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(brainSentimentSymbol))\n    {\n        var dataPoint = slice[brainSentimentSymbol];\n        Log($\"{brainSentimentSymbol} sentiment at {slice.Time}: {dataPoint.Sentiment}\");\n    }\n}"
             }
         },
         {
@@ -445,7 +415,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<BrainStockRankingUniverse>()\n           where d.Rank2Days > 0m && d.Rank3Days > 0m && d.Rank5Days > 0m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<BrainStockRanking2Day>(equity.Symbol, 30, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(brainStockRanking))\n    {\n        var dataPoint = slice[brainStockRanking];\n        Log($\"{brainStockRanking} rank at {slice.Time}: {dataPoint.Rank}\");\n    }\n}"
             }
         },
         {
@@ -461,7 +432,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<BrainCompanyFilingLanguageMetricsUniverseAll>()\n           where d.ReportSentiment.Sentiment > 0m &&\n                 d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment > 0m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<BrainCompanyFilingLanguageMetrics10K>(equity.Symbol, 365, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(filingMetrics))\n    {\n        var dataPoint = slice[filingMetrics];\n        Log($\"{filingMetrics} report sentiment at {slice.Time}: {dataPoint.ReportSentiment.Sentiment}\");\n    }\n}"
             }
         },
         {
@@ -473,11 +445,8 @@
             "examples": {
                 "init": "var estimizeConsensusSymbol = AddData<EstimizeConsensus>(_equity.Symbol).Symbol;",
                 "history": "var history = History<EstimizeConsensus>(estimizeConsensusSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<EstimizeConsensus>(estimizeConsensusSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(estimizeConsensusSymbol))\n    {\n        var dataPoint = slice[estimizeConsensusSymbol];\n        Log($\"{estimizeConsensusSymbol} mean at {slice.Time}: {dataPoint.Mean}\");\n    }\n}"
             }
         },
         {
@@ -489,11 +458,8 @@
             "examples": {
                 "init": "var trueBeatsSymbol = AddData<ExtractAlphaTrueBeats>(_equity.Symbol).Symbol;",
                 "history": "var history = History<ExtractAlphaTrueBeats>(trueBeatsSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<ExtractAlphaTrueBeats>(trueBeatsSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(trueBeatsSymbol))\n    {\n        var dataPoint = slice[trueBeatsSymbol];\n        Log($\"{trueBeatsSymbol} true beat at {slice.Time}: {dataPoint.TrueBeat}\");\n    }\n}"
             }
         },
         {
@@ -505,11 +471,8 @@
             "examples": {
                 "init": "var tacticalSymbol = AddData<ExtractAlphaTacticalModel>(_equity.Symbol).Symbol;",
                 "history": "var history = History<ExtractAlphaTacticalModel>(tacticalSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<ExtractAlphaTacticalModel>(tacticalSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(tacticalSymbol))\n    {\n        var dataPoint = slice[tacticalSymbol];\n        Log($\"{tacticalSymbol} score at {slice.Time}: {dataPoint.Score}\");\n    }\n}"
             }
         },
         {
@@ -521,11 +484,8 @@
             "examples": {
                 "init": "var crossAssetModel = AddData<ExtractAlphaCrossAssetModel>(_equity.Symbol).Symbol;",
                 "history": "var history = History<ExtractAlphaCrossAssetModel>(crossAssetModel, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<ExtractAlphaCrossAssetModel>(crossAssetModelSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(crossAssetModel))\n    {\n        var dataPoint = slice[crossAssetModel];\n        Log($\"{crossAssetModel} score at {slice.Time}: {dataPoint.Score}\");\n    }\n}"
             }
         },
         {
@@ -537,11 +497,8 @@
             "examples": {
                 "init": "var factorBundle = AddData<KavoutCompositeFactorBundle>(_equity.Symbol).Symbol;",
                 "history": "var history = History<KavoutCompositeFactorBundle>(factorBundle, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<KavoutCompositeFactorBundle>(factorBundleSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(factorBundle))\n    {\n        var dataPoint = slice[factorBundle];\n        Log($\"{factorBundle} momentum at {slice.Time}: {dataPoint.Momentum}\");\n    }\n}"
             }
         },
         {
@@ -557,7 +514,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var cnbcDataBySymbol = new Dictionary<Symbol, List<QuiverCNBCsUniverse>>();\n    foreach (var datum in altCoarse.OfType<QuiverCNBCsUniverse>())\n    {\n        if (!cnbcDataBySymbol.ContainsKey(datum.Symbol))\n        {\n            cnbcDataBySymbol[datum.Symbol] = new List<QuiverCNBCsUniverse>();\n        }\n        cnbcDataBySymbol[datum.Symbol].Add(datum);\n    }\n    return from kvp in cnbcDataBySymbol\n           where kvp.Value.Count(x => x.Direction == OrderDirection.Buy) >= 3\n           select kvp.Key;\n}",
                 "research-history": "var history = qb.History<QuiverCNBCs>(cnbcSymbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(cnbcSymbol))\n    {\n        var dataPoints = slice[cnbcSymbol];\n        foreach (var dataPoint in dataPoints)\n        {\n            Log($\"{cnbcSymbol} direction at {slice.Time}: {dataPoint.Direction}\");\n        }\n    }\n}"
             }
         },
         {
@@ -573,7 +531,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var govContractDataBySymbol = new Dictionary<Symbol, List<QuiverGovernmentContractUniverse>>();\n    foreach (var datum in altCoarse.OfType<QuiverGovernmentContractUniverse>())\n    {\n        if (!govContractDataBySymbol.ContainsKey(datum.Symbol))\n        {\n            govContractDataBySymbol[datum.Symbol] = new List<QuiverGovernmentContractUniverse>();\n        }\n        govContractDataBySymbol[datum.Symbol].Add(datum);\n    }\n    return from kvp in govContractDataBySymbol\n           where kvp.Value.Count >= 3 && kvp.Value.Sum(x => x.Amount) > 50000m\n           select kvp.Key;\n}",
                 "research-history": "var history = qb.History<QuiverGovernmentContract>(govContractsSymbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(govContractsSymbol))\n    {\n        var dataPoints = slice[govContractsSymbol];\n        foreach (var dataPoint in dataPoints)\n        {\n            Log($\"{govContractsSymbol} amount at {slice.Time}: {dataPoint.Amount}\");\n        }\n    }\n}"
             }
         },
         {
@@ -589,7 +548,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var lobbyDataBySymbol = new Dictionary<Symbol, List<QuiverLobbyingUniverse>>();\n    foreach (var datum in altCoarse.OfType<QuiverLobbyingUniverse>())\n    {\n        if (!lobbyDataBySymbol.ContainsKey(datum.Symbol))\n        {\n            lobbyDataBySymbol[datum.Symbol] = new List<QuiverLobbyingUniverse>();\n        }\n        lobbyDataBySymbol[datum.Symbol].Add(datum);\n    }\n    return from kvp in lobbyDataBySymbol\n           where kvp.Value.Sum(x => x.Amount) >= 100000m\n           select kvp.Key;\n}",
                 "research-history": "var history = qb.History<QuiverLobbyings>(lobbyingSymbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(lobbyingSymbol))\n    {\n        var dataPoints = slice[lobbyingSymbol];\n        foreach (var dataPoint in dataPoints)\n        {\n            Log($\"{lobbyingSymbol} amount at {slice.Time}: {dataPoint.Amount}\");\n        }\n    }\n}"
             }
         },
         {
@@ -605,7 +565,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var dollarVolumeBySymbol = new Dictionary<Symbol, decimal?>();\n    foreach (QuiverInsiderTradingUniverse data in altCoarse)\n    {\n        if (data.PricePerShare == 0m || data.PricePerShare == null) continue;\n        if (!dollarVolumeBySymbol.ContainsKey(data.Symbol))\n        {\n            dollarVolumeBySymbol[data.Symbol] = 0m;\n        }\n        dollarVolumeBySymbol[data.Symbol] += data.Shares * data.PricePerShare;\n    }\n    return dollarVolumeBySymbol.OrderByDescending(kvp => kvp.Value).Take(10).Select(kvp => kvp.Key);\n}",
                 "research-history": "var history = qb.History<QuiverInsiderTrading>(insiderTradingSymbol, 60, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(insiderSymbol))\n    {\n        var dataPoints = slice[insiderSymbol];\n        foreach (QuiverInsiderTrading dataPoint in dataPoints)\n        {\n            Log($\"{insiderSymbol} shares at {slice.Time}: {dataPoint.Shares}\");\n        }\n    }\n}"
             }
         },
         {
@@ -617,11 +578,8 @@
             "examples": {
                 "init": "var wikiPageViews = AddData<BrainWikipediaPageViews>(_equity.Symbol).Symbol;",
                 "history": "var history = History<BrainWikipediaPageViews>(wikiPageViews, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<BrainWikipediaPageViews>(wikiPageViewsSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(wikiPageViews))\n    {\n        var dataPoint = slice[wikiPageViews];\n        Log($\"{wikiPageViews} views at {slice.Time}: {dataPoint.NumberViews1}, {dataPoint.Buzz1}\");\n    }\n}"
             }
         },
         {
@@ -633,11 +591,8 @@
             "examples": {
                 "init": "var report8KSymbol = AddData<SECReport8K>(_equity.Symbol).Symbol;",
                 "history": "var history = History<SECReport8K>(report8KSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<SECReport8K>(report8KSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(report8KSymbol))\n    {\n        var dataPoint = slice[report8KSymbol];\n        Log($\"{report8KSymbol} report count at {slice.Time}: {dataPoint.Report.Documents.Count}\");\n    }\n}"
             }
         },
         {
@@ -649,11 +604,8 @@
             "examples": {
                 "init": "_peakToTrough = AddData<Fred>(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol;",
                 "history": "var history = History<Fred>(_peakToTrough, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<Fred>(peakToTroughSymbol, 365, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_peakToTrough))\n    {\n        var dataPoint = slice[_peakToTrough];\n        Log($\"{_peakToTrough} value at {slice.Time}: {dataPoint.Value}\");\n    }\n}"
             }
         },
         {
@@ -665,11 +617,8 @@
             "examples": {
                 "init": "_bitcoinChainSymbol = AddData<NasdaqDataLink>(\"QDL/BCHAIN\", Resolution.Daily).Symbol;",
                 "history": "var history = History<NasdaqDataLink>(_bitcoinChainSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var data = qb.Download(\"https://data.nasdaq.com/api/v3/datatables/QDL/BCHAIN.csv?\");",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.TryGetValue(_bitcoinChainSymbol, out var point))\n    {\n        Log($\"{_bitcoinChainSymbol} value at {slice.Time}: {point.Value}\");\n    }\n}"
             }
         },
         {
@@ -685,7 +634,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
                 "research-history": "var history = qb.History(crypto.Symbol, 30, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_crypto.Symbol))\n    {\n        var tradeBar = slice.Bars[_crypto.Symbol];\n        Log($\"{_crypto.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -697,11 +647,8 @@
             "examples": {
                 "init": "_cryptoFuture = AddCryptoFuture(\"BTCUSDT\", Resolution.Minute, Market.Bybit);",
                 "history": "var history = History(_cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_cryptoFuture.Symbol))\n    {\n        var tradeBar = slice.Bars[_cryptoFuture.Symbol];\n        Log($\"{_cryptoFuture.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -713,11 +660,8 @@
             "examples": {
                 "init": "_cryptoFuture = AddCryptoFuture(\"BTCUSDT\", Resolution.Minute, Market.Bybit);",
                 "history": "var history = History<MarginInterestRate>(_cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<MarginInterestRate>(cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.MarginInterestRates.ContainsKey(_cryptoFuture.Symbol))\n    {\n        var interestRate = slice.MarginInterestRates[_cryptoFuture.Symbol].InterestRate;\n        Log($\"{_cryptoFuture.Symbol} interest rate at {slice.Time}: {interestRate}\");\n    }\n}"
             }
         },
         {
@@ -729,11 +673,8 @@
             "examples": {
                 "init": "_fearGreedSymbol = AddData<FearGreedIndex>(\"FG\").Symbol;",
                 "history": "var history = History<FearGreedIndex>(_fearGreedSymbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<FearGreedIndex>(fearGreedSymbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_fearGreedSymbol))\n    {\n        var dataPoint = slice[_fearGreedSymbol];\n        Log($\"{_fearGreedSymbol} value at {slice.Time}: {dataPoint.Value}\");\n    }\n}"
             }
         },
         {
@@ -745,11 +686,8 @@
             "examples": {
                 "init": "_forex = AddForex(\"EURUSD\", Resolution.Minute);",
                 "history": "var history = History(_forex.Symbol, 100, Resolution.Minute);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(forex.Symbol, 100, Resolution.Minute);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.QuoteBars.ContainsKey(_forex.Symbol))\n    {\n        var quoteBar = slice.QuoteBars[_forex.Symbol];\n        Log($\"{_forex.Symbol} bid at {slice.Time}: {quoteBar.Bid.Close}\");\n    }\n}"
             }
         },
         {
@@ -761,11 +699,8 @@
             "examples": {
                 "init": "_cfd = AddCfd(\"DE30EUR\");",
                 "history": "var history = History(_cfd.Symbol, 100, Resolution.Minute);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(cfd.Symbol, 100, Resolution.Minute);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.QuoteBars.ContainsKey(_cfd.Symbol))\n    {\n        var quoteBar = slice.QuoteBars[_cfd.Symbol];\n        Log($\"{_cfd.Symbol} bid at {slice.Time}: {quoteBar.Bid.Close}\");\n    }\n}"
             }
         },
         {
@@ -781,7 +716,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
                 "research-history": "var history = qb.History(crypto.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_crypto.Symbol))\n    {\n        var tradeBar = slice.Bars[_crypto.Symbol];\n        Log($\"{_crypto.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -797,7 +733,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
                 "research-history": "var history = qb.History(symbol, 30, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_crypto.Symbol))\n    {\n        var tradeBar = slice.Bars[_crypto.Symbol];\n        Log($\"{_crypto.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -813,7 +750,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
                 "research-history": "var history = qb.History(crypto.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_crypto.Symbol))\n    {\n        var tradeBar = slice.Bars[_crypto.Symbol];\n        Log($\"{_crypto.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -829,7 +767,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
                 "research-history": "var history = qb.History(crypto.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_crypto.Symbol))\n    {\n        var tradeBar = slice.Bars[_crypto.Symbol];\n        Log($\"{_crypto.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -845,7 +784,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
                 "research-history": "var history = qb.History(_crypto.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_crypto.Symbol))\n    {\n        var tradeBar = slice.Bars[_crypto.Symbol];\n        Log($\"{_crypto.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -857,11 +797,8 @@
             "examples": {
                 "init": "_cryptoFuture = AddCryptoFuture(\"BTCBUSD\", Resolution.Minute);",
                 "history": "var history = History(_cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_cryptoFuture.Symbol))\n    {\n        var tradeBar = slice.Bars[_cryptoFuture.Symbol];\n        Log($\"{_cryptoFuture.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -873,11 +810,8 @@
             "examples": {
                 "init": "_cryptoFuture = AddCryptoFuture(\"BTCBUSD\", Resolution.Minute);",
                 "history": "var history = History<MarginInterestRate>(_cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<MarginInterestRate>(cryptoFuture.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.MarginInterestRates.ContainsKey(_cryptoFuture.Symbol))\n    {\n        var interestRate = slice.MarginInterestRates[_cryptoFuture.Symbol].InterestRate;\n        Log($\"{_cryptoFuture.Symbol} interest rate at {slice.Time}: {interestRate}\");\n    }\n}"
             }
         },
         {
@@ -887,13 +821,9 @@
             "reach": "1 Country: US",
             "url": "us-interest-rate",
             "examples": {
-                "init": "",
                 "history": "var historicalInterestRate = RiskFreeInterestRateModel.GetInterestRate(Time - TimeSpan.FromDays(30));",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var historicalInterestRate = qb.RiskFreeInterestRateModel.GetInterestRate(qb.Time - TimeSpan.FromDays(30));",
-                "research-universe-history": ""
+                "usage": "var interestRate = RiskFreeInterestRateModel.GetInterestRate(Time);"
             }
         },
         {
@@ -905,11 +835,8 @@
             "examples": {
                 "init": "_macroIndicator = AddData<EODHDMacroIndicators>(EODHD.MacroIndicators.UnitedStates.GdpCurrentUsd).Symbol;",
                 "history": "var history = History<EODHDMacroIndicators>(_macroIndicator, TimeSpan.FromDays(365));",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<EODHDMacroIndicators>(macroIndicator, TimeSpan.FromDays(365));",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_macroIndicator))\n    {\n        var dataPoint = slice[_macroIndicator];\n        Log($\"{dataPoint.Indicator} of {dataPoint.Country} at {dataPoint.Time}: {dataPoint.Value}\");\n    }\n}"
             }
         },
         {
@@ -925,7 +852,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> dividends)\n{\n    return from EODHDUpcomingDividends d in dividends\n           where d.DividendsDate <= Time.AddDays(1) && d.Dividends > 0.05m\n           select d.Symbol;\n}",
                 "research-history": "var history = qb.History<EODHDUpcomingDividends>(TimeSpan.FromDays(100), Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    var upcomingDividends = slice.Get<EODHDUpcomingDividends>();\n    if (upcomingDividends.TryGetValue(_upcomingDividends, out var dataPoint))\n    {\n        Log($\"{_upcomingDividends} dividend at {dataPoint.DividendDate} per share ${dataPoint.Dividend}\");\n    }\n}"
             }
         },
         {
@@ -937,11 +865,8 @@
             "examples": {
                 "init": "_usEnergy = AddData<USEnergy>(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;",
                 "history": "var history = History<USEnergy>(_usEnergy, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<USEnergy>(usEnergy, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_usEnergy))\n    {\n        var dataPoint = slice[_usEnergy];\n        Log($\"{_usEnergy} value at {slice.Time}: {dataPoint.Value}\");\n    }\n}"
             }
         },
         {
@@ -953,11 +878,8 @@
             "examples": {
                 "init": "_yieldCurve = AddData<USTreasuryYieldCurveRate>(\"USTYCR\").Symbol;",
                 "history": "var history = History<USTreasuryYieldCurveRate>(_yieldCurve, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<USTreasuryYieldCurveRate>(yieldCurve, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_yieldCurve))\n    {\n        var dataPoint = slice[_yieldCurve];\n        Log($\"{_yieldCurve} one month at {slice.Time}: {dataPoint.OneMonth}\");\n    }\n}"
             }
         },
         {
@@ -969,11 +891,8 @@
             "examples": {
                 "init": "_vixContango = AddData<VIXCentralContango>(\"VX\", Resolution.Daily).Symbol;",
                 "history": "var history = History<VIXCentralContango>(_vixContango, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<VIXCentralContango>(vixContango, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_vixContango))\n    {\n        var dataPoint = slice[_vixContango];\n        Log($\"{_vixContango} front month at {slice.Time}: {dataPoint.FrontMonth}\");\n    }\n}"
             }
         },
         {
@@ -985,11 +904,8 @@
             "examples": {
                 "init": "_index = AddIndex(\"VIX\");",
                 "history": "var history = History(_index.Symbol, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History(index.Symbol, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.Bars.ContainsKey(_index.Symbol))\n    {\n        var tradeBar = slice.Bars[_index.Symbol];\n        Log($\"{_index.Symbol} price at {slice.Time}: {tradeBar.Close}\");\n    }\n}"
             }
         },
         {
@@ -1001,11 +917,8 @@
             "examples": {
                 "init": "var bitcoinMetadata = AddData<BitcoinMetadata>(_btcusd.Symbol).Symbol;",
                 "history": "var history = History<BlockchainBitcoinData>(bitcoinMetadata, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<BlockchainBitcoinData>(bitcoinMetadata, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(bitcoinMetadata))\n    {\n        var dataPoint = slice[bitcoinMetadata];\n        Log($\"{bitcoinMetadata} miner revenue at {slice.Time}: {dataPoint.MinersRevenue}\");\n    }\n}"
             }
         },
         {
@@ -1021,7 +934,8 @@
                 "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
                 "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> data)\n{\n    foreach (var datum in data.OfType<CoinGecko>())\n    {\n        Debug($\"{datum.Coin},{datum.MarketCap},{datum.Price}\");\n    }\n    return data\n        .Select(c => c as CoinGecko)\n        // Select the coins that the brokerage supports and have a quote currency that\n        // matches our account currency.\n        .Where(c => _marketPairs.Contains(c.Coin + AccountCurrency))\n        // Select the 10 largest coins.\n        .OrderByDescending(c => c.MarketCap)\n        .Take(10)\n        // Create the Symbol objects of the selected coins.\n        .Select(c => c.CreateSymbol(_market, AccountCurrency));\n}",
                 "research-history": "var history = qb.History<CoinGecko>(coinGecko, 100, Resolution.Daily);",
-                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_coinGecko))\n    {\n        var dataPoint = slice[_coinGecko];\n        Log($\"{_coinGecko} market cap at {slice.Time}: {dataPoint.MarketCap}\");\n    }\n}"
             }
         },
         {
@@ -1033,11 +947,8 @@
             "examples": {
                 "init": "_usdaApples = AddData<USDAFruitAndVegetables>(USDAFruitAndVegetable.Symbols.Apples, Resolution.Daily).Symbol;",
                 "history": "var history = History<USDAFruitAndVegetables>(_usdaApples, new DateTime(2013, 1, 1), Time, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<USDAFruitAndVegetables>(usdaApples, new DateTime(2013, 1, 1), qb.Time, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_usdaApples))\n    {\n        var collection = slice[_usdaApples];\n        foreach (USDAFruitAndVegetable data in collection.Data)\n        {\n            Log($\"{_usdaApples} [{data.Form}]: ${data.PricePerCupEquivalent}\");\n        }\n    }\n}"
             }
         },
         {
@@ -1049,11 +960,8 @@
             "examples": {
                 "init": "_cpi = AddData<BLSEconomicSurveysCpi>(\"CPI\").Symbol;",
                 "history": "var history = History<BLSEconomicSurveysCpi>(_cpi, 100, Resolution.Daily);",
-                "universe-init": "",
-                "universe-history": "",
-                "universe-filter": "",
                 "research-history": "var history = qb.History<BLSEconomicSurveysCpi>(cpi, 100, Resolution.Daily);",
-                "research-universe-history": ""
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_cpi))\n    {\n        var cpi = slice.Get<BLSEconomicSurveysCpi>(_cpi);\n        Log($\"{_cpi} all items at {slice.Time}: {cpi.AllItems}\");\n    }\n}"
             }
         }
     ]
