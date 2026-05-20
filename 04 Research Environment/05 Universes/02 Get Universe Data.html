@@ -108,7 +108,7 @@ for date, fundamentals in universe_history.items():
     <div class="csharp section-example-container">
         <pre class="csharp">using QuantConnect;
 using QuantConnect.Research;
-using QuantConnect.Data.Fundamental;</pre>
+using QuantConnect.Data.UniverseSelection;</pre>
     </div>
     
     <li>Create a <code>QuantBook</code>.</li>
@@ -124,14 +124,14 @@ using QuantConnect.Data.Fundamental;</pre>
         To create the universe, call the <code class="csharp">Universe.ETF</code><code class="python">universe.etf</code> method with the ETF ticker and the selection function, then pass the result to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method.
     </p>
     <div class="section-example-container">
-    <pre class="csharp">var universe = qb.AddUniverse(fundamentals =&gt;
-{
-    return fundamentals
-        .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
-        .OrderBy(f =&gt; f.ValuationRatios.PERatio)
-        .Take(10)
-        .Select(f =&gt; f.Symbol);
-});</pre>
+    <pre class="csharp">var universe = qb.AddUniverse(
+    qb.Universe.ETF("SPY", universeFilterFunc: constituents => constituents
+        .Where(c => c.Weight != 0m)
+        .OrderBy(c => c.Weight)
+        .TakeLast(3)
+        .Select(c => c.Symbol)
+    )
+);</pre>
     <pre class="python">def select_assets(constituents: List[ETFConstituentUniverse]) -> List[Symbol]:
     sorted_by_weight = sorted([c for c in constituents if c.weight], key=lambda c: c.weight)
     return [c.symbol for c in sorted_by_weight[-3:]]
@@ -141,8 +141,8 @@ universe = qb.add_universe(qb.universe.etf('SPY', universe_filter_func=select_as
 
     <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>universe_history</code> method with the universe, a start date, and an end date.</li>
     <div class="section-example-container">
-        <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
-        <pre class="python">universe_history = qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
+        <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2025, 11, 6), new DateTime(2025, 11, 11));</pre>
+        <pre class="python">universe_history = qb.universe_history(universe, datetime(2025, 11, 6), datetime(2025, 11, 11))</pre>
     </div>
 
     <p>The end date arguments is optional. If you omit it, the method returns <code>ETFConstituentUniverse</code> data between the start date and the current day.</p>
@@ -163,7 +163,7 @@ Name: data, dtype: object</pre>
 
     <p class='python'>To get a flat DataFrame instead of a Series, set the <code>flatten</code> argument to <code>True</code>.</p>
     <div class="python section-example-container">
-        <pre class="python">qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13), flatten=True)</pre>
+        <pre class="python">qb.universe_history(universe, datetime(2025, 11, 6), datetime(2025, 11, 11), flatten=True)</pre>
     </div>
 
     <div class='python dataframe-wrapper'>
@@ -267,17 +267,12 @@ Name: data, dtype: object</pre>
     for constituent in constituents:
         symbol = constituent.symbol
         weight = constituent.weight</pre>
-    <pre class="csharp">foreach (var fundamentals in universeHistory)
+    <pre class="csharp">foreach (var constituents in universeHistory)
 {
-    foreach (Fundamental fundamental in fundamentals)
+    foreach (ETFConstituentUniverse constituent in constituents)
     {
-        var date = fundamental.Time;
-        var symbol = fundamental.Symbol;
-        var price = fundamental.Price;
-        if (fundamental.HasFundamentalData)
-        {
-            var peRatio = fundamental.ValuationRatios.PERatio;
-        }
+        var symbol = constituent.Symbol;
+        var weight = constituent.Weight;
     }
 }</pre>
     </div>
