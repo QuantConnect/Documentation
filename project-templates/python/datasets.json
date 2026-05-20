@@ -311,12 +311,12 @@
             "reach": "27,500 US Equities",
             "url": "eodhd-upcoming-earnings",
             "examples": {
-                "init": "self._dataset_symbol = self.add_data(EODHDUpcomingEarnings, 'earnings').symbol",
-                "history": "history = self.history[EODHDUpcomingEarnings](timedelta(100), Resolution.DAILY)",
+                "init": "self._upcoming_earnings = self.add_data(EODHDUpcomingEarnings, 'earnings').symbol",
+                "history": "history = self.history[EODHDUpcomingEarnings](self._upcoming_earnings, timedelta(100))",
                 "universe-init": "self._universe = self.add_universe(EODHDUpcomingEarnings, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, earnings: List[EODHDUpcomingEarnings]) -> List[Symbol]:\n    return [d.symbol for d in earnings if d.report_date <= self.time + timedelta(3) and d.estimate > 0]",
-                "research-history": "",
+                "research-history": "history = qb.history(upcoming_earnings, timedelta(100))",
                 "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
             }
         },
@@ -327,12 +327,12 @@
             "reach": "US Equities",
             "url": "eodhd-upcoming-ipos",
             "examples": {
-                "init": "self.dataset_symbol = self.add_data(EODHDUpcomingIPOs, 'ipos').symbol",
-                "history": "history_bars = self.history[EODHDUpcomingIPOs](timedelta(100), Resolution.DAILY)",
+                "init": "self._upcoming_ipos = self.add_data(EODHDUpcomingIPOs, 'ipos').symbol",
+                "history": "history_bars = self.history[EODHDUpcomingIPOs](self._upcoming_ipos, timedelta(100))",
                 "universe-init": "self._universe = self.add_universe(EODHDUpcomingIPOs, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, ipos: List[EODHDUpcomingIPOs]) -> List[Symbol]:\n    # confirmed non-penny stock IPO that launches within 7 days.\n    return [d.symbol for d in ipos if d.deal_type in [DealType.EXPECTED, DealType.PRICED] and d.ipo_date and min(x for x in [d.lowest_price, d.highest_price, d.offer_price] if x) > 1]",
-                "research-history": "",
+                "research-history": "history = qb.history(upcoming_ipos, timedelta(100))",
                 "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
             }
         },
@@ -343,12 +343,12 @@
             "reach": "27,500 US Equities",
             "url": "eodhd-upcoming-splits",
             "examples": {
-                "init": "self.dataset_symbol = self.add_data(EODHDUpcomingSplits, 'splits').symbol",
-                "history": "history = self.history[EODHDUpcomingSplits](timedelta(100), Resolution.DAILY)",
+                "init": "self._upcoming_splits = self.add_data(EODHDUpcomingSplits, 'splits').symbol",
+                "history": "history = self.history[EODHDUpcomingSplits](self._upcoming_splits, timedelta(100))",
                 "universe-init": "self._universe = self.add_universe(EODHDUpcomingSplits, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, splits: List[EODHDUpcomingSplits]) -> List[Symbol]:\n    return [d.symbol for d in splits if d.split_date <= self.time + timedelta(3) and d.split_factor > 1]",
-                "research-history": "",
+                "research-history": "history = qb.history(upcoming_splits, timedelta(100))",
                 "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
             }
         },
@@ -359,12 +359,12 @@
             "reach": "115 Countries",
             "url": "eodhd-economic-events",
             "examples": {
-                "init": "self.dataset_symbol = self.add_data(EODHDEconomicEvents, ticker).symbol",
-                "history": "history_bars = self.history[EODHDEconomicEvents](self.dataset_symbol, 100, Resolution.DAILY)",
+                "init": "self._economic_events = self.add_data(EODHDEconomicEvents, ticker).symbol",
+                "history": "history = self.history[EODHDEconomicEvents](self._economic_events, 100, Resolution.DAILY)",
                 "universe-init": "",
                 "universe-history": "",
                 "universe-filter": "",
-                "research-history": "",
+                "research-history": "self.history(EODHDEconomicEvents, economic_events, 100, Resolution.DAILY)",
                 "research-universe-history": ""
             }
         },
@@ -903,12 +903,12 @@
             "reach": "39 Indicators, 249 Countries/Regions",
             "url": "eodhd-macro-indicators",
             "examples": {
-                "init": "self.dataset_symbol = self.add_data(EODHDMacroIndicators, EODHD.MacroIndicators.UnitedStates.GDP_CURRENT_USD).symbol",
-                "history": "history_bars = self.history[EODHDMacroIndicators](self.dataset_symbol, 100)",
+                "init": "self._macro_indicator = self.add_data(EODHDMacroIndicators, EODHD.MacroIndicators.UnitedStates.GDP_CURRENT_USD).symbol",
+                "history": "history = self.history[EODHDMacroIndicators](self._macro_indicator, timedelta(365)))",
                 "universe-init": "",
                 "universe-history": "",
                 "universe-filter": "",
-                "research-history": "",
+                "research-history": "history = qb.history(macro_indicator, timedelta(365), flatten=True)",
                 "research-universe-history": ""
             }
         },
@@ -920,11 +920,11 @@
             "url": "eodhd-upcoming-dividends",
             "examples": {
                 "init": "self._upcoming_dividends = self.add_data(EODHDUpcomingDividends, 'dividends').symbol",
-                "history": "history = self.history[EODHDUpcomingDividends](timedelta(100), Resolution.DAILY)",
+                "history": "history = self.history[EODHDUpcomingDividends](timedelta(100))",
                 "universe-init": "self._universe = self.add_universe(EODHDUpcomingDividends, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, dividends: List[EODHDUpcomingDividends]) -> List[Symbol]:\n    return [d.symbol for d in dividends if d.dividend_date <= self.time + timedelta(1) and d.dividend > 0.05]",
-                "research-history": "",
+                "research-history": "qb.history(upcoming_dividends, timedelta(100))",
                 "research-universe-history": "history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
             }
         },
