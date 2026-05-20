@@ -1,0 +1,1060 @@
+{
+    "list": [
+        {
+            "name": "US Equity Security Master",
+            "shortDescription": "Corporate action data source for splits, dividends, mergers, acquisitions, IPOs, and delistings.",
+            "history": "January 1998",
+            "reach": "27,500 US Equities",
+            "url": "quantconnect-us-equity-security-master",
+            "examples": {
+                "init": "_equity = AddEquity(\"AAPL\", Resolution.Daily);",
+                "history": "var splitHistory = History<Split>(_equity.Symbol, TimeSpan.FromDays(5*365));",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var splitHistory = qb.History<Split>(equity.Symbol, TimeSpan.FromDays(5*365));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Futures Security Master",
+            "shortDescription": "Rolling reference data for popular CME Futures contracts.",
+            "history": "May 2009",
+            "reach": "157 Future Contracts",
+            "url": "quantconnect-us-futures-security-master",
+            "examples": {
+                "init": "var future = AddFuture(Futures.Indices.SP500EMini, dataMappingMode: DataMappingMode.OpenInterest, dataNormalizationMode: DataNormalizationMode.BackwardsRatio, contractDepthOffset: 0);",
+                "history": "var history = History<SymbolChangedEvent>(future.Symbol, TimeSpan.FromDays(365));",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<SymbolChangedEvent>(future.Symbol, new DateTime(2023, 1, 1), new DateTime(2025, 1, 1));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Equity Coarse Universe",
+            "shortDescription": "Universe of all US Equities with closing price and volume for Coarse Universe Selection.",
+            "history": "January 1998",
+            "reach": "30,000 US Equities",
+            "url": "quantconnect-us-coarse-universe-constituents",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "_universe = AddUniverse(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "public IEnumerable<Symbol> SelectAssets(IEnumerable<Fundamental> fundamental)\n{\n    var sortedByDollarVolume = fundamental.OrderByDescending(x => x.DollarVolume).Take(3).ToList();\n    foreach (var cf in sortedByDollarVolume)\n    {\n        Debug($\"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}\");\n    }\n    return sortedByDollarVolume.Select(x => x.Symbol);\n}",
+                "research-history": "",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "US ETF Constituents",
+            "shortDescription": "Equity constituent components and weightings for US ETF listings. This data is ideal for universe selection without selection bias.",
+            "history": "June 2009",
+            "reach": "2,650 US ETF Listings",
+            "url": "quantconnect-us-etf-constituents",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "_universe = AddUniverse(Universe.ETF(\"SPY\", UniverseSettings, SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "public IEnumerable<Symbol> SelectAssets(IEnumerable<ETFConstituentUniverse> constituents)\n{\n    foreach (var c in constituents)\n    {\n        Debug($\"{c.EndTime} :: {c.LastUpdate} :: {c.Weight} :: {c.SharesHeld} :: {c.MarketValue}\");\n    }\n    return constituents.Select(c => c.Symbol);\n}",
+                "research-history": "",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "International Future Universe",
+            "shortDescription": "FESX, HSI, and NKD Futures universe for fast future contract selection with prices, expiration dates and open interests",
+            "history": "July 1998",
+            "reach": "4 contracts",
+            "url": "quantconnect-international-future-universe",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "_future = AddFuture(Futures.Indices.HangSeng);",
+                "universe-history": "var history = History<FutureUniverse>(_future.Symbol, 5);",
+                "universe-filter": "_future.SetFilter(0, 90);",
+                "research-history": "",
+                "research-universe-history": "var history = qb.History<FutureUniverse>(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));"
+            }
+        },
+        {
+            "name": "US Future Option Universe",
+            "shortDescription": "Future Options universe for fast option contract selection.",
+            "history": "January 2012",
+            "reach": "15 Monthly Future Contracts",
+            "url": "quantconnect-us-future-option-universe",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "AddFutureOption(_future.Symbol, OptionFilter);",
+                "universe-history": "var history = History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped), TimeSpan.FromDays(10));",
+                "universe-filter": "private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)\n{\n    // Contracts can be filtered by strike, and expiration\n    return universe.Strikes(-1, 1);\n}",
+                "research-history": "",
+                "research-universe-history": "var history = qb.History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(future.Mapped), new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));"
+            }
+        },
+        {
+            "name": "US Future Universe",
+            "shortDescription": " Futures universe for fast future contract selection with prices, expiration dates and open interests",
+            "history": "May 2009",
+            "reach": "157 Most Liquid Futures",
+            "url": "quantconnect-us-future-universe",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "_future = AddFuture(Futures.Metals.Gold);",
+                "universe-history": "var history = History<FutureUniverse>(_future.Symbol, 5);",
+                "universe-filter": "_future.SetFilter((universe) => universe.StandardsOnly().FrontMonth());",
+                "research-history": "",
+                "research-universe-history": "var history = qb.History<FutureUniverse>(future.Symbol, new DateTime(2025, 1, 1), new DateTime(2025, 4, 1));"
+            }
+        },
+        {
+            "name": "US Equity Option Universe",
+            "shortDescription": "Precalculated daily greeks for fast option-contract selection.",
+            "history": "January 2012",
+            "reach": "4,000 Equity Options",
+            "url": "quantconnect-us-equity-option-universe",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "var option = AddOption(\"GOOG\");\n_optionSymbol = option.Symbol;",
+                "universe-history": "var history = History<OptionUniverse>(_optionSymbol, TimeSpan.FromDays(3));",
+                "universe-filter": "private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)\n{\n    // Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe\n        .Delta(0.5m, 1.5m)\n        .Gamma(0.0001m, 0.0006m)\n        .Vega(0.01m, 1.5m)\n        .Theta(-2.0m, -0.5m)\n        .Rho(0.5m, 3.0m)\n        .ImpliedVolatility(1.0m, 3.0m)\n        .OpenInterest(100, 500);\n}",
+                "research-history": "",
+                "research-universe-history": "var history = qb.History<OptionUniverse>(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));"
+            }
+        },
+        {
+            "name": "US Index Option Universe",
+            "shortDescription": "Precalculated Daily Greeks for Fast Option Selection",
+            "history": "January 2012",
+            "reach": "7 Index Options",
+            "url": "quantconnect-us-index-option-universe",
+            "examples": {
+                "init": "",
+                "history": "",
+                "universe-init": "var standardOption = AddIndexOption(_indexSymbol);\n_standardOptionSymbol = standardOption.Symbol;",
+                "universe-history": "var history = History<OptionUniverse>(_standardOptionSymbol, TimeSpan.FromDays(3));",
+                "universe-filter": "private OptionFilterUniverse OptionFilter(OptionFilterUniverse universe)\n{\n    // Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe\n        .Delta(0.5m, 1.5m)\n        .Gamma(0.0001m, 0.0006m)\n        .Vega(0.01m, 1.5m)\n        .Theta(-2.0m, -0.5m)\n        .Rho(0.5m, 3.0m)\n        .ImpliedVolatility(1.0m, 3.0m)\n        .OpenInterest(100, 500);\n}",
+                "research-history": "",
+                "research-universe-history": "var history = qb.History<OptionUniverse>(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 6));"
+            }
+        },
+        {
+            "name": "US Equities Short Availability",
+            "shortDescription": "Available shares for open short positions in the US Equity market.",
+            "history": "January 2018",
+            "reach": "10,500 US Equities",
+            "url": "us-equities-short-availability",
+            "examples": {
+                "init": "_equity.SetShortableProvider(new InteractiveBrokersShortableProvider());",
+                "history": "var shortableQuantity = _equity.ShortableProvider.ShortableQuantity(_equity.Symbol, Time - TimeSpan.FromDays(1));",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var shortableQuantity = equity.ShortableProvider.ShortableQuantity(equity.Symbol, qb.Time - TimeSpan.FromDays(1));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Fundamental Data",
+            "shortDescription": "Corporate Fundamental data for fine universe selection based on industry classification and underlying company performance indicators.",
+            "history": "January 1998",
+            "reach": "8,000 US Equities",
+            "url": "morning-star-us-fundamentals",
+            "examples": {
+                "init": "_equity = AddEquity(\"IBM\");",
+                "history": "var fundamentalHistory = History<Fundamental>(_equity.Symbol, TimeSpan.FromDays(30));",
+                "universe-init": "_universe = AddUniverse(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "public IEnumerable<Symbol> SelectAssets(IEnumerable<Fundamental> fundamental)\n{\n    return fundamental.Where(f => f.Price > 10 && f.ValuationRatios.PERatio > 30).Select(f => f.Symbol);\n}",
+                "research-history": "var history = qb.GetFundamental(equity.Symbol, \"ValuationRatios.PERatio\", new DateTime(2021, 1, 1), new DateTime(2021, 7, 1));",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "US Equities",
+            "shortDescription": "Market data for all US listed and delisted Equities, ETFs, ETNs, ADRs, and Warrants.",
+            "history": "January 1998",
+            "reach": "27,500 US Equities",
+            "url": "algoseek-us-equities",
+            "examples": {
+                "init": "_equity = AddEquity(\"AAPL\", Resolution.Minute);",
+                "history": "var history = History(_equity.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(equity.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Equity Options",
+            "shortDescription": "Trade and quote data for US Equity Options contracts.",
+            "history": "January 2012",
+            "reach": "4,000 Equity Options",
+            "url": "algoseek-us-equity-options",
+            "examples": {
+                "init": "var optionContract = AddOptionContract(contract.Symbol);",
+                "history": "var history = History(optionContract.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(optionContract.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Futures",
+            "shortDescription": "Trade and quote data for the most liquid US Futures across the CME, CBOT, NYMEX, and COMEX markets.",
+            "history": "May 2009",
+            "reach": "157 Most Liquid Futures",
+            "url": "algoseek-us-futures",
+            "examples": {
+                "init": "var futureContract = AddFutureContract(contract.Symbol);",
+                "history": "var history = History(futureContract.Symbol, 100, Resolution.Minute);",
+                "universe-init": "var future = AddFuture(Futures.Metals.Gold);",
+                "universe-history": "var history = History(new[] { _futureSymbol }, start: Time - TimeSpan.FromDays(15), end: Time, resolution: Resolution.Minute, fillForward: false, extendedMarketHours: false, dataMappingMode: DataMappingMode.OpenInterest, dataNormalizationMode: DataNormalizationMode.Raw, contractDepthOffset: 0);",
+                "universe-filter": "future.SetFilter(0, 90);",
+                "research-history": "var history = qb.History(futureContract.Symbol, 100, Resolution.Minute);",
+                "research-universe-history": "var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));"
+            }
+        },
+        {
+            "name": "US Future Options",
+            "shortDescription": "Future Options data for the most liquid US CME Future commodity contracts.",
+            "history": "January 2012",
+            "reach": "15 Monthly Future Contracts",
+            "url": "algoseek-us-future-options",
+            "examples": {
+                "init": "var option = AddFutureOptionContract(contract.Symbol);",
+                "history": "var history = History(option.Symbol, 100, Resolution.Minute);",
+                "universe-init": "AddFutureOption(future.Symbol, universe => universe.Strikes(-5, +5));",
+                "universe-history": "var history = History<OptionUniverse>(QuantConnect.Symbol.CreateCanonicalOption(_future.Mapped), TimeSpan.FromDays(10));",
+                "universe-filter": "universe => universe.Strikes(-5, +5)",
+                "research-history": "var history = qb.History(option.Symbol, 100, Resolution.Minute);",
+                "research-universe-history": "var history = qb.OptionHistory(futureContractSymbol, startDate, futureContractSymbol.ID.Date, Resolution.Hour);"
+            }
+        },
+        {
+            "name": "US Index Options",
+            "shortDescription": "European Option contract data for 3 US Indices: SPX, VIX, and NDX.",
+            "history": "January 2012",
+            "reach": "7 Index Options",
+            "url": "algoseek-us-index-options",
+            "examples": {
+                "init": "var indexOption = AddIndexOptionContract(contract.Symbol);",
+                "history": "var history = History(indexOption.Symbol, 100, Resolution.Minute);",
+                "universe-init": "var option = AddIndexOption(\"VIX\");",
+                "universe-history": "var history = History<OptionUniverse>(_optionSymbol, 5);",
+                "universe-filter": "option.SetFilter(-2, 2, 0, 90);",
+                "research-history": "var history = qb.History(contract.Symbol, 100, Resolution.Minute);",
+                "research-universe-history": "var history = qb.OptionHistory(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));"
+            }
+        },
+        {
+            "name": "International Futures",
+            "shortDescription": "Trade and quote data for FESX, HSI, and NKD Future Contracts.",
+            "history": "July 1998",
+            "reach": "4 Contracts",
+            "url": "tickdata-international-futures",
+            "examples": {
+                "init": "var futureContract = AddFutureContract(contract.Symbol);",
+                "history": "var history = History(futureContract.Symbol, TimeSpan.FromDays(10));",
+                "universe-init": "_future = AddFuture(Futures.Indices.HangSeng);",
+                "universe-history": "var history = History(new[] { _future.Symbol }, start: Time - TimeSpan.FromDays(15), end: Time, resolution: Resolution.Minute, fillForward: false, extendedMarketHours: false, dataMappingMode: DataMappingMode.OpenInterest, dataNormalizationMode: DataNormalizationMode.Raw, contractDepthOffset: 0);",
+                "universe-filter": "_future.SetFilter(0, 90);",
+                "research-history": "var history = qb.History(futureContract.Symbol, TimeSpan.FromDays(10));",
+                "research-universe-history": "var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));"
+            }
+        },
+        {
+            "name": "Benzinga News Feed",
+            "shortDescription": "Financial articles and news publications condensed into a news feed with titles and article bodies for sentiment analysis",
+            "history": "1st January 2016",
+            "reach": "1,250 Posts/Day, 8,000 Stocks",
+            "url": "benzinga-news-feed",
+            "examples": {
+                "init": "var benzingaSymbol = AddData<BenzingaNews>(_equity.Symbol).Symbol;",
+                "history": "var history = History<BenzingaNews>(benzingaSymbol, 10, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<BenzingaNews>(benzingaSymbol, TimeSpan.FromDays(10));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Tiingo News Feed",
+            "shortDescription": "News releases from 120 different news providers for sentiment analysis.",
+            "history": "January 2014",
+            "reach": "10,000 US Equities",
+            "url": "tiingo-news-feed",
+            "examples": {
+                "init": "var tiingoSymbol = AddData<TiingoNews>(_equity.Symbol).Symbol;",
+                "history": "var history = History<TiingoNews>(tiingoSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<TiingoNews>(tiingoSymbol, TimeSpan.FromDays(10));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Upcoming Earnings",
+            "shortDescription": "Alert for upcoming earnings report of US Equities with report date, report time, and earnings estimation.",
+            "history": "January 1998",
+            "reach": "27,500 US Equities",
+            "url": "eodhd-upcoming-earnings",
+            "examples": {
+                "init": "_upcomingEarnings = AddData<EODHDUpcomingEarnings>(\"earnings\").Symbol;",
+                "history": "var history = History<EODHDUpcomingEarnings>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<EODHDUpcomingEarnings>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<EODHDUpcomingEarnings> earnings)\n{\n    return from d in earnings\n           where d.ReportDate <= Time.AddDays(3) && d.Estimate > 0m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<EODHDUpcomingEarnings>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Upcoming IPOs",
+            "shortDescription": "Alert for upcoming IPO events of primary US Equities with IPO start/filing/amended date, IPO deal type. IPO prices, and number of shares.",
+            "history": "February 2013",
+            "reach": "US Equities",
+            "url": "eodhd-upcoming-ipos",
+            "examples": {
+                "init": "_upcomingIpos = AddData<EODHDUpcomingIPOs>(\"ipos\").Symbol;",
+                "history": "var history = History<EODHDUpcomingIPOs>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<EODHDUpcomingIPOs>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private static readonly List<DealType> _dealTypesWanted = new() { DealType.Expected, DealType.Priced };\n\nprivate IEnumerable<Symbol> SelectAssets(IEnumerable<EODHDUpcomingIPOs> ipos)\n{\n    // confirmed non-penny stock IPO that launches within 7 days.\n    return from d in ipos\n           where _dealTypesWanted.Contains(d.DealType)\n                && d.IpoDate.HasValue\n                && new[] { d.LowestPrice, d.HighestPrice, d.OfferPrice }.Where(x => x.HasValue).Min().Value > 1m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<EODHDUpcomingIPOs>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Upcoming Splits",
+            "shortDescription": "Alert for upcoming split and reverse split events of primary US Equities common shares with split date, and split factor.",
+            "history": "January 2010",
+            "reach": "27,500 US Equities",
+            "url": "eodhd-upcoming-splits",
+            "examples": {
+                "init": "_upcomingSplits = AddData<EODHDUpcomingSplits>(\"splits\").Symbol;",
+                "history": "var history = History<EODHDUpcomingSplits>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<EODHDUpcomingSplits>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<EODHDUpcomingSplits> splits)\n{\n    return from d in splits\n           where d.SplitDate <= Time.AddDays(3) && d.SplitFactor > 1m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<EODHDUpcomingSplits>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Economic Events",
+            "shortDescription": "Alert for upcoming economic events globally, including the date and estimates of macroeconomic indicator annoucement, special dates, etc.",
+            "history": "January 2019",
+            "reach": "115 Countries",
+            "url": "eodhd-economic-events",
+            "examples": {
+                "init": "_economicEvents = AddData<EODHDEconomicEvents>(ticker).Symbol;",
+                "history": "var history = History<EODHDEconomicEvents>(_economicEvents, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<EODHDEconomicEvents>(economicEvents, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Congress Trading",
+            "shortDescription": "Trading activity of Congresspeople for potential insider trading signals based on early access to regulation changes.",
+            "history": "January 2016",
+            "reach": "1,800 US Equities",
+            "url": "quiver-quantitative-congress-trading",
+            "examples": {
+                "init": "var congressSymbol = AddData<QuiverCongress>(_equity.Symbol).Symbol;",
+                "history": "var history = History<QuiverCongress>(congressSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<QuiverQuantCongresssUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<QuiverCongressDataPoint>()\n           where d.Amount > 200000m && d.Transaction == OrderDirection.Buy\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<QuiverCongress>(congressSymbol, 60, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Corporate Buybacks",
+            "shortDescription": "US Equity buyback announcements and transactions scraped from SEC reports and secondary sources.",
+            "history": "May 2015",
+            "reach": "3,000 US Equities",
+            "url": "smart-insider-corporate-buybacks",
+            "examples": {
+                "init": "var insiderIntention = AddData<SmartInsiderIntention>(_equity.Symbol).Symbol;",
+                "history": "var history = History<SmartInsiderIntention>(insiderIntention, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<SmartInsiderIntentionUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<SmartInsiderIntentionUniverse>()\n           where d.Percentage > 0.005m && d.USDMarketCap > 100000000m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<SmartInsiderIntention>(insiderIntentionSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "US Regulatory Alerts - Financial Sector",
+            "shortDescription": "RegAlytics is the leading provider of daily regulatory updates. They source data from over 5,000 regulators. ",
+            "history": "January 2020",
+            "reach": "400,000 Alerts",
+            "url": "regalytics-us-regulatory-alerts",
+            "examples": {
+                "init": "_regalyticsSymbol = AddData<RegalyticsRegulatoryArticles>(\"REG\").Symbol;",
+                "history": "var history = History<RegalyticsRegulatoryArticles>(_regalyticsSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<RegalyticsRegulatoryArticles>(regalyticsSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Brain Sentiment Indicator",
+            "shortDescription": "Proprietary sentiment analysis algorithm for US Equities.",
+            "history": "August 2016",
+            "reach": "4,500 US Equities",
+            "url": "brain-sentiment-indicator",
+            "examples": {
+                "init": "var brainSentimentSymbol = AddData<BrainSentimentIndicator7Day>(_equity.Symbol).Symbol;",
+                "history": "var history = History<BrainSentimentIndicator7Day>(brainSentimentSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<BrainSentimentIndicatorUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<BrainSentimentIndicatorUniverse>()\n           where d.TotalArticleMentions7Days > 0m && d.Sentiment7Days > 0m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<BrainSentimentIndicator30Day>(equity.Symbol, 30, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);"
+            }
+        },
+        {
+            "name": "Brain ML Stock Ranking",
+            "shortDescription": "Proprietary machine learning ranking algorithm for US Equities.",
+            "history": "January 2010",
+            "reach": "1,000 US Equities",
+            "url": "brain-ml-stock-ranking",
+            "examples": {
+                "init": "var brainStockRanking = AddData<BrainStockRanking2Day>(_equity.Symbol).Symbol;",
+                "history": "var history = History<BrainStockRanking2Day>(brainStockRanking, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<BrainStockRankingUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<BrainStockRankingUniverse>()\n           where d.Rank2Days > 0m && d.Rank3Days > 0m && d.Rank5Days > 0m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<BrainStockRanking2Day>(equity.Symbol, 30, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);"
+            }
+        },
+        {
+            "name": "Brain Language Metrics on Company Filings",
+            "shortDescription": "Proprietary NLP algorithm that monitors several language metrics on company reports.",
+            "history": "January 2010",
+            "reach": "3,000 US Equities",
+            "url": "brain-language-metrics-company-filings",
+            "examples": {
+                "init": "var filingMetrics = AddData<BrainCompanyFilingLanguageMetrics10K>(_equity.Symbol).Symbol;",
+                "history": "var history = History<BrainCompanyFilingLanguageMetrics10K>(filingMetrics, 365, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<BrainCompanyFilingLanguageMetricsUniverseAll>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<BrainCompanyFilingLanguageMetricsUniverseAll>()\n           where d.ReportSentiment.Sentiment > 0m &&\n                 d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment > 0m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<BrainCompanyFilingLanguageMetrics10K>(equity.Symbol, 365, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Estimize",
+            "shortDescription": "Estimates of company financials including EPS, revenues, and macroeconomic indicators based on 100,000+ crowdsourced predictions.",
+            "history": "January 2011",
+            "reach": "2,800 US Equities",
+            "url": "extractalpha-estimize",
+            "examples": {
+                "init": "var estimizeConsensusSymbol = AddData<EstimizeConsensus>(_equity.Symbol).Symbol;",
+                "history": "var history = History<EstimizeConsensus>(estimizeConsensusSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<EstimizeConsensus>(estimizeConsensusSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "True Beats",
+            "shortDescription": "Predictions of EPS and Revenues for US Equities based on expert opinions, peer opinions, and historical performance.",
+            "history": "January 2000",
+            "reach": "Over 5,000 US Equities",
+            "url": "extractalpha-true-beats",
+            "examples": {
+                "init": "var trueBeatsSymbol = AddData<ExtractAlphaTrueBeats>(_equity.Symbol).Symbol;",
+                "history": "var history = History<ExtractAlphaTrueBeats>(trueBeatsSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<ExtractAlphaTrueBeats>(trueBeatsSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Tactical",
+            "shortDescription": "Likelihood score of short-term price movements driven by technical indicators. ",
+            "history": "January 2000",
+            "reach": "Over 5,000 US Equities",
+            "url": "extractalpha-tactical",
+            "examples": {
+                "init": "var tacticalSymbol = AddData<ExtractAlphaTacticalModel>(_equity.Symbol).Symbol;",
+                "history": "var history = History<ExtractAlphaTacticalModel>(tacticalSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<ExtractAlphaTacticalModel>(tacticalSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Cross Asset Model",
+            "shortDescription": "Scoring algorithm based on put-call spread of Equity Options, volatility skewness, and volume.",
+            "history": "July 2005",
+            "reach": "Over 3,000 US Equities",
+            "url": "extractalpha-cross-asset-model",
+            "examples": {
+                "init": "var crossAssetModel = AddData<ExtractAlphaCrossAssetModel>(_equity.Symbol).Symbol;",
+                "history": "var history = History<ExtractAlphaCrossAssetModel>(crossAssetModel, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<ExtractAlphaCrossAssetModel>(crossAssetModelSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Composite Factor Bundle",
+            "shortDescription": "Daily proprietary signals for quality, value, momentum, growth, and low volatility factors, which are used by the leading quant funds.",
+            "history": "January 2003",
+            "reach": "8,000 US Equities",
+            "url": "kavout-composite-factor-bundle",
+            "examples": {
+                "init": "var factorBundle = AddData<KavoutCompositeFactorBundle>(_equity.Symbol).Symbol;",
+                "history": "var history = History<KavoutCompositeFactorBundle>(factorBundle, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<KavoutCompositeFactorBundle>(factorBundleSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "CNBC Trading",
+            "shortDescription": "CNBC Trading tracks the recommendations made by media personalities on CNBC.",
+            "history": "December 2020",
+            "reach": "1,515 US Equities",
+            "url": "quiver-quantitative-cnbc-trading",
+            "examples": {
+                "init": "var cnbcSymbol = AddData<QuiverCNBCs>(_equity.Symbol).Symbol;",
+                "history": "var history = History<QuiverCNBCs>(cnbcSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<QuiverCNBCsUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var cnbcDataBySymbol = new Dictionary<Symbol, List<QuiverCNBCsUniverse>>();\n    foreach (var datum in altCoarse.OfType<QuiverCNBCsUniverse>())\n    {\n        if (!cnbcDataBySymbol.ContainsKey(datum.Symbol))\n        {\n            cnbcDataBySymbol[datum.Symbol] = new List<QuiverCNBCsUniverse>();\n        }\n        cnbcDataBySymbol[datum.Symbol].Add(datum);\n    }\n    return from kvp in cnbcDataBySymbol\n           where kvp.Value.Count(x => x.Direction == OrderDirection.Buy) >= 3\n           select kvp.Key;\n}",
+                "research-history": "var history = qb.History<QuiverCNBCs>(cnbcSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "US Government Contracts",
+            "shortDescription": "Use the USASpending.gov API to track government contracts granted to publicly traded companies.",
+            "history": "October 2019",
+            "reach": "748 US Equities",
+            "url": "quiver-quantitative-us-government-contracts",
+            "examples": {
+                "init": "var govContractsSymbol = AddData<QuiverGovernmentContract>(_equity.Symbol).Symbol;",
+                "history": "var history = History<QuiverGovernmentContract>(govContractsSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<QuiverGovernmentContractUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var govContractDataBySymbol = new Dictionary<Symbol, List<QuiverGovernmentContractUniverse>>();\n    foreach (var datum in altCoarse.OfType<QuiverGovernmentContractUniverse>())\n    {\n        if (!govContractDataBySymbol.ContainsKey(datum.Symbol))\n        {\n            govContractDataBySymbol[datum.Symbol] = new List<QuiverGovernmentContractUniverse>();\n        }\n        govContractDataBySymbol[datum.Symbol].Add(datum);\n    }\n    return from kvp in govContractDataBySymbol\n           where kvp.Value.Count >= 3 && kvp.Value.Sum(x => x.Amount) > 50000m\n           select kvp.Key;\n}",
+                "research-history": "var history = qb.History<QuiverGovernmentContract>(govContractsSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Corporate Lobbying",
+            "shortDescription": "Lobbying activities of companies to political or legislative figures, including clients, issues concerned, and amount paid.",
+            "history": "January 1999",
+            "reach": "1,418 US Equities",
+            "url": "quiver-quantitative-corporate-lobbying",
+            "examples": {
+                "init": "var lobbyingSymbol = AddData<QuiverLobbyings>(_equity.Symbol).Symbol;",
+                "history": "var history = History<QuiverLobbyings>(lobbyingSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<QuiverLobbyingUniverse>(\"QuiverLobbyingUniverse\", Resolution.Daily, SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var lobbyDataBySymbol = new Dictionary<Symbol, List<QuiverLobbyingUniverse>>();\n    foreach (var datum in altCoarse.OfType<QuiverLobbyingUniverse>())\n    {\n        if (!lobbyDataBySymbol.ContainsKey(datum.Symbol))\n        {\n            lobbyDataBySymbol[datum.Symbol] = new List<QuiverLobbyingUniverse>();\n        }\n        lobbyDataBySymbol[datum.Symbol].Add(datum);\n    }\n    return from kvp in lobbyDataBySymbol\n           where kvp.Value.Sum(x => x.Amount) >= 100000m\n           select kvp.Key;\n}",
+                "research-history": "var history = qb.History<QuiverLobbyings>(lobbyingSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Insider Trading",
+            "shortDescription": "Insider Trading tracks trades made by the own company executives, implying if they were bullish or bearish on their own companies.",
+            "history": "25 April 2014",
+            "reach": "4994 US Equities",
+            "url": "quiver-quantitative-insider-trading",
+            "examples": {
+                "init": "var insiderSymbol = AddData<QuiverInsiderTrading>(_equity.Symbol).Symbol;",
+                "history": "var history = History<QuiverInsiderTrading>(insiderSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<QuiverInsiderTradingUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    var dollarVolumeBySymbol = new Dictionary<Symbol, decimal?>();\n    foreach (QuiverInsiderTradingUniverse data in altCoarse)\n    {\n        if (data.PricePerShare == 0m || data.PricePerShare == null) continue;\n        if (!dollarVolumeBySymbol.ContainsKey(data.Symbol))\n        {\n            dollarVolumeBySymbol[data.Symbol] = 0m;\n        }\n        dollarVolumeBySymbol[data.Symbol] += data.Shares * data.PricePerShare;\n    }\n    return dollarVolumeBySymbol.OrderByDescending(kvp => kvp.Value).Take(10).Select(kvp => kvp.Key);\n}",
+                "research-history": "var history = qb.History<QuiverInsiderTrading>(insiderTradingSymbol, 60, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);"
+            }
+        },
+        {
+            "name": "Brain Wikipedia Page Views",
+            "shortDescription": "Tracks investor attention toward large U.S. equities by monitoring traffic on company Wikipedia pages.",
+            "history": "February 2023",
+            "reach": "Russell 1000 Constituents",
+            "url": "brain-wikipedia-page-views",
+            "examples": {
+                "init": "var wikiPageViews = AddData<BrainWikipediaPageViews>(_equity.Symbol).Symbol;",
+                "history": "var history = History<BrainWikipediaPageViews>(wikiPageViews, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<BrainWikipediaPageViews>(wikiPageViewsSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US SEC Filings",
+            "shortDescription": "Semi-parsed Quarterly Financial Reports (10-Q) and Annual Financial Report (8-K) filings of companies for US Equities.",
+            "history": "January 1998",
+            "reach": "15,000 US Equities",
+            "url": "us-security-exchange-commission-filings",
+            "examples": {
+                "init": "var report8KSymbol = AddData<SECReport8K>(_equity.Symbol).Symbol;",
+                "history": "var history = History<SECReport8K>(report8KSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<SECReport8K>(report8KSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Federal Reserve (FRED)",
+            "shortDescription": "Collection of thousands of economic datasets maintained by the US Government.",
+            "history": "January 1999",
+            "reach": "560 Datasets",
+            "url": "us-federal-reserve-economic-data",
+            "examples": {
+                "init": "_peakToTrough = AddData<Fred>(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol;",
+                "history": "var history = History<Fred>(_peakToTrough, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<Fred>(peakToTroughSymbol, 365, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Data Link",
+            "shortDescription": "Nasdaq Data Link, previously known as Quandl, is a premier marketplace for financial, economic, and alternative data sets.",
+            "history": "Various",
+            "reach": "More than 20 million datasets",
+            "url": "nasdaq-data-link",
+            "examples": {
+                "init": "_bitcoinChainSymbol = AddData<NasdaqDataLink>(\"QDL/BCHAIN\", Resolution.Daily).Symbol;",
+                "history": "var history = History<NasdaqDataLink>(_bitcoinChainSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var data = qb.Download(\"https://data.nasdaq.com/api/v3/datatables/QDL/BCHAIN.csv?\");",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Bybit Crypto Price Data",
+            "shortDescription": "Trade and quote data for the Bybit Crypto exchange, collected by CoinAPI.",
+            "history": "April 2022",
+            "reach": "956 Currency Pairs",
+            "url": "bybit-crypto-price-data",
+            "examples": {
+                "init": "_crypto = AddCrypto(\"BTCUSDT\", Resolution.Minute, Market.Bybit);",
+                "history": "var history = History(_crypto.Symbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse(CryptoUniverse.Bybit(SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
+                "research-history": "var history = qb.History(crypto.Symbol, 30, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Bybit Crypto Future Price Data",
+            "shortDescription": "Trade and quote data for the Bybit Crypto Future exchanges, collected by CoinAPI.",
+            "history": "October 2019",
+            "reach": "631 Crypto Future Pairs",
+            "url": "bybit-cryptofuture-price-data",
+            "examples": {
+                "init": "_cryptoFuture = AddCryptoFuture(\"BTCUSDT\", Resolution.Minute, Market.Bybit);",
+                "history": "var history = History(_cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Bybit Crypto Future Margin Rate Data",
+            "shortDescription": "Margin interest rate data for the Bybit Crypto Future exchanges, collected by QuantConnect.",
+            "history": "August 2020",
+            "reach": "631 Crypto Future Pairs",
+            "url": "bybit-cryptofuture-margin-rate-data",
+            "examples": {
+                "init": "_cryptoFuture = AddCryptoFuture(\"BTCUSDT\", Resolution.Minute, Market.Bybit);",
+                "history": "var history = History<MarginInterestRate>(_cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<MarginInterestRate>(cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Fear and Greed",
+            "shortDescription": "A daily index between 0 and 100, representing the degree of fear or greed in the US Equity market.",
+            "history": "July 2014",
+            "reach": "7 Indicators",
+            "url": "quantconnect-fear-and-greed",
+            "examples": {
+                "init": "_fearGreedSymbol = AddData<FearGreedIndex>(\"FG\").Symbol;",
+                "history": "var history = History<FearGreedIndex>(_fearGreedSymbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<FearGreedIndex>(fearGreedSymbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "FOREX Data",
+            "shortDescription": "Quote data for Forex pairs.",
+            "history": "January 2007",
+            "reach": "71 Currency Pairs",
+            "url": "quantconnect-forex",
+            "examples": {
+                "init": "_forex = AddForex(\"EURUSD\", Resolution.Minute);",
+                "history": "var history = History(_forex.Symbol, 100, Resolution.Minute);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(forex.Symbol, 100, Resolution.Minute);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "CFD Data",
+            "shortDescription": "Quote data for Contracts for Difference (CFD).",
+            "history": "May 2002",
+            "reach": "51 Contracts",
+            "url": "quantconnect-cfd",
+            "examples": {
+                "init": "_cfd = AddCfd(\"DE30EUR\");",
+                "history": "var history = History(_cfd.Symbol, 100, Resolution.Minute);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(cfd.Symbol, 100, Resolution.Minute);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Coinbase Crypto Price Data",
+            "shortDescription": "Trade and quote data for the Coinbase Pro Crypto exchange, collected by CoinAPI.",
+            "history": "January 2015",
+            "reach": "970 Currency Pairs",
+            "url": "coinbase-crypto-price-data",
+            "examples": {
+                "init": "_crypto = AddCrypto(\"BTCUSD\", Resolution.Minute, Market.Coinbase);",
+                "history": "var history = History(_crypto.Symbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse(CryptoUniverse.Coinbase(SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
+                "research-history": "var history = qb.History(crypto.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Bitfinex Crypto Price Data",
+            "shortDescription": "Trade and quote data for the Bitfinex Crypto exchange, collected by CoinAPI.",
+            "history": "January 2013",
+            "reach": "570 Currency Pairs",
+            "url": "bitfinex-crypto-price-data",
+            "examples": {
+                "init": "_crypto = AddCrypto(\"BTCUSD\", Resolution.Minute, Market.Bitfinex);",
+                "history": "var history = History(_crypto.Symbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse(CryptoUniverse.Bitfinex(SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
+                "research-history": "var history = qb.History(symbol, 30, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Binance Crypto Price Data",
+            "shortDescription": "Trade and quote data for the Binance Crypto exchange, collected by CoinAPI.",
+            "history": "July 2017",
+            "reach": "3,320 Currency Pairs",
+            "url": "binance-crypto-price-data",
+            "examples": {
+                "init": "_crypto = AddCrypto(\"BTCBUSD\", Resolution.Minute, Market.Binance);",
+                "history": "var history = History(_crypto.Symbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse(CryptoUniverse.Binance(SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
+                "research-history": "var history = qb.History(crypto.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Kraken Crypto Price Data",
+            "shortDescription": "Trade and quote data for the Kraken Crypto exchange, collected by CoinAPI.",
+            "history": "October 2013",
+            "reach": "1,262 Currency Pairs",
+            "url": "kraken-crypto-price-data",
+            "examples": {
+                "init": "_crypto = AddCrypto(\"BTCUSD\", Resolution.Minute, Market.Kraken);",
+                "history": "var history = History(_crypto.Symbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse(CryptoUniverse.Kraken(SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
+                "research-history": "var history = qb.History(crypto.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Binance US Crypto Price Data",
+            "shortDescription": "Trade and quote data for the Binance US Crypto exchange, collected by CoinAPI.",
+            "history": "October 2019",
+            "reach": "604 Cryptocurrency pairs",
+            "url": "binance-us-crypto-price-data",
+            "examples": {
+                "init": "_crypto = AddCrypto(\"BTCUSD\", Resolution.Minute, Market.BinanceUS);",
+                "history": "var history = History(_crypto.Symbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse(CryptoUniverse.BinanceUS(SelectAssets));",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<CryptoUniverse> universeDay)\n{\n    return from c in universeDay\n           where c.Volume >= 100m && c.VolumeInUsd > 10000m\n           select c.Symbol;\n}",
+                "research-history": "var history = qb.History(_crypto.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "Binance Crypto Future Price Data",
+            "shortDescription": "Trade and quote data for the Binance Crypto Future exchanges, collected by CoinAPI.",
+            "history": "August 2020",
+            "reach": "718 Crypto Future Pairs",
+            "url": "binance-cryptofuture-price-data",
+            "examples": {
+                "init": "_cryptoFuture = AddCryptoFuture(\"BTCBUSD\", Resolution.Minute);",
+                "history": "var history = History(_cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Binance Crypto Future Margin Rate Data",
+            "shortDescription": "Margin interest rate data for the Binance Crypto Future exchanges, collected by QuantConnect.",
+            "history": "August 2020",
+            "reach": "718 Crypto Future Pairs",
+            "url": "binance-cryptofuture-margin-rate-data",
+            "examples": {
+                "init": "_cryptoFuture = AddCryptoFuture(\"BTCBUSD\", Resolution.Minute);",
+                "history": "var history = History<MarginInterestRate>(_cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<MarginInterestRate>(cryptoFuture.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Interest Rate",
+            "shortDescription": "Primary credit rate from the Federal Open Market Committee (FOMC)",
+            "history": "January 2003",
+            "reach": "1 Country: US",
+            "url": "us-interest-rate",
+            "examples": {
+                "init": "",
+                "history": "var historicalInterestRate = RiskFreeInterestRateModel.GetInterestRate(Time - TimeSpan.FromDays(30));",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var historicalInterestRate = qb.RiskFreeInterestRateModel.GetInterestRate(qb.Time - TimeSpan.FromDays(30));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Macroeconomics Indicators",
+            "shortDescription": "39 Macroeconomic Indicators data for 249 countries/regions, including the date, value, and frequency.",
+            "history": "January 1998",
+            "reach": "39 Indicators, 249 Countries/Regions",
+            "url": "eodhd-macro-indicators",
+            "examples": {
+                "init": "_macroIndicator = AddData<EODHDMacroIndicators>(EODHD.MacroIndicators.UnitedStates.GdpCurrentUsd).Symbol;",
+                "history": "var history = History<EODHDMacroIndicators>(_macroIndicator, TimeSpan.FromDays(365));",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<EODHDMacroIndicators>(macroIndicator, TimeSpan.FromDays(365));",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Upcoming Dividends",
+            "shortDescription": "Alert for upcoming dividend events of primary US Equities common shares with dividend important dates, and dividend per share.",
+            "history": "January 2015",
+            "reach": "27,500 US Equities",
+            "url": "eodhd-upcoming-dividends",
+            "examples": {
+                "init": "_upcomingDividends = AddData<EODHDUpcomingDividends>(\"dividends\").Symbol;",
+                "history": "var history = History<EODHDUpcomingDividends>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<EODHDUpcomingDividends>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> dividends)\n{\n    return from EODHDUpcomingDividends d in dividends\n           where d.DividendsDate <= Time.AddDays(1) && d.Dividends > 0.05m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<EODHDUpcomingDividends>(TimeSpan.FromDays(100), Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "US Energy Information Administration (EIA)",
+            "shortDescription": "Supply and demand information for US Crude Products.",
+            "history": "January 1991",
+            "reach": "190 Datasets",
+            "url": "quantconnect-us-energy-information-agency",
+            "examples": {
+                "init": "_usEnergy = AddData<USEnergy>(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;",
+                "history": "var history = History<USEnergy>(_usEnergy, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<USEnergy>(usEnergy, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Treasury Yield Curve",
+            "shortDescription": "Yield curve rates for US Government bonds over all common maturity dates. The data is scraped from the US Treasury website.",
+            "history": "January 1990",
+            "reach": "US Daily Treasury Yield Rates",
+            "url": "us-treasury-yield-curve",
+            "examples": {
+                "init": "_yieldCurve = AddData<USTreasuryYieldCurveRate>(\"USTYCR\").Symbol;",
+                "history": "var history = History<USTreasuryYieldCurveRate>(_yieldCurve, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<USTreasuryYieldCurveRate>(yieldCurve, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "VIX Central Contango",
+            "shortDescription": "Contango rates over time for the VIX Contract. The data is provided by VIXCentral and cached by QuantConnect.",
+            "history": "June 2010",
+            "reach": "1 Dataset",
+            "url": "quantconnect-vixcentral-contango",
+            "examples": {
+                "init": "_vixContango = AddData<VIXCentralContango>(\"VX\", Resolution.Daily).Symbol;",
+                "history": "var history = History<VIXCentralContango>(_vixContango, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<VIXCentralContango>(vixContango, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Cash Indices",
+            "shortDescription": "Price data for 125 US Cash indices and 2 international indices (HSI and SX5E). This data provides the underlying price for Index Options of NDX, SPX, RUT, and VIX.",
+            "history": "January 1998",
+            "reach": "125 US indices and 3 International indices",
+            "url": "quantconnect-cash-indices",
+            "examples": {
+                "init": "_index = AddIndex(\"VIX\");",
+                "history": "var history = History(_index.Symbol, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History(index.Symbol, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Bitcoin Metadata",
+            "shortDescription": "Bitcoin processing fundamental data such as hash rate, miner revenue, and number of transactions.",
+            "history": "Jan 2009",
+            "reach": "Bitcoin blockchain",
+            "url": "bitcoin-metadata",
+            "examples": {
+                "init": "var bitcoinMetadata = AddData<BitcoinMetadata>(_btcusd.Symbol).Symbol;",
+                "history": "var history = History<BlockchainBitcoinData>(bitcoinMetadata, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<BlockchainBitcoinData>(bitcoinMetadata, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "Crypto Market Cap",
+            "shortDescription": "Cryptocurrencies market cap data is provided by CoinGecko and cached by QuantConnect.",
+            "history": "28 April 2013",
+            "reach": "620 cryptocurrencies",
+            "url": "coingecko-crypto-marketcap",
+            "examples": {
+                "init": "_coinGecko = AddData<CoinGecko>(\"BTC\").Symbol;",
+                "history": "var history = History<CoinGecko>(_coinGecko, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<CoinGecko>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> data)\n{\n    foreach (var datum in data.OfType<CoinGecko>())\n    {\n        Debug($\"{datum.Coin},{datum.MarketCap},{datum.Price}\");\n    }\n    return data\n        .Select(c => c as CoinGecko)\n        // Select the coins that the brokerage supports and have a quote currency that\n        // matches our account currency.\n        .Where(c => _marketPairs.Contains(c.Coin + AccountCurrency))\n        // Select the 10 largest coins.\n        .OrderByDescending(c => c.MarketCap)\n        .Take(10)\n        // Create the Symbol objects of the selected coins.\n        .Select(c => c.CreateSymbol(_market, AccountCurrency));\n}",
+                "research-history": "var history = qb.History<CoinGecko>(coinGecko, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);"
+            }
+        },
+        {
+            "name": "USDA Fruit And Vegetables",
+            "shortDescription": "Retail price estimates for 75+ commonly consumed fresh and processed fruits and vegetables",
+            "history": "January 2014",
+            "reach": "75 Agricultural Products",
+            "url": "usda-fruit-and-vegetables",
+            "examples": {
+                "init": "_usdaApples = AddData<USDAFruitAndVegetables>(USDAFruitAndVegetable.Symbols.Apples, Resolution.Daily).Symbol;",
+                "history": "var history = History<USDAFruitAndVegetables>(_usdaApples, new DateTime(2013, 1, 1), Time, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<USDAFruitAndVegetables>(usdaApples, new DateTime(2013, 1, 1), qb.Time, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        },
+        {
+            "name": "US Bureau of Labor Statistics (BLS)",
+            "shortDescription": "Statistical results of many surveys conducted and released by the US government.",
+            "history": "2000",
+            "reach": "4 surveys; 50 series in total",
+            "url": "us-bureau-of-labor-statistics",
+            "examples": {
+                "init": "_cpi = AddData<BLSEconomicSurveysCpi>(\"CPI\").Symbol;",
+                "history": "var history = History<BLSEconomicSurveysCpi>(_cpi, 100, Resolution.Daily);",
+                "universe-init": "",
+                "universe-history": "",
+                "universe-filter": "",
+                "research-history": "var history = qb.History<BLSEconomicSurveysCpi>(cpi, 100, Resolution.Daily);",
+                "research-universe-history": ""
+            }
+        }
+    ]
+}
