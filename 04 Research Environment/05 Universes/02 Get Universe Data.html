@@ -1,6 +1,8 @@
 <p>Universes are data types. To get historical data for a universe, pass the universe data type to the <code>UniverseHistory</code> method. The object that returns contains a universe data collection for each day. With this object, you can iterate through each day and then iterate through the universe data objects of each day to analyze the universe constituents.</p>
 
-<p>For example, follow these steps to get the US Equity Fundamental data for a specific universe:</p>
+<h4>Fundamental Universes</h4>
+
+<p>Follow these steps to get the US Equity Fundamental data for a specific universe:</p>
 
 <ol>
     <li class='csharp'>Load the assembly files and data types in their own cell.</li>
@@ -87,3 +89,195 @@ for date, fundamentals in universe_history.items():
 }</pre>
     </div>
 </ol>
+
+
+<h4>ETF Constituents Universes</h4>
+<p>Follow these steps to get the data of a specific ETF Constituents universe:</p>
+<ol>
+    <li class='csharp'>Load the assembly files and data types in their own cell.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#load "../Initialize.csx"</pre>
+    </div>
+
+    <li class='csharp'>Load the necessary assembly files.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#load "../QuantConnect.csx"</pre>
+    </div>
+
+    <li class='csharp'>Import the <code>QuantConnect</code> package and the universe data type.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">using QuantConnect;
+using QuantConnect.Research;
+using QuantConnect.Data.Fundamental;</pre>
+    </div>
+    
+    <li>Create a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+
+    <li>Define a universe.</li>
+    <p>
+        The following example defines a dynamic universe that contains the 3 Equities with the largest weight in the SPY ETF. 
+        To see all the <code>ETFConstituentUniverse</code> attributes you can use to define a filter function for an ETF Constituents universe, see <a href='/docs/v2/writing-algorithms/datasets/quantconnect/us-etf-constituents#99-Data-Point-Attributes'>Data Point Attributes</a>. 
+        To create the universe, call the <code class="csharp">Universe.ETF</code><code class="python">universe.etf</code> method with the ETF ticker and the selection function, then pass the result to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method.
+    </p>
+    <div class="section-example-container">
+    <pre class="csharp">var universe = qb.AddUniverse(fundamentals =&gt;
+{
+    return fundamentals
+        .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
+        .OrderBy(f =&gt; f.ValuationRatios.PERatio)
+        .Take(10)
+        .Select(f =&gt; f.Symbol);
+});</pre>
+    <pre class="python">def select_assets(constituents: List[ETFConstituentUniverse]) -> List[Symbol]:
+    sorted_by_weight = sorted([c for c in constituents if c.weight], key=lambda c: c.weight)
+    return [c.symbol for c in sorted_by_weight[-3:]]
+
+universe = qb.add_universe(qb.universe.etf('SPY', universe_filter_func=select_assets))</pre>
+    </div>
+
+    <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>universe_history</code> method with the universe, a start date, and an end date.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
+        <pre class="python">universe_history = qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13), flatten=True)</pre>
+    </div>
+
+    <p>The end date arguments is optional. If you omit it, the method returns <code>ETFConstituentUniverse</code> data between the start date and the current day.</p>
+
+    <p class='python'>
+        The <code>universe_history</code> method returns a Series where the multi-index is the universe <code>Symbol</code> and the time when universe selection would occur in a backtest. 
+        Each row in the data column contains a list of <code>ETFConstituentUniverse</code> objects. 
+        The following image shows the first 3 rows of an example Series:
+    </p>
+
+    <div class="python section-example-container">
+    <pre>time
+2025-11-07    [AAPL R735QTJ8XC9X: ¤0.00, MSFT R735QTJ8XC9X: ...
+2025-11-08    [AAPL R735QTJ8XC9X: ¤0.00, MSFT R735QTJ8XC9X: ...
+2025-11-11    [AAPL R735QTJ8XC9X: ¤0.00, MSFT R735QTJ8XC9X: ...
+Name: data, dtype: object</pre>
+</div>
+
+    <p class='python'>To get a flat DataFrame instead of a Series, set the <code>flatten</code> argument to <code>True</code>.</p>
+
+    <div class='python dataframe-wrapper'>
+      <table class="dataframe python">
+        <thead>
+          <tr style="text-align: right;">
+            <th></th>
+            <th></th>
+            <th>lastupdate</th>
+            <th>period</th>
+            <th>sharesheld</th>
+            <th>weight</th>
+          </tr>
+          <tr>
+            <th>time</th>
+            <th>symbol</th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th rowspan="3" valign="top">2025-11-07</th>
+            <th>AAPL R735QTJ8XC9X</th>
+            <td>2025-11-05</td>
+            <td>1 days</td>
+            <td>178991437.0</td>
+            <td>0.069116</td>
+          </tr>
+          <tr>
+            <th>MSFT R735QTJ8XC9X</th>
+            <td>2025-11-05</td>
+            <td>1 days</td>
+            <td>89652295.0</td>
+            <td>0.064993</td>
+          </tr>
+          <tr>
+            <th>NVDA RHM8UTD8DT2D</th>
+            <td>2025-11-05</td>
+            <td>1 days</td>
+            <td>294289223.0</td>
+            <td>0.082117</td>
+          </tr>
+          <tr>
+            <th rowspan="3" valign="top">2025-11-08</th>
+            <th>AAPL R735QTJ8XC9X</th>
+            <td>2025-11-06</td>
+            <td>1 days</td>
+            <td>179242780.0</td>
+            <td>0.069801</td>
+          </tr>
+          <tr>
+            <th>MSFT R735QTJ8XC9X</th>
+            <td>2025-11-06</td>
+            <td>1 days</td>
+            <td>89778184.0</td>
+            <td>0.064423</td>
+          </tr>
+          <tr>
+            <th>NVDA RHM8UTD8DT2D</th>
+            <td>2025-11-06</td>
+            <td>1 days</td>
+            <td>294702444.0</td>
+            <td>0.080012</td>
+          </tr>
+          <tr>
+            <th rowspan="3" valign="top">2025-11-11</th>
+            <th>AAPL R735QTJ8XC9X</th>
+            <td>2025-11-07</td>
+            <td>1 days</td>
+            <td>178922101.0</td>
+            <td>0.069303</td>
+          </tr>
+          <tr>
+            <th>MSFT R735QTJ8XC9X</th>
+            <td>2025-11-07</td>
+            <td>1 days</td>
+            <td>89617567.0</td>
+            <td>0.064299</td>
+          </tr>
+          <tr>
+            <th>NVDA RHM8UTD8DT2D</th>
+            <td>2025-11-07</td>
+            <td>1 days</td>
+            <td>294175231.0</td>
+            <td>0.079933</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <p class='csharp'>The <code>UniverseHistory</code> method returns an <code>IEnumerable&lt;IEnumerable&lt;Fundamental&gt;&gt;</code> object. </p>
+
+    <li class='python'>Iterate through the Series to access the universe data.</li>
+    <li class='csharp'>Iterate through the result to access the universe data.</li>
+
+    <div class="section-example-container">
+    <pre class="python">for date, constituents in history.droplevel('symbol', axis=0).items():
+    for constituent in constituents:
+        symbol = constituent.symbol
+        weight = constituent.weight</pre>
+    <pre class="csharp">foreach (var fundamentals in universeHistory)
+{
+    foreach (Fundamental fundamental in fundamentals)
+    {
+        var date = fundamental.Time;
+        var symbol = fundamental.Symbol;
+        var price = fundamental.Price;
+        if (fundamental.HasFundamentalData)
+        {
+            var peRatio = fundamental.ValuationRatios.PERatio;
+        }
+    }
+}</pre>
+    </div>
+</ol>
+
+
