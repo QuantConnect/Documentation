@@ -35,7 +35,7 @@
             "examples": {
                 "universe-init": "self._universe = self.add_universe(self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:\n    sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)[:3]\n    for cf in sorted_by_dollar_volume:\n        self.debug(f'{cf.end_time} :: {cf.symbol} : {cf.adjusted_price} :: {cf.dollar_volume}')\n\n    return [ x.symbol for x in sorted_by_dollar_volume]",
+                "universe-filter": "def _select_assets(self, fundamental: List[Fundamental]) -> List[Symbol]:\n    sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.dollar_volume, reverse=True)[:3]\n    for cf in sorted_by_dollar_volume:\n        self.debug(f'{cf.end_time} :: {cf.symbol} : {cf.adjusted_price} :: {cf.dollar_volume}')\n\n    return [x.symbol for x in sorted_by_dollar_volume]",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "fundamentals = self.securities[symbol].fundamentals"
             }
@@ -105,7 +105,7 @@
             "examples": {
                 "universe-init": "self._option = self.add_option('GOOG')",
                 "universe-history": "history = self.history[OptionUniverse](self._option.symbol, timedelta(3))",
-                "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe \\\n        .delta(0.5, 1.5) \\\n        .gamma(0.0001, 0.0006) \\\n        .vega(0.01, 1.5) \\\n        .theta(-2.0, -0.5) \\\n        .rho(0.5, 3.0) \\\n        .implied_volatility(1, 3) \\\n        .open_interest(100,500)",
+                "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by greeks, implied volatility, open interest:\n    return (universe\n            .delta(0.5, 1.5)\n            .gamma(0.0001, 0.0006)\n            .vega(0.01, 1.5)\n            .theta(-2.0, -0.5)\n            .rho(0.5, 3.0)\n            .implied_volatility(1, 3)\n            .open_interest(100, 500))",
                 "research-universe-history": "history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5), flatten=True)",
                 "usage": "for chain in history:\n    for contract in chain.data:\n        delta = contract.greeks.delta\n        iv = contract.implied_volatility"
             }
@@ -119,7 +119,7 @@
             "examples": {
                 "universe-init": "self._option = self.add_index_option(self.index_symbol)",
                 "universe-history": "history = self.history(self._option.symbol, timedelta(3))",
-                "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by greeks, implied volatility, open interest:\n    return universe \\\n        .delta(0.5, 1.5) \\\n        .gamma(0.0001, 0.0006) \\\n        .vega(0.01, 1.5) \\\n        .theta(-2.0, -0.5) \\\n        .rho(0.5, 3.0) \\\n        .implied_volatility(1, 3) \\\n        .open_interest(100,500)",
+                "universe-filter": "def _option_filter(self, universe: OptionFilterUniverse) -> OptionFilterUniverse:\n    # Contracts can be filtered by greeks, implied volatility, open interest:\n    return (universe\n            .delta(0.5, 1.5)\n            .gamma(0.0001, 0.0006)\n            .vega(0.01, 1.5)\n            .theta(-2.0, -0.5)\n            .rho(0.5, 3.0)\n            .implied_volatility(1, 3)\n            .open_interest(100, 500))",
                 "research-universe-history": "history = qb.history(option.symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))",
                 "usage": "for chain in history:\n    for contract in chain.data:\n        delta = contract.greeks.delta\n        iv = contract.implied_volatility"
             }
@@ -349,7 +349,7 @@
                 "history": "history = self.history(equity.congress_symbol, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(QuiverQuantCongressUniverse, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverQuantCongresssUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n        if d.amount > 200000 and d.transaction == OrderDirection.BUY]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverQuantCongresssUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.amount > 200000 and d.transaction == OrderDirection.BUY]",
                 "research-history": "history = qb.history(quiver_congress_symbol, 60, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.congress_symbol):\n        data_points = slice[equity.congress_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.congress_symbol} transaction amount at {slice.time}: {data_point.amount}')"
@@ -366,7 +366,7 @@
                 "history": "history = self.history(equity.insider_intention, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(SmartInsiderIntentionUniverse, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.percentage > 0.005 \\\n                and d.usd_market_cap > 100000000]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.percentage > 0.005\n            and d.usd_market_cap > 100000000]",
                 "research-history": "history = qb.history(insider_intention_symbol, 100, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.insider_intention):\n        data_point = slice[equity.insider_intention]\n        self.log(f'{equity.insider_intention} intention amount at {slice.time}: {data_point.amount}')"
@@ -396,7 +396,7 @@
                 "history": "history = self.history(equity.brain_sentiment_symbol, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(BrainSentimentIndicatorUniverse, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.total_article_mentions7_days > 0 \\\n                and d.sentiment7_days]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.total_article_mentions7_days > 0\n            and d.sentiment7_days]",
                 "research-history": "history = qb.history(BrainSentimentIndicator30Day, equity.symbol, 30, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.brain_sentiment_symbol):\n        data_point = slice[equity.brain_sentiment_symbol]\n        self.log(f'{equity.brain_sentiment_symbol} sentiment at {slice.time}: {data_point.sentiment}')"
@@ -413,7 +413,7 @@
                 "history": "history = self.history(equity.brain_stock_rankingl, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(BrainStockRankingUniverse, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[BrainStockRankingUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.rank2_days > 0 \\\n                and d.rank3_days > 0 \\\n                and d.rank5_days > 0]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[BrainStockRankingUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.rank2_days > 0\n            and d.rank3_days > 0\n            and d.rank5_days > 0]",
                 "research-history": "history = qb.history(BrainStockRanking2Day, equity.symbol, 30, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(5), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.brain_stock_ranking):\n        data_point = slice[equity.brain_stock_ranking]\n        self.log(f'{equity.brain_stock_ranking} rank at {slice.time}: {data_point.rank}')"
@@ -430,7 +430,7 @@
                 "history": "history = self.history(equity.filing_metrics, 365, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(BrainCompanyFilingLanguageMetricsUniverseAll, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverseAll]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse \\\n                if d.report_sentiment.sentiment > 0 \\\n                and d.management_discussion_analyasis_of_financial_condition_and_results_of_operations.sentiment > 0]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[BrainCompanyFilingLanguageMetricsUniverseAll]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.report_sentiment.sentiment > 0\n            and d.management_discussion_analyasis_of_financial_condition_and_results_of_operations.sentiment > 0]",
                 "research-history": "history = qb.history(BrainCompanyFilingLanguageMetrics10K, equity.symbol, 365, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.filing_metrics):\n        data_point = slice[equity.filing_metrics]\n        self.log(f'{equity.filing_metrics} report sentiment at {slice.time}: {data_point.report_sentiment.sentiment}')"
@@ -512,7 +512,7 @@
                 "history": "history = self.history(equity.cnbc_symbol, 100, Resolution.DAILY)",
                 "universe-init": "self._uinverse = self.add_universe(QuiverCNBCsUniverse, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:\n    cnbc_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n        \n        if symbol not in cnbc_data_by_symbol:\n            cnbc_data_by_symbol[symbol] = []\n        cnbc_data_by_symbol[symbol].append(datum)\n    \n    # define our selection criteria\n    return [symbol for symbol, d in cnbc_data_by_symbol.items()\n            if len([x for x in d if x.direction == OrderDirection.BUY]) >= 3]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:\n    cnbc_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n\n        if symbol not in cnbc_data_by_symbol:\n            cnbc_data_by_symbol[symbol] = []\n        cnbc_data_by_symbol[symbol].append(datum)\n\n    # define our selection criteria\n    return [symbol for symbol, d in cnbc_data_by_symbol.items()\n            if len([x for x in d if x.direction == OrderDirection.BUY]) >= 3]",
                 "research-history": "history = qb.history(cnbc_symbol, 100, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.cnbc_symbol):\n        data_points = slice[equity.cnbc_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.cnbc_symbol} direction at {slice.time}: {data_point.direction}')"
@@ -529,7 +529,7 @@
                 "history": "history = self.history(equity.govt_contracts, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(QuiverGovernmentContractUniverse, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coase: List[QuiverGovernmentContractUniverse]) -> List[Symbol]:\n    gov_contract_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n        \n        if symbol not in gov_contract_data_by_symbol:\n            gov_contract_data_by_symbol[symbol] = []\n        gov_contract_data_by_symbol[symbol].append(datum)\n    \n    return [symbol for symbol, d in gov_contract_data_by_symbol.items()\n            if len(d) >= 3 and sum([x.amount for x in d]) > 50000]",
+                "universe-filter": "def _select_assets(self, alt_coase: List[QuiverGovernmentContractUniverse]) -> List[Symbol]:\n    gov_contract_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n\n        if symbol not in gov_contract_data_by_symbol:\n            gov_contract_data_by_symbol[symbol] = []\n        gov_contract_data_by_symbol[symbol].append(datum)\n\n    return [symbol for symbol, d in gov_contract_data_by_symbol.items()\n            if len(d) >= 3 and sum([x.amount for x in d]) > 50000]",
                 "research-history": "history = qb.history(govt_contracts_symbol, 100, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.govt_contracts):\n        data_points = slice[equity.govt_contracts]\n        for data_point in data_points:\n            self.log(f'{equity.govt_contracts} amount at {slice.time}: {data_point.amount}')"
@@ -546,7 +546,7 @@
                 "history": "history = self.history(equity.lobbying_symbol, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(QuiverLobbyingUniverse, 'QuiverLobbyingUniverse', Resolution.DAILY, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverLobbyingUniverse]) -> List[Symbol]:\n    lobby_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n        \n        if symbol not in lobby_data_by_symbol:\n            lobby_data_by_symbol[symbol] = []\n        lobby_data_by_symbol[symbol].append(datum)\n    \n    return [symbol for symbol, d in lobby_data_by_symbol.items()\n            if sum([x.amount for x in d]) >= 100000]",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[QuiverLobbyingUniverse]) -> List[Symbol]:\n    lobby_data_by_symbol = {}\n\n    for datum in alt_coarse:\n        symbol = datum.symbol\n\n        if symbol not in lobby_data_by_symbol:\n            lobby_data_by_symbol[symbol] = []\n        lobby_data_by_symbol[symbol].append(datum)\n\n    return [symbol for symbol, d in lobby_data_by_symbol.items()\n            if sum([x.amount for x in d]) >= 100000]",
                 "research-history": "history = qb.history(lobbying_symbol, 100, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.lobbying_symbol):\n        data_points = slice[equity.lobbying_symbol]\n        for data_point in data_points:\n            self.log(f'{equity.lobbying_symbol} amount at {slice.time}: {data_point.amount}')"
@@ -932,7 +932,7 @@
                 "history": "history = self.history(self._coin_gecko, 100, Resolution.DAILY)",
                 "universe-init": "self._universe = self.add_universe(CoinGeckoUniverse, 'CoinGeckoUniverse', Resolution.DAILY, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
-                "universe-filter": "def _select_assets(self, data: List[CoinGecko]) -> List[Symbol]:\n    for datum in data:\n        self.debug(f'{datum.coin},{datum.market_cap},{datum.price}')\n\n    # Select the coins that our brokerage supports and have a quote currency that matches\n    # our account currency.\n    tradable_coins = [d for d in data if d.coin + self.account_currency in self._market_pairs]\n    # Select the largest coins and create their Symbol objects.\n    return [\n        c.create_symbol(self._market, self.account_currency) \n        for c in sorted(tradable_coins, key=lambda x: x.market_cap)[-10:]\n    ]",
+                "universe-filter": "def _select_assets(self, data: List[CoinGecko]) -> List[Symbol]:\n    for datum in data:\n        self.debug(f'{datum.coin},{datum.market_cap},{datum.price}')\n\n    # Select the coins that our brokerage supports and have a quote currency that matches\n    # our account currency.\n    tradable_coins = [d for d in data if d.coin + self.account_currency in self._market_pairs]\n    # Select the largest coins and create their Symbol objects.\n    return [\n        c.create_symbol(self._market, self.account_currency)\n        for c in sorted(tradable_coins, key=lambda x: x.market_cap)[-10:]\n    ]",
                 "research-history": "history = self.history(coin_gecko, 100, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._coin_gecko):\n        data_point = slice[self._coin_gecko]\n        self.log(f'{self._coin_gecko} market cap at {slice.time}: {data_point.market_cap}')"
