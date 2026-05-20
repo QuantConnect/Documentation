@@ -29,7 +29,7 @@ class FredAlternativeDataAlgorithm(QCAlgorithm):
     def on_data(self, slice: Slice) -&gt; None:
         # Trade with updated FED peak-to-trough indicator
         if slice.contains_key(self.fred_peak_to_trough) and slice.contains_key(self.spy):
-            peak_to_trough = slice.Get(Fred, self.fred_peak_to_trough).value
+            peak_to_trough = slice.get(Fred, self.fred_peak_to_trough).value
             
             # Buy SPY if peak to trough value is 0, which is the expansionary period
             if peak_to_trough == 0 and not self.portfolio.invested:
@@ -126,7 +126,7 @@ class FredAlphaModel(AlphaModel):
         
         # Trade with updated FED peak-to-trough indicator
         if slice.contains_key(self.fred_peak_to_trough):
-            self.peak_to_trough_value = slice.Get(Fred, self.fred_peak_to_trough).value
+            self.peak_to_trough_value = slice.get(Fred, self.fred_peak_to_trough).value
         
         # Ensure we have a FRED peak to trough value
         if self.peak_to_trough_value is None:

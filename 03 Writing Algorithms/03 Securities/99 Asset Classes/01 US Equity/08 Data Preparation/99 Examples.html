@@ -118,15 +118,15 @@
         # Create a list of opening auction tick data. 
         trades = [
             tick for tick in self._asset.cache.get_all[Tick]()
-            if  tick.TickType == TickType.TRADE and
-                tick.Price &gt; 0 and
-                tick.SaleCondition and
+            if  tick.tick_type == TickType.TRADE and
+                tick.price &gt; 0 and
+                tick.sale_condition and
                 (
-                    tick.ParsedSaleCondition == self.officialOpen or
-                    tick.ParsedSaleCondition == self.openingPrints
+                    tick.parsed_sale_condition == self.officialOpen or
+                    tick.parsed_sale_condition == self.openingPrints
                 )
         ]
         # Log the opening auction tick price
         for tick in trades:
-            self.log(f"{self.Time},{tick.Price},{tick.Quantity},{tick.ParsedSaleCondition},{tick.ExchangeCode},{tick.Exchange}")</pre>
+            self.log(f"{self.time},{tick.price},{tick.quantity},{tick.parsed_sale_condition},{tick.exchange_code},{tick.exchange}")</pre>
 </div>

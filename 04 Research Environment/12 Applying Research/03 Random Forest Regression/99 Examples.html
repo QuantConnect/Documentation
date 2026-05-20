@@ -15,7 +15,7 @@ for i in range(len(assets)):
     qb.add_equity(assets[i],Resolution.MINUTE).symbol
 
 # Call the History method with qb.securities.keys for all tickers, time argument(s), and resolution to request historical data for the symbol.
-history = qb.history(qb.securities.Keys, datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
+history = qb.history(qb.securities.keys(), datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.DAILY)
 
 # Select the close column and then call the unstack method.
 df = history['close'].unstack(level=0)
@@ -94,7 +94,7 @@ class RandomForestRegressionDemo(QCAlgorithm):
         self.regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
         
         # Get historical data
-        history = self.history(self.securities.Keys, 360, Resolution.DAILY)
+        history = self.history(self.securities.keys(), 360, Resolution.DAILY)
         
         # Select the close column and then call the unstack method.
         df = history['close'].unstack(level=0)
@@ -118,7 +118,7 @@ class RandomForestRegressionDemo(QCAlgorithm):
         
         qb = self
         # Fetch history on our universe
-        df = qb.history(qb.securities.Keys, 2, Resolution.DAILY)
+        df = qb.history(qb.securities.keys(), 2, Resolution.DAILY)
         if df.empty: return
     
         # Make all of them into a single time index.
