@@ -988,7 +988,7 @@
                 "universe-init": "",
                 "universe-history": "",
                 "universe-filter": "",
-                "research-history": "history = qb.history(index.symbol, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(index, 100, Resolution.DAILY)",
                 "research-universe-history": ""
             }
         },
@@ -1004,7 +1004,7 @@
                 "universe-init": "",
                 "universe-history": "",
                 "universe-filter": "",
-                "research-history": "history = qb.history(bitcoin_metadata.symbol, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(bitcoin_metadata, 100, Resolution.DAILY)",
                 "research-universe-history": ""
             }
         },
@@ -1020,7 +1020,7 @@
                 "universe-init": "self._universe = self.add_universe(CoinGeckoUniverse, 'CoinGeckoUniverse', Resolution.DAILY, self._select_assets)",
                 "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
                 "universe-filter": "def _select_assets(self, data: List[CoinGecko]) -> List[Symbol]:\n    for datum in data:\n        self.debug(f'{datum.coin},{datum.market_cap},{datum.price}')\n\n    # Select the coins that our brokerage supports and have a quote currency that matches\n    # our account currency.\n    tradable_coins = [d for d in data if d.coin + self.account_currency in self._market_pairs]\n    # Select the largest coins and create their Symbol objects.\n    return [\n        c.create_symbol(self._market, self.account_currency) \n        for c in sorted(tradable_coins, key=lambda x: x.market_cap)[-10:]\n    ]",
-                "research-history": "history = self.history(coin_gecko.symbol, 100, Resolution.DAILY)",
+                "research-history": "history = self.history(coin_gecko, 100, Resolution.DAILY)",
                 "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)"
             }
         },
@@ -1036,7 +1036,7 @@
                 "universe-init": "",
                 "universe-history": "",
                 "universe-filter": "",
-                "research-history": "history = qb.history(usda_apples.symbol, datetime(2013, 1, 1), self.time, Resolution.DAILY)",
+                "research-history": "history = qb.history(usda_apples, datetime(2013, 1, 1), self.time, Resolution.DAILY)",
                 "research-universe-history": ""
             }
         },
@@ -1052,7 +1052,7 @@
                 "universe-init": "",
                 "universe-history": "",
                 "universe-filter": "",
-                "research-history": "history = qb.history(cpi.symbol, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(cpi, 100, Resolution.DAILY)",
                 "research-universe-history": ""
             }
         }
