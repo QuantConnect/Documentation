@@ -155,7 +155,7 @@
     def on_data(self, slice: Slice) -&gt; None:
         bar = slice.bars.get(self._symbol)
         # Place order if not invested. Make sure only trade once a day to avoid chasing the loss.
-        if not self.portfolio.Invested and self._day != slice.time.day and bar:
+        if not self.portfolio.invested and self._day != slice.time.day and bar:
             self.market_order(self._symbol, 10)
             # Update the day variable to avoid repeat ordering.
             self._day = slice.time.day

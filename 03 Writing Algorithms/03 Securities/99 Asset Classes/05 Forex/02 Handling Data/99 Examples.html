@@ -156,7 +156,7 @@
         # Create a consolidator that produces 5-minute quote bars to reduce reduce noise.
         consolidator = QuoteBarConsolidator(timedelta(minutes=5))
         # Define the consolidator handler so it updates the EMA with the consoildated bars.
-        consolidator.DataConsolidated += lambda _, bar: self._forex.ema.update(bar.end_time, bar.close)
+        consolidator.data_consolidated += lambda _, bar: self._forex.ema.update(bar.end_time, bar.close)
         # Warm up the indicator with historical data.
         for bar in self.history[QuoteBar](self._forex.symbol, 1000):
             consolidator.update(bar)

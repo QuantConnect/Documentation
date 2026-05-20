@@ -24,7 +24,7 @@ class QuiverGovernmentContractAlgorithm(QCAlgorithm):
 
     def on_data(self, slice: Slice) -&gt; None:
         # Trade only base on government contract data
-        for gov_contracts in slice.Get(QuiverGovernmentContract).values():
+        for gov_contracts in slice.get(QuiverGovernmentContract).values():
             # Buy if over 50000 government contract amount, suggesting a large income
             if any([gov_contract.amount &gt; 50000 for gov_contract in gov_contracts]):
                 self.set_holdings(self.aapl, 1)
@@ -119,7 +119,7 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
         if self.last_time &gt; algorithm.time: return []
         
         # Trade signal only based on government contract data
-        data_points = slice.Get(QuiverGovernmentContract)
+        data_points = slice.get(QuiverGovernmentContract)
         
         if not data_points: return []
         
@@ -128,11 +128,11 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
         for data_point in data_points:
             if not algorithm.securities[data_point.key.underlying].price:
                 continue
-            if data_point.Key not in gov_contracts:
-                gov_contracts[data_point.Key] = 0
+            if data_point.key not in gov_contracts:
+                gov_contracts[data_point.key] = 0
 
-            for gov_contract in data_point.Value:
-                gov_contracts[data_point.Key] += gov_contract.amount
+            for gov_contract in data_point.value:
+                gov_contracts[data_point.key] += gov_contract.amount
         
         # Long the top 10 highest government contract amount, predicting a higher expected income and return
         # Short the lowest 10 government contract amount, predicting a lower expected income and return
@@ -146,7 +146,7 @@ class QuiverGovernmentContractAlphaModel(AlphaModel):
         for symbol in short_symbols:
             insights.append(Insight.price(symbol, Expiry.END_OF_DAY, InsightDirection.DOWN))
         
-        self.last_time = Expiry.END_OF_DAY(algorithm.Time)
+        self.last_time = Expiry.END_OF_DAY(algorithm.time)
         
         return insights
         
