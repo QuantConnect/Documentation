@@ -142,7 +142,7 @@ universe = qb.add_universe(qb.universe.etf('SPY', universe_filter_func=select_as
     <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>universe_history</code> method with the universe, a start date, and an end date.</li>
     <div class="section-example-container">
         <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
-        <pre class="python">universe_history = qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13), flatten=True)</pre>
+        <pre class="python">universe_history = qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
     </div>
 
     <p>The end date arguments is optional. If you omit it, the method returns <code>ETFConstituentUniverse</code> data between the start date and the current day.</p>
@@ -150,7 +150,7 @@ universe = qb.add_universe(qb.universe.etf('SPY', universe_filter_func=select_as
     <p class='python'>
         The <code>universe_history</code> method returns a Series where the multi-index is the universe <code>Symbol</code> and the time when universe selection would occur in a backtest. 
         Each row in the data column contains a list of <code>ETFConstituentUniverse</code> objects. 
-        The following image shows the first 3 rows of an example Series:
+        Here is an example of a Series:
     </p>
 
     <div class="python section-example-container">
@@ -162,6 +162,9 @@ Name: data, dtype: object</pre>
 </div>
 
     <p class='python'>To get a flat DataFrame instead of a Series, set the <code>flatten</code> argument to <code>True</code>.</p>
+    <div class="python section-example-container">
+        <pre class="python">qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13), flatten=True)</pre>
+    </div>
 
     <div class='python dataframe-wrapper'>
       <table class="dataframe python">
@@ -260,7 +263,7 @@ Name: data, dtype: object</pre>
     <li class='csharp'>Iterate through the result to access the universe data.</li>
 
     <div class="section-example-container">
-    <pre class="python">for date, constituents in history.droplevel('symbol', axis=0).items():
+    <pre class="python">for date, constituents in universe_history.droplevel('symbol', axis=0).items():
     for constituent in constituents:
         symbol = constituent.symbol
         weight = constituent.weight</pre>
