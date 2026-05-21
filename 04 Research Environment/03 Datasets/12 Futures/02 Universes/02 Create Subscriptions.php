@@ -51,7 +51,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
             </tr>
             <tr>
                 <td><code class="csharp">dataMappingMode</code><code class="python">data_mapping_mode</code></td>
-                <td><code>DataMappingMode.OpenInterest</code></td>
+                <td><code class="csharp">DataMappingMode.OpenInterest</code><code class="python">DataMappingMode.OPEN_INTEREST</code></td>
             </tr>
             <tr>
                 <td><code class="csharp">contractDepthOffset</code><code class="python">contract_depth_offset</code></td>

@@ -57,7 +57,7 @@
         self.market_order(self._symbol, -100, tag=f'SELL: ema-short: {ema_short:.4f} &lt; ema-long: {ema_long:.4f}')</pre>
     </div>
 
-    <li>In the <code>OnOrderEvent</code> method, log each fill to the content string.</li>
+    <li>In the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> method, log each fill to the content string.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnOrderEvent(OrderEvent orderEvent)
 {
