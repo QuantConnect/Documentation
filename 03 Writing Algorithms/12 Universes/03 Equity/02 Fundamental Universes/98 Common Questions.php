@@ -9,7 +9,7 @@ $faqSchema = <<<'JSON'
             "name": "How often does a fundamental universe run?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "Fundamental universes run once per day by default. To change the cadence, set <code>UniverseSettings.Schedule</code> before adding the universe. See <a href=\"/docs/v2/writing-algorithms/universes/settings#10-Schedule\">Schedule</a>."
+                "text": "Fundamental universes run once per day by default. To change the cadence, set <code class=\"csharp\">UniverseSettings.Schedule</code><code class=\"python\">universe_settings.schedule</code> before adding the universe. See <a href=\"/docs/v2/writing-algorithms/universes/settings#10-Schedule\">Schedule</a>."
             }
         },
         {
@@ -33,7 +33,7 @@ $faqSchema = <<<'JSON'
             "name": "Can I call AddEquity inside the universe filter function?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. Return a list of <code>Symbol</code> objects from the filter function and LEAN subscribes to them automatically. Calling <code>AddEquity</code> (<code>add_equity</code> in Python) inside the filter creates duplicate subscriptions and unexpected behavior."
+                "text": "No. Return a list of <code>Symbol</code> objects from the filter function and LEAN subscribes to them automatically. Calling <code class=\"csharp\">AddEquity</code><code class=\"python\">add_equity</code> inside the filter creates duplicate subscriptions and unexpected behavior."
             }
         },
         {

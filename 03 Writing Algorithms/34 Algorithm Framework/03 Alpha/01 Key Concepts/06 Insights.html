@@ -38,7 +38,7 @@ var insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up);<
 <h4>Group Insights</h4>
 <p>Sometimes an algorithm's performance relies on multiple insights being traded together, like in pairs trading and options straddles. These types insights should be grouped. Insight groups signal to the Execution model that the insights need to be acted on as a single unit to maximize the alpha created.</p>
 
-<p>To mark insights as a group, call the <code>Insight.Group</code> method.</p>
+<p>To mark insights as a group, call the <code class="csharp">Insight.Group</code><code class="python">Insight.group</code> method.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// Generate and group insights for a set of tickers with a 20-minute prediction horizon; each Insight object provides directional signals, magnitudes, and confidence for price movement.
@@ -58,7 +58,7 @@ return Insight.group(insights)
 <h4>Cancel Insights</h4>
 <p>If an Alpha model in your algorithm emits an Insight to enter a position but it determines the trading opportunity has pre-maturely ended, you should cancel the Insight. For example, say you want your algorithm to enter a long position in a security when its <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index'>Relative Strength Index</a> (RSI) moves below 20 and then liquidate the position when the security's RSI moves above 30. If you emit an Insight that has a duration of 30 days when the RSI moves below 20 but the RSI moves above 30 in 10 days, you should cancel the Insight.</p>
 
-<p>To cancel an Insight, call its <code class="csharp">Cancel</code><code class="python">cancel</code>/<code>Expire</code> method with the algorithm's Coordinated Universal Time (UTC).</p>
+<p>To cancel an Insight, call its <code class="csharp">Cancel</code><code class="python">cancel</code>/<code class="csharp">Expire</code><code class="python">expire</code> method with the algorithm's Coordinated Universal Time (UTC).</p>
 
 <div class="section-example-container">
     <pre class="python"># Cancel any outstanding insights to ensure only current predictions are considered and to avoid outdated signals influencing trading decisions.

@@ -55,12 +55,12 @@
             <td>
                 <h4>Property: <span><code class="csharp">DataMappingMode</code><code class="python">data_mapping_mode</code></span></h4>
                 <p class='property-description'>How should continuous Future contracts be mapped? This setting is only available for Future assets.</p>
-                <p>Data Type: <span><code>DataMappingMode</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>DataMappingMode.OpenInterest</code></span></p>
+                <p>Data Type: <span><code>DataMappingMode</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">DataMappingMode.OpenInterest</code><code class="python">DataMappingMode.OPEN_INTEREST</code></span></p>
             </td>
         </tr>
         <tr>
             <td>
-                <h4>Property: <span><code class="csharp">DataNormalizationMode</code><code class="pythpn">data_normalization_mode</code></span></h4>
+                <h4>Property: <span><code class="csharp">DataNormalizationMode</code><code class="python">data_normalization_mode</code></span></h4>
                 <p class='property-description'>How should historical prices be adjusted? This setting is only available for Equity and Futures assets.</p>
                 <p>Data Type: <span><code>DataNormalizationMode</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">DataNormalizationMode.Adjusted</code><code class="python">DataNormalizationMode.ADJUSTED</code></span></p>
             </td>
