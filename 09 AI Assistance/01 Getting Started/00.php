@@ -108,7 +108,7 @@
     </div>
     <div class="tutorial-step">
         <p>6. Click <span class='button-name'>Deploy Mia</span>.</p>
-        <p>Congratulations! You've just deployed your first assistant. Mia will read your description and then get to work researching the idea, and writing code.</p>
+        <p>Congratulations! You've just deployed your first assistant. Mia will read your description and then get to work researching the idea and writing code.</p>
     </div>
     <div class="tutorial-step">
         <p>7. When Mia finishes the research, prompt her to backtest the strategy.</p>
