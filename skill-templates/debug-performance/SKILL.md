@@ -24,7 +24,6 @@ and universe, then shrink both: usually 1 to 3 months and the smallest universe
 that still reproduces the slowdown. Set
 py`self.settings.performance_sample_period = timedelta(7)`cs`Settings.PerformanceSamplePeriod = TimeSpan.FromDays(7)`
 in py`initialize`cs`Initialize`, then run the short backtest.
-
 Open the results and inspect the Performance Chart. Record the dominant series:
 the tallest spike, or the sustained plateau if there is no single spike. Do not
 optimize before naming the series.
@@ -37,7 +36,6 @@ Read which series dominates:
 - CPU, ManagedRAM, or TotalRAM high with no single time-series dominant ->
   Section 4 for Python, or keep using the chart for C#.
 - DataPoints low -> Section 3, Subscriptions row.
-
 If multiple series spike together, start with the earliest causal source:
 Subscriptions before Consolidators, Consolidators before OnData, Selection
 before Securities or Transactions. Treat CPU and RAM as symptoms until the chart
