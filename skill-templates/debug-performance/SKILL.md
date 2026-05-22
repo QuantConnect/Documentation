@@ -7,13 +7,11 @@ description: >
 ---
 
 # /debug-performance - QuantConnect Performance Debugging
-
 Invoked on a slow backtest. Work top to bottom. Find the dominant cost before
 changing code. Same Performance Chart rules for `main.py` and `main.cs`; Python
 can add cProfile only when Section 4 says to.
 
 ## 0. Never add error-hiding patterns
-
 Never introduce py`try`/`except`cs`try`/`catch` or
 py`hasattr`/`getattr`/`setattr`/`isinstance`cs`reflection`. They hide the exact
 failure or slow path. A profiler wrapper measures work; it is not a catch. If
@@ -21,7 +19,6 @@ existing code wraps the slow region in one, remove it, re-run, read the real
 behavior, then continue.
 
 ## 1. Enable Performance Chart first
-
 Record the original py`set_start_date`/`set_end_date`cs`SetStartDate`/`SetEndDate`
 and universe, then shrink both: usually 1 to 3 months and the smallest universe
 that still reproduces the slowdown. Set
@@ -33,7 +30,6 @@ the tallest spike, or the sustained plateau if there is no single spike. Do not
 optimize before naming the series.
 
 ## 2. Route by dominant series
-
 Read which series dominates:
 - Selection, Consolidators, OnData, Schedule, Subscriptions, Securities,
   Transactions, SplitsDividendsDelisting, Slice, HistoryDataPoints, or
@@ -48,16 +44,13 @@ before Securities or Transactions. Treat CPU and RAM as symptoms until the chart
 or profiler names the code path.
 
 ## 3. Fix by bottleneck
-
 Change only the code path that corresponds to the dominant series. Re-run the
 same short backtest after each change and compare the same chart region.
-
 For rolling calculations, use this order: built-in indicator first, indicator
 extension second, `Security.session` for cached OHLCV/session data third, and
 manual `RollingWindow`/`deque` only when LEAN has no built-in equivalent. Example:
 a trailing mean of closes is an SMA, so use py`self.sma(security, period)` instead
 of storing closes and averaging them manually.
-
 | Series | Meaning | Fix |
 | --- | --- | --- |
 | Selection | Universe add/remove and selection functions. | Reduce coarse universe size; move expensive fundamental queries out of the filter; cache results across calls. |
@@ -71,20 +64,16 @@ of storing closes and averaging them manually.
 | Slice | Time creating the py`slice`cs`Slice` object. | Reduce subscription count, resolution, and custom data fields before optimizing handlers. |
 | HistoryDataPoints | History provider data points. | Reduce py`history`cs`History` calls; replace rolling calculations with indicators/extensions; use py`Security.session`cs`Security.Session` for cached OHLCV/session data; request fewer symbols, fields, or bars. |
 | ActiveSecurities | Selected securities plus holdings and open orders. | Prune stale symbols; liquidate or cancel old positions/orders before broadening the universe. |
-
 Logging rules: measure with py`self.log(...)`cs`Log(...)` in the narrow handler
 being debugged. Never use the Object Store for profiler output. Never log inside
 py`on_data`cs`OnData` or an often-firing scheduled event without a counter limit.
 Remove diagnostic logs after the fix.
 
 ## 4. Python profiler with logs
-
 Use cProfile only when CPU, ManagedRAM, or TotalRAM is high and the Performance
 Chart does not isolate the expensive function. This is Python only. C# does not
 have a built-in cProfile equivalent; use the chart series exclusively.
-
 1. At the top of `main.py`, before the class:
-
 ```python
 from cProfile import Profile
 from pstats import Stats
@@ -93,7 +82,6 @@ from io import StringIO
 profile = Profile()
 profile.enable()
 ```
-
 2. In py`on_end_of_algorithm`cs`OnEndOfAlgorithm`, disable the profiler and log
    the top cumulative-time lines. Do not save the report to the Object Store:
 
@@ -109,12 +97,10 @@ def on_end_of_algorithm(self):
 
 3. Read the cumulative time column in the backtest logs. The top function is the
    bottleneck; map it back to a Section 3 series and apply the matching fix.
-
 Remove the profiler after measurement unless the user explicitly wants another
 profiling run.
 
 ## 5. Checklist
-
 1. No banned error-hiding pattern (Section 0).
 2. Original dates + universe recorded before shrinking.
 3. Performance Chart enabled; short backtest run to expose the dominant series.
