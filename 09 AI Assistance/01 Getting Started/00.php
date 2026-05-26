@@ -118,7 +118,8 @@
         <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-prompt-assistant-deploy.webp" alt="prompt assistant" /></div>
     </div>
     <div class="tutorial-step">
-        <p>9. At the top of the conversation, click the project name to open the project.</p>
+        <p>9. At the top of the conversation, click "Open Project" to open it.</p>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-open-project.webp" alt="open project" /></div>
     </div>
     <div class="tutorial-step">
         <p>10. At the top of the project page, click the <img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Deploy live icon"> <span class="icon-name">Deploy Live</span> icon.</p>
