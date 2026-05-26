@@ -124,6 +124,7 @@
     <div class="tutorial-step">
         <p>10. At the top of the project page, click the <img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Deploy live icon"> <span class="icon-name">Deploy Live</span> icon.</p>
         <p>This page shows you the live performance of your strategy as it runs in the market, and you can check back here anytime to see how it's doing.</p>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-deploy-live.webp" alt="deploy live" /></div>
     </div>
     
 </div>
