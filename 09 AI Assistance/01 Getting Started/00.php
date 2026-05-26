@@ -95,11 +95,11 @@
     </div>
     <div class="tutorial-step">
         <p>3. On the Research Pipeline, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/research-pipeline-plus-icon.png"> <span class="icon-name">Add card</span> icon.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-add-card.webp" alt="add card" />
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-add-card.webp" alt="add card" /></div>
     </div>
     <div class="tutorial-step">
         <p>4. In the description text area, describe a new trading idea you want to investigate.</p>
-        <blockquote><p>> Research this strategy idea: SMA crossover trading algorithm on SPY. When it's below the SMA, hold gold instead.</p></blockquote>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-new-idea.webp" alt="add idea" /></div>
     </div>
     <div class="tutorial-step">
         <p>5. In the bottom-left corner, click the <span class='field-name'>Assistant</span> field and then click <span class='field-name'>Mia</span> from the drop-down menu.</p>
