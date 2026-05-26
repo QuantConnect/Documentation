@@ -103,6 +103,7 @@
     </div>
     <div class="tutorial-step">
         <p>5. In the bottom-left corner, click the <span class='field-name'>Assistant</span> field and then click <span class='field-name'>Mia</span> from the drop-down menu.</p>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-select-mia.webp" alt="select assistant" /></div>
     </div>
     <div class="tutorial-step">
         <p>6. Click <span class='button-name'>Deploy Mia</span>.</p>
