@@ -52,7 +52,7 @@
     <div class="tutorial-header">
         <h3 style="text-align:center;">QUANTCONNECT ASSISTANTS</h3>
         <p style="max-width:70ch;margin: 0 auto;">Agentic AI helpers to execute your quant research process.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/local-platform-header.webp"
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/assistant-header-img.webp"
                 alt="AI Assistants" />
         </div>
     </div>
