@@ -3,6 +3,6 @@
 <?
 // Tag: div section-example-container testable
 $number = 1;
-$framework = false;
+$framework = true;
 include(DOCS_RESOURCES."/examples/universe-settings.php"); 
 ?>
