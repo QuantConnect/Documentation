@@ -111,7 +111,7 @@
     </div>
     <div class="tutorial-step">
         <p>7. When Mia finishes the research, prompt her to backtest the strategy.</p>
-        <blockquote><p>> Backtest this strategy.</p></blockquote>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-prompt-assistant.webp" alt="prompt assistant" /></div>
     </div>
     <div class="tutorial-step">
         <p>8. When the backtest completes, ask Mia to deploy the strategy to paper trading.</p>
