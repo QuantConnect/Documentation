@@ -115,7 +115,7 @@
     </div>
     <div class="tutorial-step">
         <p>8. When the backtest completes, ask Mia to deploy the strategy to paper trading.</p>
-        <blockquote><p>> Deploy this strategy to paper trading.</p></blockquote>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-prompt-assistant-deploy.webp" alt="prompt assistant" /></div>
     </div>
     <div class="tutorial-step">
         <p>9. At the top of the conversation, click the project name to open the project.</p>
