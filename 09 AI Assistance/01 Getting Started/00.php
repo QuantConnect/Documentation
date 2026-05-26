@@ -50,11 +50,10 @@
 
 <div class="docs-tutorial">
     <div class="tutorial-header">
-        <h3 style="text-align:center;">QUANTCONNECT ASSISTANCE</h3>
-        <p style="max-width:70ch;margin: 0 auto;">Guide through creating a project, running your first backtest,
-            and live algo trading in QuantConnect Local Platform.</p>
+        <h3 style="text-align:center;">QUANTCONNECT ASSISTANTS</h3>
+        <p style="max-width:70ch;margin: 0 auto;">Agentic AI helpers to execute your quant research process.</p>
         <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/local-platform-header.webp"
-                alt="Local Platform" />
+                alt="AI Assistants" />
         </div>
     </div>
 
@@ -64,18 +63,16 @@
       If you'd prefer a more hands-on approach or a local LLM integration, you can harness some of the new tools we publish to make this easier—such as our chatbots, agents, and an MCP server.
     </p>
 
-    <h4>QuantConnect Chatbot</h4>
+    <h4>Mia - Agentic Peer Programmer</h4>
     <p>
-      Mia is our <span class='new-term'>agentic</span> coding assistant. 
-      Think of agentic coding as a form of pair programming, where you are the observer who gives high-level directions and Mia is the driver who writes the code and calls the QuantConnect API. 
-      She is aware of the entire project's context, QuantConnect documentation, runtime errors, and logs, and uses a proprietary blend of commercial and open-source models to accomplish the goals you set. 
+      Mia is our <span class='new-term'>agentic</span> peer programmer. Think of agentic coding as a form of pair programming, where you are the observer who gives high-level directions and Mia
+        is the driver who writes the code and calls the QuantConnect API. She is aware of the entire project's context, QuantConnect documentation, runtime errors, and logs, and uses a proprietary blend of commercial and open-source models to accomplish the goals you set. 
       We trained Mia on hundreds of algorithms and thousands of documentation pages to provide contextual assistance for most issues you may encounter when developing a strategy. 
       Agentic conversations like this unlock the ability for everyone to create, research, and deploy algorithmic trading strategies without being an expert programmer. 
     </p>
 
     <p>
-      We encourage using Mia before other commercially available LLMs. 
-      Our benchmarks show Mia is able to generate working QuantConnect code in 75% of test cases vs OpenAI o3 25%. 
+      We encourage using Mia before other commercially available LLMs. Our benchmarks show Mia is able to generate working QuantConnect code in 75% of test cases vs OpenAI or Claude. 
     </p>
 
     <h4>QuantConnect MCP Server</h4>
