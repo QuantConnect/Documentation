@@ -95,6 +95,7 @@
     </div>
     <div class="tutorial-step">
         <p>3. On the Research Pipeline, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/research-pipeline-plus-icon.png"> <span class="icon-name">Add card</span> icon.</p>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-add-card.webp" alt="add card" />
     </div>
     <div class="tutorial-step">
         <p>4. In the description text area, describe a new trading idea you want to investigate.</p>
