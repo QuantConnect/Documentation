@@ -20,14 +20,11 @@
         // We want to trade the EMA with raw price but not altered by splits.
         UniverseSettings.DataNormalizationMode = DataNormalizationMode.SplitAdjusted;
 
-        <? if ($framework) { ?>
-        // Select and trade the top liquid universe.
+        <? if ($framework) { ?>// Select and trade the top liquid universe.
         AddUniverseSelection(new QC500UniverseSelectionModel());
-        <? } else { ?>
-        // Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
+        <? } else { ?>// Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
         AddUniverse(Universe.Top(10));
-        <? } ?>
-    }
+    <? } ?>}
 
     public override void OnData(Slice slice)
     {
@@ -83,11 +80,9 @@
         # We want to trade the EMA with raw price but not altered by splits.
         self.universe_settings.data_normalization_mode = DataNormalizationMode.SPLIT_ADJUSTED
 
-        <? if ($framework) { ?>
-        # Select and trade the top liquid universe.
+        <? if ($framework) { ?># Select and trade the top liquid universe.
         self.add_universe_selection(QC500UniverseSelectionModel())
-        <? } else { ?>
-        # Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
+        <? } else { ?># Only trade on the top 10 most traded stocks since they have the most popularity to drive trends.
         self.add_universe(self.universe.top(10))
         <? } ?>
 
