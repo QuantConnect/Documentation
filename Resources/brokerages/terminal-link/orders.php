@@ -132,6 +132,22 @@
             <td></td>
         </tr>
         <tr>
+            <td><code class="csharp">LocateBroker</code><code class="python">locate_broker</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>
+                The EMSX locate broker code that identifies the counterparty the shares are borrowed from for a short equity sale (for example, <code>"BMTB"</code>).
+                Maps to the <code>LocBrkr</code> field on the EMSX trading ticket.
+                Setting this property (or <code class="csharp">LocateId</code><code class="python">locate_id</code>) on a short equity sale causes the brokerage to emit <code>EMSX_LOCATE_REQ = "Y"</code> alongside.
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">LocateId</code><code class="python">locate_id</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>The EMSX locate confirmation/ticket Id that the lending broker returns. Maps to the <code>LocId</code> field on the EMSX trading ticket.</td>
+            <td></td>
+        </tr>
+        <tr>
             <td><code class="csharp">Strategy</code><code class="python">strategy</code></td>
             <td><code>StrategyParameters</code></td>
             <td>
