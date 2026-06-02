@@ -27,7 +27,8 @@ if ($isBrokerage) {
       "Alpaca",
       "Tastytrade",
       "Eze",
-      "dYdX"
+      "dYdX",
+      "Webull"
   );
   $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 }
@@ -84,6 +85,7 @@ Select a brokerage:
 17) Tastytrade
 18) Eze
 19) dYdX
+20) Webull
 </div>
 </li>
 
