@@ -19,9 +19,9 @@ class CorporateBuybacksDataAlgorithm(QCAlgorithm):
         self._smart_insider_intention_data = self.add_data(SmartInsiderIntention, self._equity).symbol
         self._smart_insider_transaction_data = self.add_data(SmartInsiderTransaction, self._equity).symbol
         # Warm up custom data subscriptions with historical data.
-        history = self.history(self._smart_insider_intention_data, 365, Resolution.DAILY)
+        history = self.history(self._smart_insider_intention_data, 252, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for intentions")
-        history = self.history(self._smart_insider_transaction_data, 365, Resolution.DAILY)
+        history = self.history(self._smart_insider_transaction_data, 252, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for transactions")
 
     def on_data(self, data: Slice) -&gt; None:
@@ -48,10 +48,10 @@ class CorporateBuybacksDataAlgorithm(QCAlgorithm):
         _smartInsiderIntentionData = AddData&lt;SmartInsiderIntention&gt;(_equity.Symbol).Symbol;
         _smartInsiderTransactionData = AddData&lt;SmartInsiderTransaction&gt;(_equity.Symbol).Symbol;
         // Warm up custom data subscriptions with historical data.
-        var intentionHistory = History&lt;SmartInsiderIntention&gt;(_smartInsiderIntentionData, TimeSpan.FromDays(365), Resolution.Daily);
+        var intentionHistory = History&lt;SmartInsiderIntention&gt;(_smartInsiderIntentionData, TimeSpan.FromDays(252), Resolution.Daily);
         var intentionCount = intentionHistory.Count();
         Debug($"We got {intentionCount} items from our history request for intentions");
-        var transactionHistory = History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransactionData, TimeSpan.FromDays(365), Resolution.Daily);
+        var transactionHistory = History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransactionData, TimeSpan.FromDays(252), Resolution.Daily);
         var transactionCount = transactionHistory.Count();
         Debug($"We got {transactionCount} items from our history request for transactions");
     }
@@ -111,10 +111,10 @@ class CorporateBuybacksAlphaModel(AlphaModel):
             self.smart_insider_transaction = algorithm.add_data(SmartInsiderTransaction, self.aapl).symbol
             
             # Historical data
-            history = algorithm.history(self.smart_insider_intention, 365, Resolution.DAILY)
+            history = algorithm.history(self.smart_insider_intention, 252, Resolution.DAILY)
             algorithm.debug(f"We got {len(history)} items from our history request for intentions")
             
-            history = algorithm.history(self.smart_insider_transaction, 365, Resolution.DAILY)
+            history = algorithm.history(self.smart_insider_transaction, 252, Resolution.DAILY)
             algorithm.debug(f"We got {len(history)} items from our history request for transactions")</pre>
 <pre class="csharp">public class CorporateBuybacksDataAlgorithm : QCAlgorithm
 {
@@ -162,10 +162,10 @@ class CorporateBuybacksAlphaModel(AlphaModel):
                 _smartInsiderTransaction = algorithm.AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
                 
                 // Historical data
-                var intentionHistory = algorithm.History&lt;SmartInsiderIntention&gt;(_smartInsiderIntention, 365, Resolution.Daily);
+                var intentionHistory = algorithm.History&lt;SmartInsiderIntention&gt;(_smartInsiderIntention, 252, Resolution.Daily);
                 algorithm.Debug($"We got {intentionHistory.Count()} items from our history request for intentions");
                 
-                var transactionHistory = algorithm.History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransaction, 365, Resolution.Daily);
+                var transactionHistory = algorithm.History&lt;SmartInsiderTransaction&gt;(_smartInsiderTransaction, 252, Resolution.Daily);
                 algorithm.Debug($"We got {transactionHistory.Count()} items from our history request for transactions");
             }
         }

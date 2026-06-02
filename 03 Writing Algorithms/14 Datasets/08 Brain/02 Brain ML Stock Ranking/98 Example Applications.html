@@ -29,7 +29,7 @@ class BrainMLRankingDataAlgorithm(QCAlgorithm):
             dataset_symbol = self.add_data(BrainStockRanking2Day, equity).symbol
             self.equity_by_dataset_symbol[dataset_symbol] = equity
             # Request historical ranking data to inspect subscription coverage.
-            history = self.history(dataset_symbol, 365, Resolution.DAILY)
+            history = self.history(dataset_symbol, 252, Resolution.DAILY)
             self.debug(f"We got {len(history)} items from our history request for {equity}")
 
     def on_data(self, data: Slice) -&gt; None:
@@ -156,7 +156,7 @@ class BrainMLRankingAlphaModel(AlphaModel):
             # Request data for the two-day estimated relative ranking.
             security.brain_stock_ranking_2_day = algorithm.add_data(BrainStockRanking2Day, security, Resolution.DAILY)
             # Historical data.
-            history = algorithm.history(security.brain_stock_ranking_2_day, 365, Resolution.DAILY)
+            history = algorithm.history(security.brain_stock_ranking_2_day, 252, Resolution.DAILY)
             algorithm.debug(f"We got {len(history)} items from our history request for {security.brain_stock_ranking_2_day.symbol}")
         for security in changes.removed_securities:
             # Unsubscribe from the Brain ML Ranking feed for this security to release resources.
@@ -231,7 +231,7 @@ public class BrainMLRankingAlphaModel : AlphaModel
             var brainStockRanking2Day = algorithm.AddData&lt;BrainStockRanking2Day&gt;(security.Symbol, Resolution.Daily);
             security.Set("BrainStockRanking2Day", brainStockRanking2Day);
             // Historical data.
-            var history = algorithm.History&lt;BrainStockRanking2Day&gt;(brainStockRanking2Day.Symbol, 365, Resolution.Daily);
+            var history = algorithm.History&lt;BrainStockRanking2Day&gt;(brainStockRanking2Day.Symbol, 252, Resolution.Daily);
             algorithm.Debug($"We got {history.Count()} items from our history request for {brainStockRanking2Day}");
         }
         foreach (var security in changes.RemovedSecurities)

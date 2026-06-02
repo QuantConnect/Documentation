@@ -24,7 +24,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
         # Request the processed longer term sentiment score data for sentiment trading.
         self.aapl = self.add_equity("AAPL", Resolution.DAILY)
         self.dataset_symbol = self.add_data(BrainSentimentIndicator30Day, self.aapl).symbol
-        history = self.history(self.dataset_symbol, 100, Resolution.DAILY)
+        history = self.history(self.dataset_symbol, 252, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from our history request for {self.dataset_symbol}")
         if history.empty:
             return
@@ -65,7 +65,7 @@ class BrainSentimentDataAlgorithm(QCAlgorithm):
         // Request the processed longer term sentiment score data for sentiment trading.
         _aapl = AddEquity("AAPL", Resolution.Daily);
         _datasetSymbol = AddData&lt;BrainSentimentIndicator30Day&gt;(_aapl.Symbol).Symbol;
-        var history = History&lt;BrainSentimentIndicator30Day&gt;(_datasetSymbol, 100, Resolution.Daily);
+        var history = History&lt;BrainSentimentIndicator30Day&gt;(_datasetSymbol, 252, Resolution.Daily);
         Debug($"We got {history.Count()} items from our history request for {_datasetSymbol}");
         // Warm up historical sentiment values so the signal is immediately tradable.
         var previousSentimentValues = history.Select(x =&gt; x.Sentiment);
@@ -147,7 +147,7 @@ class BrainSentimentAlphaModel(AlphaModel):
             security.latest_sentiment_value = data_point.sentiment
             # Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
             if security.price and target_direction == InsightDirection.UP and not security.invested:
-                insights.append(Insight.price(security, timedelta(100), target_direction))
+                insights.append(Insight.price(security, timedelta(252), target_direction))
         return insights
                 
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
@@ -157,7 +157,7 @@ class BrainSentimentAlphaModel(AlphaModel):
             security.brain_sentiment_data = dataset.symbol
             security.latest_sentiment_value = None
             # Historical data
-            history = algorithm.history(dataset, 100, Resolution.DAILY)
+            history = algorithm.history(dataset, 252, Resolution.DAILY)
             if not history.empty:
                 # Warm up historical sentiment values, cache for comparing last sentiment score to trade
                 previous_sentiment_values = history.loc[security.brain_sentiment_data].sentiment.values
@@ -216,7 +216,7 @@ public class BrainSentimentAlphaModel : AlphaModel
             // Buy if sentiment increase, liquidate otherwise to ride on the popularity of the equity
             if (security.Price != 0 &amp;&amp; targetDirection == InsightDirection.Up &amp;&amp; !security.Holdings.Invested)
             {
-                insights.Add(Insight.Price(security.Symbol, TimeSpan.FromDays(100), targetDirection));
+                insights.Add(Insight.Price(security.Symbol, TimeSpan.FromDays(252), targetDirection));
             }
         }
         return insights;
@@ -231,7 +231,7 @@ public class BrainSentimentAlphaModel : AlphaModel
             security.Set("BrainSentimentData", dataset.Symbol);
             security.Set("LatestSentimentValue", null);
             // Historical data
-            var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(dataset.Symbol, 100, Resolution.Daily).ToList();
+            var history = algorithm.History&lt;BrainSentimentIndicator30Day&gt;(dataset.Symbol, 252, Resolution.Daily).ToList();
             if (history.Count() != 0)
             {
                 // Warm up historical sentiment values, cache for comparing last sentiment score to trade
