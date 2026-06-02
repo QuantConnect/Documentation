@@ -1,0 +1,39 @@
+<p>You can get historical universe data in an algorithm and in the Research Environment.</p>
+
+<h4>Historical Universe Data in Algorithms</h4>
+<p>To get historical universe data in an algorithm, call the <code class="csharp">History</code><code class="python">history</code> method with the <code>Universe</code> object and the lookback period. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var universeHistory = History(_universe, 30, Resolution.Daily);
+foreach (var ipos in universeHistory)
+{
+    foreach (EODHDUpcomingIPOs ipo in ipos)
+    {
+        Log($"{ipo.Symbol} offer price at {ipo.IpoDate}: {ipo.OfferPrice}");
+    }
+}</pre>
+     <pre class="python"># DataFrame example where the columns are the EODHDUpcomingIPOs attributes: 
+history_df = self.history(self._universe, 30, Resolution.DAILY, flatten=True)
+
+# Series example where the values are lists of EODHDUpcomingIPOs objects: 
+universe_history = self.history(self._universe, 30, Resolution.DAILY)
+for (_, time), ipos in universe_history.items():
+    for ipo in ipos:
+        self.log(f"{ipo.symbol} offer price at {ipo.ipo_date}: {ipo.offer_price}")</pre>
+</div>
+
+<h4>Historical Universe Data in Research</h4>
+<p>To get historical universe data in research, call the <code class="csharp">History</code><code class="python">history</code> method with the <code>Universe</code> object, a start date, and an end date. This method returns the filtered universe. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var universeHistory = qb.History(universe, qb.Time.AddDays(-30), qb.Time);
+foreach (var ipos in universeHistory)
+{
+    foreach (EODHDUpcomingIPOs ipo in ipos)
+    {
+        Console.WriteLine($"{ipo.Symbol} offer price at {ipo.IpoDate}: {ipo.OfferPrice}");
+    }
+}</pre>
+     <pre class="python"># DataFrame example where the columns are the EODHDUpcomingIPOs attributes: 
+history = qb.history(universe, qb.time-timedelta(30), qb.time, flatten=True)</pre>
+</div>
