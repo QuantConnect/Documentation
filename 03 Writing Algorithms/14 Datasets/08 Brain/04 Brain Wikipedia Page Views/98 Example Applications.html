@@ -29,7 +29,7 @@ class BrainWikipediaPageViewsRankingAlgorithm(QCAlgorithm):
             equity.dataset_symbol = self.add_data(BrainWikipediaPageViews, equity.symbol).symbol 
 
             # Historical data 
-            history = self.history(equity.dataset_symbol, 365, Resolution.DAILY) 
+            history = self.history(equity.dataset_symbol, 252, Resolution.DAILY) 
             self.debug(f"We got {len(history)} items from our history request for {equity.symbol}") 
 
     def on_data(self, slice: Slice) -&gt; None: 
@@ -40,10 +40,10 @@ class BrainWikipediaPageViewsRankingAlgorithm(QCAlgorithm):
 
         scores = {}
 
-        for point in points.Values: 
+        for point in points.values(): 
             # Example composite signal: 
-            number_of_views = point.NumberViews1 if point.NumberViews1 else 0
-            buzz1day = point.Buzz1 if point.Buzz1 else 0
+            number_of_views = point.number_views_1 if point.number_views_1 else 0
+            buzz1day = point.buzz_1 if point.buzz_1 else 0
             
             symbol = point.symbol.underlying
             scores[symbol] = buzz1day * math.sqrt(number_of_views)
@@ -85,7 +85,7 @@ class BrainWikipediaPageViewsRankingAlgorithm(QCAlgorithm):
             var datasetSymbol = AddData&lt;BrainWikipediaPageViews&gt;(symbol).Symbol;
 
             // Historical data (request dataset symbol) 
-            var history = History(datasetSymbol, 365, Resolution.Daily); 
+            var history = History(datasetSymbol, 252, Resolution.Daily); 
             Debug($"We got {history.Count()} items from our history request for {symbol}"); 
         } 
     } 

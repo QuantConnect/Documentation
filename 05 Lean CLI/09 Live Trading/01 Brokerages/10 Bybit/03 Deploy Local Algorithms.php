@@ -23,9 +23,9 @@ VIP Level (VIP0, VIP1, VIP2, VIP3, VIP4, VIP5, SupremeVIP, Pro1, Pro2, Pro3, Pro
 <li>Enter the environment to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Use testnet? (live, paper): live</pre>
+Use testnet? (live, paper, demo): live</pre>
 </div>
-<p>The paper environment is <a href='https://learn.bybit.com/bybit-guide/what-is-bybit-demo-trading/' rel='nofollow' target='_blank'>Bybit Demo Trading</a>.</p>
+<p>The <span class='box-name'>paper</span> environment is the <a href='https://testnet.bybit.com/' rel='nofollow' target='_blank'>Bybit Testnet</a> and the <span class='box-name'>demo</span> environment is <a href='https://www.bybit.com/en/help-center/article/FAQ-Demo-Trading' rel='nofollow' target='_blank'>Bybit Demo Trading</a>. Both environments require API credentials that you create in that environment; your live account keys won't work.</p>
 </li>
 ";
 

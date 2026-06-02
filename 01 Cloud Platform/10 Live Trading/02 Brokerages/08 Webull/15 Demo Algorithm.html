@@ -1,0 +1,48 @@
+<p>The following algorithm demonstrates the functionality of the Webull brokerage:</p>
+
+<div class="section-example-container testable">
+	<pre class="csharp">// Demonstrate Webull brokerage functionality with an EMA crossover strategy on SPY.
+public class WebullDemoAlgorithm : QCAlgorithm
+{
+    private ExponentialMovingAverage _fast;
+    private ExponentialMovingAverage _slow;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        SetBrokerageModel(BrokerageName.Webull, AccountType.Margin);
+        var symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _fast = EMA(symbol, 10, Resolution.Daily);
+        _slow = EMA(symbol, 50, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!_slow.IsReady) return;
+        if (_fast &gt; _slow &amp;&amp; !Portfolio.Invested)
+            SetHoldings("SPY", 1);
+        else if (_fast &lt; _slow &amp;&amp; Portfolio.Invested)
+            Liquidate();
+    }
+}</pre>
+	<pre class="python"># Demonstrate Webull brokerage functionality with an EMA crossover strategy on SPY.
+class WebullDemoAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.set_brokerage_model(BrokerageName.WEBULL, AccountType.MARGIN)
+        symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._fast = self.ema(symbol, 10, Resolution.DAILY)
+        self._slow = self.ema(symbol, 50, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self._slow.is_ready:
+            return
+        if self._fast.current.value &gt; self._slow.current.value and not self.portfolio.invested:
+            self.set_holdings("SPY", 1)
+        elif self._fast.current.value &lt; self._slow.current.value and self.portfolio.invested:
+            self.liquidate()</pre>
+</div>

@@ -50099,6 +50099,122 @@ const DATA = {
     ],
     "holidays": []
   },
+  "Future-cfe-VXM": {
+    "exchangeTimeZone": "America/Chicago",
+    "sunday": [
+      {
+        "start": "17:00:00",
+        "end": "1.00:00:00",
+        "state": "premarket"
+      }
+    ],
+    "monday": [
+      {
+        "start": "00:00:00",
+        "end": "08:30:00",
+        "state": "premarket"
+      },
+      {
+        "start": "08:30:00",
+        "end": "15:00:00",
+        "state": "market"
+      },
+      {
+        "start": "15:00:00",
+        "end": "16:00:00",
+        "state": "postmarket"
+      },
+      {
+        "start": "17:00:00",
+        "end": "1.00:00:00",
+        "state": "postmarket"
+      }
+    ],
+    "tuesday": [
+      {
+        "start": "00:00:00",
+        "end": "08:30:00",
+        "state": "premarket"
+      },
+      {
+        "start": "08:30:00",
+        "end": "15:00:00",
+        "state": "market"
+      },
+      {
+        "start": "15:00:00",
+        "end": "16:00:00",
+        "state": "postmarket"
+      },
+      {
+        "start": "17:00:00",
+        "end": "1.00:00:00",
+        "state": "postmarket"
+      }
+    ],
+    "wednesday": [
+      {
+        "start": "00:00:00",
+        "end": "08:30:00",
+        "state": "premarket"
+      },
+      {
+        "start": "08:30:00",
+        "end": "15:00:00",
+        "state": "market"
+      },
+      {
+        "start": "15:00:00",
+        "end": "16:00:00",
+        "state": "postmarket"
+      },
+      {
+        "start": "17:00:00",
+        "end": "1.00:00:00",
+        "state": "postmarket"
+      }
+    ],
+    "thursday": [
+      {
+        "start": "00:00:00",
+        "end": "08:30:00",
+        "state": "premarket"
+      },
+      {
+        "start": "08:30:00",
+        "end": "15:00:00",
+        "state": "market"
+      },
+      {
+        "start": "15:00:00",
+        "end": "16:00:00",
+        "state": "postmarket"
+      },
+      {
+        "start": "17:00:00",
+        "end": "1.00:00:00",
+        "state": "postmarket"
+      }
+    ],
+    "friday": [
+      {
+        "start": "00:00:00",
+        "end": "08:30:00",
+        "state": "premarket"
+      },
+      {
+        "start": "08:30:00",
+        "end": "15:00:00",
+        "state": "market"
+      },
+      {
+        "start": "15:00:00",
+        "end": "16:00:00",
+        "state": "postmarket"
+      }
+    ],
+    "holidays": []
+  },
   "Future-cme-E3G": {
     "exchangeTimeZone": "America/New_York",
     "sunday": [
@@ -70038,6 +70154,7 @@ const NAMES = {
   "RTY": "E-mini  Russell 2000 Index Futures",
   "YM": "E-mini Dow ($5) Futures",
   "VX": "VIX futures",
+  "VXM": "VIX Mini Futures",
   "E3G": "E-mini FTSE 100 GBP Futures",
   "ENY": "E-mini Nikkei YEN Futures",
   "NIY": "Nikkei/YEN Futures",
