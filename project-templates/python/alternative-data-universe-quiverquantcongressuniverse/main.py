@@ -18,16 +18,12 @@ class QuiverQuantCongressUniverseAlgorithm(QCAlgorithm):
         self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.at(9, 0, 0), self._rebalance)
 
     def _select_assets(self, data: List[QuiverQuantCongressUniverse]) -> List[Symbol]:
-        # Aggregate insider buy amount volume per ticker and keep the 10 largest.
-        disclosures_by_symbol: dict[Symbol, list[QuiverQuantCongressUniverse]] = {}
+        # Aggregate insider buy volume per ticker and keep names buying $200K+.
+        spend_by_symbol: dict[Symbol, float] = {}
         for d in data:
-            disclosures_by_symbol.setdefault(d.symbol, []).append(d)
-        selected_symbols = []
-        for symbol, disclosures in disclosures_by_symbol.items():
-            total_buy = sum(d.amount for d in disclosures if d.amount and d.transaction == OrderDirection.BUY)
-            if total_buy > 200000:
-                selected_symbols.append(symbol)
-        return selected_symbols
+            if d.transaction == OrderDirection.BUY and d.amount:
+                spend_by_symbol[d.symbol] = spend_by_symbol.get(d.symbol, 0) + d.amount
+        return [s for s, v in spend_by_symbol.items() if v > 200000]
 
     def _rebalance(self) -> None:
         if not self._universe.selected:
