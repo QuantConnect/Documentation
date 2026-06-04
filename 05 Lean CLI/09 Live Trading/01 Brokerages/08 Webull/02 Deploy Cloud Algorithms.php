@@ -1,20 +1,13 @@
 <?
 $brokerageDetails = "
-<li>In the browser window that automatically opens, log in to your Webull account.
+<li>Enter your Webull App Key, App Secret, and account ID.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-Please open the following URL in your browser to authorize the LEAN CLI.
-https://www.quantconnect.com/api/v2/live/auth0/authorize?brokerage=webull
-Will sleep 5 seconds and retry fetching authorization...
-</pre>
+App key: 0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d
+App secret: *******************************
+Account id: 12345678</pre>
 </div>
-</li>
-
-<li>Enter the Webull account ID.
-<div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
-The Webull account Id: 12345678</pre>
-</div>
+" . file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/webull.html") . "
 </li>";
 $dataProviderDetails = "";
 $brokerageName="Webull";
