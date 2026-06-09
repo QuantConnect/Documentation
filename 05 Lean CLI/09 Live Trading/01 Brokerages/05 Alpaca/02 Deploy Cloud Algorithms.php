@@ -41,7 +41,7 @@ Alpaca Api Secret: ****************************************
 $brokerageName="Alpaca";
 $dataProviderName=$brokerageName;
 $isSupported=true;
-$supportsCashHoldings=false;
-$supportsPositionHoldings=false;
+$supportsCashHoldings=true;
+$supportsPositionHoldings=true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>

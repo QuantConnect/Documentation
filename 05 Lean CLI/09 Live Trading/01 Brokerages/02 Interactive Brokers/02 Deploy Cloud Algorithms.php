@@ -31,7 +31,7 @@ Do you want to use the Interactive Brokers price data feed instead of the QuantC
 $brokerageName="<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a>";
 $dataProviderName=$brokerageName;
 $isSupported=true;
-$supportsCashHoldings=false;
-$supportsPositionHoldings=false;
+$supportsCashHoldings=true;
+$supportsPositionHoldings=true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
