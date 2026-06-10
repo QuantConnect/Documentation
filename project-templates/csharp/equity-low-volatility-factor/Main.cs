@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics.Statistics;
 using QuantConnect;
 using QuantConnect.Algorithm.Framework.Portfolio;
-using QuantConnect.Util;
 using QuantConnect.Algorithm;
 using QuantConnect.Data.Market;
 using QuantConnect.Data.UniverseSelection;
@@ -13,7 +13,6 @@ using QuantConnect.Securities;
 public class SP500LowVolatility : QCAlgorithm
 {
     private Universe _universe;
-    private readonly int _lookback = 60;
 
     public override void Initialize()
     {
@@ -32,29 +31,17 @@ public class SP500LowVolatility : QCAlgorithm
 
     private IEnumerable<Symbol> SelectAssets(IEnumerable<ETFConstituentUniverse> constituents)
     {
-        // Store the realized volatility of each constituent.
-        var volatilityBySymbol = new Dictionary<Symbol, double>();
-        foreach (var constituent in constituents)
-        {
-            var history = History<TradeBar>(constituent.Symbol, _lookback, Resolution.Daily).ToList();
-            if (history.Count == 0)
-            {
-                continue;
-            }
-            var returns = history
+        var history = History<TradeBar>(constituents.Select(constituent => constituent.Symbol), TimeSpan.FromDays(60), Resolution.Daily).ToList();
+        // Select the 30 ETF constituents with the lowest 60-trading-day realized volatility.
+        return history
+            .SelectMany(bars => bars.Values)
+            .GroupBy(bar => bar.Symbol)
+            .OrderBy(group => group
                 .Select(bar => (double)bar.Close)
-                .Zip(history.Skip(1).Select(bar => (double)bar.Close), (previous, current) => current / previous - 1d)
-                .ToList();
-            if (returns.Count == 0)
-            {
-                continue;
-            }
-            var mean = returns.Average();
-            var volatility = Math.Sqrt(returns.Select(x => Math.Pow(x - mean, 2)).Average());
-            volatilityBySymbol[constituent.Symbol] = volatility;
-        }
-        // Select the 30 ETF constituents with the lowest 60-day realized volatility.
-        return volatilityBySymbol.OrderBy(kvp => kvp.Value).Take(30).Select(kvp => kvp.Key);
+                .Zip(group.Select(bar => (double)bar.Close).Skip(1), (previous, current) => current / previous - 1d)
+                .StandardDeviation())
+            .Take(30)
+            .Select(group => group.Key);
     }
 
     private void Rebalance()
