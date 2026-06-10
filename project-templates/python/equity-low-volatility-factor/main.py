@@ -10,7 +10,6 @@ class SP500LowVolatility(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(250_000)
         self.settings.seed_initial_prices = True
-        self._lookback = 60
         self.universe_settings.resolution = Resolution.MINUTE
         # Refilter the ETF constituents monthly to match the rebalance cadence.
         self.universe_settings.schedule.on(self.date_rules.month_start('SPY'))
@@ -20,17 +19,11 @@ class SP500LowVolatility(QCAlgorithm):
         self.schedule.on(self.date_rules.month_start('SPY'), self.time_rules.at(9, 0), self._rebalance)
 
     def _select_assets(self, constituents: list[ETFConstituentUniverse]) -> list[Symbol]:
-        # Store the realized volatility of each constituent.
-        volatility_by_symbol: dict[Symbol, float] = {}
-        for constituent in constituents:
-            history = self.history(constituent.symbol, self._lookback, Resolution.DAILY)
-            if history.empty:
-                continue
-            returns = history["close"].pct_change().dropna()
-            volatility = float(np.std(returns.to_numpy()))
-            volatility_by_symbol[constituent.symbol] = volatility
-        # Select the 30 ETF constituents with the lowest 60-day realized volatility.
-        return [symbol for symbol, _ in sorted(volatility_by_symbol.items(), key=lambda x: x[1])[:30]]
+        history = self.history([constituent.symbol for constituent in constituents], timedelta(60), Resolution.DAILY)
+        if history.empty:
+            return []
+        # Select the 30 ETF constituents with the lowest 60-trading-day realized volatility.
+        return list(history.close.unstack(0).pct_change().std().sort_values().index[:30])
 
     def _rebalance(self) -> None:
         selected_symbols = [symbol for symbol in self._universe.selected]
