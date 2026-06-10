@@ -66,9 +66,6 @@ public class SP500LowVolatility : QCAlgorithm
     private Universe _universe;
     private readonly int _lookback = 60;
     private readonly int _portfolioSize = 30;
-    private List<Symbol> _selectedSymbols = [];
-    private int _selectionYear;
-    private int _selectionMonth;
 
     public override void Initialize()
     {
@@ -76,86 +73,59 @@ public class SP500LowVolatility : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(250000);
         Settings.SeedInitialPrices = true;
-        Settings.MinimumOrderMarginPortfolioPercentage = 0m;
-        UniverseSettings.Resolution = Resolution.Daily;
+        UniverseSettings.Resolution = Resolution.Minute;
+        // Refilter the ETF constituents monthly to match the rebalance cadence.
+        UniverseSettings.Schedule.On(DateRules.MonthStart("SPY"));
+        // Add a universe of the SPY constituents ranked by realized volatility.
         _universe = AddUniverse(Universe.ETF("SPY", SelectAssets));
-        Schedule.On(
-            DateRules.MonthStart("SPY"),
-            TimeRules.At(9, 31),
-            Rebalance
-        );
+        // Create a Scheduled Event to rebalance the portfolio monthly.
+        Schedule.On(DateRules.MonthStart("SPY"), TimeRules.At(9, 0), Rebalance);
     }
 
     private IEnumerable<Symbol> SelectAssets(IEnumerable<ETFConstituentUniverse> constituents)
     {
-        if (_selectionYear == Time.Year && _selectionMonth == Time.Month)
-        {
-            return Universe.Unchanged;
-        }
-        var volBySymbol = new Dictionary<Symbol, double>();
+        // Store the realized volatility of each constituent.
+        var volatilityBySymbol = new Dictionary<Symbol, double>();
         foreach (var constituent in constituents)
         {
-            if (!constituent.Weight.HasValue || constituent.Weight.Value == 0m)
-            {
-                continue;
-            }
             var history = History<TradeBar>(constituent.Symbol, _lookback, Resolution.Daily).ToList();
-            if (history.Count < _lookback)
+            if (history.Count == 0)
             {
                 continue;
             }
-            var closes = history.Select(bar => (double)bar.Close).ToList();
-            var returns = new List<double>();
-            for (var i = 1; i < closes.Count; i++)
-            {
-                if (closes[i - 1] == 0)
-                {
-                    returns.Clear();
-                    break;
-                }
-                returns.Add((closes[i] / closes[i - 1]) - 1d);
-            }
-            if (returns.Count < _lookback - 1)
-            {
-                continue;
-            }
-            var volatility = SampleStandardDeviation(returns);
-            if (volatility <= 0)
-            {
-                continue;
-            }
-            volBySymbol[constituent.Symbol] = volatility;
+
+            var returns = history
+                .Select(bar => (double)bar.Close)
+                .Zip(history.Skip(1).Select(bar => (double)bar.Close), (previous, current) => current / previous - 1d)
+                .ToList();
+            var volatility = PopulationStandardDeviation(returns);
+            volatilityBySymbol[constituent.Symbol] = volatility;
         }
-        _selectedSymbols = volBySymbol
-            .OrderBy(kvp => kvp.Value)
-            .Take(_portfolioSize)
-            .Select(kvp => kvp.Key)
-            .ToList();
-        _selectionYear = Time.Year;
-        _selectionMonth = Time.Month;
-        return _selectedSymbols;
+        // Select the 30 ETF constituents with the lowest 60-day realized volatility.
+        return volatilityBySymbol.OrderBy(kvp => kvp.Value).Take(_portfolioSize).Select(kvp => kvp.Key);
     }
 
     private void Rebalance()
     {
-        if (_selectedSymbols.Count == 0)
+        var selectedSymbols = _universe.Selected.ToList();
+        if (selectedSymbols.Count == 0)
         {
-            Liquidate();
             return;
         }
-        var weight = 1m / _selectedSymbols.Count;
-        var targets = _selectedSymbols
-            .Select(symbol => new PortfolioTarget(symbol, weight))
-            .ToList();
+
+        // Equal-weight the selected low-volatility constituents.
+        var weight = 1m / selectedSymbols.Count;
+        var targets = selectedSymbols.Select(symbol => new PortfolioTarget(symbol, weight)).ToList();
         SetHoldings(targets, liquidateExistingHoldings: true);
     }
 
-    private static double SampleStandardDeviation(List<double> values)
+    private static double PopulationStandardDeviation(List<double> values)
     {
-        if (values.Count < 2)
+        if (values.Count == 0)
         {
-            return 0;
+            return 0d;
         }
+
         var mean = values.Average();
         var sumSquares = 0d;
         foreach (var value in values)
@@ -163,6 +133,7 @@ public class SP500LowVolatility : QCAlgorithm
             var diff = value - mean;
             sumSquares += diff * diff;
         }
-        return Math.Sqrt(sumSquares / (values.Count - 1));
+
+        return Math.Sqrt(sumSquares / values.Count);
     }
 }
