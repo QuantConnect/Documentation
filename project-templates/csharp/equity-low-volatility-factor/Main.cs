@@ -65,7 +65,6 @@ public class SP500LowVolatility : QCAlgorithm
 {
     private Universe _universe;
     private readonly int _lookback = 60;
-    private readonly int _portfolioSize = 30;
 
     public override void Initialize()
     {
@@ -98,11 +97,19 @@ public class SP500LowVolatility : QCAlgorithm
                 .Select(bar => (double)bar.Close)
                 .Zip(history.Skip(1).Select(bar => (double)bar.Close), (previous, current) => current / previous - 1d)
                 .ToList();
-            var volatility = PopulationStandardDeviation(returns);
+            if (returns.Count == 0)
+            {
+                continue;
+            }
+
+            var mean = returns.Average();
+            var volatility = Math.Sqrt(
+                returns.Select(x => Math.Pow(x - mean, 2)).Average()
+            );
             volatilityBySymbol[constituent.Symbol] = volatility;
         }
         // Select the 30 ETF constituents with the lowest 60-day realized volatility.
-        return volatilityBySymbol.OrderBy(kvp => kvp.Value).Take(_portfolioSize).Select(kvp => kvp.Key);
+        return volatilityBySymbol.OrderBy(kvp => kvp.Value).Take(30).Select(kvp => kvp.Key);
     }
 
     private void Rebalance()
@@ -117,23 +124,5 @@ public class SP500LowVolatility : QCAlgorithm
         var weight = 1m / selectedSymbols.Count;
         var targets = selectedSymbols.Select(symbol => new PortfolioTarget(symbol, weight)).ToList();
         SetHoldings(targets, liquidateExistingHoldings: true);
-    }
-
-    private static double PopulationStandardDeviation(List<double> values)
-    {
-        if (values.Count == 0)
-        {
-            return 0d;
-        }
-
-        var mean = values.Average();
-        var sumSquares = 0d;
-        foreach (var value in values)
-        {
-            var diff = value - mean;
-            sumSquares += diff * diff;
-        }
-
-        return Math.Sqrt(sumSquares / values.Count);
     }
 }
