@@ -607,6 +607,14 @@
 			"spec": "Asset: VOO. Minute. 2022-01-01 to 2024-12-31, $200k starting cash. Schedule: every Monday after market open buy VOO with $5,000 of cash via market_order using calculate_order_quantity. Demonstrates: weekly schedule, fixed-dollar buys, calculate_order_quantity, no liquidation. Edge case: skip if insufficient cash; never sell.",
 			"tags": ["Equity", "dca", "scheduled-event", "buy-and-hold"],
 			"reference_template": "equities-static-universe"
+		},
+		{
+			"folder": "equity-low-volatility-factor",
+			"name": "Equity Low-Volatility Factor",
+			"description": "Selects the bottom decile of S&P 500 names by 60-day realized volatility and equal-weights them monthly.",
+			"spec": "Universe: SPY constituents. Daily. 2022-01-01 to 2024-12-31, $250k. Use history(60, Resolution.DAILY) per name to compute std of returns. Monthly schedule selects 30 lowest-vol names; equal-weight long. Demonstrates: history requests inside universe selector, factor-based selection, monthly rebalance. Edge case: drop names with insufficient history.",
+			"tags": ["Equity", "low-volatility", "factor", "etf-universe"],
+			"reference_template": "history-and-etf-universe"
 		}
 	]
 }
