@@ -1,11 +1,11 @@
 ---
 name: fundamental-universes
-description: Use when selecting or screening a QuantConnect/LEAN Equity universe on Morningstar fundamentals — the py`add_universe(...)`cs`AddUniverse(...)` pattern, the `Fundamental` object and how its data is organized, period accessors for `MultiPeriodField` values, and year-over-year deltas. Covers the Piotroski F-Score, Altman Z-score, Magic Formula, Graham filters, and custom screens. For the exact attribute path and meaning of any field, it points to the fundamental-data-point-attributes-* skills (income statement, balance sheet, cash flow, valuation / operation / earning ratios, asset classification, company / security reference, company profile). Skip when — the universe is index/ETF-constituent only (py`self.universe.etf(...)`cs`Universe.ETF(...)`).
+description: Use when selecting or screening a QuantConnect/LEAN Equity universe on Morningstar fundamentals — the py`add_universe(...)`cs`AddUniverse(...)` pattern, the `Fundamental` object and how its data is organized, period accessors for `MultiPeriodField` values, and year-over-year deltas. Covers the Piotroski F-Score, Altman Z-score, Magic Formula, Graham filters, and custom screens. For the exact path of any field, it points to the equity-fundamental-data skill. Skip when — the universe is index/ETF-constituent only (py`self.universe.etf(...)`cs`Universe.ETF(...)`).
 ---
 
 # Fundamental universes in QuantConnect / LEAN
 
-Select or screen an Equity universe on Morningstar fundamentals by passing a `Fundamental` callback to py`add_universe(...)`cs`AddUniverse(...)`. Each `Fundamental` object `f` is one company's snapshot; the Morningstar data hangs off it in a large, deeply nested tree. py`f.financial_statements.net_income`cs`f.FinancialStatements.NetIncome` does not exist — net income lives on `IncomeStatement`, one level deeper. Use the map below to find the right sub-object, then open that sub-object's skill for the exact attribute name and meaning; guessing a path wastes a backtest run.
+Select or screen an Equity universe on Morningstar fundamentals by passing a `Fundamental` callback to py`add_universe(...)`cs`AddUniverse(...)`. Each `Fundamental` object `f` is one company's snapshot; the Morningstar data hangs off it in a large, deeply nested tree. py`f.financial_statements.net_income`cs`f.FinancialStatements.NetIncome` does not exist — net income lives on `IncomeStatement`, one level deeper. For the exact path of any field — net income, operating cash flow, PE ratio, sector code, and so on — see the **equity-fundamental-data** skill; guessing a path wastes a backtest run.
 
 <!-- python-only -->
 ## Static type checking
@@ -18,13 +18,7 @@ Type-hint your `Fundamental` parameters so the IDE autocompletes paths and flags
 
 ## The `Fundamental` object
 
-`f` is passed into your py`add_universe(...)`cs`AddUniverse(...)` selection callback; you can also pull a snapshot per-security with py`f = self.securities["SPY"].fundamentals`cs`var f = Securities["SPY"].Fundamentals`, or request it from history. Its top-level price/volume attributes:
-
-<!-- fundamental-attributes: Fundamental -->
-
-The Morningstar fields are grouped into the sub-objects below. Each has its own skill with a full attribute table and descriptions — open the one you need:
-
-<!-- fundamental-subgroups: Fundamental -->
+`f` is passed into your py`add_universe(...)`cs`AddUniverse(...)` selection callback (one per company); you can also pull a snapshot per-security with py`f = self.securities["SPY"].fundamentals`cs`var f = Securities["SPY"].Fundamentals`, or request it from history. Beyond price/volume basics (py`f.market_cap`cs`f.MarketCap`, py`f.dollar_volume`cs`f.DollarVolume`, py`f.price`cs`f.Price`), the Morningstar tree hangs off it: financial statements (income statement, balance sheet, cash flow statement), operation / valuation / earning ratios, earning reports, company profile, company & security reference, and asset classification. The **equity-fundamental-data** skill lists every one of those fields as a full path from `f` — look the path up there.
 
 ## Period accessors for `MultiPeriodField` properties
 
