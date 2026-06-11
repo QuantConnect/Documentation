@@ -54,14 +54,6 @@ DESCRIPTION_MIN = 30
 DESCRIPTION_MAX = 1024
 LANGS = ("python", "csharp")
 IN_ACTIONS = environ.get("GITHUB_ACTIONS") == "true"
-# Enum-like helper classes whose constants are exposed as `fields` (not
-# `properties`); shared by fetch_fundamental_lookup and format_fundamental_lookup.
-FUND_ENUM_HELPER_TYPES = (
-    "MorningstarSectorCode",
-    "MorningstarIndustryGroupCode",
-    "MorningstarIndustryCode",
-    "MorningstarEconomySphereCode",
-)
 # Dual-language inline markers (whitespace between halves tolerated).
 # py-first: py`X`cs`Y`     groups: (1)=python (2)=csharp
 # cs-first: cs`Y`py`X`     groups: (1)=csharp (2)=python
@@ -76,6 +68,23 @@ PY_ONLY_BLOCK = re.compile(
 CS_ONLY_BLOCK = re.compile(
     r"<!--\s*csharp-only\s*-->\n?(.*?)<!--\s*/csharp-only\s*-->\n?", re.DOTALL
 )
+# Per-type attribute-table marker, e.g. `<!-- fundamental-attributes: BalanceSheet -->`.
+# Replaced (per language) with a Markdown table of that Fundamental type's
+# attributes + descriptions, fetched from the QC inspector. Used by the
+# `fundamental-data-point-attributes-*` skills.
+FUND_ATTR_MARKER = re.compile(r"<!--\s*fundamental-attributes:\s*([A-Za-z0-9_]+)\s*-->")
+# Companion marker: `<!-- fundamental-subgroups: TYPE -->` lists TYPE's nested
+# Fundamental containers (e.g. FinancialStatements -> income_statement / balance_sheet
+# / cash_flow_statement) as pointers to their own skills, since their fields can't
+# fit in a parent cell.
+FUND_SUBGROUPS_MARKER = re.compile(r"<!--\s*fundamental-subgroups:\s*([A-Za-z0-9_]+)\s*-->")
+INSPECTOR_URL = (
+    "https://www.quantconnect.com/services/inspector"
+    "?language={lang}&type=T:QuantConnect.Data.Fundamental.{type}"
+)
+FUND_PREFIX = "QuantConnect.Data.Fundamental."
+MULTI_PERIOD_BASE = FUND_PREFIX + "MultiPeriodField"
+ATTR_SKILL_PREFIX = "fundamental-data-point-attributes-"
 
 
 class FrontmatterError(ValueError):
@@ -163,82 +172,114 @@ def strip_code_blocks(content: str, lang: str) -> str:
     return "\n".join(out)
 
 
-def fetch_fundamental_lookup(language: str) -> dict[str, list[str]]:
-    """Walk Fundamental and its non-leaf sub-types via the QC inspector.
+def _skill_slug(prop_name: str) -> str:
+    """Map a nested-container accessor to its skill name. Skill names use kebab-case
+    (lowercase letters, numbers, hyphens). Python names are snake_case; C# names are
+    PascalCase. Both convert to kebab-case (income_statement / IncomeStatement ->
+    income-statement)."""
+    if "_" in prop_name:
+        kebab = prop_name.replace("_", "-")
+    elif prop_name.islower():
+        kebab = prop_name
+    else:
+        kebab = re.sub(r"(?<!^)(?=[A-Z])", "-", prop_name).lower()
+    return ATTR_SKILL_PREFIX + kebab
 
-    BFS from `Fundamental`. For each property whose type lives in
-    `QuantConnect.Data.Fundamental.*` and whose base is *not* MultiPeriodField,
-    queue it for expansion. MultiPeriodField wrappers are listed by name in the
-    parent's properties but never expanded — their only members are period
-    accessors that the skill already documents.
 
-    Each entry is keyed by the property-accessor name from its parent
-    (snake_case in Python, PascalCase in C#) — e.g. CompanyReference is listed
-    under `company_reference` in Python because that's how callers reach it
-    (`f.company_reference`). The root uses the lowercased type name in Python.
-    MultiPeriodField wrappers are suffixed with `*` so the skill can flag which
-    properties need a period accessor.
+def fetch_type_members(type_name: str, language: str) -> tuple[str, list[tuple], list[tuple]]:
+    """Fetch one Fundamental type's members from the inspector, with descriptions.
+
+    Returns `(kind, rows, subgroups)`:
+      - kind `"properties"`: `rows` are `(name, type, description)` leaf
+        attributes — `type` is `"MultiPeriodField"` for period wrappers (their
+        `short-type-name` is a per-property alias, not useful), else the
+        property's short type name. `subgroups` are `(name, skill_slug)` for
+        properties whose type is itself a Fundamental container (e.g.
+        IncomeStatement) — those are pointers, not leaves.
+      - kind `"fields"`: enum-helper types (e.g. MorningstarSectorCode) have no
+        properties; their constants live in `fields`. `rows` are
+        `(name, description)`; `subgroups` is empty.
     """
-    inspector_url = (
-        "https://www.quantconnect.com/services/inspector"
-        "?language={lang}&type=T:QuantConnect.Data.Fundamental.{type}"
-    )
-    fund_prefix = "QuantConnect.Data.Fundamental."
-    # MultiPeriodField subclasses (and closed generics) are leaf wrappers —
-    # don't recurse into them; their only members are period accessors.
-    leaf_base_prefix = "QuantConnect.Data.Fundamental.MultiPeriodField"
-    root_type = "Fundamental"
-
-    root_display = root_type.lower() if language == "python" else root_type
-    out: dict[str, list[str]] = {}
-    visited: set[str] = set()
-    # Queue items are (type_name, display_name) — display follows the parent's accessor casing.
-    queue: list[tuple[str, str]] = [(root_type, root_display)]
-    while queue:
-        type_name, display = queue.pop(0)
-        if type_name in visited:
-            continue
-        visited.add(type_name)
-        url = inspector_url.format(lang=language, type=type_name)
-        with urlopen(url) as r:
-            data = json.load(r)
-        names: list[str] = []
-        for p in data["properties"]:
-            prop_name = p["property-name"]
-            full = p["property-full-type-name"]
+    url = INSPECTOR_URL.format(lang=language, type=type_name)
+    with urlopen(url) as r:
+        data = json.load(r)
+    props = data.get("properties") or []
+    if props:
+        rows, subgroups = [], []
+        for p in props:
             base = p.get("property-base-type-full-name") or ""
-            if base.startswith(leaf_base_prefix):
-                names.append(prop_name + "*")
+            full = p.get("property-full-type-name") or ""
+            if base.startswith(MULTI_PERIOD_BASE):
+                rows.append((p["property-name"], "MultiPeriodField", p.get("property-description") or ""))
+            elif full.startswith(FUND_PREFIX):
+                subgroups.append((p["property-name"], _skill_slug(p["property-name"])))
             else:
-                names.append(prop_name)
-                if full.startswith(fund_prefix):
-                    short = full[len(fund_prefix):]
-                    if short not in visited:
-                        queue.append((short, prop_name))
-        out[display] = names
-    # Append the enum-helper classes — their named integer constants live in
-    # `fields`, not `properties`. They're not reachable via tree-walking and
-    # appear at the bottom of the rendered lookup.
-    for type_name in FUND_ENUM_HELPER_TYPES:
-        url = inspector_url.format(lang=language, type=type_name)
-        with urlopen(url) as r:
-            data = json.load(r)
-        out[type_name] = [f["field-name"] for f in data.get("fields", [])]
-    return out
+                rows.append((p["property-name"], p.get("property-short-type-name") or "",
+                             p.get("property-description") or ""))
+        return "properties", rows, subgroups
+    fields = data.get("fields") or []
+    rows = [(f.get("field-name"), f.get("field-description") or "") for f in fields]
+    return "fields", rows, []
 
 
-def format_fundamental_lookup(lookup: dict[str, list[str]]) -> str:
-    """Render in three tiers: root, chainable types (alpha), enum helpers (alpha).
+def _table_cell(text: str) -> str:
+    """Collapse whitespace/newlines and escape pipes so a description sits in one cell."""
+    return " ".join(text.split()).replace("|", "\\|")
 
-    Sorting is case-insensitive so PascalCase headings interleave naturally
-    with snake_case ones; the root is pinned to the top because every other
-    path chains from it.
+
+def render_subgroups(subgroups: list[tuple]) -> str:
+    """Render nested-container properties as pointers to their dedicated skills."""
+    return "\n".join(f"- `{name}` — see the **{slug}** skill" for name, slug in subgroups)
+
+
+def render_attribute_table(kind: str, rows: list[tuple]) -> str:
+    """Render fetch_type_members output as a Markdown table.
+
+    `fields` (enum constants) → Value | Description (type is uniform by nature).
+    `properties` → Attribute | Type | Description, but the Type column is
+    dropped when every property shares one type (e.g. balance-sheet fields are
+    all MultiPeriodField) — there it's noise, and the skill's prose states it
+    once. Mixed nodes (company_reference, asset_classification) keep it.
     """
-    root = next(iter(lookup))
-    helpers = [k for k in lookup if k in FUND_ENUM_HELPER_TYPES]
-    chainable = [k for k in lookup if k != root and k not in FUND_ENUM_HELPER_TYPES]
-    ordered = [root] + sorted(chainable, key=str.lower) + sorted(helpers, key=str.lower)
-    return "\n".join(f"- **{k}**: {', '.join(lookup[k])}" for k in ordered)
+    if kind == "fields":
+        if all(not desc.strip() for _, desc in rows):
+            # Morningstar documents no per-constant description for some enums
+            # (e.g. MorningstarIndustryGroupCode) — list the values rather than
+            # render a table full of empty cells.
+            return ", ".join(f"`{name}`" for name, _ in rows)
+        out = ["| Value | Description |", "|---|---|"]
+        out += [f"| `{name}` | {_table_cell(desc)} |" for name, desc in rows]
+        return "\n".join(out)
+    if len({typ for _, typ, _ in rows}) <= 1:
+        out = ["| Attribute | Description |", "|---|---|"]
+        out += [f"| `{name}` | {_table_cell(desc)} |" for name, _, desc in rows]
+    else:
+        out = ["| Attribute | Type | Description |", "|---|---|---|"]
+        out += [f"| `{name}` | {typ} | {_table_cell(desc)} |" for name, typ, desc in rows]
+    return "\n".join(out)
+
+
+def expand_attribute_markers(content: str, language: str, cache: dict) -> str:
+    """Expand `<!-- fundamental-attributes: TYPE -->` (leaf table) and
+    `<!-- fundamental-subgroups: TYPE -->` (nested-container pointers) per language."""
+    def members(type_name: str) -> tuple:
+        key = (type_name, language)
+        if key not in cache:
+            print(f"Fetching {type_name} members ({language}) from inspector...")
+            cache[key] = fetch_type_members(type_name, language)
+        return cache[key]
+
+    def repl_table(match: re.Match) -> str:
+        kind, rows, _ = members(match.group(1))
+        return render_attribute_table(kind, rows)
+
+    def repl_subgroups(match: re.Match) -> str:
+        _, _, subgroups = members(match.group(1))
+        return render_subgroups(subgroups)
+
+    content = FUND_ATTR_MARKER.sub(repl_table, content)
+    content = FUND_SUBGROUPS_MARKER.sub(repl_subgroups, content)
+    return content
 
 
 def split_for_language(content: str, lang: str) -> str:
@@ -351,21 +392,14 @@ def main() -> int:
     # Wipe the build dir so deletions in the source propagate.
     remove_tree(skills_root, dry_run=args.dry_run)
 
-    fund_lookup_marker = "<!-- fundamental-lookup -->"
-    # Lazily fetched per language; populated only when a skill needs the lookup.
-    fundamental_lookup: dict[str, str] = {}
+    # Lazily fetched per (type, language); shared across skills that table the same type.
+    attr_cache: dict[tuple[str, str], str] = {}
 
     # Build: split each skill into a Python and a C# tree.
     for skill in skills:
         for lang in LANGS:
             content = split_for_language(skill.content, lang)
-            if fund_lookup_marker in content:
-                if lang not in fundamental_lookup:
-                    print(f"Fetching Fundamental property tree ({lang}) from inspector...")
-                    fundamental_lookup[lang] = format_fundamental_lookup(
-                        fetch_fundamental_lookup(lang)
-                    )
-                content = content.replace(fund_lookup_marker, fundamental_lookup[lang])
+            content = expand_attribute_markers(content, lang, attr_cache)
             write_file(
                 skills_root / lang / skill.rel_dir / "SKILL.md",
                 content,
