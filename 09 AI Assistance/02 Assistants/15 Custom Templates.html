@@ -1,0 +1,83 @@
+<p>
+  A custom template is your own project scaffold that you and your assistants can start new projects from, so a common strategy skeleton is ready to use instead of a blank file.
+  Custom templates live inside the reserved <span class="public-directory-name">.assistant</span> folder of your organization's <a href="/docs/v2/cloud-platform/object-store">Object Store</a> (<code>.assistant/templates/</code>). 
+  Group them by language in a <span class="public-directory-name">python</span> or <span class="public-directory-name">csharp</span> subfolder, and add only the languages you use. 
+  Each language folder holds a <span class="public-file-name">templates.json</span> file that registers the templates, plus one subfolder per template that holds the project files.
+</p>
+
+<p>The folder layout looks like this:</p>
+
+<div class="section-example-container">
+<pre>.assistant/
+└── templates/
+&nbsp;&nbsp;&nbsp; ├── python/
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; ├── templates.json
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; └── psar-trailing-stop/
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ├── main.py
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; └── research.ipynb
+&nbsp;&nbsp;&nbsp; └── csharp/
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ├── templates.json
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; └── psar-trailing-stop/
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ├── Main.cs
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; └── Research.ipynb</pre>
+</div>
+
+<p>
+  Each entry in <span class="public-file-name">templates.json</span> has a <code>name</code> and a <code>folder</code>, plus an optional <code>description</code> and <code>tags</code> array. 
+  The <code>folder</code> must match the subfolder that holds the project files, and the assistant reads the <code>name</code>, <code>description</code>, and <code>tags</code> when it picks a template.
+  Write asset-class tags in PascalCase, matching the <code>SecurityType</code> values such as <code>Equity</code>, <code>Future</code>, <code>Option</code>, or <code>Crypto</code>. Other tags are free-form. 
+  For example, <code>.assistant/templates/python/templates.json</code> might contain the following JSON:
+</p>
+
+<pre>{
+    "templates": [
+        {
+            "name": "Parabolic SAR Trailing Stop",
+            "folder": "psar-trailing-stop",
+            "description": "Trades SPY long-only with Parabolic SAR providing dynamic trailing-stop levels and re-entries.",
+            "tags": ["Equity", "indicators", "parabolic-sar", "trailing-stop"]
+        }
+    ]
+}</pre>
+
+<p>
+  Each template subfolder holds an ordinary project, the same as any project you create. 
+  A Python template under <code>.assistant/templates/python/</code> has a <span class="public-file-name">main.py</span> file. 
+  A C# template under <code>.assistant/templates/csharp/</code> has a <span class="public-file-name">Main.cs</span> file.
+  A template can also include a research notebook (<span class="public-file-name">research.ipynb</span> for Python or <span class="public-file-name">Research.ipynb</span> for C#) and any other files the project needs.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class ParabolicSarTrailingStop : QCAlgorithm
+{
+    private Symbol _spy;
+    private ParabolicStopAndReverse _psar;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        _spy = AddEquity("SPY").Symbol;
+        _psar = PSAR(_spy);
+    }
+}</pre>
+<pre class="python"># region imports
+from AlgorithmImports import *
+# endregion
+
+class ParabolicSarTrailingStop(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self._spy = self.add_equity("SPY").symbol
+        self._psar = self.psar(self._spy)</pre>
+</div>
+
+<p>
+  Manage these files like any other Object Store data. 
+  For information on uploading files to the Object Store, see the documentation for the <a href="/docs/v2/cloud-platform/object-store#03-Upload-Files">Algorithm Lab</a>, <a href='/docs/v2/lean-cli/object-store#03-Cloud-Storage'>CLI</a>, or <a href='/docs/v2/cloud-platform/api-reference/object-store-management/upload-object-store-files'>API</a>.
+</p>
+
+
+

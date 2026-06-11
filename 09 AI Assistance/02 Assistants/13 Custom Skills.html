@@ -1,0 +1,53 @@
+<p>
+  A custom skill is a reusable set of instructions you add to your organization so your assistants apply your own expertise and conventions instead of generic defaults. 
+  A skill might capture your risk limits, a preferred indicator workflow, or the house style every strategy should follow.
+  Custom skills live inside the reserved <span class="public-directory-name">.assistant</span> folder of your organization's <a href="/docs/v2/cloud-platform/object-store">Object Store</a>. 
+  Each skill is a subfolder of <code>.assistant/skills/</code> that holds a <span class="public-file-name">skill.md</span> file. 
+  For example, a <code>risk-limits</code> skill could be defined at <code>.assistant/skills/risk-limits/skill.md</code>. 
+</p>
+
+<p>The folder layout looks like this:</p>
+
+<div class="section-example-container">
+<pre>.assistant/
+└── skills/
+&nbsp;&nbsp;&nbsp; ├── risk-limits/
+&nbsp;&nbsp;&nbsp; │&nbsp;&nbsp; └── skill.md
+&nbsp;&nbsp;&nbsp; └── earnings-screen/
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ├── skill.md
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; └── reference.md</pre>
+</div>
+
+<p>
+  The assistants don't load every skill up front. 
+  An assistant scans your available skills and loads the relevant one only when a task calls for it, so a large library of skills never crowds its context. 
+  Every assistant in your organization can use your custom skills.
+</p>
+
+<p>
+  Custom skills use the standard <a href='https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview#skill-structure' rel='nofollow' target='_blank'>Claude skill structure</a>. 
+  The <span class="public-file-name">skill.md</span> file opens with a YAML frontmatter block that gives the skill a <code>name</code> and a <code>description</code>, followed by the instructions in Markdown. 
+  The <code>description</code> is how the assistant decides when to use the skill, so describe the situations when the agent should use it. 
+  The folder can also hold supporting files that the instructions reference. 
+</p>
+
+<p>The following example skill defines risk limits for strategies:</p>
+
+<pre>---
+name: risk-limits
+description: The position-sizing and stop-loss rules every strategy in this organization follows.
+---
+
+# Risk Limits
+
+When you build or modify a strategy, enforce these rules:
+
+- Never allocate more than 10% of the portfolio to a single position.
+- Attach a stop-loss order at twice the 20-day ATR below the entry price.
+- Keep gross leverage at or below 1.5.</pre>
+
+<p>
+  Manage these files like any other Object Store data. 
+  Create the <code>.assistant/skills/</code> subfolders and upload one <span class="public-file-name">skill.md</span> per skill. 
+  For information on uploading files to the Object Store, see the documentation for the <a href="/docs/v2/cloud-platform/object-store#03-Upload-Files">Algorithm Lab</a>, <a href='/docs/v2/lean-cli/object-store#03-Cloud-Storage'>CLI</a>, or <a href='/docs/v2/cloud-platform/api-reference/object-store-management/upload-object-store-files'>API</a>.
+</p>
