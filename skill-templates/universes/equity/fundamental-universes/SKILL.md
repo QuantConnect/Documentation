@@ -1,11 +1,11 @@
 ---
 name: fundamental-universes
-description: Use when reading Morningstar fundamental fields off a `Fundamental` object in a QuantConnect/LEAN algorithm — anything under py`f.financial_statements.*`cs`f.FinancialStatements.*`, py`f.operation_ratios.*`cs`f.OperationRatios.*`, py`f.valuation_ratios.*`cs`f.ValuationRatios.*`, py`f.earning_ratios.*`cs`f.EarningRatios.*`, etc. inside an py`add_universe(...)`cs`AddUniverse(...)` callback. Triggers — missing-attribute / compile error on a Fundamental property path; questions like "what's the path to net income / operating cash flow / shares outstanding"; coding the Piotroski F-Score, Altman Z-score, Magic Formula, Graham filters, or any custom screen off Morningstar fields. Skip when — the universe is index/ETF-constituent only (py`self.universe.etf(...)`cs`Universe.ETF(...)`).
+description: Use when selecting or screening a QuantConnect/LEAN Equity universe on Morningstar fundamentals — the py`add_universe(...)`cs`AddUniverse(...)` pattern, the `Fundamental` object and how its data is organized, period accessors for `MultiPeriodField` values, and year-over-year deltas. Covers the Piotroski F-Score, Altman Z-score, Magic Formula, Graham filters, and custom screens. For the exact attribute path and meaning of any field, it points to the fundamental-data-point-attributes-* skills (income statement, balance sheet, cash flow, valuation / operation / earning ratios, asset classification, company / security reference, company profile). Skip when — the universe is index/ETF-constituent only (py`self.universe.etf(...)`cs`Universe.ETF(...)`).
 ---
 
-# Fundamental Property Paths in QuantConnect / LEAN
+# Fundamental universes in QuantConnect / LEAN
 
-The Morningstar tree on `Fundamental` is large and deeply nested. py`f.financial_statements.net_income`cs`f.FinancialStatements.NetIncome` does not exist — net income lives on `IncomeStatement`, one level deeper. Use the lookup below instead of guessing from English names; a wrong path wastes a backtest run.
+Select or screen an Equity universe on Morningstar fundamentals by passing a `Fundamental` callback to py`add_universe(...)`cs`AddUniverse(...)`. Each `Fundamental` object `f` is one company's snapshot; the Morningstar data hangs off it in a large, deeply nested tree. py`f.financial_statements.net_income`cs`f.FinancialStatements.NetIncome` does not exist — net income lives on `IncomeStatement`, one level deeper. Use the map below to find the right sub-object, then open that sub-object's skill for the exact attribute name and meaning; guessing a path wastes a backtest run.
 
 <!-- python-only -->
 ## Static type checking
@@ -16,15 +16,19 @@ Type-hint your `Fundamental` parameters so the IDE autocompletes paths and flags
 - Helpers that take one snapshot: `def get_metrics(self, f: Fundamental):`.
 <!-- /python-only -->
 
-## How to read the lookup
+## The `Fundamental` object
 
-- The first row, py`fundamental`cs`Fundamental`, is the root — call this `f` below. It's the object passed into your py`add_universe(...)`cs`AddUniverse(...)` selection callback, and you can also pull a snapshot per-security: py`f = self.securities["SPY"].fundamentals`cs`var f = Securities["SPY"].Fundamentals`. Every other path chains from `f`.
-- Each heading after the root is the accessor name from its parent. py`company_reference`cs`CompanyReference` means py`f.company_reference`cs`f.CompanyReference`; py`income_statement`cs`IncomeStatement` is reached as py`f.financial_statements.income_statement`cs`f.FinancialStatements.IncomeStatement`.
-- Comma-separated values are properties on that node. Chain them: under py`income_statement`cs`IncomeStatement`, py`net_income`cs`NetIncome` is py`f.financial_statements.income_statement.net_income`cs`f.FinancialStatements.IncomeStatement.NetIncome`.
-- A trailing `*` marks a `MultiPeriodField` wrapper — append a period accessor (most often py`.value`cs`.Value`) to read the number. Unmarked properties return their type directly (number / string, or another node listed).
-- The helper classes at the bottom (e.g. `MorningstarSectorCode`) hold named integer constants for comparison: py`f.asset_classification.morningstar_sector_code == MorningstarSectorCode.TECHNOLOGY`cs`f.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology`. 
+`f` is passed into your py`add_universe(...)`cs`AddUniverse(...)` selection callback; you can also pull a snapshot per-security with py`f = self.securities["SPY"].fundamentals`cs`var f = Securities["SPY"].Fundamentals`, or request it from history. Its top-level price/volume attributes:
 
-## Period accessors for `*` properties
+<!-- fundamental-attributes: Fundamental -->
+
+The Morningstar fields are grouped into the sub-objects below. Each has its own skill with a full attribute table and descriptions — open the one you need:
+
+<!-- fundamental-subgroups: Fundamental -->
+
+## Period accessors for `MultiPeriodField` properties
+
+Statement and ratio-growth attributes are `MultiPeriodField` wrappers — append a period accessor to read the number:
 
 - py`.three_months`cs`.ThreeMonths`, py`.six_months`cs`.SixMonths`, py`.nine_months`cs`.NineMonths`, py`.twelve_months`cs`.TwelveMonths` — period-aggregated value (TTM at py`.twelve_months`cs`.TwelveMonths`).
 - py`.value`cs`.Value` — most recent reported period (quarterly or annual, whichever filed last).
@@ -34,11 +38,9 @@ How to choose:
 
 - **Income statement / cash flow**: prefer py`.twelve_months`cs`.TwelveMonths` for cross-company comparability. py`.value`cs`.Value` mixes quarterlies and annuals.
 - **Balance sheet**: py`.value`cs`.Value` — point-in-time snapshots; period aggregation is meaningless.
-- **Ratio groups**: also `MultiPeriodField` — py`.value`cs`.Value` unless you specifically want a longer window.
+- **Operation / earning ratios**: also `MultiPeriodField` — py`.value`cs`.Value` unless you specifically want a longer window.
 
-Forgetting an accessor is silent: the leaf compares as truthy and inequalities against numbers produce nonsense without raising.
-
-<!-- fundamental-lookup -->
+Forgetting an accessor is silent: the leaf compares as truthy and inequalities against numbers produce nonsense without raising. Valuation ratios and the company/security-reference, company-profile, and asset-classification fields are **not** wrapped — read those directly, with no accessor.
 
 ## Year-over-year deltas
 
