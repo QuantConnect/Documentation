@@ -1,4 +1,4 @@
-<?php include(DOCS_RESOURCES."/object-store/special-folders.html"); ?>
+<? include(DOCS_RESOURCES."/object-store/special-folders.html"); ?>
 
 <p>
   These files are shared across your organization. 
