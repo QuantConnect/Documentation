@@ -135,6 +135,15 @@ def is_dual_language(content: str) -> bool:
 def load_skill(skill_file: Path, templates_root: Path) -> Skill:
     content = skill_file.read_text(encoding="utf-8")
     name = parse_frontmatter(content)["name"]
+    # The Claude skill loader expects the SKILL.md's parent folder to match the
+    # frontmatter `name` exactly. Enforce that at build time so we never ship
+    # a skill that the runtime will reject.
+    parent_dir_name = skill_file.parent.name
+    if parent_dir_name != name:
+        raise FrontmatterError(
+            f"folder name '{parent_dir_name}' does not match skill name '{name}'. "
+            f"Rename the folder to '{name}' (or change the frontmatter `name` to match)."
+        )
     if not is_dual_language(content):
         raise FrontmatterError(
             "skill is not dual-language. Add at least one of:\n"
