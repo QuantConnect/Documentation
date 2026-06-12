@@ -111,7 +111,7 @@ self.settings.seed_initial_prices = True</pre>
     // Select the 10 stocks with the greatest trailing returns.
     var selectedAssets = securities.Where(s =&gt; ((dynamic)s).Roc.IsReady).OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10);
     // Form an equal-weighted portfolio.
-    var targets = selectedAssets.Select(security =&gt; new PortfolioTarget(security.Symbol, 1m / securities.Count())).ToList();
+    var targets = selectedAssets.Select(security =&gt; new PortfolioTarget(security.Symbol, 1m / selectedAssets.Count())).ToList();
     SetHoldings(targets, true);
 }</pre>
           <pre class="python">def _rebalance(self):
@@ -128,4 +128,70 @@ self.settings.seed_initial_prices = True</pre>
         <p>7. Delete the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'><span class="csharp">OnData</span><span class="python">on_data</span></a> method that comes with the template algorithm.</p>
       </div>
       <p>Congratulations! You just wrote your first trading algorithm.</p>
+
+        <div class="section-example-container">
+          <pre class="csharp">public class BasicTemplateAlgorithm : QCAlgorithm
+{
+    private Universe _universe;
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
+        _universe = Universe.ETF("SPY");
+        AddUniverse(_universe);
+        Settings.AutomaticIndicatorWarmUp = true;
+        Settings.SeedInitialPrices = true;
+        Schedule.On(DateRules.WeekStart("SPY"), TimeRules.At(8, 0), Rebalance);
+    }
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (dynamic security in changes.AddedSecurities)
+        {
+            security.Roc = ROC(security, 21, Resolution.Daily);
+        }
+    }
+
+    private void Rebalance()
+    {
+        // Get the stocks that are currently in the universe.
+        var securities = _universe.Selected.Select(symbol => Securities[symbol]);
+        // Select the 10 stocks with the greatest trailing returns.
+        var selectedAssets = securities.Where(s =&gt; ((dynamic)s).Roc.IsReady).OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10);
+        // Form an equal-weighted portfolio.
+        var targets = selectedAssets.Select(security => new PortfolioTarget(security.Symbol, 1m / selectedAssets.Count())).ToList();
+        SetHoldings(targets, true);
+    }
+}</pre>
+          <pre class="python">from AlgorithmImports import *
+
+
+class BasicTemplateAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+        self._universe = self.universe.etf('SPY')
+        self.add_universe(self._universe)
+        self.settings.automatic_indicator_warm_up = True
+        self.settings.seed_initial_prices = True
+        self.schedule.on(self.date_rules.week_start('SPY'), self.time_rules.at(8, 0), self._rebalance)
+
+    def on_securities_changed(self, changes):
+        for security in changes.added_securities:
+            security.roc = self.roc(security, 21, Resolution.DAILY)
+
+    def _rebalance(self):
+        # Get the stocks that are currently in the universe.
+        securities = [self.securities[symbol] for symbol in self._universe.selected]
+        # Select the 10 stocks with the greatest trailing returns.
+        selected_assets = sorted([s for s in securities if s.roc.is_ready], key=lambda s: s.roc)[-10:]
+        # Form an equal-weighted portfolio.
+        targets = [PortfolioTarget(security.symbol, 1/len(selected_assets)) for security in selected_assets]
+        self.set_holdings(targets, True)
+
+</pre>
+        </div>
     </div>
