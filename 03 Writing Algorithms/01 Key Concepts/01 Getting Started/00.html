@@ -54,17 +54,22 @@ padding-top: 2rem;
         <p>The process to creating a new project depends on if you use the <a href='/docs/v2/cloud-platform/projects/getting-started#03-Create-Projects'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>Local Platform</a>, or <a href='/docs/v2/lean-cli/projects/project-management#02-Create-Projects'>CLI</a>.</p>
       </div>
       <div class="tutorial-step">
-        <p>2. In the <a href='/docs/v2/writing-algorithms/initialization'><code class="csharp">Initialize</code><code class="python">initialize</code></a> method, add a <a href='/docs/v2/writing-algorithms/universes/key-concepts'>universe</a> to the algorithm.</p>
+        <p>2. In the <a href='/docs/v2/writing-algorithms/initialization'><span class="csharp">Initialize</span><span class="python">initialize</span></a> method, add a <a href='/docs/v2/writing-algorithms/universes/key-concepts'>universe</a> to the algorithm.</p>
         <p>For example, you may want to trade the US Equities that make up the S&amp;P 500.</p>
+      </div>
+        <div class="csharp section-example-container">
+          <pre class="csharp">// Define the _universe member at the class level.
+private Universe _universe;</pre>
+        </div>
         <div class="section-example-container">
           <pre class="csharp">_universe = Universe.ETF("SPY");
 AddUniverse(_universe);</pre>
           <pre class="python">self._universe = self.universe.etf('SPY')
 self.add_universe(self._universe)</pre>
         </div>
-      </div>
+  
       <div class="tutorial-step">
-        <p>3. In the <a href='/docs/v2/writing-algorithms/initialization'><code class="csharp">Initialize</code><code class="python">initialize</code></a> method, enable the following <a href='/docs/v2/writing-algorithms/initialization#10-Set-Algorithm-Settings'>settings</a>.</p>
+        <p>3. In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, enable the following <a href='/docs/v2/writing-algorithms/initialization#10-Set-Algorithm-Settings'>settings</a>.</p>
         <div class="section-example-container">
           <pre class="csharp">Settings.AutomaticIndicatorWarmUp = true;
 Settings.SeedInitialPrices = true;</pre>
@@ -73,7 +78,7 @@ self.settings.seed_initial_prices = True</pre>
         </div>
       </div>
       <div class="tutorial-step">
-        <p>4. In the <a href='/docs/v2/writing-algorithms/initialization'><code class="csharp">Initialize</code><code class="python">initialize</code></a> method, add a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> to rebalance the portfolio each week.</p>
+        <p>4. In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, add a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> to rebalance the portfolio each week.</p>
         <div class="section-example-container">
           <pre class="csharp">Schedule.On(DateRules.WeekStart("SPY"), TimeRules.At(8, 0), Rebalance);</pre>
           <pre class="python">self.schedule.on(
@@ -84,8 +89,8 @@ self.settings.seed_initial_prices = True</pre>
         </div>
       </div>
       <div class="tutorial-step">
-        <p>5. Add an <a href='/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events'><code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code></a> method that creates an <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> for each stock in the universe.</p>
-        <p>For example, you may want to track the trailing 1-month returns of each stock.</p>
+        <p>5. Add an <a href='/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events'><span class="csharp">OnSecuritiesChanged</span><span class="python">on_securities_changed</span></a> method that creates an <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> for each stock in the universe.</p>
+        <p>For example, you may want to track the trailing 1-month returns of each stock. <a href='/docs/v2/writing-algorithms/key-concepts/duck-typing'>Duck typing</a> the indicator onto the <code>Security</code> object saves you from creating a new data structure.</p>
         <div class="section-example-container">
           <pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
