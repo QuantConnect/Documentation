@@ -109,7 +109,7 @@ self.settings.seed_initial_prices = True</pre>
     // Get the stocks that are currently in the universe.
     var securities = _universe.Selected.Select(symbol =&gt; Securities[symbol]);
     // Select the 10 stocks with the greatest trailing returns.
-    var selectedAssets = securities.OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10);
+    var selectedAssets = securities.Where(s =&gt; ((dynamic)s).Roc.IsReady).OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10);
     // Form an equal-weighted portfolio.
     var targets = selectedAssets.Select(security =&gt; new PortfolioTarget(security.Symbol, 1m / securities.Count())).ToList();
     SetHoldings(targets, true);
@@ -118,9 +118,9 @@ self.settings.seed_initial_prices = True</pre>
     # Get the stocks that are currently in the universe.
     securities = [self.securities[symbol] for symbol in self._universe.selected]
     # Select the 10 stocks with the greatest trailing returns.
-    selected_assets = sorted(securities, key=lambda s: s.roc)[-10:]
+    selected_assets = sorted([s for s in securities if s.roc.is_ready], key=lambda s: s.roc)[-10:]
     # Form an equal-weighted portfolio.
-    targets = [PortfolioTarget(security.symbol, 1/len(securities)) for security in selected_assets]
+    targets = [PortfolioTarget(security.symbol, 1/len(selected_assets)) for security in selected_assets]
     self.set_holdings(targets, True)</pre>
         </div>
       </div>
