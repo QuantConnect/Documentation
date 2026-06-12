@@ -56,7 +56,6 @@ padding-top: 2rem;
       <div class="tutorial-step">
         <p>2. In the <a href='/docs/v2/writing-algorithms/initialization'><span class="csharp">Initialize</span><span class="python">initialize</span></a> method, add a <a href='/docs/v2/writing-algorithms/universes/key-concepts'>universe</a> to the algorithm.</p>
         <p>For example, you may want to trade the US Equities that make up the S&amp;P 500.</p>
-      </div>
         <div class="csharp section-example-container">
           <pre class="csharp">// Define the _universe member at the class level.
 private Universe _universe;</pre>
@@ -67,6 +66,7 @@ AddUniverse(_universe);</pre>
           <pre class="python">self._universe = self.universe.etf('SPY')
 self.add_universe(self._universe)</pre>
         </div>
+      </div>
   
       <div class="tutorial-step">
         <p>3. In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, enable the following <a href='/docs/v2/writing-algorithms/initialization#10-Set-Algorithm-Settings'>settings</a>.</p>
@@ -81,11 +81,7 @@ self.settings.seed_initial_prices = True</pre>
         <p>4. In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, add a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> to rebalance the portfolio each week.</p>
         <div class="section-example-container">
           <pre class="csharp">Schedule.On(DateRules.WeekStart("SPY"), TimeRules.At(8, 0), Rebalance);</pre>
-          <pre class="python">self.schedule.on(
-    self.date_rules.week_start('SPY'),
-    self.time_rules.at(8, 0),
-    self._rebalance
-)</pre>
+          <pre class="python">self.schedule.on(self.date_rules.week_start('SPY'), self.time_rules.at(8, 0), self._rebalance)</pre>
         </div>
       </div>
       <div class="tutorial-step">
