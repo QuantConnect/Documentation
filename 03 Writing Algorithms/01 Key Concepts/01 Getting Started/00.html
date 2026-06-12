@@ -110,11 +110,11 @@ self.settings.seed_initial_prices = True</pre>
           <pre class="csharp">private void Rebalance()
 {
     // Get the stocks that are currently in the universe.
-    var securities = _universe.Selected.Select(symbol =&gt; Securities[symbol]).ToList();
+    var securities = _universe.Selected.Select(symbol =&gt; Securities[symbol]);
     // Select the 10 stocks with the greatest trailing returns.
-    var selectedAssets = securities.OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10).ToList();
+    var selectedAssets = securities.OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10);
     // Form an equal-weighted portfolio.
-    var targets = selectedAssets.Select(security =&gt; new PortfolioTarget(security.Symbol, 1m / securities.Count)).ToList();
+    var targets = selectedAssets.Select(security =&gt; new PortfolioTarget(security.Symbol, 1m / securities.Count())).ToList();
     SetHoldings(targets, true);
 }</pre>
           <pre class="python">def _rebalance(self):
@@ -128,7 +128,7 @@ self.settings.seed_initial_prices = True</pre>
         </div>
       </div>
       <div class="tutorial-step">
-        <p>7. Delete the <code class="csharp">OnData</code><code class="python">on_data</code> method that comes with the template algorithm.</p>
+        <p>7. Delete the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'><span class="csharp">OnData</span><span class="python">on_data</span> method that comes with the template algorithm.</p>
       </div>
       <p>Congratulations! You just wrote your first trading algorithm.</p>
     </div>
