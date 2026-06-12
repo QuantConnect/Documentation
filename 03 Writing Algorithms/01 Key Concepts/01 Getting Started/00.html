@@ -48,17 +48,82 @@ padding-top: 2rem;
         </div>
       </div>
       <hr />
-      <h4>Follow these steps to create, backtest, and paper trade a new algorithm:</h4>
+      <h4>Follow these steps to write your first trading algorithm:</h4>
       <div class="tutorial-step">
         <p>1. Create a new project.</p>
         <p>The process to creating a new project depends on if you use the <a href='/docs/v2/cloud-platform/projects/getting-started#03-Create-Projects'>Cloud Platform</a>, <a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>Local Platform</a>, or <a href='/docs/v2/lean-cli/projects/project-management#02-Create-Projects'>CLI</a>.</p>
       </div>
       <div class="tutorial-step">
-        <p>2. Backtest the default algorithm.</p>
-        <p>The process to backtest the algorithm depends on if you use the <a href='/docs/v2/cloud-platform/backtesting/getting-started#02-Run-Backtests'>Cloud Platform</a>, <a href='/docs/v2/local-platform/backtesting/getting-started#02-Run-Backtests'>Local Platform</a>, or <a href='/docs/v2/lean-cli/backtesting/deployment'>CLI</a>.</p>
+        <p>2. In the <a href='/docs/v2/writing-algorithms/initialization'><code class="csharp">Initialize</code><code class="python">initialize</code></a> method, add a <a href='/docs/v2/writing-algorithms/universes/key-concepts'>universe</a> to the algorithm.</p>
+        <p>For example, you may want to trade the US Equities that make up the S&amp;P 500.</p>
+        <div class="section-example-container">
+          <pre class="csharp">_universe = Universe.ETF("SPY");
+AddUniverse(_universe);</pre>
+          <pre class="python">self._universe = self.universe.etf('SPY')
+self.add_universe(self._universe)</pre>
+        </div>
       </div>
       <div class="tutorial-step">
-        <p>3. Deploy the algorithm to live paper trading.</p>
-        <p>The process to deploy the algorithm live depends on if you use the <a href='/docs/v2/cloud-platform/live-trading/brokerages/quantconnect-paper-trading#15-Deploy-Live-Algorithms'>Cloud Platform</a>, <a href='/docs/v2/local-platform/live-trading/getting-started#02-Deploy-Live-Algorithms'>Local Platform</a>, or <a href='/docs/v2/lean-cli/live-trading/brokerages/quantconnect-paper-trading'>CLI</a>.</p>
+        <p>3. In the <a href='/docs/v2/writing-algorithms/initialization'><code class="csharp">Initialize</code><code class="python">initialize</code></a> method, enable the following <a href='/docs/v2/writing-algorithms/initialization#10-Set-Algorithm-Settings'>settings</a>.</p>
+        <div class="section-example-container">
+          <pre class="csharp">Settings.AutomaticIndicatorWarmUp = true;
+Settings.SeedInitialPrices = true;</pre>
+          <pre class="python">self.settings.automatic_indicator_warm_up = True
+self.settings.seed_initial_prices = True</pre>
+        </div>
       </div>
+      <div class="tutorial-step">
+        <p>4. In the <a href='/docs/v2/writing-algorithms/initialization'><code class="csharp">Initialize</code><code class="python">initialize</code></a> method, add a <a href='/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a> to rebalance the portfolio each week.</p>
+        <div class="section-example-container">
+          <pre class="csharp">Schedule.On(DateRules.WeekStart("SPY"), TimeRules.At(8, 0), Rebalance);</pre>
+          <pre class="python">self.schedule.on(
+    self.date_rules.week_start('SPY'),
+    self.time_rules.at(8, 0),
+    self._rebalance
+)</pre>
+        </div>
+      </div>
+      <div class="tutorial-step">
+        <p>5. Add an <a href='/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events'><code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code></a> method that creates an <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicator</a> for each stock in the universe.</p>
+        <p>For example, you may want to track the trailing 1-month returns of each stock.</p>
+        <div class="section-example-container">
+          <pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    foreach (dynamic security in changes.AddedSecurities)
+    {
+        security.Roc = ROC(security, 21, Resolution.Daily);
+    }
+}</pre>
+          <pre class="python">def on_securities_changed(self, changes):
+    for security in changes.added_securities:
+        security.roc = self.roc(security, 21, Resolution.DAILY)</pre>
+        </div>
+      </div>
+      <div class="tutorial-step">
+        <p>6. Add your trading rules and <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing'>position sizing</a> to the <code class="csharp">Rebalance</code><code class="python">_rebalance</code> method that runs each week.</p>
+        <div class="section-example-container">
+          <pre class="csharp">private void Rebalance()
+{
+    // Get the stocks that are currently in the universe.
+    var securities = _universe.Selected.Select(symbol =&gt; Securities[symbol]).ToList();
+    // Select the 10 stocks with the greatest trailing returns.
+    var selectedAssets = securities.OrderBy(s =&gt; ((dynamic)s).Roc).TakeLast(10).ToList();
+    // Form an equal-weighted portfolio.
+    var targets = selectedAssets.Select(security =&gt; new PortfolioTarget(security.Symbol, 1m / securities.Count)).ToList();
+    SetHoldings(targets, true);
+}</pre>
+          <pre class="python">def _rebalance(self):
+    # Get the stocks that are currently in the universe.
+    securities = [self.securities[symbol] for symbol in self._universe.selected]
+    # Select the 10 stocks with the greatest trailing returns.
+    selected_assets = sorted(securities, key=lambda s: s.roc)[-10:]
+    # Form an equal-weighted portfolio.
+    targets = [PortfolioTarget(security.symbol, 1/len(securities)) for security in selected_assets]
+    self.set_holdings(targets, True)</pre>
+        </div>
+      </div>
+      <div class="tutorial-step">
+        <p>7. Delete the <code class="csharp">OnData</code><code class="python">on_data</code> method that comes with the template algorithm.</p>
+      </div>
+      <p>Congratulations! You just wrote your first trading algorithm.</p>
     </div>
