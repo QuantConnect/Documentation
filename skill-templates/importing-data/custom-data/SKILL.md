@@ -34,10 +34,12 @@ Ask or inspect enough input to answer all of these before generating code:
 - Live behavior: same source in backtests and live trading, or separate
   backtest and live sources.
 
-If the user gives a local file and wants Object Store, read the
-`upload-object-store` skill. Prepare a local staging folder where relative file
-paths map to intended Object Store keys, then use those keys in
+If the user gives a local file and wants Cloud Object Store, use the Lean CLI
+directly from an initialized Lean workspace:
+`lean cloud object-store set <key> <path>`. Then use that key in
 py`SubscriptionTransportMedium.OBJECT_STORE`cs`SubscriptionTransportMedium.ObjectStore`.
+For local backtests, `lean object-store set` opens the workspace `storage`
+folder. Copy the file there with the same relative path as the intended key.
 
 ## 2. Choose the reader pattern
 
