@@ -1,350 +1,89 @@
 ---
 name: custom-data
 description: >
-  Integrates custom or external data sources into a QuantConnect algorithm -- from data reader
-  implementation through compile, backtest, and history verification. Use this skill whenever
-  the user wants to add custom data to a QC strategy, including phrases like:
-  "add custom data [to my algorithm]", "Generate a strategy using custom data [link/file]",
-  "implement a custom data reader for [source]", "create a [CSV/JSON/XML/ZIP] data reader",
-  "integrate this dataset into QC", "I have a data file or URL I want to use in my algorithm",
-  "set up streaming data", "link [dataset] to my QC strategy", or any mention of importing
-  external datasets, BaseData, PythonData, or non-standard data sources into QuantConnect.
-  Also trigger for: "add custom data", "use external data", "custom data reader", "stream data",
-  "import data from URL", "universe from custom file".
+  Use when adding a custom or external data source to a QuantConnect/LEAN
+  algorithm. Triggers: "add custom data", "custom data reader", "external
+  dataset", "BaseData", "PythonData", CSV, JSON, XML, ZIP, REST endpoint,
+  Object Store data, linked data for an existing asset, standalone custom data,
+  custom universe files, or a local file that should feed a QC strategy. Skip
+  when the data is an existing QuantConnect dataset subscribed with add_data or
+  AddData, unless the task is to write a custom reader.
 ---
 
-# /custom-data -- QuantConnect Custom Data Integration
+# Custom Data in QuantConnect / LEAN
 
-Guides Claude through the full workflow: gather requirements -> generate code -> compile -> backtest -> verify history.
+Use this skill to build a custom data reader, wire it into the algorithm, and
+verify that the subscription actually produces rows. Keep the data reader in its
+own file, keep the algorithm class in py`main.py`cs`Main.cs`, and iterate
+compile plus backtest until the data loads and the strategy trades.
 
----
+## 1. Identify the shape before coding
 
-## Step 1 -- Gather Data Information
+Ask or inspect enough input to answer all of these before generating code:
 
-Ask the user these questions (use AskUserQuestion where you can; otherwise ask sequentially):
+- Source: remote file URL, REST endpoint for live mode, local file staged for
+  Object Store, or an existing Object Store key.
+- Format: CSV, JSON, XML, ZIP, or another line-based format. For JSON, determine
+  whether each payload is one record, newline-delimited records, or an array that
+  must unfold into multiple records.
+- Scope: one symbol per subscription, a linked stream for an existing QC asset,
+  or a custom universe file with many symbols per date.
+- Date coverage and resolution: first date, last date, daily, minute, or other.
+- Fields: timestamp column, numeric fields, and which field should be
+  py`value`cs`Value`.
+- Live behavior: same source in backtests and live trading, or separate
+  backtest and live sources.
 
-1. **Source**: Where does the data come from?
-   - Remote URL (HTTP/HTTPS file download)
-   - REST endpoint (live polling -- returns one data point per call)
-   - Local file path (will be uploaded to Object Store)
-   - Already in the QuantConnect Object Store (provide the key)
+If the user gives a local file and wants Object Store, read the
+`upload-object-store` skill. Prepare a local staging folder where relative file
+paths map to intended Object Store keys, then use those keys in
+py`SubscriptionTransportMedium.OBJECT_STORE`cs`SubscriptionTransportMedium.ObjectStore`.
 
-2. **Format**: CSV / JSON / XML / ZIP
-   - If ZIP: what format is inside the archive?
-   - If JSON: is each file a single object/line, or a JSON array of multiple records?
-     - Array per file -> flag as **UnfoldingCollection**
+## 2. Choose the reader pattern
 
-3. **Ticker scope**:
-   - Does the file/endpoint cover **one ticker** (e.g., one row per date for BTC)?
-     -> Regular custom security data
-   - Does the file cover **multiple tickers** in one file (e.g., a daily snapshot with rows for many stocks)?
-     -> Custom Universe
+Use the simplest pattern that matches the data:
 
-4. **Asset linkage** (skip for universes):
-   - Is this data describing an **existing QC asset** (e.g., C-suite data tied to AAPL)?
-     -> **Linked** -- the custom data symbol references the parent equity symbol
-   - Is this data **completely standalone** (e.g., weather data, economic macro)?
-     -> **Unlinked** -- creates its own new symbol
+| Pattern | Use when | Source medium |
+| --- | --- | --- |
+| Regular unlinked | The data is its own standalone symbol. | Remote file or Object Store |
+| Regular linked | The data describes an existing security such as AAPL. | Remote file or Object Store |
+| Dual source | Backtests use a file and live trading polls an endpoint. | Branch on `is_live_mode` |
+| Unfolding collection | One input line or JSON array yields many records. | Override collection behavior |
+| ZIP | The source is an archive that must be opened and parsed. | Remote file |
+| Universe | A dated file selects symbols instead of emitting one symbol stream. | Remote file or Object Store |
 
-5. **Dual readers**:
-   - Do you need **different data sources** for backtesting vs. live trading?
-     -> Yes: prompt for backtest source first, then live source separately.
-     -> No: single source; use `is_live_mode` branching only if needed.
+Do not use py`try` / `except`cs`try` / `catch` to hide parser errors. Return
+py`None`cs`null` only for known skippable records such as blank lines, headers,
+or comments.
 
-6. **Ticker name**: What ticker/symbol string should represent this data? (e.g., `"BTC"`, `"WEATHER"`)
+## 3. File and naming rules
 
-7. **Data properties**: What numeric fields does each record have? Which field is the primary `Value`?
+Derive a descriptive class name from the dataset:
 
-8. **Date coverage**: What date range does the data file cover?
-
----
-
-## Step 2 -- Object Store Decision
-
-Ask: "Would you like to upload this data file to the QuantConnect Object Store?"
-
-- **Yes** -> record `USE_OBJECT_STORE = true`. After generating code, upload the file in Step 5.
-- **No** -> `USE_OBJECT_STORE = false`. Use `RemoteFile` or `Rest` transport.
-
----
-
-## Step 3 -- Generate the Code
-
-### Style rules
-
-Apply these rules to all generated code:
-
-- **Imports (Python)**: `from AlgorithmImports import *` only. For `json`, `csv`, `xml.etree.ElementTree`, `zipfile`, and `io`: add an explicit import after `from AlgorithmImports import *` when the reader uses it.
-- **Imports (C#)**: Leave all project `using` statements as-is.
-- **Subscription variable**: Store the `Security` object returned by py`add_data`cs`AddData` / py`add_equity`cs`AddEquity` directly -- never append py`.symbol`cs`.Symbol` at assignment. Pass the variable directly everywhere (py`history()`cs`History()`, py`set_holdings()`cs`SetHoldings()`, py`liquidate()`cs`Liquidate()`, dict key). Use py`x in data`cs`slice.ContainsKey(x)` to check presence.
-- **Comments**: Capital first letter, space after `#` / `//`, ends with a period.
-- **Blank lines (Python)**: 2 blank lines before each class, 1 before each method, none inside method bodies.
-- **Blank lines (C#)**: 1 blank line between methods, none inside method bodies.
-- **Error handling**: No `try`/`except` or `try`/`catch`. Use explicit guards (`if not line.strip()`, `if string.IsNullOrWhiteSpace(line)`) for skippable lines. Let real parse errors propagate.
-
-Use the templates at the bottom of this file. Pick the tag from the decision matrix:
-
-| Data type | Linkage | Transport | Template tag |
-|---|---|---|---|
-| Regular security | Unlinked | Remote URL | `REGULAR_UNLINKED_REMOTE` |
-| Regular security | Unlinked | Object Store | `REGULAR_UNLINKED_OBJSTORE` |
-| Regular security | Linked | Remote URL | `REGULAR_LINKED` |
-| Regular security | Any | REST (live only) | `DUAL_READER` |
-| Universe | -- | Remote URL | `UNIVERSE` |
-| JSON array per file | Unlinked | Any | `UNFOLDING` |
-| ZIP archive | Any | Remote URL | `ZIP` |
-
-### Naming and file conventions
-
-Derive the class name from the dataset, then apply language conventions for the file name:
-
-| Language | Class name | File name |
-|---|---|---|
+| Language | Class | Reader file |
+| --- | --- | --- |
 | Python | `BitcoinData` | `bitcoin_data.py` |
 | C# | `BitcoinData` | `BitcoinData.cs` |
 
-The data reader class always goes in its own file -- never inline in `main.py` / `Main.cs`.
-
-### Customize the template
-
-- Replace `MyCustomData` with the descriptive class name chosen above.
-- Replace `"TICKER"` with the user's ticker string.
-- Add the user's data property fields.
-- Set py`value`cs`Value` to the field the user indicated as primary.
-- If dual readers: add the `is_live_mode` branch in both py`get_source`cs`GetSource` and py`reader`cs`Reader`.
-
-### History verification in py`on_end_of_algorithm`cs`OnEndOfAlgorithm`
-
-Add this method to the algorithm class (after py`on_data`cs`OnData`):
-
-```python
-def on_end_of_algorithm(self):
-    result = self.history(self._custom_ticker, self.start_date, self.time)
-    self.log(f"History rows: {len(result)}")
-```
-
-```csharp
-public override void OnEndOfAlgorithm()
-{
-    var result = History(_customSymbol, StartDate, Time);
-    Log($"History rows: {result.Count()}");
-}
-```
-
-Universe algorithms: omit this method.
-
----
-
-## Step 4 -- Write Files via MCP
-
-Two separate MCP writes are always required:
-
-1. **Data reader file** -- use `quantconnect:create_file` to create the new file (e.g., `bitcoin_data.py` / `BitcoinData.cs`) containing the custom data class.
-2. **Algorithm file** -- use `quantconnect:update_file_contents` to update `main.py` (or `Main.cs`) with the algorithm class only.
-
-For Python projects, a third write is required: add the reader class import to `main.py` after `from AlgorithmImports import *`. For example, class `BitcoinData` in file `bitcoin_data.py` requires:
-
-```python
-from AlgorithmImports import *
-from bitcoin_data import BitcoinData
-```
-
-C# projects: skip this step.
-
----
-
-## Step 5 -- Object Store Upload (if requested)
-
-If `USE_OBJECT_STORE = true`:
-1. Follow the `/upload-object-store` skill to upload the local file.
-   Use `custom-data/<filename>` as the object store key (e.g. `custom-data/nifty.json`).
-2. After a successful upload, update the py`get_source`cs`GetSource` method to use:
-
-```python
-return SubscriptionDataSource(
-    "custom-data/my-dataset.csv",
-    SubscriptionTransportMedium.OBJECT_STORE
-)
-```
-
-```csharp
-return new SubscriptionDataSource(
-    "custom-data/my-dataset.csv",
-    SubscriptionTransportMedium.ObjectStore);
-```
-
-Then return to the main workflow (Step 6 -- compile).
-
----
-
-## Step 6 -- Compile
-
-1. Call `quantconnect:create_compile`.
-2. Wait, then call `quantconnect:read_compile` until status is `BuildSuccess` or `BuildError`.
-3. If `BuildError`:
-   - Parse error messages (file, line, message).
-   - Fix the code (update via MCP file tool).
-   - Loop back to step 6 until clean.
-
----
-
-## Step 7 -- Backtest and Verify (loop until working)
-
-1. Call `quantconnect:create_backtest`.
-2. Call `quantconnect:read_backtest` until status is complete.
-3. Evaluate the results. Do not stop until both conditions below are met.
-
-   **Condition A: History rows > 0**
-   - Scan the log for `"History rows: N"`.
-   - If N == 0, enter the mandatory diagnosis loop. Do not report success or stop:
-     1. Fetch the data URL and parse the first record manually, step by step, to reproduce the reader logic. Identify exactly which line of the reader would fail.
-     2. Audit every stdlib call in the reader (py`json.loads`cs`JsonConvert.DeserializeObject`, py`csv.reader`cs`line.Split`, py`xml.parse`cs`XDocument.Parse`, py`zipfile.open`cs`ZipFile`, etc.) and verify the module is explicitly imported. If any are missing, add the import and loop back to Step 6.
-     3. Verify py`set_start_date`cs`SetStartDate` / py`set_end_date`cs`SetEndDate` fall within the data file's actual date range. If not, fix the dates.
-     4. Recompile (Step 6) and re-backtest. Repeat until N > 0.
-
-   **Condition B: At least one trade placed (non-flat equity curve)**
-   - If N > 0 but no orders appear in the backtest:
-     1. Add py`self.log(f"on_data fired: {point.value}")`cs`Log($"OnData fired: {point.Value}")` as the first line of py`on_data`cs`OnData`. Re-backtest.
-     2. If the log line appears, data is flowing but the entry condition never triggers; simplify or relax the trading condition and re-backtest.
-     3. If the log line does not appear, py`on_data`cs`OnData` is never called; check subscription resolution and data normalization settings.
-     4. Keep iterating until at least one order is placed.
-
-4. Only after both conditions are met, report final result to the user:
-   - Compilation: clean
-   - Backtest: complete (show any key stats)
-   - History verification: N rows loaded
-   - Trades placed: M orders
-   - Object store: uploaded at `key` (if applicable)
-
----
-
-## Templates
-
-Replace placeholders throughout:
-- `MyCustomData` -> descriptive class name
-- `"TICKER"` -> user's ticker string
-- `PROPERTIES` -> user's data fields
-- `VALUE_FIELD` -> the primary value field
-- `BACKTEST_URL` / `LIVE_URL` -> actual source URLs
-
----
-
-### Common algorithm class
-
-`REGULAR_UNLINKED_REMOTE`, `REGULAR_UNLINKED_OBJSTORE`, `DUAL_READER`, `UNFOLDING`, and `ZIP` all use this algorithm class. Add it to `main.py` / `Main.cs` alongside the reader file.
-
-```python
-class MyAlgorithm(QCAlgorithm):
-
-    def initialize(self):
-        self._custom_ticker = self.add_data(MyCustomData, "TICKER", Resolution.DAILY)
-
-    def on_data(self, data):
-        if self._custom_ticker not in data:
-            return
-        custom = data[self._custom_ticker]
-
-    def on_end_of_algorithm(self):
-        result = self.history(self._custom_ticker, self.start_date, self.time)
-        self.log(f"History rows: {len(result)}")
-```
-
-```csharp
-public class MyAlgorithm : QCAlgorithm
-{
-    private Symbol _customSymbol;
-
-    public override void Initialize()
-    {
-        _customSymbol = AddData<MyCustomData>("TICKER", Resolution.Daily).Symbol;
-    }
-
-    public override void OnData(Slice slice)
-    {
-        if (!slice.ContainsKey(_customSymbol)) return;
-        var custom = slice.Get<MyCustomData>(_customSymbol);
-    }
-
-    public override void OnEndOfAlgorithm()
-    {
-        var result = History(_customSymbol, StartDate, Time);
-        Log($"History rows: {result.Count()}");
-    }
-}
-```
-
----
-
-### REGULAR_UNLINKED_REMOTE
+In Python, import the reader in `main.py` after `from AlgorithmImports import *`:
 
 ```python
 # region imports
 from AlgorithmImports import *
+from bitcoin_data import BitcoinData
 # endregion
-
-
-class MyCustomData(PythonData):
-
-    def get_source(self, config, date, is_live_mode):
-        return SubscriptionDataSource(
-            "BACKTEST_URL",
-            SubscriptionTransportMedium.REMOTE_FILE
-        )
-
-    def reader(self, config, line, date, is_live_mode):
-        if not line.strip() or not line[0].isdigit():
-            return None
-        data = line.split(',')
-        obj = MyCustomData()
-        obj.symbol = config.symbol
-        obj.time = datetime.strptime(data[0], "%Y-%m-%d")
-        obj.end_time = obj.time + timedelta(days=1)
-        obj["PROPERTY1"] = float(data[1])
-        obj["PROPERTY2"] = float(data[2])
-        obj.value = float(data[VALUE_INDEX])
-        return obj
 ```
 
-```csharp
-using QuantConnect;
-using QuantConnect.Data;
-using System;
-using System.Globalization;
+C# project files share the same namespace, so no extra import is needed for a
+reader class in another project file.
 
-public class MyCustomData : BaseData
-{
-    public decimal Property1 { get; set; }
-    public decimal Property2 { get; set; }
+Before writing code, apply the `code-quality` skill rules for imports,
+subscription variables, comments, blank lines, and reader error handling.
 
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, DateTime date, bool isLiveMode)
-    {
-        return new SubscriptionDataSource(
-            "BACKTEST_URL",
-            SubscriptionTransportMedium.RemoteFile);
-    }
+## 4. Regular single-symbol reader
 
-    public override BaseData Reader(
-        SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
-    {
-        if (string.IsNullOrWhiteSpace(line) || !char.IsDigit(line[0]))
-            return null;
-
-        var data = line.Split(',');
-        var obj = new MyCustomData { Symbol = config.Symbol };
-        obj.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
-        obj.EndTime = obj.Time.AddDays(1);
-        obj.Property1 = decimal.Parse(data[1], CultureInfo.InvariantCulture);
-        obj.Property2 = decimal.Parse(data[2], CultureInfo.InvariantCulture);
-        obj.Value = decimal.Parse(data[VALUE_INDEX], CultureInfo.InvariantCulture);
-        return obj;
-    }
-}
-```
-
----
-
-### REGULAR_UNLINKED_OBJSTORE
+Use this pattern for a CSV-like single-symbol stream. Replace the URL or key,
+class name, date parsing, fields, and value index.
 
 ```python
 # region imports
@@ -363,23 +102,25 @@ class MyCustomData(PythonData):
     def reader(self, config, line, date, is_live_mode):
         if not line.strip() or not line[0].isdigit():
             return None
-        data = line.split(',')
-        obj = MyCustomData()
-        obj.symbol = config.symbol
-        obj.time = datetime.strptime(data[0], "%Y-%m-%d")
-        obj.end_time = obj.time + timedelta(days=1)
-        obj.value = float(data[VALUE_INDEX])
-        return obj
+        csv = line.split(",")
+        data = MyCustomData()
+        data.symbol = config.symbol
+        data.time = datetime.strptime(csv[0], "%Y-%m-%d")
+        data.end_time = data.time + timedelta(days=1)
+        data["signal"] = float(csv[1])
+        data.value = float(csv[1])
+        return data
 ```
 
 ```csharp
-using QuantConnect;
 using QuantConnect.Data;
 using System;
 using System.Globalization;
 
 public class MyCustomData : BaseData
 {
+    public decimal Signal { get; set; }
+
     public override SubscriptionDataSource GetSource(
         SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
@@ -393,518 +134,129 @@ public class MyCustomData : BaseData
     {
         if (string.IsNullOrWhiteSpace(line) || !char.IsDigit(line[0]))
             return null;
-
-        var data = line.Split(',');
-        var obj = new MyCustomData { Symbol = config.Symbol };
-        obj.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
-        obj.EndTime = obj.Time.AddDays(1);
-        obj.Value = decimal.Parse(data[VALUE_INDEX], CultureInfo.InvariantCulture);
-        return obj;
+        var csv = line.Split(',');
+        var data = new MyCustomData { Symbol = config.Symbol };
+        data.Time = DateTime.ParseExact(csv[0], "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        data.EndTime = data.Time.AddDays(1);
+        data.Signal = decimal.Parse(csv[1], CultureInfo.InvariantCulture);
+        data.Value = data.Signal;
+        return data;
     }
 }
 ```
 
----
+For remote files, use
+py`SubscriptionTransportMedium.REMOTE_FILE`cs`SubscriptionTransportMedium.RemoteFile`
+and the remote URL instead of the Object Store key.
 
-### REGULAR_LINKED
+## 5. Subscribe and verify history
 
-Data tied to an existing QC asset. The custom data symbol references the parent equity's ticker via py`config.symbol.value`cs`config.Symbol.Value`.
+Store the subscription and use it consistently. Add a history check in
+py`on_end_of_algorithm`cs`OnEndOfAlgorithm` for non-universe custom data.
 
 ```python
-# region imports
-from AlgorithmImports import *
-# endregion
-
-
-class MyLinkedData(PythonData):
-
-    def get_source(self, config, date, is_live_mode):
-        ticker = config.symbol.value
-        return SubscriptionDataSource(
-            f"BACKTEST_URL/{ticker}.csv",
-            SubscriptionTransportMedium.REMOTE_FILE
-        )
-
-    def reader(self, config, line, date, is_live_mode):
-        if not line.strip() or not line[0].isdigit():
-            return None
-        data = line.split(',')
-        obj = MyLinkedData()
-        obj.symbol = config.symbol
-        obj.time = datetime.strptime(data[0], "%Y-%m-%d")
-        obj.end_time = obj.time + timedelta(days=1)
-        obj["EventType"] = data[1].strip()
-        obj.value = float(data[VALUE_INDEX])
-        return obj
-
-
 class MyAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        self._equity = self.add_equity("AAPL", Resolution.DAILY)
-        self._custom_linked = self.add_data(MyLinkedData, self._equity)
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2023, 1, 1)
+        self.set_cash(100000)
+        self._equity = self.add_equity("SPY", Resolution.DAILY)
+        self._custom_signal = self.add_data(MyCustomData, "SIGNAL", Resolution.DAILY)
 
     def on_data(self, data):
-        if self._custom_linked not in data:
+        if self._custom_signal not in data:
             return
-        linked = data[self._custom_linked]
-        self.log(f"Linked event: {linked['EventType']}, value: {linked.value}")
+        point = data[self._custom_signal]
+        if point.value > 0:
+            self.set_holdings(self._equity, 1)
 
     def on_end_of_algorithm(self):
-        result = self.history(self._custom_linked, self.start_date, self.time)
-        self.log(f"History rows: {len(result)}")
+        history = self.history(MyCustomData, self._custom_signal, self.start_date, self.time)
+        self.log(f"History rows: {len(history)}")
 ```
 
 ```csharp
-using QuantConnect;
-using QuantConnect.Data;
-using System;
-using System.Globalization;
-
-public class MyLinkedData : BaseData
-{
-    public string EventType { get; set; }
-
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, DateTime date, bool isLiveMode)
-    {
-        var ticker = config.Symbol.Value;
-        return new SubscriptionDataSource(
-            $"BACKTEST_URL/{ticker}.csv",
-            SubscriptionTransportMedium.RemoteFile);
-    }
-
-    public override BaseData Reader(
-        SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
-    {
-        if (string.IsNullOrWhiteSpace(line) || !char.IsDigit(line[0]))
-            return null;
-
-        var data = line.Split(',');
-        var obj = new MyLinkedData { Symbol = config.Symbol };
-        obj.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
-        obj.EndTime = obj.Time.AddDays(1);
-        obj.EventType = data[1].Trim();
-        obj.Value = decimal.Parse(data[VALUE_INDEX], CultureInfo.InvariantCulture);
-        return obj;
-    }
-}
-
 public class MyAlgorithm : QCAlgorithm
 {
     private Symbol _equity;
-    private Symbol _customSymbol;
+    private Symbol _customSignal;
 
     public override void Initialize()
     {
-        _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
-        _customSymbol = AddData<MyLinkedData>(_equity).Symbol;
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2023, 1, 1);
+        SetCash(100000);
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+        _customSignal = AddData<MyCustomData>("SIGNAL", Resolution.Daily).Symbol;
     }
 
     public override void OnData(Slice slice)
     {
-        if (!slice.ContainsKey(_customSymbol)) return;
-        var linked = slice.Get<MyLinkedData>(_customSymbol);
-        Log($"Event: {linked.EventType}, Value: {linked.Value}");
+        if (!slice.ContainsKey(_customSignal)) return;
+        var point = slice.Get<MyCustomData>(_customSignal);
+        if (point.Value > 0)
+            SetHoldings(_equity, 1);
     }
 
     public override void OnEndOfAlgorithm()
     {
-        var result = History(_customSymbol, StartDate, Time);
-        Log($"History rows: {result.Count()}");
+        var history = History<MyCustomData>(_customSignal, StartDate, Time);
+        Log($"History rows: {history.Count()}");
     }
 }
 ```
 
----
+For linked custom data, subscribe to the underlying security first, then pass the
+linked ticker to the custom data subscription. In the trading logic, trade the
+underlying security and read the custom symbol only for signals.
 
-### DUAL_READER
+## 6. Dual backtest and live sources
 
-Separate data sources for backtesting (CSV file) and live trading (REST API).
+Use `is_live_mode` only when the source genuinely differs between backtests and
+live trading. Keep parser output identical in both paths.
 
 ```python
-# region imports
-from AlgorithmImports import *
-import json
-# endregion
-
-
-class MyCustomData(PythonData):
-
-    def get_source(self, config, date, is_live_mode):
-        if is_live_mode:
-            return SubscriptionDataSource(
-                "LIVE_URL",
-                SubscriptionTransportMedium.REST
-            )
-        return SubscriptionDataSource(
-            "BACKTEST_URL",
-            SubscriptionTransportMedium.REMOTE_FILE
-        )
-
-    def reader(self, config, line, date, is_live_mode):
-        if not line.strip():
-            return None
-        obj = MyCustomData()
-        obj.symbol = config.symbol
-        if is_live_mode:
-            raw = json.loads(line)
-            obj.value = float(raw["last"])
-            obj.end_time = Extensions.convert_from_utc(
-                datetime.utcnow(), config.exchange_time_zone
-            )
-            obj.time = obj.end_time - timedelta(days=1)
-            return obj
-        if not line[0].isdigit():
-            return None
-        data = line.split(',')
-        obj.time = datetime.strptime(data[0], "%Y-%m-%d")
-        obj.end_time = obj.time + timedelta(days=1)
-        obj.value = float(data[VALUE_INDEX])
-        return obj
+def get_source(self, config, date, is_live_mode):
+    if is_live_mode:
+        return SubscriptionDataSource("https://example.com/live", SubscriptionTransportMedium.REST)
+    return SubscriptionDataSource("custom-data/history.csv", SubscriptionTransportMedium.OBJECT_STORE)
 ```
 
 ```csharp
-using QuantConnect;
-using QuantConnect.Data;
-using Newtonsoft.Json;
-using System;
-using System.Globalization;
-
-public class MyCustomData : BaseData
+public override SubscriptionDataSource GetSource(
+    SubscriptionDataConfig config, DateTime date, bool isLiveMode)
 {
-    [JsonProperty("last")]
-    public decimal Last { get; set; }
-
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, DateTime date, bool isLiveMode)
-    {
-        if (isLiveMode)
-            return new SubscriptionDataSource(
-                "LIVE_URL",
-                SubscriptionTransportMedium.Rest);
-
-        return new SubscriptionDataSource(
-            "BACKTEST_URL",
-            SubscriptionTransportMedium.RemoteFile);
-    }
-
-    public override BaseData Reader(
-        SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
-    {
-        if (string.IsNullOrWhiteSpace(line)) return null;
-
-        var obj = new MyCustomData { Symbol = config.Symbol };
-
-        if (isLiveMode)
-        {
-            obj = JsonConvert.DeserializeObject<MyCustomData>(line);
-            obj.Symbol = config.Symbol;
-            obj.EndTime = DateTime.UtcNow.ConvertFromUtc(config.ExchangeTimeZone);
-            obj.Time = obj.EndTime.AddDays(-1);
-            obj.Value = obj.Last;
-            return obj;
-        }
-
-        if (!char.IsDigit(line[0])) return null;
-        var data = line.Split(',');
-        obj.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
-        obj.EndTime = obj.Time.AddDays(1);
-        obj.Value = decimal.Parse(data[VALUE_INDEX], CultureInfo.InvariantCulture);
-        return obj;
-    }
+    if (isLiveMode)
+        return new SubscriptionDataSource("https://example.com/live", SubscriptionTransportMedium.Rest);
+    return new SubscriptionDataSource("custom-data/history.csv", SubscriptionTransportMedium.ObjectStore);
 }
 ```
 
-Add `import json` after `from AlgorithmImports import *` in any reader that calls `json.loads()`.
+## 7. JSON, ZIP, and universe notes
 
----
+- JSON readers must explicitly import or use the JSON library for the target
+  language. Parse known fields directly and fail loudly on unexpected shape.
+- ZIP readers must open the archive, select the intended inner file, and parse
+  that file with the same explicit guards used for plain files.
+- For JSON arrays or files that contain many records for the same time, use the
+  QuantConnect collection or unfolding pattern so every record becomes its own
+  data point.
+- For custom universes, emit symbols from the universe reader and omit the
+  single-symbol history check. Verify by logging the selected count at each
+  rebalance, not by logging every symbol.
 
-### UNIVERSE
+## 8. Compile and backtest loop
 
-Custom data file with multiple tickers per file -- builds a dynamic universe.
-Universe selectors must return `Symbol` objects; py`.symbol`cs`.Symbol` is correct in that context only.
-
-```python
-# region imports
-from AlgorithmImports import *
-# endregion
-
-
-class MyUniverseData(PythonData):
-
-    def get_source(self, config, date, is_live_mode):
-        return SubscriptionDataSource(
-            f"BACKTEST_URL/{date:%Y%m%d}.csv",
-            SubscriptionTransportMedium.REMOTE_FILE
-        )
-
-    def reader(self, config, line, date, is_live_mode):
-        if not line.strip() or line.startswith("date"):
-            return None
-        data = line.split(',')
-        obj = MyUniverseData()
-        obj.symbol = Symbol.create(data[1].strip(), SecurityType.EQUITY, Market.USA)
-        obj.time = date
-        obj.end_time = date + timedelta(days=1)
-        obj["Rank"] = float(data[2])
-        obj["Score"] = float(data[3])
-        obj.value = float(data[VALUE_INDEX])
-        return obj
-
-
-class MyAlgorithm(QCAlgorithm):
-
-    def initialize(self):
-        self.add_universe(MyUniverseData, self._selector)
-
-    def _selector(self, data):
-        sorted_data = sorted(
-            [x for x in data if x["Rank"] > 0],
-            key=lambda x: x["Rank"],
-            reverse=True
-        )
-        return [x.symbol for x in sorted_data[:10]]
-
-    def on_securities_changed(self, changes):
-        for security in changes.added_securities:
-            self.set_holdings(security, 1 / 10)
-        for security in changes.removed_securities:
-            self.liquidate(security)
-
-    def on_data(self, data):
-        pass
-```
-
-```csharp
-using QuantConnect;
-using QuantConnect.Data;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-public class MyUniverseData : BaseData
-{
-    public decimal Rank { get; set; }
-    public decimal Score { get; set; }
-
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, DateTime date, bool isLiveMode)
-    {
-        return new SubscriptionDataSource(
-            $"BACKTEST_URL/{date:yyyyMMdd}.csv",
-            SubscriptionTransportMedium.RemoteFile);
-    }
-
-    public override BaseData Reader(
-        SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
-    {
-        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("date"))
-            return null;
-
-        var data = line.Split(',');
-        var obj = new MyUniverseData();
-        obj.Symbol = Symbol.Create(data[1].Trim(), SecurityType.Equity, Market.USA);
-        obj.Time = date;
-        obj.EndTime = date.AddDays(1);
-        obj.Rank = decimal.Parse(data[2], CultureInfo.InvariantCulture);
-        obj.Score = decimal.Parse(data[3], CultureInfo.InvariantCulture);
-        obj.Value = decimal.Parse(data[VALUE_INDEX], CultureInfo.InvariantCulture);
-        return obj;
-    }
-}
-
-public class MyAlgorithm : QCAlgorithm
-{
-    public override void Initialize()
-    {
-        AddUniverse<MyUniverseData>(SelectorFunction);
-    }
-
-    private IEnumerable<Symbol> SelectorFunction(IEnumerable<BaseData> data)
-    {
-        return (from d in data.OfType<MyUniverseData>()
-                where d.Rank > 0
-                orderby d.Rank descending
-                select d.Symbol).Take(10);
-    }
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach (var added in changes.AddedSecurities)
-            SetHoldings(added.Symbol, 1m / 10m);
-        foreach (var removed in changes.RemovedSecurities)
-            Liquidate(removed.Symbol);
-    }
-
-    public override void OnData(Slice slice) { }
-}
-```
-
----
-
-### UNFOLDING
-
-JSON file where the entire file is one JSON array. The reader returns `BaseDataCollection`.
-
-```python
-# region imports
-from AlgorithmImports import *
-import json
-# endregion
-
-
-class MyJsonData(PythonData):
-
-    def get_source(self, config, date, is_live_mode):
-        return SubscriptionDataSource(
-            f"BACKTEST_URL/{date:%Y%m%d}.json",
-            SubscriptionTransportMedium.REMOTE_FILE,
-            FileFormat.UNFOLDING_COLLECTION
-        )
-
-    def reader(self, config, line, date, is_live_mode):
-        if not line.strip():
-            return None
-        records = json.loads(line)
-        objects = []
-        for record in records:
-            obj = MyJsonData()
-            obj.symbol = config.symbol
-            obj.time = datetime.strptime(record["date"], "%Y-%m-%d")
-            obj.end_time = obj.time + timedelta(days=1)
-            obj["Field1"] = float(record.get("field1", 0))
-            obj.value = float(record.get("VALUE_FIELD", 0))
-            objects.append(obj)
-        if not objects:
-            return None
-        return BaseDataCollection(objects[-1].end_time, config.symbol, objects)
-```
-
-```csharp
-using QuantConnect;
-using QuantConnect.Data;
-using Newtonsoft.Json;
-using System;
-
-public class MyJsonData : BaseData
-{
-    [JsonProperty("date")]
-    public string DateStr { get; set; }
-
-    [JsonProperty("field1")]
-    public decimal Field1 { get; set; }
-
-    [JsonProperty("VALUE_FIELD")]
-    public decimal ValueField { get; set; }
-
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, DateTime date, bool isLiveMode)
-    {
-        return new SubscriptionDataSource(
-            $"BACKTEST_URL/{date:yyyyMMdd}.json",
-            SubscriptionTransportMedium.RemoteFile,
-            FileExtension.Json,
-            DataFeedEndpoint.Backtest);
-    }
-
-    public override BaseData Reader(
-        SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
-    {
-        if (string.IsNullOrWhiteSpace(line)) return null;
-        var obj = JsonConvert.DeserializeObject<MyJsonData>(line);
-        obj.Symbol = config.Symbol;
-        obj.Time = DateTime.Parse(obj.DateStr);
-        obj.EndTime = obj.Time.AddDays(1);
-        obj.Value = obj.ValueField;
-        return obj;
-    }
-}
-```
-
-Add `import json` after `from AlgorithmImports import *` in any reader that calls `json.loads()`.
-
----
-
-### ZIP
-
-Data distributed in ZIP archives containing CSV files.
-
-```python
-# region imports
-from AlgorithmImports import *
-# endregion
-
-
-class MyZipData(PythonData):
-
-    def get_source(self, config, date, is_live_mode):
-        return SubscriptionDataSource(
-            f"BACKTEST_URL/{date:%Y%m%d}.zip",
-            SubscriptionTransportMedium.REMOTE_FILE,
-            FileFormat.CSV
-        )
-
-    def reader(self, config, line, date, is_live_mode):
-        if not line.strip() or not line[0].isdigit():
-            return None
-        data = line.split(',')
-        obj = MyZipData()
-        obj.symbol = config.symbol
-        obj.time = datetime.strptime(data[0], "%Y-%m-%d %H:%M:%S")
-        obj.end_time = obj.time + timedelta(hours=1)
-        obj.value = float(data[VALUE_INDEX])
-        return obj
-```
-
-```csharp
-using QuantConnect;
-using QuantConnect.Data;
-using System;
-using System.Globalization;
-
-public class MyZipData : BaseData
-{
-    public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, DateTime date, bool isLiveMode)
-    {
-        return new SubscriptionDataSource(
-            $"BACKTEST_URL/{date:yyyyMMdd}.zip",
-            SubscriptionTransportMedium.RemoteFile);
-    }
-
-    public override BaseData Reader(
-        SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
-    {
-        if (string.IsNullOrWhiteSpace(line) || !char.IsDigit(line[0]))
-            return null;
-
-        var data = line.Split(',');
-        var obj = new MyZipData { Symbol = config.Symbol };
-        obj.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
-        obj.EndTime = obj.Time.AddHours(1);
-        obj.Value = decimal.Parse(data[VALUE_INDEX], CultureInfo.InvariantCulture);
-        return obj;
-    }
-}
-```
-
----
-
-## SubscriptionTransportMedium constants
-
-| Medium | Python constant | C# constant |
-|---|---|---|
-| HTTP file download | `REMOTE_FILE` | `RemoteFile` |
-| REST API poll | `REST` | `Rest` |
-| Object Store | `OBJECT_STORE` | `ObjectStore` |
-| Local disk | `LOCAL_FILE` | `LocalFile` |
-
-## FileFormat constants
-
-| Format | Python constant | C# constant | Use case |
-|---|---|---|---|
-| CSV (default) | `FileFormat.CSV` | `FileFormat.Csv` | Standard line-by-line. |
-| JSON array | `FileFormat.UNFOLDING_COLLECTION` | `FileExtension.Json` + `DataFeedEndpoint.Backtest` | Entire file is one JSON array; reader receives full array and must return `BaseDataCollection`. |
-| Zip of CSVs | `FileFormat.CSV` (with .zip URL) | `FileFormat.Csv` (with .zip URL) | ZIP auto-decompressed. |
+1. Compile the project and fix every build error before running a backtest.
+2. Backtest over dates covered by the custom data file.
+3. Confirm the final log contains `History rows: N` with `N > 0` for
+   non-universe readers.
+4. If `N == 0`, fetch or open the first real record and manually walk through
+   the reader logic. Check date parsing, source path, transport medium,
+   resolution, and start/end dates.
+5. If data loads but no orders appear, add one temporary event-level log in
+   py`on_data`cs`OnData` to prove the handler fires, then adjust the strategy
+   condition. Remove noisy diagnostic logs before finishing.
+6. Report the compile result, backtest result, loaded row count, order count,
+   and Object Store key or remote URL used.
