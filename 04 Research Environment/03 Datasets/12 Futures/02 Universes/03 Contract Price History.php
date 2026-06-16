@@ -21,7 +21,7 @@ var history = qb.FutureHistory(
 );</pre>
     <pre class="python"># Set the contract filter to select contracts that expire within 180 days.
 history = qb.future_history(
-    future.Symbol, datetime(2025, 4, 1), datetime(2025, 4, 3), Resolution.MINUTE, 
+    future.symbol, datetime(2025, 4, 1), datetime(2025, 4, 3), Resolution.MINUTE,
     fill_forward=False, extended_market_hours=False
 )</pre>
 </div>

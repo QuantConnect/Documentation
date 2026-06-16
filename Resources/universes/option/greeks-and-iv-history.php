@@ -17,7 +17,7 @@
     option_contract.underlying.symbol, <? if ($hasTarget) {?> <?=$contractNamePy?>.id.symbol, <? } ?>
     <?=$contractNamePy?>.id.market,
     option_contract.style, 
-    OptionRight.Call if option_contract.right == OptionRight.PUT else OptionRight.PUT,
+    OptionRight.CALL if option_contract.right == OptionRight.PUT else OptionRight.PUT,
     option_contract.strike_price,
     option_contract.expiry
 )</pre>

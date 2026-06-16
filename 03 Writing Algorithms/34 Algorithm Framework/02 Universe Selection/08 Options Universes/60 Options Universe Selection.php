@@ -175,7 +175,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         return [Symbol.create_canonical_option(contract.symbol) for contract in self.algo.futures_chain(future_symbol)]
         
     # Create a filter to select contracts that have the strike price within 1 strike level and expire within 7 days.
-    def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
+    def filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
         return option_filter_universe.strikes(-1, -1).expiration(0, 7).calls_only()</pre>
 </div>
 

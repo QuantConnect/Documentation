@@ -282,8 +282,8 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 }</pre>
 <pre class='python'>for trade_bars in all_history_trade_bars:
     for kvp in trade_bars:
-        symbol = kvp.Key
-        trade_bar = kvp.Value<br></pre>
+        symbol = kvp.key
+        trade_bar = kvp.value<br></pre>
 </div>
 <? } ?>
 
