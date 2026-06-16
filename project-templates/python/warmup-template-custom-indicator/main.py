@@ -32,7 +32,7 @@ class CustomVolatility(PythonIndicator):
 
     def __init__(self, period, trading_days_per_year=252):
         super().__init__()
-        self.warm_up_period = period
+        self.warm_up_period = period + 1
         self._trading_days_per_year = trading_days_per_year
         self.value = 0
         self._log_return = LogReturn(1)
