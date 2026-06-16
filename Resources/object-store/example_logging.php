@@ -30,7 +30,7 @@
 
     <p>The algorithm saves <code class='csharp'>_content</code><code class='python'>self._content</code> to the Object Store at the end of the backtest.</p>
 
-    <li>In the <code>OnData</code> method, place market orders when the EMAs cross.</li>
+    <li>In the <code class='csharp'>OnData</code><code class='python'>on_data</code> method, place market orders when the EMAs cross.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice data)
 {
