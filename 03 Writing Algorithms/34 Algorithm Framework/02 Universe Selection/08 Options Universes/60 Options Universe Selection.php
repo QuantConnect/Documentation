@@ -153,7 +153,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
 </pre>
 	<pre class="python"># In the initialize method, define the universe settings and add data.
 self.universe_settings.asynchronous = True
-self.add_universe_settings(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
+self.add_universe_selection(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
 # Outside of the algorithm class, define the universe selection model.
 class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseSelectionModel):
