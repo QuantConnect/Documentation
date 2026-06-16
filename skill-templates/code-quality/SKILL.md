@@ -63,35 +63,35 @@ var x = 1; //calculate price
 var x = 1; // Calculate the weighted price.
 ```
 ## Multi-Line Boolean Expressions
-<!-- python-only -->Use PEP 8 continuation indentation. Prefer breaking before and/or.
+<!-- python-only -->Put and/or at the end of each continued line.
 <!-- /python-only -->
-<!-- csharp-only -->Put && or || at the end of each continued line.
+<!-- csharp-only -->Put && or || at the beginning of each continued line.
 <!-- /csharp-only -->
 ```python
 # Bad
+if (
+    close > ema_fast
+    and open_ > ema_fast
+    and rsi > 50):
+    return
+# Good
 if (close > ema_fast and
     open_ > ema_fast and
     rsi > 50):
     return
-# Good
-if (
-        close > ema_fast
-        and open_ > ema_fast
-        and rsi > 50):
-    return
 ```
 ```csharp
 // Bad
-if (close > emaFast
-    && open > emaFast
-    && rsi > 50)
+if (close > emaFast &&
+    open > emaFast &&
+    rsi > 50)
 {
     return;
 }
 // Good
-if (close > emaFast &&
-    open > emaFast &&
-    rsi > 50)
+if (close > emaFast
+    && open > emaFast
+    && rsi > 50)
 {
     return;
 }
