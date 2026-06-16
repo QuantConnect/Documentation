@@ -9,7 +9,7 @@
         <p>You get the data from step 1 instead of step 2 because the cache contains the data from step 1.</p>
     </ol>
         
-    <p>To clear the cache, call the <code>Clear</code> method.</p>
+    <p>To clear the cache, call the <code class='csharp'>Clear</code><code class='python'>clear</code> method.</p>
     
 <div class='section-example-container'>
     <pre class='csharp'><?=$cSharpPrefix?>ObjectStore.Clear();</pre>
