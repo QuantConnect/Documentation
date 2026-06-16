@@ -140,14 +140,14 @@ df</pre>
 </div>
 <?=$cSharpDataFrameImages[0]?>
 <p class='csharp'>To select a particular column of the DataFrame, index it with the column name.</p>
-<div class='section-example-container'>
+<div class='section-example-container csharp'>
 <pre class='csharp'>df["<?=$primaryTicker?> <?=$dataFrameColumnName?>"]</pre>
 </div>
 <?=$cSharpDataFrameImages[1]?>
 
 <h4>Slice Objects</h4>
 <p>If the <code class="csharp">History</code><code class="python">history</code> method returns <code>Slice</code> objects, iterate through the <code>Slice</code> objects to get each one. The <code>Slice</code> objects may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Slice</code> contains data for your <?=$singularAssetClass?> before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
-<div class='csharp section-example-container'>
+<div class='section-example-container'>
 <pre class='csharp'>foreach (var slice in allHistorySlice) {
 <? if ($supportsAltData) {?>
     if (slice.ContainsKey(<?=$primarySymbolC?>))

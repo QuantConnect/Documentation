@@ -1,0 +1,30 @@
+name: Detect language mixing in code blocks
+
+# A section-example-container that holds only one language's <pre> but is not
+# scoped to that language (by its own class or an ancestor) leaks that code to
+# readers of the other language. This job flags any such block. See
+# code-generators/detect-language-mixing.py for the full explanation.
+
+on:
+  schedule:
+    # Mondays at 06:00 UTC.
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Detect language mixing
+        # The single-language-page warnings and the generated single-page/ books
+        # are excluded by the script's defaults; every other page is monitored.
+        run: python "code-generators/detect-language-mixing.py"
