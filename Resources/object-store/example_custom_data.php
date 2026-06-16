@@ -55,7 +55,7 @@
         self.custom_data_symbol = self.add_data(Bitstamp, "BTC").symbol</pre>
     </div>
 
-    <li>Implement the <code><a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data'>Reader</a></code> method for the custom data class.</li>
+    <li>Implement the <code><a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data'><span class='csharp'>Reader</span><span class='python'>reader</span></a></code> method for the custom data class.</li>
     <div class='section-example-container skip-test'>
     <pre class='csharp'>public class Bitstamp : TradeBar
 {
