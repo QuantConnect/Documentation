@@ -141,7 +141,7 @@ self._contract_symbol = SymbolRepresentation.parse_option_ticker_osi('SPXW 24090
     <pre class="csharp">var option = AddIndexOptionContract(_contractSymbol);
 option.PriceModel = OptionPriceModels.BlackScholes();<br></pre>
     <pre class="python">option = self.add_index_option_contract(self._contract_symbol)
-option.PriceModel = OptionPriceModels.black_scholes()<br></pre>
+option.price_model = OptionPriceModels.black_scholes()<br></pre>
 </div>
 
 <p>The <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code> method creates a subscription for a single Index Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Index Option contracts, add an <a href="/docs/v2/writing-algorithms/universes/index-options">Index Option universe</a>.</p>

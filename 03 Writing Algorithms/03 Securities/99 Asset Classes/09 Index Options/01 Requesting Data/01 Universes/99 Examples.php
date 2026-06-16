@@ -76,5 +76,5 @@
         if not calls:
             return
         # Buy 1 0DTE call option contract for the SPX index.
-        self.Buy(calls[0].symbol, 1)</pre>
+        self.buy(calls[0].symbol, 1)</pre>
 </div>

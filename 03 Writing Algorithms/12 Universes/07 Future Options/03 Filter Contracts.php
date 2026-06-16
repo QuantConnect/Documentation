@@ -33,10 +33,10 @@ private OptionFilterUniverse Selector(OptionFilterUniverse optionFilterUniverse)
     return optionFilterUniverse.Contracts(symbols);
 }</pre>
     <pre class="python"># In Initialize
-self.add_future_option(future.Symbol, self._contract_selector)
+self.add_future_option(future.symbol, self._contract_selector)
 
 def _contract_selector(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
-    symbols = option_filter_universe.PutsOnly()
+    symbols = option_filter_universe.puts_only()
     strike = min([symbol.id.strike_price for symbol in symbols])
     symbols = [symbol for symbol in symbols if symbol.id.strike_price == strike]
     return option_filter_universe.contracts(symbols)</pre>

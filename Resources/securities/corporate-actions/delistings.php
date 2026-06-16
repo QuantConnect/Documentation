@@ -55,7 +55,7 @@ public override void OnDelistings(Delistings delistings)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    for symbol, delisting in slice.Delistings.items():
+    for symbol, delisting in slice.delistings.items():
         pass
 
 def on_delistings(self, delistings: Delistings) -> None:

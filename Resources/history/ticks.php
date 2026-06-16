@@ -73,7 +73,7 @@ history = self.history[Tick](symbol, timedelta(2), Resolution.TICK)
 <? if ($supportsTradeData) { ?>
 # Iterate through each quote tick and calculate the quote size.
 for tick in history:
-    if tick.tick_type == TickType.Quote:
+    if tick.tick_type == TickType.QUOTE:
         t = tick.end_time
         size = max(tick.bid_size, tick.ask_size)
 <? } else { ?>
