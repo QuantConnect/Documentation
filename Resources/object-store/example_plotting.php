@@ -47,11 +47,11 @@
     
     <li><a href='/docs/v2/research-environment/key-concepts/getting-started#03-Open-Notebooks'>Open the Research Environment</a> and create a <code>QuantBook</code>.</li>
 
-    <div class='section-example-container'>
+    <div class='section-example-container csharp'>
     <pre class='csharp'>// Execute the following command in first
 #load "../Initialize.csx"</pre>
     </div>
-    <div class='section-example-container'>
+    <div class='section-example-container csharp'>
     <pre class='csharp'>// Load the necessary assembly files.
 #load "../QuantConnect.csx"</pre>
     </div>

@@ -1,9 +1,9 @@
 <p>To get the results of a live algorithm, call the <code class="csharp">ReadLiveAlgorithm</code><code class="python">read_live_algorithm</code> method with the project Id and deployment ID.</p>
 
-<div class="section-example-container">
+<div class="section-example-container csharp">
     <pre class="csharp">#load "../Initialize.csx"</pre>
 </div>
-<div class="section-example-container">
+<div class="section-example-container csharp">
     <pre class="csharp">#load "../QuantConnect.csx"</pre>
 </div>
 <div class="section-example-container">

@@ -7,7 +7,24 @@
 			"spec": "Asset: SPY. Daily resolution. 2024-09-01 to 2024-12-31, $100k. CustomVolatility(3*21, trading_days_per_year=252) custom PythonIndicator built from LogReturn(1) and StandardDeviation(3*21). Attach the indicator to the Equity, warm it with typed TradeBar history, register it for future updates, and enter only when volatility is ready, rising versus its previous value, and the Equity is not already invested. Demonstrates: custom indicator warm-up, built-in indicator composition, typed history updates, custom indicator registration.",
 			"tags": ["Equity", "warm-up", "history", "indicators", "custom-indicator"],
 			"reference_template": "custom-indicator"
-		},		{
+		},
+		{
+			"name": "Warm-Up: Consolidator",
+			"folder": "warmup-template-consolidator",
+			"description": "Warms a 30-minute SPY consolidator and two registered indicators from one minute-history request before scheduled trade checks.",
+			"spec": "Asset: SPY. Minute resolution with 30-minute consolidated bars. 2024-09-01 to 2024-12-31, $100k. TradeBarConsolidator(30 minutes), ExponentialMovingAverage(10), and RelativeStrengthIndex(12). Add the consolidator, register the manual indicators to it in a loop, warm the consolidator and indicators from one default-resolution TradeBar history request with consolidator.update, ema.update, and rsi.update, and evaluate trades from a 30-minute scheduled rebalance. Demonstrates: consolidator warm-up, registered manual indicators, shared history replay, scheduled trading logic.",
+			"tags": ["Equity", "warm-up", "history", "consolidators", "ema", "rsi"],
+			"reference_template": "custom-consolidators"
+		},
+		{
+			"name": "Warm-Up: Manual Indicator",
+			"folder": "warmup-template-manual-indicator",
+			"description": "Warms manually managed SPY EMA and RSI indicators from history and updates them once per subscribed daily bar.",
+			"spec": "Asset: SPY. Daily resolution. 2024-09-01 to 2024-12-31, $100k. ExponentialMovingAverage(10) and RelativeStrengthIndex(12). Instantiate the indicators directly, store them in one list, warm them from typed TradeBar history, update them manually in on_data, and go long only when both current indicator values are above their previous values. Demonstrates: manual indicator warm-up, indicator-list updates, previous-value comparisons, avoiding factory/register double updates.",
+			"tags": ["Equity", "warm-up", "history", "indicators", "ema", "rsi"],
+			"reference_template": "equities-static-universe"
+		},
+		{
 			"name": "Equity Parabolic SAR Trailing Stop",
 			"folder": "equity-parabolic-sar-trailing",
 			"description": "Trades SPY long-only with Parabolic SAR providing dynamic trailing-stop levels and re-entries.",
