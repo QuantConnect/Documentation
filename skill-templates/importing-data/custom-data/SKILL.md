@@ -20,7 +20,7 @@ Build a custom reader, wire it into py`main.py`cs`Main.cs`, and verify rows load
 - Regular unlinked: standalone symbol such as weather or macro data; remote file or Object Store.
 - Regular linked: data describes an existing security; subscribe to the security first, then pass its `Symbol` to py`add_data`cs`AddData`.
 - Dual source: branch on py`is_live_mode`cs`isLiveMode` only when backtests use files and live trading polls REST.
-- Unfolding collection: JSON array or one line yields many records; use `FileFormat.UnfoldingCollection`.
+- Unfolding collection: JSON array or one line yields many records; use py`FileFormat.UNFOLDING_COLLECTION`cs`FileFormat.UnfoldingCollection`.
 - ZIP: use py`FileFormat.ZIP_ENTRY_NAME`cs`FileFormat.ZipEntryName` and `archive.zip#inner.csv`; works with remote files and Object Store.
 - Universe: dated file emits symbols; verify selection counts instead of single-symbol history.
 Do not use py`try`cs`try` / py`except`cs`catch` to hide parser errors. Return py`None`cs`null` only for known skipped records: blanks, headers, comments, or malformed optional rows the user explicitly wants ignored.
@@ -111,12 +111,41 @@ public class MyAlgorithm : QCAlgorithm
     }
 }
 ```
-For linked custom data, use py`self._asset = self.add_equity("AAPL").symbol; self._signal = self.add_data(MyCustomData, self._asset).symbol`cs`_asset = AddEquity("AAPL").Symbol; _signal = AddData<MyCustomData>(_asset).Symbol`. Trade the asset symbol and use the custom symbol only for signals.
+For linked custom data, subscribe to the asset first, pass its `Symbol` to py`add_data`cs`AddData`, trade the asset symbol, and read the custom symbol only for signals.
+```python
+self._asset = self.add_equity("AAPL", Resolution.DAILY).symbol
+self._signal = self.add_data(MyCustomData, self._asset, Resolution.DAILY).symbol
+if self._signal in data and data[self._signal].value > 0:
+    self.set_holdings(self._asset, 1)
+```
+```csharp
+_asset = AddEquity("AAPL", Resolution.Daily).Symbol;
+_signal = AddData<MyCustomData>(_asset, Resolution.Daily).Symbol;
+if (slice.ContainsKey(_signal) && slice.Get<MyCustomData>(_signal).Value > 0)
+    SetHoldings(_asset, 1);
+```
 ## 5. JSON, ZIP, live, and universe notes
 - JSON: use py`import json`cs`using Newtonsoft.Json.Linq;`, parse named fields, and fail loudly on unexpected shape.
 - ZIP: point `SubscriptionDataSource` at `custom-data/signals.zip#signals.csv` with py`SubscriptionTransportMedium.OBJECT_STORE, FileFormat.ZIP_ENTRY_NAME`cs`SubscriptionTransportMedium.ObjectStore, FileFormat.ZipEntryName`; the reader receives extracted lines.
+```python
+def get_source(self, config, date, is_live_mode):
+    return SubscriptionDataSource(
+        "custom-data/signals.zip#signals.csv",
+        SubscriptionTransportMedium.OBJECT_STORE,
+        FileFormat.ZIP_ENTRY_NAME
+    )
+```
+```csharp
+public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+{
+    return new SubscriptionDataSource(
+        "custom-data/signals.zip#signals.csv",
+        SubscriptionTransportMedium.ObjectStore,
+        FileFormat.ZipEntryName);
+}
+```
 - Live/backtest split: branch in py`get_source`cs`GetSource` only when the source differs; return identical parsed objects from both paths.
-- Arrays/unfolding: use `FileFormat.UnfoldingCollection` so each array element becomes a data point.
+- Arrays/unfolding: use py`FileFormat.UNFOLDING_COLLECTION`cs`FileFormat.UnfoldingCollection` so each array element becomes a data point.
 - Universes: emit symbols, log selected count at each rebalance, and skip the single-symbol history check.
 ## 6. Compile and backtest loop
 1. Compile first; fix every build error before backtesting.
