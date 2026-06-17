@@ -12,6 +12,18 @@ from _code_generation_helpers import generate_landing_page
 
 DATASET = "03 Writing Algorithms/14 Datasets"
 
+# Some datasets have a supported-* table that's too large for the dataset
+# listing (it exceeds the /datasets page content-size limit), so the table is
+# maintained as a separate resource file and the documentation page includes it
+# via PHP instead of embedding the content. Maps (vendor, dataset name) to the
+# page title and the resource path (relative to DOCS_RESOURCES).
+SUPPORTED_TABLE_RESOURCES = {
+    ("EOD Historical Data", "Macroeconomics Indicators"): {
+        "title": "Supported Indicators",
+        "resource": "/datasets/data-point-attributes/eodhd/supported-macro-indicators.html",
+    },
+}
+
 def _directory_content(path):
     def append_path(v):
         return [Path(f'{path}/{x}') for x in v]
@@ -132,6 +144,7 @@ if __name__ == '__main__':
         datasets = _directory_content(vendor_folder)
         for f, dataset in enumerate(docs_by_vendor.pop(vendor)):
             name = dataset['name'].strip()
+            supported_table = SUPPORTED_TABLE_RESOURCES.get((vendor, name))
             folder = Path(f'{vendor_folder}/{f+1:02} {name}')
             folder.mkdir(parents=True, exist_ok=True)
             _move(datasets.pop(name, []), folder)
@@ -143,6 +156,12 @@ if __name__ == '__main__':
             all_sections = {**{item["title"]: item["content"] for item in dataset["about"] if item["title"]},
                             **{item["title"]: item["content"] for item in dataset["documentation"] if item["title"]}}
 
+            # Reserve a page for the supported-* table that lives in a separate
+            # resource file (see SUPPORTED_TABLE_RESOURCES). It's written as a PHP
+            # include below rather than embedding the large table here.
+            if supported_table:
+                all_sections[supported_table["title"]] = ""
+
             key = next(filter(lambda x: 'supported' in x.lower(), all_sections.keys()), None)
             final_sections = {key: all_sections.pop(key, '')} if key else {}
             final_sections["Example Applications"] = all_sections.pop("Example Applications", '')
@@ -152,6 +171,22 @@ if __name__ == '__main__':
             all_sections.update(final_sections)
 
             for k, (title, content) in enumerate(all_sections.items()):
+                if supported_table and title.strip() == supported_table["title"]:
+                    # Include the generated table resource and normalize the code
+                    # language classes at render time, so the multi-MB table isn't
+                    # duplicated into the docs tree.
+                    resource = supported_table["resource"]
+                    php = (
+                        '<?php\n'
+                        'ob_start();\n'
+                        f'include(DOCS_RESOURCES."{resource}");\n'
+                        'echo str_replace(["language-cs", "language-python"], ["csharp", "python"], ob_get_clean());\n'
+                        '?>\n'
+                    )
+                    with open(folder / f'{1+k:02} {title.strip()}.php', "w", encoding="utf-8") as php_file:
+                        php_file.write(php)
+                    continue
+
                 content = _parse_content(content)
                 for old, new in languages.items():
                     content = content.replace(old, new)
