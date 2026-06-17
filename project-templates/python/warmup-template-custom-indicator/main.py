@@ -30,7 +30,7 @@ class WarmUpCustomIndicatorAlgorithm(QCAlgorithm):
 
 class CustomVolatility(PythonIndicator):
 
-    def __init__(self, period, trading_days_per_year=252):
+    def __init__(self, period: int, trading_days_per_year: int = 252) -> None:
         super().__init__()
         self.warm_up_period = period + 1
         self._trading_days_per_year = trading_days_per_year
@@ -38,11 +38,11 @@ class CustomVolatility(PythonIndicator):
         self._log_return = LogReturn(1)
         self._standard_deviation = IndicatorExtensions.of(StandardDeviation(period), self._log_return)
 
-    def update(self, input_: BaseData):
+    def update(self, input_: BaseData) -> bool:
         # Annualized log-return volatility.
         price = input_.value
         if price <= 0:
-            return
+            return False
         self._log_return.update(input_.end_time, price)
         if self.is_ready:
             self.value = self._standard_deviation.current.value * math.sqrt(self._trading_days_per_year) * 100.0
