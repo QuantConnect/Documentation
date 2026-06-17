@@ -10,13 +10,10 @@ def to_snake_case(name):
 
 description = ""
 country = ""
-html = '''<h4>Reference Table</h4>
-<table class="table qc-table table-reflow">
-<thead>
-<tr><th style="width: 10%;">Symbol</th><th style="width: 45%;">Accessor Code</th><th style="width: 45%;">Description</th></tr>
-</thead>
-<tbody>
-'''
+count = 0
+# Render as an unordered list (<enum>: <description>) rather than a table; the
+# table is too wide for the page. The country is already part of the accessor.
+html = "<ul>\n    "
 
 for line in raw:
     if "            /// " in line and "<" not in line:
@@ -24,14 +21,10 @@ for line in raw:
 
     if "        public static class " in line and "MacroIndicators" not in line:
         country = [x for x in line.split(' ') if x][-1]
-        display_name = re.sub(r'([a-z])([A-Z])', r'\1 \2', country)
-        html += f"""<tr><td colspan="3"><b>{display_name}</b></td></tr>
-"""
 
     if " = " in line and "public const string" in line:
         item = line.split(" = ")
         code = item[0].split(" ")[-1]
-        symbol = item[-1].replace('"', "").replace(";", "").replace(" ", "")
         python_code = to_snake_case(code)
         cs_accessor = f"EODHD.MacroIndicators.{country}.{code}"
         py_accessor = f"EODHD.MacroIndicators.{country}.{python_code}"
@@ -41,11 +34,10 @@ for line in raw:
         else:
             accessor = f"<code class='language-cs'>{cs_accessor}</code><code class='language-python'>{py_accessor}</code>"
 
-        html += f'''<tr><td>{symbol}</td><td>{accessor}</td><td>{description}</td></tr>
-'''
+        html += f"<li>{accessor}: {description}</li>\n    "
+        count += 1
 
-html += """</tbody>
-</table>"""
+html = f"<p>The following list shows the available ({count}) macroeconomic indicators:</p>{html}</ul>"
 
 with open(destination, "w", encoding="utf-8") as file:
     file.write(html)
