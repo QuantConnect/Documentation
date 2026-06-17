@@ -52,6 +52,11 @@ jobs:
           runInContainer python -u project-templates/python/run_syntax_check.py
 
       - name: Run Project Match Check
+        # Repository secrets (QuantConnect credentials) are not exposed to
+        # pull_request runs from forks, so skip this step for fork PRs to avoid
+        # failing on missing credentials. It still runs on push and on PRs from
+        # branches in this repo. The syntax check above runs for every trigger.
+        if: ${{ github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository }}
         run: |
           runInContainer python -u project-templates/run_project_match_check.py
 
