@@ -21,7 +21,7 @@ Build a custom reader, wire it into py`main.py`cs`Main.cs`, and verify rows load
 - Regular linked: data describes an existing security; subscribe to the security first, then pass its `Symbol` to py`add_data`cs`AddData`.
 - Dual source: branch on py`is_live_mode`cs`isLiveMode` only when backtests use files and live trading polls REST.
 - Unfolding collection: JSON array or one line yields many records; use py`FileFormat.UNFOLDING_COLLECTION`cs`FileFormat.UnfoldingCollection`.
-- ZIP: use py`FileFormat.ZIP_ENTRY_NAME`cs`FileFormat.ZipEntryName` and `archive.zip#inner.csv`; works with remote files and Object Store.
+- ZIP: if the user gives an existing `.zip` Object Store key, read the zip bytes, extract the intended inner file to a reported derived Object Store key, then subscribe to the extracted file. py`FileFormat.ZIP_ENTRY_NAME`cs`FileFormat.ZipEntryName` is for zip entry names, not parsing row content.
 - Universe: dated file emits symbols; verify selection counts instead of single-symbol history.
 Do not use py`try`cs`try` / py`except`cs`catch` to hide parser errors. Return py`None`cs`null` only for known skipped records: blanks, headers, comments, or malformed optional rows the user explicitly wants ignored.
 ## 3. Minimal reader
@@ -126,22 +126,74 @@ if (slice.ContainsKey(_signal) && slice.Get<MyCustomData>(_signal).Value > 0)
 ```
 ## 5. JSON, ZIP, live, and universe notes
 - JSON: use py`import json`cs`using Newtonsoft.Json.Linq;`, parse named fields, preserve non-numeric fields, set py`value`cs`Value` from the requested numeric signal, and fail loudly on unexpected shape.
-- ZIP: point `SubscriptionDataSource` at `custom-data/signals.zip#signals.csv` with py`SubscriptionTransportMedium.OBJECT_STORE, FileFormat.ZIP_ENTRY_NAME`cs`SubscriptionTransportMedium.ObjectStore, FileFormat.ZipEntryName`; the reader receives extracted lines.
+- ZIP: when the `.zip` is already in Object Store, do not re-upload it or change the original key. Extract the required member once to a derived Object Store key, report that derived key, and point `SubscriptionDataSource` at the extracted CSV/JSON key. Use py`zipfile`cs`System.IO.Compression.ZipArchive` for bytes extraction; use py`FileFormat.ZIP_ENTRY_NAME`cs`FileFormat.ZipEntryName` only when the data points are zip entry names.
 ```python
-def get_source(self, config, date, is_live_mode):
-    return SubscriptionDataSource(
-        "custom-data/signals.zip#signals.csv",
-        SubscriptionTransportMedium.OBJECT_STORE,
-        FileFormat.ZIP_ENTRY_NAME
-    )
+import io
+import zipfile
+
+class MyCustomData(PythonData):
+    KEY = "custom-data/signals.csv"
+    def get_source(self, config, date, is_live_mode):
+        return SubscriptionDataSource(self.KEY, SubscriptionTransportMedium.OBJECT_STORE)
+
+class MyAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self._materialize_zip_member(
+            "custom-data/signals.zip",
+            "signals.csv",
+            MyCustomData.KEY
+        )
+        self._signal = self.add_data(MyCustomData, "SIGNAL", Resolution.DAILY).symbol
+
+    def _materialize_zip_member(self, zip_key, inner_name, output_key):
+        if self.object_store.contains_key(output_key):
+            return
+        if not self.object_store.contains_key(zip_key):
+            raise FileNotFoundError(f"Object Store key not found: {zip_key}")
+        with zipfile.ZipFile(io.BytesIO(self.object_store.read_bytes(zip_key))) as archive:
+            if inner_name not in archive.namelist():
+                raise ValueError(f"{inner_name} not found in {zip_key}")
+            self.object_store.save(output_key, archive.read(inner_name).decode("utf-8"))
+        self.debug(f"Extracted {zip_key}#{inner_name} to Object Store key {output_key}")
 ```
 ```csharp
-public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+
+public class MyCustomData : BaseData
 {
-    return new SubscriptionDataSource(
-        "custom-data/signals.zip#signals.csv",
-        SubscriptionTransportMedium.ObjectStore,
-        FileFormat.ZipEntryName);
+    public const string Key = "custom-data/signals.csv";
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        return new SubscriptionDataSource(Key, SubscriptionTransportMedium.ObjectStore);
+    }
+}
+
+public class MyAlgorithm : QCAlgorithm
+{
+    private Symbol _signal;
+
+    public override void Initialize()
+    {
+        MaterializeZipMember(
+            "custom-data/signals.zip",
+            "signals.csv",
+            MyCustomData.Key);
+        _signal = AddData<MyCustomData>("SIGNAL", Resolution.Daily).Symbol;
+    }
+
+    private void MaterializeZipMember(string zipKey, string innerName, string outputKey)
+    {
+        if (ObjectStore.ContainsKey(outputKey)) return;
+        if (!ObjectStore.ContainsKey(zipKey))
+            throw new FileNotFoundException($"Object Store key not found: {zipKey}");
+        using var archive = new ZipArchive(new MemoryStream(ObjectStore.ReadBytes(zipKey)));
+        var entry = archive.GetEntry(innerName) ?? throw new InvalidOperationException($"{innerName} not found in {zipKey}");
+        using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+        ObjectStore.Save(outputKey, reader.ReadToEnd());
+        Debug($"Extracted {zipKey}#{innerName} to Object Store key {outputKey}");
+    }
 }
 ```
 - Live/backtest split: branch in py`get_source`cs`GetSource` only when the source differs; return identical parsed objects from both paths.

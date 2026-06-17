@@ -21,7 +21,7 @@ Build a custom reader, wire it into `Main.cs`, and verify rows load. Keep the re
 - Regular linked: data describes an existing security; subscribe to the security first, then pass its `Symbol` to `AddData`.
 - Dual source: branch on `isLiveMode` only when backtests use files and live trading polls REST.
 - Unfolding collection: JSON array or one line yields many records; use `FileFormat.UnfoldingCollection`.
-- ZIP: use `FileFormat.ZipEntryName` and `archive.zip#inner.csv`; works with remote files and Object Store.
+- ZIP: if the user gives an existing `.zip` Object Store key, read the zip bytes, extract the intended inner file to a reported derived Object Store key, then subscribe to the extracted file. `FileFormat.ZipEntryName` is for zip entry names, not parsing row content.
 - Universe: dated file emits symbols; verify selection counts instead of single-symbol history.
 Do not use `try` / `catch` to hide parser errors. Return `null` only for known skipped records: blanks, headers, comments, or malformed optional rows the user explicitly wants ignored.
 ## 3. Minimal reader
@@ -86,14 +86,45 @@ if (slice.ContainsKey(_signal) && slice.Get<MyCustomData>(_signal).Value > 0)
 ```
 ## 5. JSON, ZIP, live, and universe notes
 - JSON: use `using Newtonsoft.Json.Linq;`, parse named fields, preserve non-numeric fields, set `Value` from the requested numeric signal, and fail loudly on unexpected shape.
-- ZIP: point `SubscriptionDataSource` at `custom-data/signals.zip#signals.csv` with `SubscriptionTransportMedium.ObjectStore, FileFormat.ZipEntryName`; the reader receives extracted lines.
+- ZIP: when the `.zip` is already in Object Store, do not re-upload it or change the original key. Extract the required member once to a derived Object Store key, report that derived key, and point `SubscriptionDataSource` at the extracted CSV/JSON key. Use `System.IO.Compression.ZipArchive` for bytes extraction; use `FileFormat.ZipEntryName` only when the data points are zip entry names.
 ```csharp
-public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+using System.IO;
+using System.IO.Compression;
+using System.Text;
+
+public class MyCustomData : BaseData
 {
-    return new SubscriptionDataSource(
-        "custom-data/signals.zip#signals.csv",
-        SubscriptionTransportMedium.ObjectStore,
-        FileFormat.ZipEntryName);
+    public const string Key = "custom-data/signals.csv";
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        return new SubscriptionDataSource(Key, SubscriptionTransportMedium.ObjectStore);
+    }
+}
+
+public class MyAlgorithm : QCAlgorithm
+{
+    private Symbol _signal;
+
+    public override void Initialize()
+    {
+        MaterializeZipMember(
+            "custom-data/signals.zip",
+            "signals.csv",
+            MyCustomData.Key);
+        _signal = AddData<MyCustomData>("SIGNAL", Resolution.Daily).Symbol;
+    }
+
+    private void MaterializeZipMember(string zipKey, string innerName, string outputKey)
+    {
+        if (ObjectStore.ContainsKey(outputKey)) return;
+        if (!ObjectStore.ContainsKey(zipKey))
+            throw new FileNotFoundException($"Object Store key not found: {zipKey}");
+        using var archive = new ZipArchive(new MemoryStream(ObjectStore.ReadBytes(zipKey)));
+        var entry = archive.GetEntry(innerName) ?? throw new InvalidOperationException($"{innerName} not found in {zipKey}");
+        using var reader = new StreamReader(entry.Open(), Encoding.UTF8);
+        ObjectStore.Save(outputKey, reader.ReadToEnd());
+        Debug($"Extracted {zipKey}#{innerName} to Object Store key {outputKey}");
+    }
 }
 ```
 - Live/backtest split: branch in `GetSource` only when the source differs; return identical parsed objects from both paths.
