@@ -17,12 +17,12 @@ class OptionChainFullExample(QCAlgorithm):
 
         # The EMA/price cross will determine we trade ATM contracts
         index = self.add_index("SPX")
-        self.ema(index, 60).updated += self._trade_at_the_money_contract
+        ema = self.ema(index, 60)
         # To use a manual EMA instead, replace the automatic indicator above with:
         # ema = ExponentialMovingAverage(60)
         # self.warm_up_indicator(index, ema)
         # self.register_indicator(index, ema)
-        # ema.updated += self._trade_at_the_money_contract
+        ema.updated += self._trade_at_the_money_contract
 
         self._option_chain_symbol = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
 
