@@ -78,7 +78,15 @@ public class TelegramNotificationAlgorithm : QCAlgorithm
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
         _ema50 = EMA(_spy, 50, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _ema50 = new ExponentialMovingAverage(50);
+        // WarmUpIndicator(_spy, _ema50, Resolution.Daily);
+        // RegisterIndicator(_spy, _ema50, Resolution.Daily);
         _ema200 = EMA(_spy, 200, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _ema200 = new ExponentialMovingAverage(200);
+        // WarmUpIndicator(_spy, _ema200, Resolution.Daily);
+        // RegisterIndicator(_spy, _ema200, Resolution.Daily);
 
         _previousEma50Above = null;
     }
