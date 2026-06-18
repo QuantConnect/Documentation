@@ -75,7 +75,7 @@ public class EquityIchimokuCloudAlgorithm : QCAlgorithm
         _ichimoku = ICHIMOKU(_qqq, 9, 26, 52, 26, 26, 52, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _ichimoku = new IchimokuKinkoHyo(9, 26, 52, 26, 26, 52);
-        // WarmUpIndicator(_qqq, _ichimoku, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_qqq, _ichimoku, Resolution.Daily);
         // RegisterIndicator(_qqq, _ichimoku, Resolution.Daily);
         // Manual warm-up: need WarmUpPeriod + 1 so both .Current and .Previous are valid.
         IndicatorHistory(_ichimoku, _qqq, _ichimoku.WarmUpPeriod + 1, Resolution.Daily);
