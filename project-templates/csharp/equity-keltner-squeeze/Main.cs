@@ -69,6 +69,7 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         // Trade multiple ETFs.
         var tickers = new[] { "SPY", "QQQ", "IWM", "DIA" };
@@ -80,12 +81,12 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
             equity.BB = BB(equity.Symbol, 20, 1.5m, resolution: Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.BB = new BollingerBands(20, 1.5m);
-            // WarmUpIndicator(equity.Symbol, equity.BB, Resolution.Daily);
+            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.BB, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.BB, Resolution.Daily);
             equity.KC = KCH(equity.Symbol, 20, 2.0m, resolution: Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.KC = new KeltnerChannels(20, 2.0m);
-            // WarmUpIndicator(equity.Symbol, equity.KC, Resolution.Daily);
+            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.KC, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.KC, Resolution.Daily);
             equity.InSqueeze = false;
             equity.Armed = false;

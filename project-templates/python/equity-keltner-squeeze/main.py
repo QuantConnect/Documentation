@@ -9,6 +9,7 @@ class EquityKeltnerSqueezeAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         # Trade multiple ETFs.
         tickers = ["SPY", "QQQ", "IWM", "DIA"]
@@ -53,7 +54,7 @@ class EquityKeltnerSqueezeAlgorithm(QCAlgorithm):
             # Manage any open position: exit when price reverts to the BB midline.
             holding = security.holdings
             if holding.invested:
-                if (holding.quantity > 0 and price <= bb_middle or 
+                if (holding.quantity > 0 and price <= bb_middle or
                     holding.quantity < 0 and price >= bb_middle):
                     self.liquidate(security)
                 continue
