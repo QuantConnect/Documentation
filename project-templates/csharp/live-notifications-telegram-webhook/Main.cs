@@ -73,6 +73,8 @@ public class TelegramNotificationAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
 
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+
         Settings.AutomaticIndicatorWarmUp = true;
 
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
@@ -80,12 +82,12 @@ public class TelegramNotificationAlgorithm : QCAlgorithm
         _ema50 = EMA(_spy, 50, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _ema50 = new ExponentialMovingAverage(50);
-        // WarmUpIndicator(_spy, _ema50, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy, _ema50, Resolution.Daily);
         // RegisterIndicator(_spy, _ema50, Resolution.Daily);
         _ema200 = EMA(_spy, 200, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _ema200 = new ExponentialMovingAverage(200);
-        // WarmUpIndicator(_spy, _ema200, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy, _ema200, Resolution.Daily);
         // RegisterIndicator(_spy, _ema200, Resolution.Daily);
 
         _previousEma50Above = null;
