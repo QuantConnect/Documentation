@@ -60,7 +60,8 @@
     <p style="margin-top: 2rem;">
       We are deeply integrating AI into our core product to make designing algorithms on QuantConnect as easy as possible. 
       Most clients will experience the benefits of this without realizing it, as our platform quietly solves issues. 
-      If you'd prefer a more hands-on approach or a local LLM integration, you can harness some of the new tools we publish to make this easier—such as our chatbots, agents, and an MCP server.
+      If you'd prefer a more hands-on approach or a local LLM integration, you can tap into the new tools we publish to make this easier—such as our chatbots, agents, and an MCP server.
+      Behind them all, our Assistant servers act as a harness for quant finance: they wrap your AI models in the tools, data, and project context they need to do real research, making whichever model you choose far more productive.
     </p>
 
     <h4>Mia - Agentic Peer Programmer</h4>

@@ -1,4 +1,5 @@
 <p>
+	Assistant nodes are the servers that run your assistants—a harness for quant finance that wraps your AI models in the tools, data, and context they need to be productive.
 	Assistant nodes enable you to deploy assistant tasks.
 	The more assistant nodes your organization has, the more concurrent assistant tasks that you can run.
 	More powerful assistant nodes have more cores and RAM to handle larger, more demanding tasks.

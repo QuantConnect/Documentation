@@ -1,6 +1,7 @@
 <p>
   The Ask Mia panel is where you can privately have an agentic conversation with Mia, an AI assistant we trained on hundreds of algorithms and thousands of documentation pages.
-  Mia has your project context so the agent can directly edit your project files, run backtests, and deploy your algorithm to our live trading servers. 
+  Mia has your project context so the agent can directly edit your project files, run backtests, and deploy your algorithm to our live trading servers.
+  She runs on our Assistant servers—a harness for quant finance that wraps the underlying AI model in these tools, data, and context to make it far more productive.
   Agentic conversations like this unlock the ability to create, research, and deploy algorithmic trading strategies without being an expert programmer.
 </p>
 
