@@ -71,6 +71,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         Settings.SeedInitialPrices = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         // Select QQQ constituents first, then by fundamental data.
         _universe = AddUniverse(Universe.ETF("QQQ", ETFConstituentsFilter));
@@ -84,7 +85,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
             security.Atr = ATR(security, 60, resolution: Resolution.Minute);
             // Alternatively, use a manual indicator.
             // security.Atr = new AverageTrueRange(60);
-            // WarmUpIndicator(security.Symbol, security.Atr);
+            // WarmUpIndicator<IndicatorDataPoint>(security.Symbol, security.Atr);
             // RegisterIndicator(security.Symbol, security.Atr);
         }
         foreach (dynamic security in changes.RemovedSecurities)
@@ -97,7 +98,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
     private IEnumerable<Symbol> ETFConstituentsFilter(IEnumerable<ETFConstituentUniverse> constituents)
     {
         // Select all QQQ constituents by high ATR value
-        _weightBySymbol.Clear();   
+        _weightBySymbol.Clear();
         constituents.DoForEach(c => _weightBySymbol.Add(c.Symbol, c.Weight ?? 0));
         return _weightBySymbol.Keys;
     }
