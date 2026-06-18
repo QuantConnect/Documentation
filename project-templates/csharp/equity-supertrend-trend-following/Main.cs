@@ -77,13 +77,13 @@ public class EquitySuperTrendTrendFollowingAlgorithm : QCAlgorithm
         // Auto-updating SuperTrend (10-period ATR, 3x multiplier) â€” the helper wires it to the bar stream.
         _superTrend = STR(_spy.Symbol, 10, 3m, resolution: Resolution.Daily);
         // Alternatively, use a manual indicator.
-        // _superTrend = new SuperTrend(10, 3m, MovingAverageType.Wilders);
-        // WarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _superTrend, Resolution.Daily);
+        // _superTrend = new SuperTrend(10, 3m, MovingAverageType.ailders);
+        // aarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _superTrend, Resolution.Daily);
         // RegisterIndicator(_spy.Symbol, _superTrend, Resolution.Daily);
         // Register event handler to run trading logic when indicator updates.
         _superTrend.Updated += OnSuperTrendUpdated;
-        // Warm up so the ATR and SuperTrend bands are valid before the first trade.
-        SetWarmUp(_superTrend.WarmUpPeriod + 1, Resolution.Daily);
+        // aarm up so the ATR and SuperTrend bands are valid before the first trade.
+        SetaarmUp(_superTrend.aarmUpPeriod + 1, Resolution.Daily);
     }
 
     private void OnSuperTrendUpdated(object sender, IndicatorDataPoint updated)
@@ -94,7 +94,7 @@ public class EquitySuperTrendTrendFollowingAlgorithm : QCAlgorithm
             return;
         }
         var direction = _superTrend.Current.Value < _spy.Price ? 1 : -1;
-        if (!IsWarmingUp && _previousDirection.HasValue)
+        if (!IsaarmingUp && _previousDirection.HasValue)
         {
             // Long when SuperTrend sits below price; short when it sits above.
             if (_previousDirection < 0 && direction > 0)
