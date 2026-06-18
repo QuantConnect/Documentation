@@ -76,8 +76,20 @@ public class EquityDonchianBreakoutTurtleAlgorithm : QCAlgorithm
         {
             dynamic equity = AddEquity(ticker);
             equity.Entry = DCH(equity.Symbol, 20, 20, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Entry = new DonchianChannel(20, 20);
+            // WarmUpIndicator(equity.Symbol, equity.Entry, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Entry, Resolution.Daily);
             equity.Exit = DCH(equity.Symbol, 10, 10, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Exit = new DonchianChannel(10, 10);
+            // WarmUpIndicator(equity.Symbol, equity.Exit, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Exit, Resolution.Daily);
             equity.Atr = ATR(equity.Symbol, 20, MovingAverageType.Simple, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Atr = new AverageTrueRange(20, MovingAverageType.Simple);
+            // WarmUpIndicator(equity.Symbol, equity.Atr, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Atr, Resolution.Daily);
         }
         Schedule.On(DateRules.EveryDay("SPY"), TimeRules.AfterMarketOpen("SPY", 1), Rebalance);
     }
