@@ -76,6 +76,8 @@ public class ObvDivergenceAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
 
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+
         Settings.AutomaticIndicatorWarmUp = true;
 
         _spy = AddEquity("SPY", Resolution.Minute);
@@ -84,14 +86,14 @@ public class ObvDivergenceAlgorithm : QCAlgorithm
         _obv = OBV(_spy.Symbol, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _obv = new OnBalanceVolume();
-        // WarmUpIndicator(_spy.Symbol, _obv, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _obv, Resolution.Daily);
         // RegisterIndicator(_spy.Symbol, _obv, Resolution.Daily);
 
         // Price ROC(20) on SPY at daily resolution
         _priceRoc = ROC(_spy.Symbol, 20, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _priceRoc = new RateOfChange(20);
-        // WarmUpIndicator(_spy.Symbol, _priceRoc, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _priceRoc, Resolution.Daily);
         // RegisterIndicator(_spy.Symbol, _priceRoc, Resolution.Daily);
 
         // ROC of OBV using IndicatorExtensions
