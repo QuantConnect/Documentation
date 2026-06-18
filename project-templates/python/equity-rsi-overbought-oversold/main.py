@@ -11,6 +11,10 @@ class EquityRsiOverboughtOversoldAlgorithm(QCAlgorithm):
         self.settings.automatic_indicator_warm_up = True
         self._equity = self.add_equity("QQQ", Resolution.HOUR)
         self._rsi = self.rsi(self._equity, 14, MovingAverageType.WILDERS, Resolution.HOUR)
+        # Alternatively, use a manual indicator.
+        # self._rsi = RelativeStrengthIndex(14, MovingAverageType.WILDERS)
+        # self.warm_up_indicator(self._equity.symbol, self._rsi)
+        # self.register_indicator(self._equity.symbol, self._rsi)
         self.plot_indicator("RSI", self._rsi)
 
     def on_data(self, data: Slice) -> None:
