@@ -19,7 +19,15 @@ class CommandPauseEmaCrossAlgorithm(QCAlgorithm):
 
         # Create EMA indicators for trend detection
         self._ema_fast = self.ema(self._spy, 50, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._ema_fast = ExponentialMovingAverage(50)
+        # self.warm_up_indicator(self._spy, self._ema_fast, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._ema_fast, Resolution.DAILY)
         self._ema_slow = self.ema(self._spy, 200, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._ema_slow = ExponentialMovingAverage(200)
+        # self.warm_up_indicator(self._spy, self._ema_slow, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._ema_slow, Resolution.DAILY)
 
         # Restore pause state from Object Store so the flag survives restarts
         if self.object_store.contains_key("paused"):
