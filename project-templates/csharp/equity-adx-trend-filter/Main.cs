@@ -72,12 +72,25 @@ public class EquityADXTrendFilterAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         _spy = AddEquity("SPY").Symbol;
         var fastEma = EMA(_spy, 50, Resolution.Daily);
         var slowEma = EMA(_spy, 200, Resolution.Daily);
         _trend = fastEma.Minus(slowEma);
+        // Alternatively, use a manual indicator.
+        // var fastEma = new ExponentialMovingAverage(50);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy, fastEma, Resolution.Daily);
+        // RegisterIndicator(_spy, fastEma, Resolution.Daily);
+        // var slowEma = new ExponentialMovingAverage(200);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy, slowEma, Resolution.Daily);
+        // RegisterIndicator(_spy, slowEma, Resolution.Daily);
+        // _trend = fastEma.Minus(slowEma);
         _adx = ADX(_spy, 14, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _adx = new AverageDirectionalIndex(14);
+        // WarmUpIndicator(_spy, _adx, Resolution.Daily);
+        // RegisterIndicator(_spy, _adx, Resolution.Daily);
         PlotIndicator("Trend", _trend);
         PlotIndicator("ADX", _adx);
         Schedule.On(
