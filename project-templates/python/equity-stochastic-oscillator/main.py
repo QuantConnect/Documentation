@@ -13,8 +13,8 @@ class EquityStochasticOscillatorAlgorithm(QCAlgorithm):
         self._stoch = self.sto(self._equity, 14, 3, 3, Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._stoch = Stochastic(14, 3, 3)
-        # self.warm_up_indicator(self._equity.symbol, self._stoch, Resolution.DAILY)
-        # self.register_indicator(self._equity.symbol, self._stoch, Resolution.DAILY)
+        # self.warm_up_indicator(self._equity, self._stoch, Resolution.DAILY)
+        # self.register_indicator(self._equity, self._stoch, Resolution.DAILY)
 
     def on_data(self, data: Slice) -> None:
         if not self._stoch.is_ready:
