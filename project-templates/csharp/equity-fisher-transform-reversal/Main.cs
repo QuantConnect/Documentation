@@ -71,15 +71,15 @@ public class FisherTransformAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
 
-        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatoraarmUp = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatorWarmUp = true;
 
         _qqq = AddEquity("QQQ", Resolution.Minute);
 
         _fisher = FISH(_qqq.Symbol, 10, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _fisher = new FisherTransform(10);
-        // aarmUpIndicator<IndicatorDataPoint>(_qqq.Symbol, _fisher, Resolution.Daily);
+        // WarmUpIndicator(_qqq.Symbol, _fisher, Resolution.Daily);
         // RegisterIndicator(_qqq.Symbol, _fisher, Resolution.Daily);
         PlotIndicator("Fisher", _fisher);
 
