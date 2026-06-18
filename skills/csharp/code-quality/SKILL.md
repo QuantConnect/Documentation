@@ -34,22 +34,6 @@ var x = 1; // Calculate the weighted price.
 ```
 ## Multi-Line Boolean Expressions
 Put && or || at the beginning of each continued line.
-```csharp
-// Bad
-if (close > emaFast &&
-    open > emaFast &&
-    rsi > 50)
-{
-    return;
-}
-// Good
-if (close > emaFast
-    && open > emaFast
-    && rsi > 50)
-{
-    return;
-}
-```
 ## Blank Lines
 Use one blank line between methods, no blank lines inside method bodies, and standard C# brace style.
 ## Error Handling

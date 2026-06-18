@@ -80,22 +80,6 @@ if (close > ema_fast and
     rsi > 50):
     return
 ```
-```csharp
-// Bad
-if (close > emaFast &&
-    open > emaFast &&
-    rsi > 50)
-{
-    return;
-}
-// Good
-if (close > emaFast
-    && open > emaFast
-    && rsi > 50)
-{
-    return;
-}
-```
 ## Blank Lines
 <!-- python-only -->Use two blank lines before top-level classes, one blank line before methods inside classes, and no blank lines inside method bodies.
 <!-- /python-only -->
