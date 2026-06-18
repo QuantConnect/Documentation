@@ -9,6 +9,7 @@ class EquityBollingerMeanReversionAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         self.settings.seed_initial_prices = True
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         self._equity = self.add_equity("SPY")
         self._bb = self.bb(self._equity, 20, 2, resolution=Resolution.DAILY)
