@@ -24,12 +24,12 @@
         <tr>
             <td><code class='csharp'>dataType</code><code class='python'>data_type</code></td>
             <td><code class='csharp'>Type</code><code class='python'>type</code></td>
-            <td>The type of the input data. Either <code>TradeBar</code>, <code>QuoteBar</code>, or <code>Tick</code></td>
+            <td>The type of the input data. In this case, use <code><?=$this->dataTypeArgPy?></code>.</td>
         </tr>
         <tr>
             <td><code class='csharp'>tickType</code><code class='python'>tick_type</code></td>
             <td><code>TickType</code></td>
-            <td>The type of data to consolidate. Either <code class='csharp'>TradeType.Tick</code><code class='python'>TradeType.TICK</code> or <code class='csharp'>TradeType.Quote</code><code class='python'>TradeType.QUOTE</code></td>
+            <td>The type of data to consolidate. In this case, use <code class='csharp'><?=$this->dataTypeArgC?></code><code class='python'><?=$this->dataTypeArgPy?></code>.</td>
         </tr>
         <tr>
             <td><code class='csharp'>extendedMarketHours</code><code class='python'>extended_market_hours</code></td>
@@ -41,8 +41,6 @@
 
 
 <div class='section-example-container'>
-    <pre class='csharp'>_consolidator = new MarketHourAwareConsolidator(
-    true, TimeSpan.FromMinutes(7), <?=$this->dataTypeArgC?>, <?=$this->tickTypeArgC?>, false);</pre>
-    <pre class='python'>self._consolidator = MarketHourAwareConsolidator(
-    True, timedelta(minutes=7), <?=$this->dataTypeArgPy?>, <?=$this->tickTypeArgPy?>, False)</pre>
+    <pre class='csharp'>_consolidator = new MarketHourAwareConsolidator(true, TimeSpan.FromMinutes(7), <?=$this->dataTypeArgC?>, <?=$this->tickTypeArgC?>, false);</pre>
+    <pre class='python'>self._consolidator = MarketHourAwareConsolidator(True, timedelta(minutes=7), <?=$this->dataTypeArgPy?>, <?=$this->tickTypeArgPy?>, False)</pre>
 </div>
