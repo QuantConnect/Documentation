@@ -13,8 +13,8 @@ class AtrChandelierTrailingStopAlgorithm(QCAlgorithm):
         self._atr = self.atr(self._spy.symbol, 14)
         # Alternatively, use a manual indicator.
         # self._atr = AverageTrueRange(14)
-        # self.warm_up_indicator(self._spy.symbol, self._atr)
-        # self.register_indicator(self._spy.symbol, self._atr)
+        # self.warm_up_indicator(self._spy, self._atr)
+        # self.register_indicator(self._spy, self._atr)
         self._trailing_high: float = 0.0
         self._waiting_to_reenter = False
 
