@@ -16,9 +16,14 @@ class OptionChainFullExample(QCAlgorithm):
         # Warm-up the option contracts as soon as it is added to the algorithm
         self.settings.seed_initial_prices = True
 
-        # The EMA/price cross will determine we trade ATM contracts 
+        # The EMA/price cross will determine we trade ATM contracts
         self._index = self.add_index("RUT")
-        self.ema(self._index, 60).updated += self._trade_target_delta_contract
+        ema = self.ema(self._index, 60)
+        # To use a manual EMA instead, replace the automatic indicator above with:
+        # ema = ExponentialMovingAverage(60)
+        # self.warm_up_indicator(self._index, ema)
+        # self.register_indicator(self._index, ema)
+        ema.updated += self._trade_target_delta_contract
 
         self._option_chain_symbol = Symbol.create_canonical_option(self._index, "RUTW", Market.USA, "?RUTW")
         self._dividend_yield_model = DividendYieldProvider(self._index)
@@ -31,7 +36,7 @@ class OptionChainFullExample(QCAlgorithm):
         if not ema.is_ready: return
 
         spot = self._index.price
-        
+
         if spot > current.value and spot > ema[-1].value:
             atm_call = self._get_target_delta_contract(OptionRight.CALL, spot)
             if atm_call and not self.portfolio[atm_call].invested:
@@ -48,7 +53,7 @@ class OptionChainFullExample(QCAlgorithm):
         if not chain:
             return None
         expiry = min([x.expiry for x in chain])
-        
+
         def get_delta(x: OptionContract) -> tuple[OptionContract, float]:
             mirror_option = Symbol.create_option(x.symbol.underlying, "RUT", Market.USA, OptionStyle.EUROPEAN, mirror_option_right, x.strike, x.expiry)
             delta = Delta(x, self._interest_rate_model, self._dividend_yield_model, mirror_option)
