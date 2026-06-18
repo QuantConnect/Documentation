@@ -18,6 +18,10 @@ class SectorRotationAlgorithm(QCAlgorithm):
             # Minute-resolution data, but rank on a daily ROC indicator.
             equity = self.add_equity(ticker)
             equity.roc = self.roc(equity, 60, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.roc = RateOfChange(60)
+            # self.warm_up_indicator(equity.symbol, equity.roc, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.roc, Resolution.DAILY)
 
         self.schedule.on(
             self.date_rules.month_start("XLK"),
