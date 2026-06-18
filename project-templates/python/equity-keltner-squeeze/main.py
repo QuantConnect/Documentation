@@ -19,13 +19,13 @@ class EquityKeltnerSqueezeAlgorithm(QCAlgorithm):
             equity.bb = self.bb(equity, 20, 1.5, resolution=Resolution.DAILY)
             # Alternatively, use a manual indicator.
             # equity.bb = BollingerBands(20, 1.5)
-            # self.warm_up_indicator(equity.symbol, equity.bb, Resolution.DAILY)
-            # self.register_indicator(equity.symbol, equity.bb, Resolution.DAILY)
+            # self.warm_up_indicator(equity, equity.bb, Resolution.DAILY)
+            # self.register_indicator(equity, equity.bb, Resolution.DAILY)
             equity.kc = self.kch(equity, 20, 2.0, resolution=Resolution.DAILY)
             # Alternatively, use a manual indicator.
             # equity.kc = KeltnerChannels(20, 2.0)
-            # self.warm_up_indicator(equity.symbol, equity.kc, Resolution.DAILY)
-            # self.register_indicator(equity.symbol, equity.kc, Resolution.DAILY)
+            # self.warm_up_indicator(equity, equity.kc, Resolution.DAILY)
+            # self.register_indicator(equity, equity.kc, Resolution.DAILY)
             equity.in_squeeze = False
             equity.armed = False
         # Add a Schedule Event to scan for trades daily.
