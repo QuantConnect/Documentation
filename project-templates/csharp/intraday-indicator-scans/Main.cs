@@ -82,6 +82,10 @@ public class ETFUniverseAlgorithm : QCAlgorithm
         foreach (dynamic security in changes.AddedSecurities)
         {
             security.Atr = ATR(security, 60, resolution: Resolution.Minute);
+            // Alternatively, use a manual indicator.
+            // security.Atr = new AverageTrueRange(60);
+            // WarmUpIndicator(security.Symbol, security.Atr);
+            // RegisterIndicator(security.Symbol, security.Atr);
         }
         foreach (dynamic security in changes.RemovedSecurities)
         {
