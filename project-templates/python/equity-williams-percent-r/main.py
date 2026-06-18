@@ -15,6 +15,10 @@ class WilliamsPercentRIWMAlgorithm(QCAlgorithm):
 
         self._symbol = self.add_equity("IWM", Resolution.MINUTE).symbol
         self._wmr = self.wilr(self._symbol, 14, Resolution.MINUTE)
+        # Alternatively, use a manual indicator.
+        # self._wmr = WilliamsPercentR(14)
+        # self.warm_up_indicator(self._symbol, self._wmr)
+        # self.register_indicator(self._symbol, self._wmr)
 
         self._hold_days = 0
 
