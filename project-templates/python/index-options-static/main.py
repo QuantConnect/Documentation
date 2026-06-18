@@ -15,9 +15,14 @@ class OptionChainFullExample(QCAlgorithm):
         # Warm-up the option contracts as soon as it is added to the algorithm
         self.settings.seed_initial_prices = True
 
-        # The EMA/price cross will determine we trade ATM contracts 
+        # The EMA/price cross will determine we trade ATM contracts
         index = self.add_index("SPX")
-        self.ema(index, 60).updated += self._trade_at_the_money_contract
+        ema = self.ema(index, 60)
+        # To use a manual EMA instead, replace the automatic indicator above with:
+        # ema = ExponentialMovingAverage(60)
+        # self.warm_up_indicator(index, ema)
+        # self.register_indicator(index, ema)
+        ema.updated += self._trade_at_the_money_contract
 
         self._option_chain_symbol = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
 
@@ -29,7 +34,7 @@ class OptionChainFullExample(QCAlgorithm):
         if not ema.is_ready: return
 
         spot = self.securities[current.symbol].price
-        
+
         if spot > current.value and spot > ema[-1].value:
             atm_call = self._get_at_the_money_contract(OptionRight.CALL, spot)
             if atm_call and not atm_call.invested:
