@@ -79,6 +79,10 @@ public class WilliamsPercentRIWMAlgorithm : QCAlgorithm
 
         _symbol = AddEquity("IWM", Resolution.Minute).Symbol;
         _wmr = WILR(_symbol, 14, Resolution.Minute);
+        // Alternatively, use a manual indicator.
+        // _wmr = new WilliamsPercentR(14);
+        // WarmUpIndicator(_symbol, _wmr);
+        // RegisterIndicator(_symbol, _wmr);
 
         Schedule.On(
             DateRules.EveryDay(_symbol),
