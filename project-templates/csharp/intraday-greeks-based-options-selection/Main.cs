@@ -84,12 +84,10 @@ public class OptionChainFullExample : QCAlgorithm
 
         // The EMA/price cross will determine we trade ATM contracts
         _index = AddIndex("RUT");
-        EMA(_index, 60).Updated += TradeTargetDeltaContract;
-        // Alternatively, use a manual indicator.
-        // var ema = new ExponentialMovingAverage(60);
-        // WarmUpIndicator<IndicatorDataPoint>(_index, ema);
-        // RegisterIndicator(_index, ema);
-        // ema.Updated += TradeTargetDeltaContract;
+        var ema = new ExponentialMovingAverage(60);
+        WarmUpIndicator<IndicatorDataPoint>(_index, ema);
+        RegisterIndicator(_index, ema);
+        ema.Updated += TradeTargetDeltaContract;
 
         _optionChainSymbol = QuantConnect.Symbol.CreateCanonicalOption(_index, "RUTW", Market.USA, "?RUTW");
         _dividendYieldModel = new DividendYieldProvider(_index);
@@ -98,8 +96,8 @@ public class OptionChainFullExample : QCAlgorithm
     public void TradeTargetDeltaContract(object sender, IndicatorDataPoint current)
     {
         // Pace trades every 10 minutes
-        var lastTrateTime = _lastTicket?.Time ?? DateTime.MinValue;
-        if ((UtcTime-lastTrateTime).TotalMinutes < 10) return;
+        var lastTradeTime = _lastTicket?.Time ?? DateTime.MinValue;
+        if ((UtcTime-lastTradeTime).TotalMinutes < 10) return;
 
         var ema = sender as ExponentialMovingAverage;
         if (!ema.IsReady) return;
