@@ -12,6 +12,9 @@ class EquityMacdHistogramDivergenceAlgorithm(QCAlgorithm):
         self._equity = self.add_equity("AAPL")
         # Create MACD indicator with standard parameters.
         self._macd = self.macd(self._equity, 12, 26, 9, MovingAverageType.EXPONENTIAL, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._macd = MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.EXPONENTIAL)
+        # self.register_indicator(self._equity, self._macd, Resolution.DAILY)
         # Warm up the indicator and its windows using historical data.
         self.indicator_history(self._macd, self._equity, self._macd.warm_up_period + 1)
         # Plot MACD components for visualization.
