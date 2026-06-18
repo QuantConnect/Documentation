@@ -17,8 +17,8 @@ class ChaikinMoneyFlowXlfAlgorithm(QCAlgorithm):
         self._cmf = self.cmf(self._xlf.symbol, 20, Resolution.MINUTE)
         # Alternatively, use a manual indicator.
         # self._cmf = ChaikinMoneyFlow(20)
-        # self.warm_up_indicator(self._xlf.symbol, self._cmf)
-        # self.register_indicator(self._xlf.symbol, self._cmf)
+        # self.warm_up_indicator(self._xlf, self._cmf)
+        # self.register_indicator(self._xlf, self._cmf)
         self.plot_indicator("CMF", self._cmf)
         
         self._previous_signal = 0  # 1 = long, -1 = short, 0 = flat
