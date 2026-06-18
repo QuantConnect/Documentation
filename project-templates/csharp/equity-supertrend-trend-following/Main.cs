@@ -74,7 +74,7 @@ public class EquitySuperTrendTrendFollowingAlgorithm : QCAlgorithm
         SetCash(100_000);
         // Request SPY data to feed the SuperTrend indicator and trade.
         _spy = AddEquity("SPY");
-        // Auto-updating SuperTrend (10-period ATR, 3x multiplier) — the helper wires it to the bar stream.
+        // Auto-updating SuperTrend (10-period ATR, 3x multiplier) â€” the helper wires it to the bar stream.
         _superTrend = STR(_spy.Symbol, 10, 3m, resolution: Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _superTrend = new SuperTrend(10, 3m, MovingAverageType.Wilders);
