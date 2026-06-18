@@ -80,6 +80,10 @@ public class SectorRotationAlgorithm : QCAlgorithm
             // Minute-resolution data, but rank on a daily ROC indicator.
             dynamic equity = AddEquity(ticker);
             equity.Roc = ROC(equity, 60, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Roc = new RateOfChange(60);
+            // WarmUpIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
         }
 
         Schedule.On(
