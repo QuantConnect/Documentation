@@ -20,8 +20,8 @@ class OptionChainFullExample(QCAlgorithm):
         self.ema(index, 60).updated += self._trade_at_the_money_contract
         # Alternatively, use a manual indicator.
         # self._ema = ExponentialMovingAverage(60)
-        # self.warm_up_indicator(index.symbol, self._ema)
-        # self.register_indicator(index.symbol, self._ema)
+        # self.warm_up_indicator(index, self._ema)
+        # self.register_indicator(index, self._ema)
         # self._ema.updated += self._trade_at_the_money_contract
 
         self._option_chain_symbol = Symbol.create_canonical_option(index, "SPXW", Market.USA, "?SPXW")
