@@ -294,6 +294,44 @@
    </tbody>
 </table>
 
+<h4>Market Hour Aware Consolidators</h4>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/market-hour-aware/introduction.html"); ?>
+
+<p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
+
+<table class="qc-table table">
+   <thead>
+      <tr>
+         <th>Input</th>
+         <th>Output</th>
+         <th>Class Type</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><code>TradeBar</code></td>
+         <td><code>TradeBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/market-hour-aware-consolidators#02-Consolidate-Trade-Bars'>MarketHourAwareConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>QuoteBar</code></td>
+         <td><code>QuoteBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/market-hour-aware-consolidators#03-Consolidate-Quote-Bars'>MarketHourAwareConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>TradeBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/market-hour-aware-consolidators#04-Consolidate-Trade-Ticks'>MarketHourAwareConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>QuoteBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/market-hour-aware-consolidators#05-Consolidate-Quote-Ticks'>MarketHourAwareConsolidator</a></td>
+      </tr>
+   </tbody>
+</table>
+
 
 <h4>Sequential Consolidators</h4>
 
