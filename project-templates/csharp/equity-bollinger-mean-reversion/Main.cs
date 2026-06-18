@@ -71,9 +71,14 @@ public class EquityBollingerMeanReversionAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         Settings.SeedInitialPrices = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         _equity = AddEquity("SPY");
         _bb = BB(_equity.Symbol, 20, 2, resolution: Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _bb = new BollingerBands(20, 2);
+        // WarmUpIndicator<IndicatorDataPoint>(_equity.Symbol, _bb, Resolution.Daily);
+        // RegisterIndicator(_equity.Symbol, _bb, Resolution.Daily);
         PlotIndicator("SPY", _bb.UpperBand, _bb.MiddleBand, _bb.LowerBand);
         Schedule.On(DateRules.EveryDay(_equity.Symbol), TimeRules.At(8, 0), Rebalance);
     }
