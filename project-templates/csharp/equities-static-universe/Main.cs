@@ -74,6 +74,10 @@ public class EquitiesStaticTemplateAlgorithm : QCAlgorithm
         {
             dynamic equity = AddEquity(ticker);
             equity.Macd = MACD(equity, 12, 26, 9, MovingAverageType.Exponential, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Macd = new MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.Exponential);
+            // WarmUpIndicator(equity.Symbol, equity.Macd, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Macd, Resolution.Daily);
             PlotIndicator(ticker, equity.Macd);
         }
         Schedule.On(DateRules.EveryDay("SPY"), TimeRules.AfterMarketOpen("SPY", 1), Rebalance);
