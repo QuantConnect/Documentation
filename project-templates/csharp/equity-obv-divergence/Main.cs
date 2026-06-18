@@ -77,7 +77,6 @@ public class ObvDivergenceAlgorithm : QCAlgorithm
         SetCash(100000);
 
         // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
-
         Settings.AutomaticIndicatorWarmUp = true;
 
         _spy = AddEquity("SPY", Resolution.Minute);
