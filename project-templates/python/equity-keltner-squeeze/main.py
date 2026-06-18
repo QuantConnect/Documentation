@@ -9,6 +9,7 @@ class EquityKeltnerSqueezeAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         # Trade multiple ETFs.
         tickers = ["SPY", "QQQ", "IWM", "DIA"]
@@ -17,7 +18,15 @@ class EquityKeltnerSqueezeAlgorithm(QCAlgorithm):
             equity = self.add_equity(ticker)
             # BB with 1.5 std devs and KC with 2.0 ATR multiplier for squeeze detection.
             equity.bb = self.bb(equity, 20, 1.5, resolution=Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.bb = BollingerBands(20, 1.5)
+            # self.warm_up_indicator(equity, equity.bb, Resolution.DAILY)
+            # self.register_indicator(equity, equity.bb, Resolution.DAILY)
             equity.kc = self.kch(equity, 20, 2.0, resolution=Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.kc = KeltnerChannels(20, 2.0)
+            # self.warm_up_indicator(equity, equity.kc, Resolution.DAILY)
+            # self.register_indicator(equity, equity.kc, Resolution.DAILY)
             equity.in_squeeze = False
             equity.armed = False
         # Add a Schedule Event to scan for trades daily.
@@ -45,7 +54,7 @@ class EquityKeltnerSqueezeAlgorithm(QCAlgorithm):
             # Manage any open position: exit when price reverts to the BB midline.
             holding = security.holdings
             if holding.invested:
-                if (holding.quantity > 0 and price <= bb_middle or 
+                if (holding.quantity > 0 and price <= bb_middle or
                     holding.quantity < 0 and price >= bb_middle):
                     self.liquidate(security)
                 continue
