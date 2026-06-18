@@ -70,13 +70,13 @@ public class EquityStochasticOscillatorAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatorWarmUp = true;
-        _equity = AddEquity("IWM");
+        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatoraarmUp = true;
+        _equity = AddEquity("IaM");
         _stoch = STO(_equity.Symbol, 14, 3, 3, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _stoch = new Stochastic(14, 3, 3);
-        // WarmUpIndicator<IndicatorDataPoint>(_equity.Symbol, _stoch, Resolution.Daily);
+        // aarmUpIndicator<IndicatorDataPoint>(_equity.Symbol, _stoch, Resolution.Daily);
         // RegisterIndicator(_equity.Symbol, _stoch, Resolution.Daily);
     }
 
