@@ -1,0 +1,86 @@
+<p>The following examples demonstrate some common practices for market hour aware consolidators.</p>
+
+<h4>Example 1: Daily Bars That Respect Market Hours</h4>
+<p>
+    The following algorithm subscribes to minute resolution data with extended market hours and consolidates it to daily resolution.
+    Because daily consolidation is market hour aware, the daily bars exclude the extended market hours data and only reflect the regular trading hours of the exchange.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class MarketHourAwareConsolidatorExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        // Subscribe to minute data with extended market hours.
+        var symbol = AddEquity("SPY", Resolution.Minute, extendedMarketHours: true).Symbol;
+        // Consolidate to daily resolution. LEAN uses a market hour aware consolidator,
+        // so the daily bars exclude the extended market hours data.
+        Consolidate(symbol, Resolution.Daily, (TradeBar bar) =&gt; Plot("SPY", "Daily Close", bar.Close));
+    }
+}</pre>
+<pre class="python">class MarketHourAwareConsolidatorExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        # Subscribe to minute data with extended market hours.
+        self._symbol = self.add_equity("SPY", Resolution.MINUTE, extended_market_hours=True).symbol
+        # Consolidate to daily resolution. LEAN uses a market hour aware consolidator,
+        # so the daily bars exclude the extended market hours data.
+        self.consolidate(self._symbol, Resolution.DAILY, self._on_daily_bar)
+
+    def _on_daily_bar(self, bar: TradeBar) -&gt; None:
+        # Plot the daily close built from regular trading hours only.
+        self.plot("SPY", "Daily Close", bar.close)</pre>
+</div>
+
+<h4>Example 2: Intraday Bars Anchored to the Market Open</h4>
+<p>
+    The following algorithm creates a <code>MarketHourAwareConsolidator</code> with a 7-minute period and registers it for automatic updates.
+    Because the consolidator anchors intraday bars to the market open, the first 7-minute bar of each day arrives 7 minutes after the market opens.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class MarketHourAwareConsolidatorExampleAlgorithm : QCAlgorithm
+{
+    private MarketHourAwareConsolidator _consolidator;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        var symbol = AddEquity("SPY", Resolution.Minute).Symbol;
+        // Create a market hour aware consolidator that builds 7-minute TradeBar objects anchored to the market open.
+        _consolidator = new MarketHourAwareConsolidator(
+            dailyStrictEndTimeEnabled: true, TimeSpan.FromMinutes(7), typeof(TradeBar), TickType.Trade, extendedMarketHours: false);
+        // Attach a consolidation handler. The DataConsolidated event provides the bar as an
+        // IBaseData object, so cast it to a TradeBar.
+        _consolidator.DataConsolidated += (sender, consolidated) =&gt; OnBar(sender, (TradeBar)consolidated);
+        // Register the consolidator for automatic updates.
+        SubscriptionManager.AddConsolidator(symbol, _consolidator);
+    }
+
+    private void OnBar(object sender, TradeBar bar)
+    {
+        // Plot the close of each 7-minute bar built from regular trading hours only.
+        Plot("SPY", "7-Minute Close", bar.Close);
+    }
+}</pre>
+<pre class="python">class MarketHourAwareConsolidatorExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
+        # Create a market hour aware consolidator that builds 7-minute TradeBar objects anchored to the market open.
+        self._consolidator = MarketHourAwareConsolidator(
+            True, timedelta(minutes=7), TradeBar, TickType.TRADE, False)
+        # Attach a consolidation handler.
+        self._consolidator.data_consolidated += self._on_bar
+        # Register the consolidator for automatic updates.
+        self.subscription_manager.add_consolidator(self._symbol, self._consolidator)
+
+    def _on_bar(self, sender: object, bar: TradeBar) -&gt; None:
+        # Plot the close of each 7-minute bar built from regular trading hours only.
+        self.plot("SPY", "7-Minute Close", bar.close)</pre>
+</div>
