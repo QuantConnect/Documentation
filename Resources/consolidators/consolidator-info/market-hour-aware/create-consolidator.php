@@ -29,7 +29,7 @@
         <tr>
             <td><code class='csharp'>tickType</code><code class='python'>tick_type</code></td>
             <td><code>TickType</code></td>
-            <td>The type of data to consolidate. In this case, use <code class='csharp'><?=$this->dataTypeArgC?></code><code class='python'><?=$this->dataTypeArgPy?></code>.</td>
+            <td>The type of data to consolidate. In this case, use <code class='csharp'><?=$this->tickTypeArgC?></code><code class='python'><?=$this->tickTypeArgPy?></code>.</td>
         </tr>
         <tr>
             <td><code class='csharp'>extendedMarketHours</code><code class='python'>extended_market_hours</code></td>
