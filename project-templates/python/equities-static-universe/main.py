@@ -9,10 +9,15 @@ class EquitiesStaticTemplateAlgorithm(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         for ticker in ["SPY", "QQQ", "IWM"]:
             equity = self.add_equity(ticker)
             equity.macd = self.macd(equity, 12, 26, 9, MovingAverageType.EXPONENTIAL, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.macd = MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.EXPONENTIAL)
+            # self.warm_up_indicator(equity, equity.macd, Resolution.DAILY)
+            # self.register_indicator(equity, equity.macd, Resolution.DAILY)
             self.plot_indicator(ticker, equity.macd)
         self.schedule.on(self.date_rules.every_day('SPY'), self.time_rules.after_market_open('SPY', 1), self._rebalance)
 
