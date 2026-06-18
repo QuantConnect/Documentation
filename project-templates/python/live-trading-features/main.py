@@ -18,8 +18,8 @@ class LiveTradingFeaturesAlgorithm(QCAlgorithm):
         self._spy.ema = self.ema(self._spy, 20, Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._spy.ema = ExponentialMovingAverage(20)
-        # self.warm_up_indicator(self._spy.symbol, self._spy.ema, Resolution.DAILY)
-        # self.register_indicator(self._spy.symbol, self._spy.ema, Resolution.DAILY)
+        # self.warm_up_indicator(self._spy, self._spy.ema, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._spy.ema, Resolution.DAILY)
     
     def _notify_all(self, subject: str, message: str) -> None:
         self.notify.email("email@address.com", subject, message)
