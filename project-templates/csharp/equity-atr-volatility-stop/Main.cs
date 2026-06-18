@@ -72,10 +72,15 @@ public class AtrChandelierTrailingStopAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         _spy = AddEquity("SPY", Resolution.Minute);
         _atr = ATR(_spy.Symbol, 14);
+        // Alternatively, use a manual indicator.
+        // _atr = new AverageTrueRange(14);
+        // WarmUpIndicator(_spy.Symbol, _atr);
+        // RegisterIndicator(_spy.Symbol, _atr);
         _trailingHigh = 0m;
         _waitingToReenter = false;
 

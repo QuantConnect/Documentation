@@ -7,10 +7,15 @@ class AtrChandelierTrailingStopAlgorithm(QCAlgorithm):
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         self._spy = self.add_equity("SPY", Resolution.MINUTE)
         self._atr = self.atr(self._spy.symbol, 14)
+        # Alternatively, use a manual indicator.
+        # self._atr = AverageTrueRange(14)
+        # self.warm_up_indicator(self._spy, self._atr)
+        # self.register_indicator(self._spy, self._atr)
         self._trailing_high: float = 0.0
         self._waiting_to_reenter = False
 
