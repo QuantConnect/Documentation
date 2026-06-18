@@ -12,7 +12,6 @@ class ChaikinMoneyFlowXlfAlgorithm(QCAlgorithm):
         self.set_cash(100000)
 
         # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
-
         self.settings.automatic_indicator_warm_up = True
 
         self._xlf = self.add_equity("XLF", Resolution.MINUTE)
