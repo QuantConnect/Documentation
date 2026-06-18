@@ -75,10 +75,15 @@ public class WilliamsPercentRIWMAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         _symbol = AddEquity("IWM", Resolution.Minute).Symbol;
         _wmr = WILR(_symbol, 14, Resolution.Minute);
+        // Alternatively, use a manual indicator.
+        // _wmr = new WilliamsPercentR(14);
+        // WarmUpIndicator(_symbol, _wmr);
+        // RegisterIndicator(_symbol, _wmr);
 
         Schedule.On(
             DateRules.EveryDay(_symbol),
