@@ -71,7 +71,6 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
         SetEndDate(2024, 10, 1);
 
         // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
-
         Settings.AutomaticIndicatorWarmUp = true;
 
         // Request SPY data to trade.
