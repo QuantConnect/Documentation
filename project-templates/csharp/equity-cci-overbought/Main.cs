@@ -73,6 +73,7 @@ public class XleCciMeanReversionAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         _xle = AddEquity("XLE", Resolution.Minute);
@@ -80,12 +81,12 @@ public class XleCciMeanReversionAlgorithm : QCAlgorithm
         _cci = CCI(_xle.Symbol, 20, MovingAverageType.Simple, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _cci = new CommodityChannelIndex(20, MovingAverageType.Simple);
-        // WarmUpIndicator(_xle.Symbol, _cci, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_xle.Symbol, _cci, Resolution.Daily);
         // RegisterIndicator(_xle.Symbol, _cci, Resolution.Daily);
         _atr = ATR(_xle.Symbol, 14, MovingAverageType.Simple, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _atr = new AverageTrueRange(14, MovingAverageType.Simple);
-        // WarmUpIndicator(_xle.Symbol, _atr, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_xle.Symbol, _atr, Resolution.Daily);
         // RegisterIndicator(_xle.Symbol, _atr, Resolution.Daily);
 
         PlotIndicator("CCI", _cci);
