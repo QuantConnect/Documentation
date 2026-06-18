@@ -17,7 +17,7 @@ class EquityIchimokuCloudAlgorithm(QCAlgorithm):
         # self.register_indicator(self._qqq, self._ichimoku, Resolution.DAILY)
         # Manual warm-up: need warm_up_period + 1 so both .current and .previous are valid.
         self.indicator_history(self._ichimoku, self._qqq, self._ichimoku.warm_up_period + 1, Resolution.DAILY)
-        # Plot all five Ichimoku components — Tenkan, Kijun, Senkou A, Senkou B, Chikou.
+        # Plot all five Ichimoku components â€” Tenkan, Kijun, Senkou A, Senkou B, Chikou.
         self.plot_indicator(
             "Ichimoku",
             self._ichimoku.tenkan,
