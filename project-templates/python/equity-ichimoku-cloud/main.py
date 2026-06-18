@@ -11,6 +11,10 @@ class EquityIchimokuCloudAlgorithm(QCAlgorithm):
         self._qqq = self.add_equity("QQQ")
         # Add the IchimokuKinkoHyo indicator.
         self._ichimoku = self.ichimoku(self._qqq, 9, 26, 52, 26, 26, 52, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._ichimoku = IchimokuKinkoHyo(9, 26, 52, 26, 26, 52)
+        # self.warm_up_indicator(self._qqq.symbol, self._ichimoku, Resolution.DAILY)
+        # self.register_indicator(self._qqq.symbol, self._ichimoku, Resolution.DAILY)
         # Manual warm-up: need warm_up_period + 1 so both .current and .previous are valid.
         self.indicator_history(self._ichimoku, self._qqq, self._ichimoku.warm_up_period + 1, Resolution.DAILY)
         # Plot all five Ichimoku components — Tenkan, Kijun, Senkou A, Senkou B, Chikou.
