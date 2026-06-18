@@ -9,11 +9,16 @@ class DualMomentumAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         self.settings.seed_initial_prices = True
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         for ticker in ["SPY", "EFA", "AGG"]:
             equity = self.add_equity(ticker, Resolution.MINUTE)
             equity.rocp = self.rocp(equity.symbol, 252, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.rocp = RateOfChangePercent(252)
+            # self.warm_up_indicator(equity, equity.rocp, Resolution.DAILY)
+            # self.register_indicator(equity, equity.rocp, Resolution.DAILY)
 
         self.schedule.on(
             self.date_rules.month_start("SPY"),

@@ -68,6 +68,7 @@ public class DualMomentumAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         Settings.SeedInitialPrices = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         var tickers = new[] { "SPY", "EFA", "AGG" };
@@ -75,6 +76,10 @@ public class DualMomentumAlgorithm : QCAlgorithm
         {
             dynamic equity = AddEquity(ticker, Resolution.Minute);
             equity.Rocp = ROCP(equity.Symbol, 252, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Rocp = new RateOfChangePercent(252);
+            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.Rocp, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Rocp, Resolution.Daily);
         }
 
         Schedule.On(DateRules.MonthStart("SPY"), TimeRules.BeforeMarketOpen("SPY", 5), Rebalance);
