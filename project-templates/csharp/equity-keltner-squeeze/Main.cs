@@ -72,7 +72,7 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
         // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         // Trade multiple ETFs.
-        var tickers = new[] { "SPY", "QQQ", "IaM", "DIA" };
+        var tickers = new[] { "SPY", "QQQ", "IWM", "DIA" };
         _weight = 1m / tickers.Length;
         foreach (var ticker in tickers)
         {
@@ -130,7 +130,7 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
                 }
                 continue;
             }
-            // aait for the squeeze to release before acting on a BB break.
+            // Wait for the squeeze to release before acting on a BB break.
             if (inSqueeze || !security.Armed)
             {
                 continue;
