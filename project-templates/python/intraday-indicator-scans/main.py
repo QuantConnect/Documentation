@@ -10,6 +10,7 @@ class ETFUniverseAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
         self.settings.seed_initial_prices = True
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         # Select QQQ constituents first, then by fundamental data.
         self._universe = self.add_universe(self.universe.etf("QQQ", self._etf_constituents_filter))
@@ -18,6 +19,11 @@ class ETFUniverseAlgorithm(QCAlgorithm):
     def on_securities_changed(self, changes: SecurityChanges) -> None:
         for security in changes.added_securities:
             security.atr = self.atr(security, 60, resolution=Resolution.MINUTE)
+            # Alternatively, use a manual indicator.
+            # symbol = security.symbol
+            # security.atr = AverageTrueRange(60)
+            # self.warm_up_indicator(symbol, security.atr)
+            # self.register_indicator(symbol, security.atr)
         for security in changes.removed_securities:
             self.deregister_indicator(security.atr)
 
