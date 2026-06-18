@@ -13,8 +13,8 @@ class EquityParabolicSarTrailingTemplateAlgorithm(QCAlgorithm):
         self._psar = self.psar(self._equity, 0.02, 0.02, 0.2, Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._psar = ParabolicStopAndReverse(0.02, 0.02, 0.2)
-        # self.warm_up_indicator(self._equity.symbol, self._psar, Resolution.DAILY)
-        # self.register_indicator(self._equity.symbol, self._psar, Resolution.DAILY)
+        # self.warm_up_indicator(self._equity, self._psar, Resolution.DAILY)
+        # self.register_indicator(self._equity, self._psar, Resolution.DAILY)
         self.plot_indicator("SPY", self._psar)
 
     def on_data(self, data: Slice) -> None:
