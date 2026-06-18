@@ -73,6 +73,10 @@ public class EquityRsiOverboughtOversoldAlgorithm : QCAlgorithm
         Settings.AutomaticIndicatorWarmUp = true;
         _equity = AddEquity("QQQ", Resolution.Hour);
         _rsi = RSI(_equity.Symbol, 14, MovingAverageType.Wilders, Resolution.Hour);
+        // Alternatively, use a manual indicator.
+        // _rsi = new RelativeStrengthIndex(14, MovingAverageType.Wilders);
+        // WarmUpIndicator(_equity.Symbol, _rsi);
+        // RegisterIndicator(_equity.Symbol, _rsi);
         PlotIndicator("RSI", _rsi);
     }
 
