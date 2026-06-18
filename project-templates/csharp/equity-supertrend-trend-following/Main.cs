@@ -78,7 +78,7 @@ public class EquitySuperTrendTrendFollowingAlgorithm : QCAlgorithm
         _superTrend = STR(_spy.Symbol, 10, 3m, resolution: Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _superTrend = new SuperTrend(10, 3m, MovingAverageType.Wilders);
-        // WarmUpIndicator(_spy.Symbol, _superTrend, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _superTrend, Resolution.Daily);
         // RegisterIndicator(_spy.Symbol, _superTrend, Resolution.Daily);
         // Register event handler to run trading logic when indicator updates.
         _superTrend.Updated += OnSuperTrendUpdated;
