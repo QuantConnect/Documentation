@@ -18,12 +18,12 @@ class OptionChainFullExample(QCAlgorithm):
 
         # The EMA/price cross will determine we trade ATM contracts
         self._index = self.add_index("RUT")
-        self.ema(self._index, 60).updated += self._trade_target_delta_contract
+        ema = self.ema(self._index, 60)
         # To use a manual EMA instead, replace the automatic indicator above with:
         # ema = ExponentialMovingAverage(60)
         # self.warm_up_indicator(self._index, ema)
         # self.register_indicator(self._index, ema)
-        # ema.updated += self._trade_target_delta_contract
+        ema.updated += self._trade_target_delta_contract
 
         self._option_chain_symbol = Symbol.create_canonical_option(self._index, "RUTW", Market.USA, "?RUTW")
         self._dividend_yield_model = DividendYieldProvider(self._index)
