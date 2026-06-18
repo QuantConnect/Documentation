@@ -21,7 +21,7 @@ Build a custom reader, wire it into `main.py`, and verify rows load. Keep the re
 - Regular linked: data describes an existing security; subscribe to the security first, then pass its `Symbol` to `add_data`.
 - Dual source: branch on `is_live_mode` only when backtests use files and live trading polls REST.
 - Unfolding collection: JSON array or one line yields many records; use `FileFormat.UNFOLDING_COLLECTION`.
-- ZIP: if the user gives an existing `.zip` Object Store key, read the zip bytes, extract the intended inner file to a reported derived Object Store key, then subscribe to the extracted file. `FileFormat.ZIP_ENTRY_NAME` is for zip entry names, not parsing row content.
+- ZIP: when a `.zip` file contains CSV rows, subscribe to the `.zip` key directly with `FileFormat.CSV`; LEAN unpacks the stream before calling `reader`, so the parser is the same as the regular CSV example. `FileFormat.ZIP_ENTRY_NAME` is for zip entry names, not parsing row content.
 - Universe: dated file emits symbols; verify selection counts instead of single-symbol history.
 Do not use `try` / `except` to hide parser errors. Return `None` only for known skipped records: blanks, headers, comments, or malformed optional rows the user explicitly wants ignored.
 ## 3. Minimal reader
@@ -71,35 +71,29 @@ if self._signal in data and data[self._signal].value > 0:
 ```
 ## 5. JSON, ZIP, live, and universe notes
 - JSON: use `import json`, parse named fields, preserve non-numeric fields, set `value` from the requested numeric signal, and fail loudly on unexpected shape.
-- ZIP: when the `.zip` is already in Object Store, do not re-upload it or change the original key. Extract the required member once to a derived Object Store key, report that derived key, and point `SubscriptionDataSource` at the extracted CSV/JSON key. Use `zipfile` for bytes extraction; use `FileFormat.ZIP_ENTRY_NAME` only when the data points are zip entry names.
+- ZIP: when the `.zip` is already in Object Store, do not re-upload it, extract it to another Object Store key, or change the original key. Point `SubscriptionDataSource` at the `.zip` key and set `FileFormat.CSV` if the contents are CSV; keep the same `reader` implementation as a normal CSV file. Use `FileFormat.ZIP_ENTRY_NAME` only when the data points are zip entry names.
 ```python
+class MyCustomData(PythonData):
+    def get_source(self, config, date, is_live_mode):
+        return SubscriptionDataSource(
+            "custom-data/signals.zip",
+            SubscriptionTransportMedium.OBJECT_STORE,
+            FileFormat.CSV
+        )
+```
+Research notebooks are different: `qb.object_store.read_bytes` returns the raw zip bytes, so unzip them before loading the inner file.
+```python
+qb = QuantBook()
+byte_data = qb.object_store.read_bytes("/market-regime-signals.zip")
+
 import io
 import zipfile
+import pandas as pd
 
-class MyCustomData(PythonData):
-    KEY = "custom-data/signals.csv"
-    def get_source(self, config, date, is_live_mode):
-        return SubscriptionDataSource(self.KEY, SubscriptionTransportMedium.OBJECT_STORE)
-
-class MyAlgorithm(QCAlgorithm):
-    def initialize(self):
-        self._materialize_zip_member(
-            "custom-data/signals.zip",
-            "signals.csv",
-            MyCustomData.KEY
-        )
-        self._signal = self.add_data(MyCustomData, "SIGNAL", Resolution.DAILY).symbol
-
-    def _materialize_zip_member(self, zip_key, inner_name, output_key):
-        if self.object_store.contains_key(output_key):
-            return
-        if not self.object_store.contains_key(zip_key):
-            raise FileNotFoundError(f"Object Store key not found: {zip_key}")
-        with zipfile.ZipFile(io.BytesIO(self.object_store.read_bytes(zip_key))) as archive:
-            if inner_name not in archive.namelist():
-                raise ValueError(f"{inner_name} not found in {zip_key}")
-            self.object_store.save(output_key, archive.read(inner_name).decode("utf-8"))
-        self.debug(f"Extracted {zip_key}#{inner_name} to Object Store key {output_key}")
+with zipfile.ZipFile(io.BytesIO(byte_data)) as archive:
+    filename = archive.namelist()[0]
+    with archive.open(filename) as file:
+        df = pd.read_csv(file)
 ```
 - Live/backtest split: branch in `get_source` only when the source differs; return identical parsed objects from both paths.
 - Arrays/unfolding: keep the requested JSON array shape. Do not convert it to JSONL or CSV unless the user explicitly asks. Store Object Store JSON array files as one-line/minified JSON under the requested key, and do not change Object Store keys during debugging unless you report the change. Use `FileFormat.UNFOLDING_COLLECTION`, parse the array, sort emitted objects by `end_time`, and return `BaseDataCollection(objects[-1].end_time, config.symbol, objects)`.
