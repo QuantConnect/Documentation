@@ -76,7 +76,6 @@ public class EquityMacdHistogramDivergenceAlgorithm : QCAlgorithm
         _macd = MACD(_equity.Symbol, 12, 26, 9, MovingAverageType.Exponential, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _macd = new MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.Exponential);
-        // WarmUpIndicator<IndicatorDataPoint>(_equity.Symbol, _macd, Resolution.Daily);
         // RegisterIndicator(_equity.Symbol, _macd, Resolution.Daily);
         // Warm up the indicator and its windows using historical data.
         IndicatorHistory(_macd, _equity.Symbol, _macd.WarmUpPeriod + 1);
