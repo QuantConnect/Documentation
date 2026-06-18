@@ -73,6 +73,10 @@ public class EquityStochasticOscillatorAlgorithm : QCAlgorithm
         Settings.AutomaticIndicatorWarmUp = true;
         _equity = AddEquity("IWM");
         _stoch = STO(_equity.Symbol, 14, 3, 3, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _stoch = new Stochastic(14, 3, 3);
+        // WarmUpIndicator(_equity.Symbol, _stoch, Resolution.Daily);
+        // RegisterIndicator(_equity.Symbol, _stoch, Resolution.Daily);
     }
 
     public override void OnData(Slice data)
