@@ -10,6 +10,7 @@ class MonthlyRotationAlgorithm(QCAlgorithm):
         self.set_start_date(2022, 1, 1)
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         for ticker in ["SPY", "EFA", "EEM", "AGG", "GLD"]:

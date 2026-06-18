@@ -71,6 +71,7 @@ public class MonthlyRotationAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         foreach (var ticker in new[] { "SPY", "EFA", "EEM", "AGG", "GLD" })
@@ -79,7 +80,7 @@ public class MonthlyRotationAlgorithm : QCAlgorithm
             equity.Roc = ROC(equity, _rocPeriod, Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.Roc = new RateOfChange(_rocPeriod);
-            // WarmUpIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
+            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.Roc, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
         }
 
