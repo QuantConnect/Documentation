@@ -75,14 +75,14 @@ public class ChaikinMoneyFlowXlfAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
 
-        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatoraarmUp = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatorWarmUp = true;
 
         _xlf = AddEquity("XLF", Resolution.Minute);
         _cmf = CMF(_xlf.Symbol, 20, Resolution.Minute);
         // Alternatively, use a manual indicator.
         // _cmf = new ChaikinMoneyFlow(20);
-        // aarmUpIndicator<IndicatorDataPoint>(_xlf.Symbol, _cmf);
+        // WarmUpIndicator(_xlf.Symbol, _cmf);
         // RegisterIndicator(_xlf.Symbol, _cmf);
         PlotIndicator("CMF", _cmf);
 
