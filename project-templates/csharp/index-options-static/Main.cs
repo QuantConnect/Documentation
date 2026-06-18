@@ -81,12 +81,10 @@ public class OptionChainFullExample : QCAlgorithm
 
         // The EMA/price cross will determine we trade ATM contracts
         var index = AddIndex("SPX");
-        EMA(index.Symbol, 60).Updated += TradeAtTheMoneyContract;
-        // Alternatively, use a manual indicator.
-        // var ema = new ExponentialMovingAverage(60);
-        // WarmUpIndicator<IndicatorDataPoint>(index.Symbol, ema);
-        // RegisterIndicator(index.Symbol, ema);
-        // ema.Updated += TradeAtTheMoneyContract;
+        var ema = new ExponentialMovingAverage(60);
+        WarmUpIndicator<IndicatorDataPoint>(index.Symbol, ema);
+        RegisterIndicator(index.Symbol, ema);
+        ema.Updated += TradeAtTheMoneyContract;
 
         _optionChainSymbol = QuantConnect.Symbol.CreateCanonicalOption(index, "SPXW", Market.USA, "?SPXW");
     }
@@ -94,8 +92,8 @@ public class OptionChainFullExample : QCAlgorithm
     public void TradeAtTheMoneyContract(object sender, IndicatorDataPoint current)
     {
         // Pace trades every 10 minutes
-        var lastTrateTime = _lastTicket?.Time ?? DateTime.MinValue;
-        if ((UtcTime-lastTrateTime).TotalMinutes < 10) return;
+        var lastTradeTime = _lastTicket?.Time ?? DateTime.MinValue;
+        if ((UtcTime-lastTradeTime).TotalMinutes < 10) return;
 
         var ema = sender as ExponentialMovingAverage;
         if (!ema.IsReady) return;
