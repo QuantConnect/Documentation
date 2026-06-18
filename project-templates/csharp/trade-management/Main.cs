@@ -68,18 +68,19 @@ public class OneCancelOtherExampleAlgorithm : QCAlgorithm
     {
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         _spy = AddEquity("SPY");
         _spy.Ema = EMA(_spy, 14, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _spy.Ema = new ExponentialMovingAverage(14);
-        // WarmUpIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _spy.Ema, Resolution.Daily);
         // RegisterIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
         _spy.hasOCO = false;
     }
 
     public override void OnData(Slice slice)
-    { 
+    {
         // If we have open stop loss and take profit orders, we won't place new orders
         if (_spy.hasOCO || !slice.Bars.TryGetValue(_spy, out TradeBar bar))
             return;
@@ -116,7 +117,7 @@ public class OneCancelOtherExampleAlgorithm : QCAlgorithm
                     equity.stopLoss.Cancel();
                     equity.hasOCO = false;
                     break;
-            }            
+            }
         }
     }
 }
