@@ -68,6 +68,7 @@ public class SectorRotationAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(200000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         var tickers = new string[]
@@ -82,7 +83,7 @@ public class SectorRotationAlgorithm : QCAlgorithm
             equity.Roc = ROC(equity, 60, Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.Roc = new RateOfChange(60);
-            // WarmUpIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
+            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.Roc, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
         }
 
