@@ -71,6 +71,10 @@ public class OneCancelOtherExampleAlgorithm : QCAlgorithm
         Settings.AutomaticIndicatorWarmUp = true;
         _spy = AddEquity("SPY");
         _spy.Ema = EMA(_spy, 14, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _spy.Ema = new ExponentialMovingAverage(14);
+        // WarmUpIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
+        // RegisterIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
         _spy.hasOCO = false;
     }
 
