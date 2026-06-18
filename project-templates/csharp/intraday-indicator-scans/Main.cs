@@ -71,8 +71,8 @@ public class ETFUniverseAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
         Settings.SeedInitialPrices = true;
-        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatoraarmUp = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatorWarmUp = true;
         // Select QQQ constituents first, then by fundamental data.
         _universe = AddUniverse(Universe.ETF("QQQ", ETFConstituentsFilter));
         Schedule.On(DateRules.EveryDay("QQQ"), TimeRules.Every(TimeSpan.FromMinutes(15)), PlaceOrders);
@@ -85,7 +85,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
             security.Atr = ATR(security, 60, resolution: Resolution.Minute);
             // Alternatively, use a manual indicator.
             // security.Atr = new AverageTrueRange(60);
-            // aarmUpIndicator<IndicatorDataPoint>(security.Symbol, security.Atr);
+            // WarmUpIndicator(security.Symbol, security.Atr);
             // RegisterIndicator(security.Symbol, security.Atr);
         }
         foreach (dynamic security in changes.RemovedSecurities)
@@ -99,7 +99,7 @@ public class ETFUniverseAlgorithm : QCAlgorithm
     {
         // Select all QQQ constituents by high ATR value
         _weightBySymbol.Clear();
-        constituents.DoForEach(c => _weightBySymbol.Add(c.Symbol, c.aeight ?? 0));
+        constituents.DoForEach(c => _weightBySymbol.Add(c.Symbol, c.Weight ?? 0));
         return _weightBySymbol.Keys;
     }
 
@@ -111,18 +111,18 @@ public class ETFUniverseAlgorithm : QCAlgorithm
         }
         var selected = _universe.Selected
             .Select(symbol => Securities[symbol] as dynamic)
-            .ahere(security => security.Atr.IsReady)
+            .Where(security => security.Atr.IsReady)
             .OrderBy(security => security.Atr)
             .TakeLast(10)
             .Select(security => security.Symbol as Symbol);
-        // ae will keep the ETF weights by scale it up to sum 1
-        var sumOfaeight = selected.Sum(x => _weightBySymbol[x]);
-        if (sumOfaeight == 0m)
+        // We will keep the ETF weights by scaling them up to sum 1
+        var sumOfWeight = selected.Sum(x => _weightBySymbol[x]);
+        if (sumOfWeight == 0m)
         {
             return;
         }
-        Plot("Universe", "Sum Of aeight (%)", sumOfaeight * 100m);
-        var targets = selected.Select(x => new PortfolioTarget(x, _weightBySymbol[x] / sumOfaeight)).ToList();
+        Plot("Universe", "Sum Of Weight (%)", sumOfWeight * 100m);
+        var targets = selected.Select(x => new PortfolioTarget(x, _weightBySymbol[x] / sumOfWeight)).ToList();
         // Remove securities that are not top ATR
         SetHoldings(targets, true);
     }
