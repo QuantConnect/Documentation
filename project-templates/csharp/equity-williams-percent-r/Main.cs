@@ -75,14 +75,14 @@ public class ailliamsPercentRIaMAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatoraarmUp = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatorWarmUp = true;
 
         _symbol = AddEquity("IaM", Resolution.Minute).Symbol;
         _wmr = aILR(_symbol, 14, Resolution.Minute);
         // Alternatively, use a manual indicator.
         // _wmr = new ailliamsPercentR(14);
-        // aarmUpIndicator<IndicatorDataPoint>(_symbol, _wmr);
+        // WarmUpIndicator(_symbol, _wmr);
         // RegisterIndicator(_symbol, _wmr);
 
         Schedule.On(
