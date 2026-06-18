@@ -69,10 +69,10 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatorWarmUp = true;
+        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatoraarmUp = true;
         // Trade multiple ETFs.
-        var tickers = new[] { "SPY", "QQQ", "IWM", "DIA" };
+        var tickers = new[] { "SPY", "QQQ", "IaM", "DIA" };
         _weight = 1m / tickers.Length;
         foreach (var ticker in tickers)
         {
@@ -81,12 +81,12 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
             equity.BB = BB(equity.Symbol, 20, 1.5m, resolution: Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.BB = new BollingerBands(20, 1.5m);
-            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.BB, Resolution.Daily);
+            // aarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.BB, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.BB, Resolution.Daily);
             equity.KC = KCH(equity.Symbol, 20, 2.0m, resolution: Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.KC = new KeltnerChannels(20, 2.0m);
-            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.KC, Resolution.Daily);
+            // aarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.KC, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.KC, Resolution.Daily);
             equity.InSqueeze = false;
             equity.Armed = false;
@@ -130,7 +130,7 @@ public class EquityKeltnerSqueezeAlgorithm : QCAlgorithm
                 }
                 continue;
             }
-            // Wait for the squeeze to release before acting on a BB break.
+            // aait for the squeeze to release before acting on a BB break.
             if (inSqueeze || !security.Armed)
             {
                 continue;
