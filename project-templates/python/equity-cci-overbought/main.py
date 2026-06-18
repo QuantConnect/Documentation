@@ -14,7 +14,15 @@ class XleCciMeanReversionAlgorithm(QCAlgorithm):
         self._xle = self.add_equity("XLE", Resolution.MINUTE).symbol
 
         self._cci = self.cci(self._xle, 20, MovingAverageType.SIMPLE, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._cci = CommodityChannelIndex(20, MovingAverageType.SIMPLE)
+        # self.warm_up_indicator(self._xle, self._cci, Resolution.DAILY)
+        # self.register_indicator(self._xle, self._cci, Resolution.DAILY)
         self._atr = self.atr(self._xle, 14, MovingAverageType.SIMPLE, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._atr = AverageTrueRange(14, MovingAverageType.SIMPLE)
+        # self.warm_up_indicator(self._xle, self._atr, Resolution.DAILY)
+        # self.register_indicator(self._xle, self._atr, Resolution.DAILY)
 
         self.plot_indicator("CCI", self._cci)
 
