@@ -11,7 +11,7 @@ class EquitySuperTrendTrendFollowingAlgorithm(QCAlgorithm):
         self.set_cash(100_000)
         # Request daily SPY data to feed the SuperTrend indicator and trade.
         self._spy = self.add_equity("SPY")
-        # Auto-updating SuperTrend (10-period ATR, 3x multiplier) â€” the helper wires it to the bar stream.
+        # Auto-updating SuperTrend (10-period ATR, 3x multiplier) - the helper wires it to the bar stream.
         self._supertrend = self.str(self._spy, 10, 3, resolution=Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._supertrend = SuperTrend(10, 3, MovingAverageType.WILDERS)
