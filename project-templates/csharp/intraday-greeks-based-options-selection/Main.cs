@@ -75,7 +75,6 @@ public class OptionChainFullExample : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 9, 5);
         SetCash(500000);
-        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
 
@@ -84,10 +83,12 @@ public class OptionChainFullExample : QCAlgorithm
 
         // The EMA/price cross will determine we trade ATM contracts
         _index = AddIndex("RUT");
-        var ema = new ExponentialMovingAverage(60);
-        WarmUpIndicator<IndicatorDataPoint>(_index, ema);
-        RegisterIndicator(_index, ema);
-        ema.Updated += TradeTargetDeltaContract;
+        EMA(_index, 60).Updated += TradeTargetDeltaContract;
+        // To use a manual EMA instead, replace the automatic indicator above with:
+        // var ema = new ExponentialMovingAverage(60);
+        // WarmUpIndicator<IndicatorDataPoint>(_index, ema);
+        // RegisterIndicator(_index, ema);
+        // ema.Updated += TradeTargetDeltaContract;
 
         _optionChainSymbol = QuantConnect.Symbol.CreateCanonicalOption(_index, "RUTW", Market.USA, "?RUTW");
         _dividendYieldModel = new DividendYieldProvider(_index);

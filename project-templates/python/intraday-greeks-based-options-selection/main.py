@@ -10,7 +10,6 @@ class OptionChainFullExample(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 9, 5)
         self.set_cash(500000)
-        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         self.universe_settings.minimum_time_in_universe = timedelta(0)
 
@@ -19,10 +18,12 @@ class OptionChainFullExample(QCAlgorithm):
 
         # The EMA/price cross will determine we trade ATM contracts
         self._index = self.add_index("RUT")
-        self._ema = ExponentialMovingAverage(60)
-        self.warm_up_indicator(self._index, self._ema)
-        self.register_indicator(self._index, self._ema)
-        self._ema.updated += self._trade_target_delta_contract
+        self.ema(self._index, 60).updated += self._trade_target_delta_contract
+        # To use a manual EMA instead, replace the automatic indicator above with:
+        # ema = ExponentialMovingAverage(60)
+        # self.warm_up_indicator(self._index, ema)
+        # self.register_indicator(self._index, ema)
+        # ema.updated += self._trade_target_delta_contract
 
         self._option_chain_symbol = Symbol.create_canonical_option(self._index, "RUTW", Market.USA, "?RUTW")
         self._dividend_yield_model = DividendYieldProvider(self._index)
