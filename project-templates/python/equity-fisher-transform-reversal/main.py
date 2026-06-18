@@ -15,8 +15,8 @@ class FisherTransformAlgorithm(QCAlgorithm):
         self._fisher = self.fish(self._qqq.symbol, 10, Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._fisher = FisherTransform(10)
-        # self.warm_up_indicator(self._qqq.symbol, self._fisher, Resolution.DAILY)
-        # self.register_indicator(self._qqq.symbol, self._fisher, Resolution.DAILY)
+        # self.warm_up_indicator(self._qqq, self._fisher, Resolution.DAILY)
+        # self.register_indicator(self._qqq, self._fisher, Resolution.DAILY)
         self.plot_indicator("Fisher", self._fisher)
 
         self.schedule.on(
