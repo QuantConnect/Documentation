@@ -13,6 +13,10 @@ class EquitySuperTrendTrendFollowingAlgorithm(QCAlgorithm):
         self._spy = self.add_equity("SPY")
         # Auto-updating SuperTrend (10-period ATR, 3x multiplier) — the helper wires it to the bar stream.
         self._supertrend = self.str(self._spy, 10, 3, resolution=Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._supertrend = SuperTrend(10, 3, MovingAverageType.WILDERS)
+        # self.warm_up_indicator(self._spy.symbol, self._supertrend, Resolution.DAILY)
+        # self.register_indicator(self._spy.symbol, self._supertrend, Resolution.DAILY)
         # Track the previous direction so we can act only on a flip.
         self._previous_direction = None
         # Register event handler to run trading logic when indicator updates
