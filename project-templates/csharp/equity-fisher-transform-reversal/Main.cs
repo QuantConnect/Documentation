@@ -76,6 +76,10 @@ public class FisherTransformAlgorithm : QCAlgorithm
         _qqq = AddEquity("QQQ", Resolution.Minute);
 
         _fisher = FISH(_qqq.Symbol, 10, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _fisher = new FisherTransform(10);
+        // WarmUpIndicator(_qqq.Symbol, _fisher, Resolution.Daily);
+        // RegisterIndicator(_qqq.Symbol, _fisher, Resolution.Daily);
         PlotIndicator("Fisher", _fisher);
 
         Schedule.On(
