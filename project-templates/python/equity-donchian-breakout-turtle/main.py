@@ -14,8 +14,20 @@ class EquityDonchianBreakoutTurtleAlgorithm(QCAlgorithm):
         for ticker in ["SPY", "QQQ", "IWM", "EFA", "EEM"]:
             equity = self.add_equity(ticker)
             equity.entry = self.dch(equity, 20, 20, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.entry = DonchianChannel(20, 20)
+            # self.warm_up_indicator(equity.symbol, equity.entry, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.entry, Resolution.DAILY)
             equity.exit = self.dch(equity, 10, 10, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.exit = DonchianChannel(10, 10)
+            # self.warm_up_indicator(equity.symbol, equity.exit, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.exit, Resolution.DAILY)
             equity.atr = self.atr(equity, 20, MovingAverageType.SIMPLE, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.atr = AverageTrueRange(20, MovingAverageType.SIMPLE)
+            # self.warm_up_indicator(equity.symbol, equity.atr, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.atr, Resolution.DAILY)
         self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.after_market_open("SPY", 1), self._rebalance)
 
     def _rebalance(self) -> None:
