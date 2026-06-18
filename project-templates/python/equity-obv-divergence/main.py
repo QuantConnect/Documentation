@@ -8,15 +8,24 @@ class ObvDivergenceAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
 
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         self._spy = self.add_equity("SPY", Resolution.MINUTE)
 
         # OBV on SPY at daily resolution
         self._obv = self.obv(self._spy.symbol, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._obv = OnBalanceVolume()
+        # self.warm_up_indicator(self._spy, self._obv, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._obv, Resolution.DAILY)
 
         # Price ROC(20) on SPY at daily resolution
         self._price_roc = self.roc(self._spy.symbol, 20, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._price_roc = RateOfChange(20)
+        # self.warm_up_indicator(self._spy, self._price_roc, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._price_roc, Resolution.DAILY)
 
         # ROC of OBV using IndicatorExtensions
         obv_roc_indicator = RateOfChange(20)
