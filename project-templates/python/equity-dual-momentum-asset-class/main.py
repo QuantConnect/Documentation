@@ -14,6 +14,10 @@ class DualMomentumAlgorithm(QCAlgorithm):
         for ticker in ["SPY", "EFA", "AGG"]:
             equity = self.add_equity(ticker, Resolution.MINUTE)
             equity.rocp = self.rocp(equity.symbol, 252, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.rocp = RateOfChangePercent(252)
+            # self.warm_up_indicator(equity.symbol, equity.rocp, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.rocp, Resolution.DAILY)
 
         self.schedule.on(
             self.date_rules.month_start("SPY"),
