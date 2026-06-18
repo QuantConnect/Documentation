@@ -79,6 +79,10 @@ public class ChaikinMoneyFlowXlfAlgorithm : QCAlgorithm
 
         _xlf = AddEquity("XLF", Resolution.Minute);
         _cmf = CMF(_xlf.Symbol, 20, Resolution.Minute);
+        // Alternatively, use a manual indicator.
+        // _cmf = new ChaikinMoneyFlow(20);
+        // WarmUpIndicator(_xlf.Symbol, _cmf);
+        // RegisterIndicator(_xlf.Symbol, _cmf);
         PlotIndicator("CMF", _cmf);
 
         Schedule.On(
