@@ -76,6 +76,10 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
         _spy = AddEquity("SPY");
         // Create an EMA indicator to generate trade signals.
         _spy.Ema = EMA(_spy, 20, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _spy.Ema = new ExponentialMovingAverage(20);
+        // WarmUpIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
+        // RegisterIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
     }
 
     private void NotifyAll(string subject, string message)
