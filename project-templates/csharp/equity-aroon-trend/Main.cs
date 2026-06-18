@@ -71,11 +71,16 @@ public class AroonOscillatorAlgorithm : QCAlgorithm
         SetEndDate(2024, 12, 31);
         SetCash(100000);
 
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
         _aroon = AROON(_spy, 25, Resolution.Minute);
+        // Alternatively, use a manual indicator.
+        // _aroon = new AroonOscillator(25, 25);
+        // WarmUpIndicator(_spy, _aroon);
+        // RegisterIndicator(_spy, _aroon);
 
         PlotIndicator("Aroon Oscillator", _aroon);
     }

@@ -8,11 +8,16 @@ class AroonOscillatorAlgorithm(QCAlgorithm):
         self.set_end_date(2024, 12, 31)
         self.set_cash(100000)
 
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         self._aroon = self.aroon(self._spy, 25, Resolution.MINUTE)
+        # Alternatively, use a manual indicator.
+        # self._aroon = AroonOscillator(25, 25)
+        # self.warm_up_indicator(self._spy, self._aroon)
+        # self.register_indicator(self._spy, self._aroon)
 
         self.plot_indicator("Aroon Oscillator", self._aroon)
 
