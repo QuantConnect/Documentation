@@ -13,6 +13,10 @@ class AroonOscillatorAlgorithm(QCAlgorithm):
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         self._aroon = self.aroon(self._spy, 25, Resolution.MINUTE)
+        # Alternatively, use a manual indicator.
+        # self._aroon = AroonOscillator(25, 25)
+        # self.warm_up_indicator(self._spy, self._aroon)
+        # self.register_indicator(self._spy, self._aroon)
 
         self.plot_indicator("Aroon Oscillator", self._aroon)
 
