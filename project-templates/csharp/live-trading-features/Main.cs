@@ -70,6 +70,8 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 12);
         SetEndDate(2024, 10, 1);
 
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+
         Settings.AutomaticIndicatorWarmUp = true;
 
         // Request SPY data to trade.
@@ -78,7 +80,7 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
         _spy.Ema = EMA(_spy, 20, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _spy.Ema = new ExponentialMovingAverage(20);
-        // WarmUpIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy.Symbol, _spy.Ema, Resolution.Daily);
         // RegisterIndicator(_spy.Symbol, _spy.Ema, Resolution.Daily);
     }
 
@@ -152,7 +154,7 @@ public class LiveTradingFeaturesAlgorithm : QCAlgorithm
             NotifyAll($"OnCommand :: brokerage disconnected", $"Cannot place order for {data}");
             return false;
         }
-           
+
         // If we click the email link to confirm the trade, the algorithm will place the order.
         SetHoldings(data.Ticker, data.Size);
         return true;
