@@ -13,7 +13,15 @@ class TelegramNotificationAlgorithm(QCAlgorithm):
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         self._ema50 = self.ema(self._spy, 50, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._ema50 = ExponentialMovingAverage(50)
+        # self.warm_up_indicator(self._spy, self._ema50, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._ema50, Resolution.DAILY)
         self._ema200 = self.ema(self._spy, 200, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._ema200 = ExponentialMovingAverage(200)
+        # self.warm_up_indicator(self._spy, self._ema200, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._ema200, Resolution.DAILY)
 
         self._previous_ema50_above = self._ema50.current.value > self._ema200.current.value
 
