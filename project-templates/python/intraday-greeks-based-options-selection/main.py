@@ -10,13 +10,14 @@ class OptionChainFullExample(QCAlgorithm):
         self.set_start_date(2024, 9, 1)
         self.set_end_date(2024, 9, 5)
         self.set_cash(500000)
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
         self.universe_settings.minimum_time_in_universe = timedelta(0)
 
         # Warm-up the option contracts as soon as it is added to the algorithm
         self.settings.seed_initial_prices = True
 
-        # The EMA/price cross will determine we trade ATM contracts 
+        # The EMA/price cross will determine we trade ATM contracts
         self._index = self.add_index("RUT")
         self.ema(self._index, 60).updated += self._trade_target_delta_contract
         # Alternatively, use a manual indicator.
@@ -36,7 +37,7 @@ class OptionChainFullExample(QCAlgorithm):
         if not ema.is_ready: return
 
         spot = self._index.price
-        
+
         if spot > current.value and spot > ema[-1].value:
             atm_call = self._get_target_delta_contract(OptionRight.CALL, spot)
             if atm_call and not self.portfolio[atm_call].invested:
@@ -53,7 +54,7 @@ class OptionChainFullExample(QCAlgorithm):
         if not chain:
             return None
         expiry = min([x.expiry for x in chain])
-        
+
         def get_delta(x: OptionContract) -> tuple[OptionContract, float]:
             mirror_option = Symbol.create_option(x.symbol.underlying, "RUT", Market.USA, OptionStyle.EUROPEAN, mirror_option_right, x.strike, x.expiry)
             delta = Delta(x, self._interest_rate_model, self._dividend_yield_model, mirror_option)

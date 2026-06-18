@@ -75,18 +75,19 @@ public class OptionChainFullExample : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 9, 5);
         SetCash(500000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
 
         // Warm-up the option contracts as soon as it is added to the algorithm
         Settings.SeedInitialPrices = true;
 
-        // The EMA/price cross will determine we trade ATM contracts 
+        // The EMA/price cross will determine we trade ATM contracts
         _index = AddIndex("RUT");
         EMA(_index, 60).Updated += TradeTargetDeltaContract;
         // Alternatively, use a manual indicator.
         // var ema = new ExponentialMovingAverage(60);
-        // WarmUpIndicator(_index, ema);
+        // WarmUpIndicator<IndicatorDataPoint>(_index, ema);
         // RegisterIndicator(_index, ema);
         // ema.Updated += TradeTargetDeltaContract;
 
@@ -104,7 +105,7 @@ public class OptionChainFullExample : QCAlgorithm
         if (!ema.IsReady) return;
 
         var spot = _index.Price;
-        
+
         if (spot > current && spot > ema[-1])
         {
             var atmCall = GetTargetDeltaContract(OptionRight.Call, spot);
@@ -149,7 +150,7 @@ public class OptionChainFullExample : QCAlgorithm
         {
             return null;
         }
-        
+
         return AddOptionContract(targetDeltaContract.Symbol);
     }
 }
