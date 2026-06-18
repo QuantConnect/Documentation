@@ -13,6 +13,10 @@ class EquitiesStaticTemplateAlgorithm(QCAlgorithm):
         for ticker in ["SPY", "QQQ", "IWM"]:
             equity = self.add_equity(ticker)
             equity.macd = self.macd(equity, 12, 26, 9, MovingAverageType.EXPONENTIAL, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.macd = MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.EXPONENTIAL)
+            # self.warm_up_indicator(equity.symbol, equity.macd, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.macd, Resolution.DAILY)
             self.plot_indicator(ticker, equity.macd)
         self.schedule.on(self.date_rules.every_day('SPY'), self.time_rules.after_market_open('SPY', 1), self._rebalance)
 
