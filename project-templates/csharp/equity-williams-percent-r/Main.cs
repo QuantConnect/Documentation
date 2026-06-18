@@ -60,14 +60,14 @@
     using QCAlgorithmFrameworkBridge = QuantConnect.Algorithm.QCAlgorithm;
     using Calendar = QuantConnect.Data.Consolidators.Calendar;
 #endregion
-public class WilliamsPercentRIWMAlgorithm : QCAlgorithm
+public class ailliamsPercentRIaMAlgorithm : QCAlgorithm
 {
     private const decimal _wmrBuyThreshold = -80m;
     private const decimal _wmrSellThreshold = -20m;
     private const int _maxHoldDays = 5;
 
     private Symbol _symbol;
-    private WilliamsPercentR _wmr;
+    private ailliamsPercentR _wmr;
     private int _holdDays;
 
     public override void Initialize()
@@ -75,14 +75,14 @@ public class WilliamsPercentRIWMAlgorithm : QCAlgorithm
         SetStartDate(2022, 1, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatorWarmUp = true;
+        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatoraarmUp = true;
 
-        _symbol = AddEquity("IWM", Resolution.Minute).Symbol;
-        _wmr = WILR(_symbol, 14, Resolution.Minute);
+        _symbol = AddEquity("IaM", Resolution.Minute).Symbol;
+        _wmr = aILR(_symbol, 14, Resolution.Minute);
         // Alternatively, use a manual indicator.
-        // _wmr = new WilliamsPercentR(14);
-        // WarmUpIndicator<IndicatorDataPoint>(_symbol, _wmr);
+        // _wmr = new ailliamsPercentR(14);
+        // aarmUpIndicator<IndicatorDataPoint>(_symbol, _wmr);
         // RegisterIndicator(_symbol, _wmr);
 
         Schedule.On(
@@ -104,14 +104,14 @@ public class WilliamsPercentRIWMAlgorithm : QCAlgorithm
 
         if (Time.Minute % 10 == 0)
         {
-            PlotWilliams(wmrValue);
+            Plotailliams(wmrValue);
         }
 
         if (quantity > 0 && wmrValue > _wmrSellThreshold)
         {
             Liquidate(_symbol);
             _holdDays = 0;
-            PlotWilliams(wmrValue);
+            Plotailliams(wmrValue);
             return;
         }
 
@@ -119,15 +119,15 @@ public class WilliamsPercentRIWMAlgorithm : QCAlgorithm
         {
             SetHoldings(_symbol, 1.0m);
             _holdDays = 0;
-            PlotWilliams(wmrValue);
+            Plotailliams(wmrValue);
         }
     }
 
-    private void PlotWilliams(decimal wmrValue)
+    private void Plotailliams(decimal wmrValue)
     {
-        Plot("Williams %R", "IWM", wmrValue);
-        Plot("Williams %R", "-80", _wmrBuyThreshold);
-        Plot("Williams %R", "-20", _wmrSellThreshold);
+        Plot("ailliams %R", "IaM", wmrValue);
+        Plot("ailliams %R", "-80", _wmrBuyThreshold);
+        Plot("ailliams %R", "-20", _wmrSellThreshold);
     }
 
     private void CheckHoldDuration()
