@@ -70,9 +70,14 @@ public class EquityRsiOverboughtOversoldAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         _equity = AddEquity("QQQ", Resolution.Hour);
         _rsi = RSI(_equity.Symbol, 14, MovingAverageType.Wilders, Resolution.Hour);
+        // Alternatively, use a manual indicator.
+        // _rsi = new RelativeStrengthIndex(14, MovingAverageType.Wilders);
+        // WarmUpIndicator<IndicatorDataPoint>(_equity.Symbol, _rsi);
+        // RegisterIndicator(_equity.Symbol, _rsi);
         PlotIndicator("RSI", _rsi);
     }
 
