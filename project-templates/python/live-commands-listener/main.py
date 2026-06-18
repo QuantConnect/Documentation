@@ -15,6 +15,7 @@ class CommandPauseEmaCrossAlgorithm(QCAlgorithm):
         self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
 
         # Enable automatic indicator warm-up
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         # Create EMA indicators for trend detection
