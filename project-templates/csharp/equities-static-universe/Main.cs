@@ -68,6 +68,7 @@ public class EquitiesStaticTemplateAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
         var tickers = new string[] {"SPY", "QQQ", "IWM"};
         foreach (var ticker in tickers)
@@ -76,7 +77,7 @@ public class EquitiesStaticTemplateAlgorithm : QCAlgorithm
             equity.Macd = MACD(equity, 12, 26, 9, MovingAverageType.Exponential, Resolution.Daily);
             // Alternatively, use a manual indicator.
             // equity.Macd = new MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.Exponential);
-            // WarmUpIndicator(equity.Symbol, equity.Macd, Resolution.Daily);
+            // WarmUpIndicator<IndicatorDataPoint>(equity.Symbol, equity.Macd, Resolution.Daily);
             // RegisterIndicator(equity.Symbol, equity.Macd, Resolution.Daily);
             PlotIndicator(ticker, equity.Macd);
         }
