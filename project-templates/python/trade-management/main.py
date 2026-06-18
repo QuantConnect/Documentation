@@ -10,6 +10,10 @@ class OneCancelOtherExampleAlgorithm(QCAlgorithm):
         self.settings.automatic_indicator_warm_up = True
         self._spy = self.add_equity("SPY")
         self._spy.ema = self.ema(self._spy, 14, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._spy.ema = ExponentialMovingAverage(14)
+        # self.warm_up_indicator(self._spy.symbol, self._spy.ema, Resolution.DAILY)
+        # self.register_indicator(self._spy.symbol, self._spy.ema, Resolution.DAILY)
         self._spy.has_oco = False
 
     def on_data(self, data: Slice) -> None:
