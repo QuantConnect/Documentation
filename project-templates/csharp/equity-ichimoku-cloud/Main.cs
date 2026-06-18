@@ -73,9 +73,12 @@ public class EquityIchimokuCloudAlgorithm : QCAlgorithm
         _qqq = AddEquity("QQQ").Symbol;
         // Add the IchimokuKinkoHyo indicator.
         _ichimoku = ICHIMOKU(_qqq, 9, 26, 52, 26, 26, 52, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _ichimoku = new IchimokuKinkoHyo(9, 26, 52, 26, 26, 52);
+        // RegisterIndicator(_qqq, _ichimoku, Resolution.Daily);
         // Manual warm-up: need WarmUpPeriod + 1 so both .Current and .Previous are valid.
         IndicatorHistory(_ichimoku, _qqq, _ichimoku.WarmUpPeriod + 1, Resolution.Daily);
-        // Plot all five Ichimoku components — Tenkan, Kijun, Senkou A, Senkou B, Chikou.
+        // Plot all five Ichimoku components - Tenkan, Kijun, Senkou A, Senkou B, Chikou.
         PlotIndicator("Ichimoku", _ichimoku.Tenkan, _ichimoku.Kijun, _ichimoku.SenkouA, _ichimoku.SenkouB, _ichimoku.Chikou);
         // Add a Scheduled Event to scan for trades every trading day at 8 AM.
         Schedule.On(DateRules.EveryDay(_qqq), TimeRules.At(8, 0), Rebalance);
