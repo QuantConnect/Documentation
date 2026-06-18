@@ -16,15 +16,15 @@ class ObvDivergenceAlgorithm(QCAlgorithm):
         self._obv = self.obv(self._spy.symbol, Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._obv = OnBalanceVolume()
-        # self.warm_up_indicator(self._spy.symbol, self._obv, Resolution.DAILY)
-        # self.register_indicator(self._spy.symbol, self._obv, Resolution.DAILY)
+        # self.warm_up_indicator(self._spy, self._obv, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._obv, Resolution.DAILY)
 
         # Price ROC(20) on SPY at daily resolution
         self._price_roc = self.roc(self._spy.symbol, 20, Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._price_roc = RateOfChange(20)
-        # self.warm_up_indicator(self._spy.symbol, self._price_roc, Resolution.DAILY)
-        # self.register_indicator(self._spy.symbol, self._price_roc, Resolution.DAILY)
+        # self.warm_up_indicator(self._spy, self._price_roc, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._price_roc, Resolution.DAILY)
 
         # ROC of OBV using IndicatorExtensions
         obv_roc_indicator = RateOfChange(20)
