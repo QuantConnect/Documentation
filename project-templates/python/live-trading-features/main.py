@@ -4,19 +4,24 @@ from AlgorithmImports import *
 
 class LiveTradingFeaturesAlgorithm(QCAlgorithm):
     _connected = False
-    
+
     def initialize(self) -> None:
         self.set_start_date(2024, 9, 12)
         self.set_end_date(2024, 10, 1)
         self.set_cash(1000000)
 
+        # automatic_indicator_warm_up only supports automatic indicators, not manual indicators.
         self.settings.automatic_indicator_warm_up = True
 
         # Request SPY data to trade.
         self._spy = self.add_equity("SPY")
         # Create an EMA indicator to generate trade signals.
         self._spy.ema = self.ema(self._spy, 20, Resolution.DAILY)
-    
+        # Alternatively, use a manual indicator.
+        # self._spy.ema = ExponentialMovingAverage(20)
+        # self.warm_up_indicator(self._spy, self._spy.ema, Resolution.DAILY)
+        # self.register_indicator(self._spy, self._spy.ema, Resolution.DAILY)
+
     def _notify_all(self, subject: str, message: str) -> None:
         self.notify.email("email@address.com", subject, message)
         message = f"{self.time:yyyyMMdd}: {subject} > {message}"
