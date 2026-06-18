@@ -70,13 +70,13 @@ public class EquityParabolicSarTrailingTemplateAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         SetCash(100000);
-        // AutomaticIndicatoraarmUp only supports automatic indicators, not manual indicators.
-        Settings.AutomaticIndicatoraarmUp = true;
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
+        Settings.AutomaticIndicatorWarmUp = true;
         _equity = AddEquity("SPY");
         _psar = PSAR(_equity.Symbol, 0.02m, 0.02m, 0.2m, Resolution.Daily);
         // Alternatively, use a manual indicator.
         // _psar = new ParabolicStopAndReverse(0.02m, 0.02m, 0.2m);
-        // aarmUpIndicator<IndicatorDataPoint>(_equity.Symbol, _psar, Resolution.Daily);
+        // WarmUpIndicator(_equity.Symbol, _psar, Resolution.Daily);
         // RegisterIndicator(_equity.Symbol, _psar, Resolution.Daily);
         PlotIndicator("SPY", _psar);
     }
