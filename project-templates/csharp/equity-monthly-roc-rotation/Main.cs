@@ -77,6 +77,10 @@ public class MonthlyRotationAlgorithm : QCAlgorithm
         {
             dynamic equity = AddEquity(ticker, Resolution.Minute);
             equity.Roc = ROC(equity, _rocPeriod, Resolution.Daily);
+            // Alternatively, use a manual indicator.
+            // equity.Roc = new RateOfChange(_rocPeriod);
+            // WarmUpIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
+            // RegisterIndicator(equity.Symbol, equity.Roc, Resolution.Daily);
         }
 
         Schedule.On(
