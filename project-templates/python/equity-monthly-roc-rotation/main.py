@@ -15,6 +15,10 @@ class MonthlyRotationAlgorithm(QCAlgorithm):
         for ticker in ["SPY", "EFA", "EEM", "AGG", "GLD"]:
             equity = self.add_equity(ticker, Resolution.MINUTE)
             equity.roc = self.roc(equity, self._roc_period, Resolution.DAILY)
+            # Alternatively, use a manual indicator.
+            # equity.roc = RateOfChange(self._roc_period)
+            # self.warm_up_indicator(equity.symbol, equity.roc, Resolution.DAILY)
+            # self.register_indicator(equity.symbol, equity.roc, Resolution.DAILY)
 
         self.schedule.on(
             self.date_rules.month_start("SPY"),
