@@ -78,11 +78,20 @@ public class CommandPauseEmaCrossAlgorithm : QCAlgorithm
         _spy = AddEquity("SPY", Resolution.Minute).Symbol;
 
         // Enable automatic indicator warm-up
+        // AutomaticIndicatorWarmUp only supports automatic indicators, not manual indicators.
         Settings.AutomaticIndicatorWarmUp = true;
 
         // Create EMA indicators for trend detection
         _emaFast = EMA(_spy, 50, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _emaFast = new ExponentialMovingAverage(50);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy, _emaFast, Resolution.Daily);
+        // RegisterIndicator(_spy, _emaFast, Resolution.Daily);
         _emaSlow = EMA(_spy, 200, Resolution.Daily);
+        // Alternatively, use a manual indicator.
+        // _emaSlow = new ExponentialMovingAverage(200);
+        // WarmUpIndicator<IndicatorDataPoint>(_spy, _emaSlow, Resolution.Daily);
+        // RegisterIndicator(_spy, _emaSlow, Resolution.Daily);
 
         // Restore pause state from Object Store so the flag survives restarts
         if (ObjectStore.ContainsKey("paused"))
