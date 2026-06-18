@@ -20,8 +20,8 @@ class SectorRotationAlgorithm(QCAlgorithm):
             equity.roc = self.roc(equity, 60, Resolution.DAILY)
             # Alternatively, use a manual indicator.
             # equity.roc = RateOfChange(60)
-            # self.warm_up_indicator(equity.symbol, equity.roc, Resolution.DAILY)
-            # self.register_indicator(equity.symbol, equity.roc, Resolution.DAILY)
+            # self.warm_up_indicator(equity, equity.roc, Resolution.DAILY)
+            # self.register_indicator(equity, equity.roc, Resolution.DAILY)
 
         self.schedule.on(
             self.date_rules.month_start("XLK"),
