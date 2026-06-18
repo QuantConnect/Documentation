@@ -18,6 +18,11 @@ class ETFUniverseAlgorithm(QCAlgorithm):
     def on_securities_changed(self, changes: SecurityChanges) -> None:
         for security in changes.added_securities:
             security.atr = self.atr(security, 60, resolution=Resolution.MINUTE)
+            # Alternatively, use a manual indicator.
+            # symbol = security.symbol
+            # security.atr = AverageTrueRange(60)
+            # self.warm_up_indicator(symbol, security.atr)
+            # self.register_indicator(symbol, security.atr)
         for security in changes.removed_securities:
             self.deregister_indicator(security.atr)
 
