@@ -15,7 +15,19 @@ class EquityADXTrendFilterAlgorithm(QCAlgorithm):
             self.ema(self._spy, 50, Resolution.DAILY), 
             self.ema(self._spy, 200, Resolution.DAILY)
         )
+        # Alternatively, use a manual indicator.
+        # self._ema_fast = ExponentialMovingAverage(50)
+        # self.warm_up_indicator(self._spy.symbol, self._ema_fast, Resolution.DAILY)
+        # self.register_indicator(self._spy.symbol, self._ema_fast, Resolution.DAILY)
+        # self._ema_slow = ExponentialMovingAverage(200)
+        # self.warm_up_indicator(self._spy.symbol, self._ema_slow, Resolution.DAILY)
+        # self.register_indicator(self._spy.symbol, self._ema_slow, Resolution.DAILY)
+        # self._trend = IndicatorExtensions.minus(self._ema_fast, self._ema_slow)
         self._adx = self.adx(self._spy, 14, Resolution.DAILY)
+        # Alternatively, use a manual indicator.
+        # self._adx = AverageDirectionalIndex(14)
+        # self.warm_up_indicator(self._spy.symbol, self._adx, Resolution.DAILY)
+        # self.register_indicator(self._spy.symbol, self._adx, Resolution.DAILY)
         self.plot_indicator("Trend", self._trend)
         self.plot_indicator("ADX", self._adx)
         self.schedule.on(
