@@ -14,8 +14,8 @@ class EquityBollingerMeanReversionAlgorithm(QCAlgorithm):
         self._bb = self.bb(self._equity, 20, 2, resolution=Resolution.DAILY)
         # Alternatively, use a manual indicator.
         # self._bb = BollingerBands(20, 2)
-        # self.warm_up_indicator(self._equity.symbol, self._bb, Resolution.DAILY)
-        # self.register_indicator(self._equity.symbol, self._bb, Resolution.DAILY)
+        # self.warm_up_indicator(self._equity, self._bb, Resolution.DAILY)
+        # self.register_indicator(self._equity, self._bb, Resolution.DAILY)
         self.plot_indicator("SPY", self._bb.upper_band, self._bb.middle_band, self._bb.lower_band)
         self.schedule.on(self.date_rules.every_day(self._equity), self.time_rules.at(8, 0), self._rebalance)
 
