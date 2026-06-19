@@ -126,7 +126,7 @@ class NasdaqDataLinkAlphaModel(AlphaModel):
         insights = []
 
         # Trade only based on updated NASDAQ data link data
-        for dataset_symbol, data_point in slice.Get(NasdaqCustomColumns).items():
+        for dataset_symbol, data_point in slice.get(NasdaqCustomColumns).items():
             if dataset_symbol != self.bitfinex_exchange_rate_symbol or algorithm.portfolio[dataset_symbol].invested:
                 continue
             insights.append(Insight.price(dataset_symbol, timedelta(days=6*22), InsightDirection.UP))
