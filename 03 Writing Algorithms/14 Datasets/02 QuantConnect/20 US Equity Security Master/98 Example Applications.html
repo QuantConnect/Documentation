@@ -34,15 +34,15 @@ class USEquitySecurityMasterAlgorithm (QCAlgorithm):
         # Accessing Data - Delisting
         delisting = slice.delistings.get(self.equity)
         if delisting:
-            delistingType = {0: "Warning", 1: "Delisted"}.get(delisting.type)
-            self.debug(f"{self.time} &gt;&gt; DELISTING &gt;&gt; {delisting.symbol} - {delistingType}")
+            delisting_type = {0: "Warning", 1: "Delisted"}.get(delisting.type)
+            self.debug(f"{self.time} &gt;&gt; DELISTING &gt;&gt; {delisting.symbol} - {delisting_type}")
             
         # Accessing Data - Symbol Changed Event
-        symbolChangedEvent = slice.symbol_changed_events.get(self.equity)
-        if symbolChangedEvent:
-            self.debug(f"{self.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbolChangedEvent.old_symbol} -&gt; {symbolChangedEvent.new_symbol}")
+        symbol_changed_event = slice.symbol_changed_events.get(self.equity)
+        if symbol_changed_event:
+            self.debug(f"{self.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbol_changed_event.old_symbol} -&gt; {symbol_changed_event.new_symbol}")
 </pre>
-<pre class="csharp">public class USEquitySecurityMasterAlgorithm : QCAlgorithm
+<pre><code class="csharp">public class USEquitySecurityMasterAlgorithm : QCAlgorithm
 {
     private Symbol _equity;
     
@@ -135,13 +135,13 @@ class PaymentAlphaModel(AlphaModel):
         # Accessing Data - Delistings
         delisting = slice.delistings.get(self.symbol)
         if delisting:
-            delistingType = {0: "Warning", 1: "Delisted"}.get(delisting.type)
-            algorithm.debug(f"{algorithm.time} &gt;&gt; DELISTING &gt;&gt; {delisting.symbol} - {delistingType}")
+            delisting_type = {0: "Warning", 1: "Delisted"}.get(delisting.type)
+            algorithm.debug(f"{algorithm.time} &gt;&gt; DELISTING &gt;&gt; {delisting.symbol} - {delisting_type}")
 
         # Accessing Data - Symbol Changed Events
-        symbolChangedEvent = slice.symbol_changed_events.get(self.symbol)
-        if symbolChangedEvent:
-            algorithm.debug(f"{algorithm.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbolChangedEvent.old_symbol} -&gt; {symbolChangedEvent.new_symbol}")
+        symbol_changed_event = slice.symbol_changed_events.get(self.symbol)
+        if symbol_changed_event:
+            algorithm.debug(f"{algorithm.time} &gt;&gt; SYMBOL CHANGED &gt;&gt; {symbol_changed_event.old_symbol} -&gt; {symbol_changed_event.new_symbol}")
 
         bar = slice.bars.get(self.symbol)
         return [Insight.price(self.symbol, timedelta(1), InsightDirection.UP)] if bar else []
