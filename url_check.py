@@ -45,6 +45,8 @@ from pathlib import Path
 
 import aiohttp
 
+from doc_anchors import build_file_index, check_section_anchor
+
 # -- Constants ----------------------------------------------------------------
 BASE_PATH = Path(__file__).resolve().parent                  # repo root
 ROOT = "https://www.quantconnect.com/"
@@ -57,11 +59,6 @@ LEAN_IO_ERROR_URLS = [
     "/docs/v2/cloud-platform", "/docs/v2/local-platform",
     "/docs/v2/writing-algorithm", "/docs/v2/research-environment",
 ]
-EDGE_CASE_URLS = {
-    "https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/"
-    "order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates"
-}
-
 CONCURRENCY = 50          # simultaneous HTTP requests
 USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 
@@ -82,45 +79,7 @@ SEVERITY = {
     "failed_request":       "warning",
 }
 
-# Section-anchor special-case replacements  (applied to both expected path and section name)
-SECTION_REPLACEMENTS = [
-    ("Look ahead",   "Look-ahead"),
-    ("look ahead",   "look-ahead"),
-    ("profit loss",  "profit-loss"),
-    ("out of the money", "out-of-the-money"),
-    ("Built in",     "Built-in"),
-    ("scikit learn", "scikit-learn"),
-    ("third party",  "third-party"),
-    ("Third Party",  "Third-Party"),
-    ("Fine Tune",    "Fine-Tune"),
-    ("Pre trade",    "Pre-trade"),
-    ("pre trade",    "pre-trade"),
-    ("Pre Trained",  "Pre-Trained"),
-    ("chronos t5",   "chronos-t5"),
-    ("C and Visual Studio", "C# and Visual Studio"),
-    ("C and VS Code",       "C# and VS Code"),
-    ("C and Rider",         "C# and Rider"),
-    ("mixed mode consolidators", "mixed-mode consolidators"),
-    ("Multi Alpha",  "Multi-Alpha"),
-    ("Self Managed", "Self-Managed"),
-    ("Sub Assistant", "Sub-Assistant"),
-    ("Margin3F",     "Margin%3F"),
-    ("Greeks3F",     "Greeks%3F"),
-    ("Smile3F",      "Smile%3F"),
-    ("Smoothing3F",  "Smoothing%3F"),
-    ("Volatility3F", "Volatility%3F"),
-]
-
-
 # -- File helpers -------------------------------------------------------------
-
-def _should_include(filepath: str) -> bool:
-    """Filter."""
-    return not any(part in filepath for part in (
-        ".git", ".vs", "single-page", "08 Drafts",
-        "Resources/indicators/", "90 QuantConnect Home",
-    )) and not filepath.endswith("Documentation Updates.html")
-
 
 def _path_to_link(filepath: str, skip_last: int = 0) -> str:
     """Convert a repo file path to the corresponding docs URL."""
@@ -135,33 +94,21 @@ def _path_to_link(filepath: str, skip_last: int = 0) -> str:
     return f"{ROOT}docs/v2/{slug}"
 
 
-def _apply_replacements(text: str) -> str:
-    for old, new in SECTION_REPLACEMENTS:
-        text = text.replace(old, new)
-    return text
-
-
 # -- Walk the tree once --------------------------------------------------------
 
 def _collect_files() -> tuple[list[str], dict[str, list[str]]]:
-    """Walk the repo once. Returns (doc_files, file_index).
-    - doc_files: filtered .html/.php paths for URL/resource extraction
-    - file_index: all files indexed by lowercased stem for section-anchor lookup
+    """Build the docs file index, then derive the doc files to scan from it.
+    - file_index: all content files indexed by lowercased stem (anchor lookup)
+    - doc_files: the .html/.php subset, for URL/resource extraction
     """
-    doc_files: list[str] = []
-    file_index: dict[str, list[str]] = {}
-
-    for dirpath, _, filenames in os.walk(BASE_PATH):
-        for fn in filenames:
-            filepath = os.path.join(dirpath, fn)
-            if not _should_include(filepath):
-                continue
-            stem = Path(fn).stem.lower()
-            file_index.setdefault(stem, []).append(filepath)
-            if (fn.endswith(".html") or fn.endswith(".php")) and filepath not in IGNORE_FILES:
-                doc_files.append(filepath)
-
-    return sorted(doc_files), file_index
+    file_index = build_file_index(BASE_PATH)
+    doc_files = sorted(
+        fp
+        for files in file_index.values()
+        for fp in files
+        if (fp.endswith(".html") or fp.endswith(".php")) and fp not in IGNORE_FILES
+    )
+    return doc_files, file_index
 
 
 # -- URL extraction -----------------------------------------------------------
@@ -371,11 +318,9 @@ async def _check_url(
             results["leanio_nonexistence"].append(_fmt("Lean.io non-existence", url, files))
 
     # -- Section anchor validation (local, no HTTP needed) --
-    if "/docs/v2" in url and "api-reference" not in url and url not in EDGE_CASE_URLS:
-        if "#" in url:
-            _check_section_anchor(url, files, file_index, results)
-        elif "lean.io" in url and all("Resources" in f.replace("\\", "/") for f in files):
-            pass  # Will be checked via HTTP below
+    reason = check_section_anchor(url, BASE_PATH, file_index)
+    if reason:
+        results["missing_section"].append(_fmt(reason, url, files))
 
     # -- GitHub issue API check --
     is_github_issue = "api.github.com/repos/QuantConnect/Lean/issues" in url
@@ -398,83 +343,6 @@ async def _check_url(
 
         except Exception:
             results["failed_request"].append(_fmt("Failed to request", url, files))
-
-
-_market_hours_symbols: dict[str, set[str]] = {}
-
-def _get_market_hours_symbols(asset_class: str) -> set[str]:
-    """Load symbol keys from a market-hours JS data file and cache them."""
-    if asset_class in _market_hours_symbols:
-        return _market_hours_symbols[asset_class]
-    js_file = BASE_PATH / "Resources" / "datasets" / "market-hours" / f"{asset_class}-market-hours.js"
-    symbols: set[str] = set()
-    if js_file.exists():
-        content = js_file.read_text(encoding="utf-8")
-        # Keys look like "Cfd-oanda-DE30EUR" — extract the suffix after the last hyphen group
-        for match in re.finditer(r'"[^"]*-([A-Z0-9][A-Za-z0-9]*)":', content):
-            symbols.add(match.group(1))
-    _market_hours_symbols[asset_class] = symbols
-    return symbols
-
-
-def _is_market_hours_symbol(url: str, anchor: str) -> bool:
-    """Check if a market-hours anchor corresponds to a symbol in the JS data file."""
-    # URL pattern: .../asset-classes/{asset-class}/market-hours#SYMBOL
-    m = re.search(r'/asset-classes/([^/]+)/market-hours', url)
-    if not m:
-        return False
-    asset_class = m.group(1)  # e.g. "cfd", "us-equity", "forex"
-    symbols = _get_market_hours_symbols(asset_class)
-    return anchor in symbols
-
-
-def _check_section_anchor(url: str, files: list[str], file_index: dict[str, list[str]], results: dict[str, list[str]]):
-    """Validate that a #section anchor corresponds to a real file in the repo."""
-    after_v2 = url.split("docs/v2/", 1)[1]
-    expected_no_lower = after_v2.replace("/", os.sep).replace("-", " ").replace("#", os.sep)
-    expected = _apply_replacements(expected_no_lower).lower()
-    expected_raw = expected_no_lower.lower()
-
-    section = url.split("#", 1)[1]
-    section_name_raw = section.replace("-", " ")
-    section_name = _apply_replacements(section_name_raw)
-
-    # Look up files matching the section name (try with replacements first, then raw)
-    candidates = file_index.get(section_name.lower(), [])
-    if not candidates:
-        candidates = file_index.get(section_name_raw.lower(), [])
-
-    if not candidates:
-        # Market-hours pages use JS data files for symbol anchors (e.g. #DE30EUR)
-        if "/market-hours#" in url:
-            if _is_market_hours_symbol(url, section):
-                return
-        results["missing_section"].append(_fmt(f'No Section "{section_name}" was found', url, files))
-        return
-
-    # Verify the path matches
-    found = False
-    for candidate in candidates:
-        rel = os.path.relpath(candidate, BASE_PATH).replace("\\", os.sep)
-        # Extract numbered parts
-        parts = rel.replace("\\", "/").split("/")
-        numbered = [p for p in parts if p and p[0].isdigit() and " " in p]
-        if not numbered:
-            continue
-        non_numbered_path = os.sep.join(
-            p[p.index(" ") + 1:].strip() for p in numbered[:-1]
-        )
-        section_part = Path(numbered[-1]).stem
-        full = f"{non_numbered_path}{os.sep}{section_part}".lower()
-        if full == expected or full == expected_raw:
-            found = True
-            break
-
-    if not found:
-        # Market-hours pages use JS data files for symbol anchors (e.g. #DE30EUR)
-        if "/market-hours#" in url and _is_market_hours_symbol(url, section):
-            return
-        results["missing_section"].append(_fmt(f'No Section "{section_name}" was found', url, files))
 
 
 def _check_github_folder_in_html(html: str) -> bool:

@@ -1,0 +1,64 @@
+name: Check External Repos for Broken Links
+
+# Validates the links in every public QuantConnect Lean.Brokerages.* and
+# Lean.DataSource.* repository, using the checker that lives here in the
+# Documentation repo. Nothing needs to be installed in those repos - this workflow
+# clones each one and runs external_url_check.py against it. A broken link fails the
+# run; the log lists the offending repo, file, and URL.
+#
+# Only public repos are covered, so the built-in GITHUB_TOKEN is sufficient - no
+# extra secrets required.
+
+on:
+  schedule:
+    - cron: "0 11 * * 1-5"   # 11:00 UTC, Mon-Fri (an hour after the docs check)
+  workflow_dispatch:          # Run on manual trigger
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    outputs:
+      repos: ${{ steps.list.outputs.repos }}
+    steps:
+      - name: List target repos
+        id: list
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # All public Lean.Brokerages.* / Lean.DataSource.* repos, except the
+          # Lean.DataSource.Quiver* family (keep only Lean.DataSource.QuiverQuant).
+          repos=$(gh repo list QuantConnect --limit 1000 --no-archived --visibility public \
+            --json name \
+            --jq '[.[].name | select((startswith("Lean.Brokerages.") or startswith("Lean.DataSource.")) and (. == "Lean.DataSource.QuiverQuant" or (startswith("Lean.DataSource.Quiver") | not)))] | sort')
+          echo "Discovered $(echo "$repos" | jq length) repos:"
+          echo "$repos" | jq -r '.[]'
+          echo "repos=$(echo "$repos" | jq -c .)" >> "$GITHUB_OUTPUT"
+
+  check:
+    needs: discover
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Documentation (the link checker)
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install aiohttp==3.11.14
+
+      - name: Clone target repos
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOS: ${{ needs.discover.outputs.repos }}
+        run: |
+          mkdir -p repos
+          echo "$REPOS" | jq -r '.[]' | while read -r repo; do
+            echo "Cloning $repo ..."
+            gh repo clone "QuantConnect/$repo" "repos/$repo" -- --depth 1 --quiet
+          done
+
+      - name: Check links
+        run: python external_url_check.py repos/*
