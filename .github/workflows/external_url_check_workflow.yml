@@ -26,10 +26,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           # All public Lean.Brokerages.* / Lean.DataSource.* repos, except the
-          # Lean.DataSource.Quiver* family (keep only Lean.DataSource.QuiverQuant).
+          # Lean.DataSource.Quiver* family (keep only Lean.DataSource.QuiverQuant)
+          # and the Samco/Zerodha brokerages.
           repos=$(gh repo list QuantConnect --limit 1000 --no-archived --visibility public \
             --json name \
-            --jq '[.[].name | select((startswith("Lean.Brokerages.") or startswith("Lean.DataSource.")) and (. == "Lean.DataSource.QuiverQuant" or (startswith("Lean.DataSource.Quiver") | not)))] | sort')
+            --jq '[.[].name | select((startswith("Lean.Brokerages.") or startswith("Lean.DataSource.")) and (. == "Lean.DataSource.QuiverQuant" or (startswith("Lean.DataSource.Quiver") | not)) and (. != "Lean.Brokerages.Samco") and (. != "Lean.Brokerages.Zerodha"))] | sort')
           echo "Discovered $(echo "$repos" | jq length) repos:"
           echo "$repos" | jq -r '.[]'
           echo "repos=$(echo "$repos" | jq -c .)" >> "$GITHUB_OUTPUT"
