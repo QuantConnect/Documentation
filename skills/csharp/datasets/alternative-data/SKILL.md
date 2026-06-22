@@ -54,10 +54,10 @@ public override void OnData(Slice slice)
 | `EODHDUpcomingEarnings` | Upcoming Earnings | `ReportDate`, `ReportTime`, `Estimate` |
 | `EODHDUpcomingIPOs` | Upcoming IPOs | `Name`, `Exchange`, `IpoDate`, `FilingDate`, `AmendedDate`, `LowestPrice`, `HighestPrice`, `OfferPrice`, `Shares`, `DealType` |
 | `EODHDUpcomingSplits` | Upcoming Splits | `SplitDate`, `Optionable`, `SplitFactor` |
-| `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `Value` |
-| `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `Value` |
-| `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `Value` |
-| `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `Value` |
+| `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `TotalNonfarm`, `TotalPrivate`, `AverageHourlyEarnings`, `AverageWeeklyHours`, `AverageWeeklyEarnings`, `ProductionHourlyEarnings`, `ProductionEmployees`, `Manufacturing`, `GoodsProducing`, `PrivateServiceProviding`, `Construction`, `RetailTrade`, `FinancialActivities`, `EducationAndHealthServices`, `LeisureAndHospitality`, `MiningAndLogging` |
+| `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `AllItems`, `CoreCpi`, `Food`, `FoodAtHome`, `FoodAwayFromHome`, `Energy`, `Shelter`, `RentOfPrimaryResidence`, `Gasoline`, `MedicalCare`, `Apparel`, `EducationAndCommunication`, `NewVehicles`, `UsedCarsAndTrucks`, `CollegeTuitionAndFees` |
+| `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `JobOpenings`, `JobOpeningsRate`, `Hires`, `HiresRate`, `Quits`, `QuitsRate`, `TotalSeparations`, `LayoffsAndDischarges` |
+| `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `FinalDemand`, `CorePpi`, `FinalDemandLessFoodEnergyTrade`, `FinalDemandGoods`, `FinalDemandServices`, `FinalDemandConstruction`, `AllCommodities`, `FarmProducts`, `ProcessedFoodsAndFeeds`, `CrudePetroleum`, `FinalDemandGoodsLessFoods` |
 | `USEnergy` | US Energy Information Administration (EIA) | `Value` |
 | `Fred` | US Federal Reserve (FRED) | `Value` |
 | `QuiverGovernmentContract` | US Government Contracts | `Description`, `Agency`, `Amount` |

@@ -50,10 +50,10 @@ def on_data(self, slice: Slice) -> None:
 | `EODHDUpcomingEarnings` | Upcoming Earnings | `report_date`, `report_time`, `estimate` |
 | `EODHDUpcomingIPOs` | Upcoming IPOs | `name`, `exchange`, `ipo_date`, `filing_date`, `amended_date`, `lowest_price`, `highest_price`, `offer_price`, `shares`, `deal_type` |
 | `EODHDUpcomingSplits` | Upcoming Splits | `split_date`, `optionable`, `split_factor` |
-| `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `value` |
-| `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `value` |
-| `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `value` |
-| `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `value` |
+| `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `total_nonfarm`, `total_private`, `average_hourly_earnings`, `average_weekly_hours`, `average_weekly_earnings`, `production_hourly_earnings`, `production_employees`, `manufacturing`, `goods_producing`, `private_service_providing`, `construction`, `retail_trade`, `financial_activities`, `education_and_health_services`, `leisure_and_hospitality`, `mining_and_logging` |
+| `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `all_items`, `core_cpi`, `food`, `food_at_home`, `food_away_from_home`, `energy`, `shelter`, `rent_of_primary_residence`, `gasoline`, `medical_care`, `apparel`, `education_and_communication`, `new_vehicles`, `used_cars_and_trucks`, `college_tuition_and_fees` |
+| `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `job_openings`, `job_openings_rate`, `hires`, `hires_rate`, `quits`, `quits_rate`, `total_separations`, `layoffs_and_discharges` |
+| `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `final_demand`, `core_ppi`, `final_demand_less_food_energy_trade`, `final_demand_goods`, `final_demand_services`, `final_demand_construction`, `all_commodities`, `farm_products`, `processed_foods_and_feeds`, `crude_petroleum`, `final_demand_goods_less_foods` |
 | `USEnergy` | US Energy Information Administration (EIA) | `value` |
 | `Fred` | US Federal Reserve (FRED) | `value` |
 | `QuiverGovernmentContract` | US Government Contracts | `description`, `agency`, `amount` |

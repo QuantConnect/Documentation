@@ -99,20 +99,7 @@ public class MyCustomData : BaseData
     }
 }
 ```
-Research notebooks are different: `qb.object_store.read_bytes` returns the raw zip bytes, so unzip them before loading the inner file.
-```python
-qb = QuantBook()
-byte_data = qb.object_store.read_bytes("/market-regime-signals.zip")
-
-import io
-import zipfile
-import pandas as pd
-
-with zipfile.ZipFile(io.BytesIO(byte_data)) as archive:
-    filename = archive.namelist()[0]
-    with archive.open(filename) as file:
-        df = pd.read_csv(file)
-```
+Research notebooks are different: py`qb.object_store.read_bytes` returns the raw zip bytes, so unzip them before loading the inner file.
 - Live/backtest split: branch in `GetSource` only when the source differs; return identical parsed objects from both paths.
 - Arrays/unfolding: keep the requested JSON array shape. Do not convert it to JSONL or CSV unless the user explicitly asks. Store Object Store JSON array files as one-line/minified JSON under the requested key, and do not change Object Store keys during debugging unless you report the change. Use `FileFormat.UnfoldingCollection`, parse the array, sort emitted objects by `EndTime`, and return `new BaseDataCollection(objects.Last().EndTime, config.Symbol, objects)`.
 ```csharp

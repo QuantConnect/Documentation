@@ -81,7 +81,7 @@ class MyCustomData(PythonData):
             FileFormat.CSV
         )
 ```
-Research notebooks are different: `qb.object_store.read_bytes` returns the raw zip bytes, so unzip them before loading the inner file.
+Research notebooks are different: py`qb.object_store.read_bytes` returns the raw zip bytes, so unzip them before loading the inner file.
 ```python
 qb = QuantBook()
 byte_data = qb.object_store.read_bytes("/market-regime-signals.zip")
