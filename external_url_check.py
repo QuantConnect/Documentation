@@ -23,7 +23,11 @@
 #   - HTML anchors:    <a href="url">
 #
 # Each link is checked for:
-#   - HTTP errors: GET each URL, flag 4xx responses and soft-404 pages.
+#   - HTTP errors: GET each URL, flag 4xx responses and soft-404 pages. A 401/403
+#     is re-checked with a browser-impersonating client (curl_cffi) first, since
+#     many sites bot-block plain HTTP clients on otherwise-valid links. If that
+#     re-check reveals a real 404, it's escalated to a failing error (so a dead
+#     link can't hide behind a 403); if it still can't verify, it stays a warning.
 #   - Missing sections: a #fragment into the QuantConnect docs is validated against
 #     the docs pages on disk (this script runs inside the Documentation repo),
 #     because the HTTP check can't see the fragment - the server returns 200
@@ -54,6 +58,7 @@ from collections import defaultdict, namedtuple
 from pathlib import Path
 
 import aiohttp
+from curl_cffi.requests import AsyncSession
 
 from doc_anchors import build_file_index, check_deprecated_path, check_section_anchor
 
@@ -163,11 +168,42 @@ def _is_external(url: str) -> bool:
     return url.startswith("http://") or url.startswith("https://")
 
 
+async def _browser_recheck(url: str) -> str:
+    """Re-check a 401/403 with a browser-impersonating client (Chrome TLS fingerprint).
+
+    Many sites (FINRA, Coinbase, Bitfinex, CoinAPI, ...) serve 401/403 to plain
+    HTTP clients based on TLS/header fingerprinting even though the link is valid;
+    curl_cffi mimics a real browser and gets through. Returns:
+      - "ok"      : a real 2xx (or 429 - server is live, just rate-limiting)
+      - "broken"  : a definitive 404/410 the block was hiding (a genuinely dead link)
+      - "blocked" : still can't verify (e.g. a hard WAF) - report but don't fail
+    """
+    for attempt in range(3):
+        try:
+            async with AsyncSession() as s:
+                r = await s.get(url, impersonate="chrome", timeout=30, allow_redirects=True)
+            code = r.status_code
+            if 200 <= code < 300:
+                return "broken" if str(r.url).rstrip("/").endswith("/404") else "ok"
+            if code in (404, 410):
+                return "broken"        # the block was hiding a genuinely dead link
+            if code == 429:
+                return "ok"            # rate-limited => server is live, link exists
+            # 401/403/5xx: transient block or rate-limit - back off and retry
+        except Exception:
+            pass
+        await asyncio.sleep(2 * (attempt + 1))   # 2s, 4s
+    return "blocked"
+
+
 async def check_url(session: aiohttp.ClientSession, semaphore: asyncio.Semaphore,
                     url: str, files: list[Path], repo_dir: Path,
                     findings: list[Finding], broken_pages: set[str]):
     """Check a single external URL for errors. Records page-level breakage (404 /
-    soft-404) in broken_pages so a redundant on-disk finding isn't also reported."""
+    soft-404) in broken_pages so a redundant on-disk finding isn't also reported.
+
+    A 401/403 is re-checked with a browser-impersonating client before warning, so
+    bot-blocked-but-valid links don't generate noise."""
     async with semaphore:
         try:
             async with session.get(
@@ -177,10 +213,20 @@ async def check_url(session: aiohttp.ClientSession, semaphore: asyncio.Semaphore
                 match resp.status:
                     case 400:
                         findings.append(_finding("400", "400 Bad Request", url, files, repo_dir))
-                    case 401:
-                        findings.append(_finding("401", "401 Unauthorized", url, files, repo_dir))
-                    case 403:
-                        findings.append(_finding("403", "403 Forbidden", url, files, repo_dir))
+                    case 401 | 403:
+                        # Likely bot/WAF blocking - re-check with a browser-like client.
+                        verdict = await _browser_recheck(url)
+                        if verdict == "broken":
+                            # The block was hiding a genuinely dead link - fail on it.
+                            findings.append(_finding(
+                                "404", "404 Not found (confirmed via browser re-check)",
+                                url, files, repo_dir))
+                            broken_pages.add(url)
+                        elif verdict == "blocked":
+                            cat = str(resp.status)
+                            msg = f"{resp.status} {'Unauthorized' if resp.status == 401 else 'Forbidden'}"
+                            findings.append(_finding(cat, msg, url, files, repo_dir))
+                        # verdict == "ok" -> link is valid, no finding
                     case 404:
                         findings.append(_finding("404", "404 Not found", url, files, repo_dir))
                         broken_pages.add(url)
