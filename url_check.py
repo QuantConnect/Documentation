@@ -170,9 +170,6 @@ def _get_all_urls(doc_files: list[str]) -> dict[str, list[str]]:
                     new_lines[i] = converted_line
                     has_relative_link = True
 
-                if "sources" in url:
-                    continue
-
                 url_files.setdefault(url, []).append(filepath)
 
                 if lean_io_url:
