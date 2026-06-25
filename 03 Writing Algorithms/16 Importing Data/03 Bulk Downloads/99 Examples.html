@@ -118,6 +118,149 @@ class BulkDownloadExampleAlgorithm(QCAlgorithm):
         #    f.write(content)</pre>
 </div>
 <h4>
+ Example 2: Download a File From a Private AWS S3 Bucket
+</h4>
+<p>
+ The
+ <code>
+  download
+ </code>
+ method issues a GET request, so you can fetch objects from a private
+ <a href="https://aws.amazon.com/s3/" rel="nofollow" target="_blank">
+  AWS S3
+ </a>
+ bucket by passing the
+ <a href="https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html" rel="nofollow" target="_blank">
+  Signature Version 4
+ </a>
+ authentication headers. The following algorithm signs the request and downloads a CSV file. To keep your secret keys out of source control, read the credentials from
+ <a href="/docs/v2/writing-algorithms/key-concepts/algorithm-parameters">
+  algorithm parameters
+ </a>
+ instead of hardcoding them.
+</p>
+<div class="section-example-container">
+ <pre class="python">import hashlib, hmac
+import pandas as pd
+from io import StringIO
+from datetime import datetime, timezone
+
+class S3DownloadExampleAlgorithm(QCAlgorithm):
+    def initialize(self):
+        # Read the AWS credentials from project parameters to keep them out of source control.
+        access_key = self.get_parameter("aws-access-key-id")
+        secret_key = self.get_parameter("aws-secret-access-key")
+        region = "us-east-1"
+        host = "my-bucket.s3.us-east-1.amazonaws.com"
+        key = "path/to/file.csv"
+
+        # Sign the GET request with SigV4 and download the file with the Download method.
+        headers = self._sigv4_headers(access_key, secret_key, region, host, key)
+        file = self.download(f"https://{host}/{key}", headers)
+
+        # Parse the CSV content into a DataFrame.
+        df = pd.read_csv(StringIO(file))
+        self.log(f"Downloaded {df.shape[0]} rows")
+
+    def _sigv4_headers(self, access_key, secret_key, region, host, key):
+        service = "s3"
+        # Use the real UTC time so the request stays within the 15-minute window S3 allows.
+        now = datetime.now(timezone.utc)
+        amz_date = now.strftime("%Y%m%dT%H%M%SZ")
+        date = amz_date[:8]
+        # A GET request has no body, so sign the hash of an empty payload.
+        payload_hash = hashlib.sha256(b"").hexdigest()
+
+        # Build the canonical request and the string to sign.
+        signed_headers = "host;x-amz-content-sha256;x-amz-date"
+        canonical_headers = f"host:{host}\nx-amz-content-sha256:{payload_hash}\nx-amz-date:{amz_date}\n"
+        canonical_request = f"GET\n/{key}\n\n{canonical_headers}\n{signed_headers}\n{payload_hash}"
+        scope = f"{date}/{region}/{service}/aws4_request"
+        string_to_sign = f"AWS4-HMAC-SHA256\n{amz_date}\n{scope}\n{hashlib.sha256(canonical_request.encode()).hexdigest()}"
+
+        # Derive the signing key and sign the request.
+        signing_key = ("AWS4" + secret_key).encode()
+        for part in [date, region, service, "aws4_request"]:
+            signing_key = hmac.new(signing_key, part.encode(), hashlib.sha256).digest()
+        signature = hmac.new(signing_key, string_to_sign.encode(), hashlib.sha256).hexdigest()
+
+        authorization = f"AWS4-HMAC-SHA256 Credential={access_key}/{scope}, SignedHeaders={signed_headers}, Signature={signature}"
+        return {"x-amz-date": amz_date, "x-amz-content-sha256": payload_hash, "Authorization": authorization}</pre>
+ <pre class="csharp">using System.Security.Cryptography;
+
+public class S3DownloadExampleAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        // Read the AWS credentials from project parameters to keep them out of source control.
+        var accessKey = GetParameter("aws-access-key-id");
+        var secretKey = GetParameter("aws-secret-access-key");
+        var region = "us-east-1";
+        var host = "my-bucket.s3.us-east-1.amazonaws.com";
+        var key = "path/to/file.csv";
+
+        // Sign the GET request with SigV4 and download the file with the Download method.
+        var headers = SignV4(accessKey, secretKey, region, host, key);
+        var file = Download($"https://{host}/{key}", headers);
+        Log(file.Substring(0, Math.Min(200, file.Length)));
+    }
+
+    private Dictionary&lt;string, string&gt; SignV4(string accessKey, string secretKey, string region, string host, string key)
+    {
+        var service = "s3";
+        // A GET request has no body, so sign the hash of an empty payload.
+        var payloadHash = ToHex(SHA256.HashData(Array.Empty&lt;byte&gt;()));
+        // Use the real UTC time so the request stays within the 15-minute window S3 allows.
+        var now = DateTime.UtcNow;
+        var amzDate = now.ToString("yyyyMMddTHHmmssZ");
+        var date = now.ToString("yyyyMMdd");
+
+        // Build the canonical request and the string to sign.
+        var signedHeaders = "host;x-amz-content-sha256;x-amz-date";
+        var canonicalHeaders = $"host:{host}\nx-amz-content-sha256:{payloadHash}\nx-amz-date:{amzDate}\n";
+        var canonicalRequest = $"GET\n/{key}\n\n{canonicalHeaders}\n{signedHeaders}\n{payloadHash}";
+        var scope = $"{date}/{region}/{service}/aws4_request";
+        var stringToSign = $"AWS4-HMAC-SHA256\n{amzDate}\n{scope}\n{ToHex(SHA256.HashData(Encoding.UTF8.GetBytes(canonicalRequest)))}";
+
+        // Derive the signing key and sign the request.
+        var signingKey = Encoding.UTF8.GetBytes("AWS4" + secretKey);
+        foreach (var part in new[] { date, region, service, "aws4_request" })
+        {
+            signingKey = HMACSHA256.HashData(signingKey, Encoding.UTF8.GetBytes(part));
+        }
+        var signature = ToHex(HMACSHA256.HashData(signingKey, Encoding.UTF8.GetBytes(stringToSign)));
+
+        var authorization = $"AWS4-HMAC-SHA256 Credential={accessKey}/{scope}, SignedHeaders={signedHeaders}, Signature={signature}";
+        return new Dictionary&lt;string, string&gt;
+        {
+            { "x-amz-date", amzDate },
+            { "x-amz-content-sha256", payloadHash },
+            { "Authorization", authorization }
+        };
+    }
+
+    private static string ToHex(byte[] bytes) =&gt; Convert.ToHexString(bytes).ToLowerInvariant();
+}</pre>
+</div>
+<p>
+ Sign the request with the real wall-clock time (
+ <code class="python">
+  datetime.now(timezone.utc)
+ </code>
+ <code class="csharp">
+  DateTime.UtcNow
+ </code>
+ ), not the algorithm time, because S3 rejects requests outside a 15-minute window. Alternatively, generate a
+ <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/ShareObjectPreSignedURL.html" rel="nofollow" target="_blank">
+  presigned URL
+ </a>
+ ahead of time and pass it directly to
+ <code>
+  download
+ </code>
+ with no headers.
+</p>
+<h4>
  Other Examples
 </h4>
 <p>
