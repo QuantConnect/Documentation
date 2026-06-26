@@ -58,8 +58,7 @@ from collections import defaultdict, namedtuple
 from pathlib import Path
 
 import aiohttp
-from curl_cffi.requests import AsyncSession
-
+from browser_recheck import browser_recheck
 from doc_anchors import build_file_index, check_deprecated_path, check_section_anchor
 
 # -- Constants ----------------------------------------------------------------
@@ -168,34 +167,6 @@ def _is_external(url: str) -> bool:
     return url.startswith("http://") or url.startswith("https://")
 
 
-async def _browser_recheck(url: str) -> str:
-    """Re-check a 401/403 with a browser-impersonating client (Chrome TLS fingerprint).
-
-    Many sites (FINRA, Coinbase, Bitfinex, CoinAPI, ...) serve 401/403 to plain
-    HTTP clients based on TLS/header fingerprinting even though the link is valid;
-    curl_cffi mimics a real browser and gets through. Returns:
-      - "ok"      : a real 2xx (or 429 - server is live, just rate-limiting)
-      - "broken"  : a definitive 404/410 the block was hiding (a genuinely dead link)
-      - "blocked" : still can't verify (e.g. a hard WAF) - report but don't fail
-    """
-    for attempt in range(3):
-        try:
-            async with AsyncSession() as s:
-                r = await s.get(url, impersonate="chrome", timeout=30, allow_redirects=True)
-            code = r.status_code
-            if 200 <= code < 300:
-                return "broken" if str(r.url).rstrip("/").endswith("/404") else "ok"
-            if code in (404, 410):
-                return "broken"        # the block was hiding a genuinely dead link
-            if code == 429:
-                return "ok"            # rate-limited => server is live, link exists
-            # 401/403/5xx: transient block or rate-limit - back off and retry
-        except Exception:
-            pass
-        await asyncio.sleep(2 * (attempt + 1))   # 2s, 4s
-    return "blocked"
-
-
 async def check_url(session: aiohttp.ClientSession, semaphore: asyncio.Semaphore,
                     url: str, files: list[Path], repo_dir: Path,
                     findings: list[Finding], broken_pages: set[str]):
@@ -215,7 +186,7 @@ async def check_url(session: aiohttp.ClientSession, semaphore: asyncio.Semaphore
                         findings.append(_finding("400", "400 Bad Request", url, files, repo_dir))
                     case 401 | 403:
                         # Likely bot/WAF blocking - re-check with a browser-like client.
-                        verdict = await _browser_recheck(url)
+                        verdict = await browser_recheck(url)
                         if verdict == "broken":
                             # The block was hiding a genuinely dead link - fail on it.
                             findings.append(_finding(
