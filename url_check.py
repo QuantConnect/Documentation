@@ -16,6 +16,10 @@
 # Scans all .html/.php doc files and documentation-map.json for <a href="..."> links,
 # then validates them:
 #   - HTTP checks: GET each external URL, flag 4xx responses and soft-404 pages.
+#     A 401/403 is re-checked with a browser-impersonating client (curl_cffi),
+#     since many sites bot-block plain HTTP clients on otherwise-valid links: a
+#     confirmed 404 is escalated to a failing error, a still-blocked link stays a
+#     warning, and a reachable one is dropped.
 #   - Section anchors: verify that #fragment links map to real files on disk.
 #   - Resource includes: verify <? include(DOCS_RESOURCES."...") targets exist.
 #   - GitHub issues: confirm referenced Lean issues are still open.
@@ -45,6 +49,7 @@ from pathlib import Path
 
 import aiohttp
 
+from browser_recheck import browser_recheck
 from doc_anchors import build_file_index, check_section_anchor
 
 # -- Constants ----------------------------------------------------------------
@@ -329,10 +334,19 @@ async def _check_url(
                 match resp.status:
                     case 400:
                         results["400"].append(_fmt("400 Bad Request", url, files))
-                    case 401:
-                        results["401"].append(_fmt("401 Unauthorized", url, files))
-                    case 403:
-                        results["403"].append(_fmt("403 Forbidden", url, files))
+                    case 401 | 403:
+                        # Likely bot/WAF blocking - re-check with a browser-like
+                        # client. A confirmed 404 is escalated to a failing error
+                        # so a dead link can't hide behind a 403; if still blocked
+                        # it stays a non-failing warning, and a 2xx is dropped.
+                        match await browser_recheck(url):
+                            case "broken":
+                                results["404"].append(_fmt(
+                                    "404 Not found (confirmed via browser re-check)", url, files))
+                            case "blocked":
+                                cat = str(resp.status)
+                                msg = "401 Unauthorized" if resp.status == 401 else "403 Forbidden"
+                                results[cat].append(_fmt(msg, url, files))
                     case 404:
                         results["404"].append(_fmt("404 Not found", url, files))
                     case 200:
