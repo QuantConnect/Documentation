@@ -1,0 +1,39 @@
+<p>TradeStation enforces rate limits on its REST API. The following table shows the request quota for each resource group over a rolling time window:</p>
+
+<table class="qc-table table" id='rate-limit-table'>
+   <thead>
+      <tr>
+        <th>Resource</th>
+        <th>Quota</th>
+        <th>Window</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td>Accounts, order details, balances, and positions</td>
+        <td>320</td>
+        <td>5 minutes</td>
+      </tr>
+      <tr>
+        <td>Quote snapshots</td>
+        <td>500</td>
+        <td>5 minutes</td>
+      </tr>
+      <tr>
+        <td>Each Option endpoint</td>
+        <td>90</td>
+        <td>1 minute</td>
+      </tr>
+   </tbody>
+</table>
+
+<p>Streaming endpoints have concurrent-connection limits but don't consume the request quota. For more information about the rate limits, see <a rel="nofollow" target="_blank" href="https://api.tradestation.com/docs/fundamentals/rate-limiting/">Rate Limiting</a> in the TradeStation documentation.</p>
+
+<p>To respect these limits, our integration manages the request rate for you in two ways:</p>
+
+<ul>
+    <li><b>Proactive throttling</b>: A per-resource-group token bucket paces requests to stay under the quota.</li>
+    <li><b>Reactive back-off</b>: If a request receives an <code>HTTP 429 (Too Many Requests)</code> response, the integration waits for the period the <code>X-RateLimit-Reset</code> (or <code>Retry-After</code>) header specifies and then retries the request instead of failing the operation.</li>
+</ul>
+
+<p>The first time the integration throttles a resource group or receives a 429 response, it sends your algorithm a one-time warning so you know throttling may reduce your throughput.</p>
