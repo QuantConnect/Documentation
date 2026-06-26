@@ -9,7 +9,7 @@ underlying = self.securities[<?=$pySymbol?>.underlying]
 underlying_price = underlying.price</pre>
 </div>
 
-<p>To get the Option <a href='/docs/v2/writing-algorithms/key-concepts/glossary#24-payoff'>payoff</a>, call the <code class="csharp">GetPayOff</code><code class="python">get_pay_off</code> method.</p>
+<p>To get the Option <a href='/docs/v2/writing-algorithms/key-concepts/glossary#23-payoff'>payoff</a>, call the <code class="csharp">GetPayOff</code><code class="python">get_pay_off</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var payOff = option.GetPayOff(underlyingPrice);</pre>
