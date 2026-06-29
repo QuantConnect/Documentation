@@ -1,128 +1,8 @@
 <p>
  The following examples demonstrate common practices for bulk downloading data.
 </p>
-<div class='python'>
+
 <h4>
- Example 1: Download Machine Learning Model
-</h4>
-<p>
- The following algorithm makes use of a
- <a href="/docs/v2/writing-algorithms/machine-learning/popular-libraries/scikit-learn">
-  Scikit-Learn
- </a>
- machine learning model to predict SPY price changes and place orders according to the prediction. To obtain the model, we either retrieve it from the
- <a href="/docs/v2/writing-algorithms/object-store">
-  Object Store
- </a>
- if there exists any or download it from a Dropbox link using the
- <code>
-  download
- </code>
- method.
-</p>
-<div class="section-example-container testable">
- <pre class="python">import joblib
-from io import BytesIO
-from base64 import b64decode, b64encode
-from sklearn.svm import SVR
-from sklearn.model_selection import GridSearchCV
-
-class BulkDownloadExampleAlgorithm(QCAlgorithm):
-    def initialize(self) -&gt; None:
-        self.set_start_date(2024, 9, 1)
-        self.set_end_date(2024, 12, 31)
-        self.set_cash(100000)
-        # Request SPY data for model training, prediction, and trading.
-        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
-
-        # 2-year data to train the model.
-        training_length = 252*2
-        self.training_data = RollingWindow(training_length)
-        # Warm up the training dataset to train the model immediately.
-        history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
-        for trade_bar in history:
-            self.training_data.add(trade_bar)
-
-        # Retrieve the already trained model from the object store for immediate use.
-        if self.object_store.contains_key("sklearn_model"):
-            self.model = joblib.load(self.object_store.get_file_path("sklearn_model"))
-        # Otherwise, bulk-download the base64-encoded model from an external source (Dropbox in this example).
-        else:
-            url = "https://www.dropbox.com/scl/fi/tj7wmpv1u2ysvejb0skpm/sklearn_model_b64?rlkey=pvcnuvqrp78oz1t73rytgnvdx&dl=1"
-            base64_str = self.download(url)
-            model_bytes = b64decode(base64_str.encode('ascii'))
-            self.model = joblib.load(BytesIO(model_bytes))
-
-        # Train the model to use the prediction right away.
-        self.train(self.my_training_method)
-        # Recalibrate the model weekly to ensure its accuracy on the updated domain.
-        self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
-        
-    def get_features_and_labels(self, n_steps=5) -&gt; None:
-        # Train and predict the return data, which is more normalized and stationary.
-        training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])
-        daily_pct_change = training_df.pct_change().dropna()
-
-        # Stack the data for 5-day OHLCV data per each sample to train with.
-        features = []
-        labels = []
-        for i in range(len(daily_pct_change)-n_steps):
-            features.append(daily_pct_change.iloc[i:i+n_steps].values.flatten())
-            labels.append(daily_pct_change['close'].iloc[i+n_steps])
-        features = np.array(features)
-        labels = np.array(labels)
-
-        return features, labels
-
-    def my_training_method(self) -&gt; None:
-        # Prepare the processed training data.
-        features, labels = self.get_features_and_labels()
-        # Recalibrate the model based on updated data.
-        if isinstance(self.model, GridSearchCV):
-            self.model = self.model.fit(features, labels).best_estimator_
-        else:
-            self.model = self.model.fit(features, labels)
-
-    def on_data(self, slice: Slice) -&gt; None:
-        bar = slice.bars.get(self._symbol)
-        if bar:
-            self.training_data.add(bar)
-
-        # Get predictions by the updated features.
-        features, _ = self.get_features_and_labels()
-        prediction = self.model.predict(features[-1].reshape(1, -1))
-        prediction = float(prediction)
-
-        # If the predicted direction is going upward, buy SPY.
-        if prediction &gt; 0:
-            self.set_holdings(self._symbol, 1)
-        # If the predicted direction is going downward, sell SPY.
-        elif prediction &lt; 0:            
-            self.set_holdings(self._symbol, -1)
-
-    def on_end_of_algorithm(self) -&gt; None:
-        # Store the model in the object store to retrieve it in other instances if the algorithm stops.
-        model_key = "sklearn_model"
-        joblib.dump(self.model, self.object_store.get_file_path(model_key))
-        self._save_base64_encoded_version(model_key)
-
-    def _save_base64_encoded_version(self, model_key):
-        # Save a base64-encoded version of the model to upload to an external source (e.g., Dropbox).
-        buffer = BytesIO()
-        joblib.dump(self.model, buffer)
-        content = b64encode(buffer.getvalue()).decode('ascii')
-        path = self.object_store.get_file_path(f"{model_key}_b64")
-        self.object_store.save(path, content)
-
-        # Locally, you may want to use the open method
-        #with open(path, "w") as f:
-        #    f.write(content)</pre>
-</div>
-</div>
-<h4 class='python'>
- Example 2: Download a File From a Private AWS S3 Bucket
-</h4>
-<h4 class='csharp'>
  Example 1: Download a File From a Private AWS S3 Bucket
 </h4>
 <p>
@@ -265,6 +145,126 @@ public class S3DownloadExampleAlgorithm : QCAlgorithm
  </code>
  with no headers.
 </p>
+
+<div class='python'>
+<h4>
+ Example 2: Download Machine Learning Model
+</h4>
+<p>
+ The following algorithm makes use of a
+ <a href="/docs/v2/writing-algorithms/machine-learning/popular-libraries/scikit-learn">
+  Scikit-Learn
+ </a>
+ machine learning model to predict SPY price changes and place orders according to the prediction. To obtain the model, we either retrieve it from the
+ <a href="/docs/v2/writing-algorithms/object-store">
+  Object Store
+ </a>
+ if there exists any or download it from a Dropbox link using the
+ <code>
+  download
+ </code>
+ method.
+</p>
+<div class="section-example-container testable">
+ <pre class="python">import joblib
+from io import BytesIO
+from base64 import b64decode, b64encode
+from sklearn.svm import SVR
+from sklearn.model_selection import GridSearchCV
+
+class BulkDownloadExampleAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        # Request SPY data for model training, prediction, and trading.
+        self._symbol = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        # 2-year data to train the model.
+        training_length = 252*2
+        self.training_data = RollingWindow(training_length)
+        # Warm up the training dataset to train the model immediately.
+        history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
+        for trade_bar in history:
+            self.training_data.add(trade_bar)
+
+        # Retrieve the already trained model from the object store for immediate use.
+        if self.object_store.contains_key("sklearn_model"):
+            self.model = joblib.load(self.object_store.get_file_path("sklearn_model"))
+        # Otherwise, bulk-download the base64-encoded model from an external source (Dropbox in this example).
+        else:
+            url = "https://www.dropbox.com/scl/fi/tj7wmpv1u2ysvejb0skpm/sklearn_model_b64?rlkey=pvcnuvqrp78oz1t73rytgnvdx&dl=1"
+            base64_str = self.download(url)
+            model_bytes = b64decode(base64_str.encode('ascii'))
+            self.model = joblib.load(BytesIO(model_bytes))
+
+        # Train the model to use the prediction right away.
+        self.train(self.my_training_method)
+        # Recalibrate the model weekly to ensure its accuracy on the updated domain.
+        self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8,0), self.my_training_method)
+        
+    def get_features_and_labels(self, n_steps=5) -&gt; None:
+        # Train and predict the return data, which is more normalized and stationary.
+        training_df = self.pandas_converter.get_data_frame[TradeBar](list(self.training_data)[::-1])
+        daily_pct_change = training_df.pct_change().dropna()
+
+        # Stack the data for 5-day OHLCV data per each sample to train with.
+        features = []
+        labels = []
+        for i in range(len(daily_pct_change)-n_steps):
+            features.append(daily_pct_change.iloc[i:i+n_steps].values.flatten())
+            labels.append(daily_pct_change['close'].iloc[i+n_steps])
+        features = np.array(features)
+        labels = np.array(labels)
+
+        return features, labels
+
+    def my_training_method(self) -&gt; None:
+        # Prepare the processed training data.
+        features, labels = self.get_features_and_labels()
+        # Recalibrate the model based on updated data.
+        if isinstance(self.model, GridSearchCV):
+            self.model = self.model.fit(features, labels).best_estimator_
+        else:
+            self.model = self.model.fit(features, labels)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._symbol)
+        if bar:
+            self.training_data.add(bar)
+
+        # Get predictions by the updated features.
+        features, _ = self.get_features_and_labels()
+        prediction = self.model.predict(features[-1].reshape(1, -1))
+        prediction = float(prediction)
+
+        # If the predicted direction is going upward, buy SPY.
+        if prediction &gt; 0:
+            self.set_holdings(self._symbol, 1)
+        # If the predicted direction is going downward, sell SPY.
+        elif prediction &lt; 0:            
+            self.set_holdings(self._symbol, -1)
+
+    def on_end_of_algorithm(self) -&gt; None:
+        # Store the model in the object store to retrieve it in other instances if the algorithm stops.
+        model_key = "sklearn_model"
+        joblib.dump(self.model, self.object_store.get_file_path(model_key))
+        self._save_base64_encoded_version(model_key)
+
+    def _save_base64_encoded_version(self, model_key):
+        # Save a base64-encoded version of the model to upload to an external source (e.g., Dropbox).
+        buffer = BytesIO()
+        joblib.dump(self.model, buffer)
+        content = b64encode(buffer.getvalue()).decode('ascii')
+        path = self.object_store.get_file_path(f"{model_key}_b64")
+        self.object_store.save(path, content)
+
+        # Locally, you may want to use the open method
+        #with open(path, "w") as f:
+        #    f.write(content)</pre>
+</div>
+</div>
+
 <h4>
  Other Examples
 </h4>
