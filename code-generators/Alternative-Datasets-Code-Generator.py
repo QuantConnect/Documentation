@@ -24,6 +24,24 @@ SUPPORTED_TABLE_RESOURCES = {
     },
 }
 
+# Datasets that have a LEAN CLI download page under
+# 05 Lean CLI/05 Datasets/05 QuantConnect. Maps (vendor, dataset name) to the CLI
+# page slug and its display title. For these datasets, the generator adds a
+# "Downloading Data" section that links the algorithm-side dataset page to its
+# CLI download workflow. It's inserted after Supported Assets (before Example
+# Applications) so existing section anchors don't shift.
+CLI_DOWNLOAD_PAGES = {
+    ("AlgoSeek", "US Equities"):                    ("us-equity", "US Equity"),
+    ("AlgoSeek", "US Equity Options"):              ("equity-options", "Equity Options"),
+    ("AlgoSeek", "US Futures"):                     ("futures", "Futures"),
+    ("AlgoSeek", "US Future Options"):              ("future-options", "Future Options"),
+    ("AlgoSeek", "US Index Options"):               ("index-options", "Index Options"),
+    ("QuantConnect", "FOREX Data"):                 ("forex", "Forex"),
+    ("QuantConnect", "CFD Data"):                   ("cfd", "CFD"),
+    ("QuantConnect", "US ETF Constituents"):        ("us-etf-constituents", "US ETF Constituents"),
+    ("QuantConnect", "US Equity Coarse Universe"):  ("us-equity-coarse-fundamental", "US Equity Coarse Fundamental"),
+}
+
 def _directory_content(path):
     def append_path(v):
         return [Path(f'{path}/{x}') for x in v]
@@ -77,6 +95,8 @@ def _parse_content(content):
                             .replace("=<", "=&lt;") \
                             .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
                             .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
+                            .replace("/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-index-option-universe",
+                                     "/docs/v2/lean-cli/datasets/quantconnect/index-options#02-Prerequisites") \
                             .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                      '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
                             .replace("<b>", "<code>") \
@@ -164,6 +184,16 @@ if __name__ == '__main__':
 
             key = next(filter(lambda x: 'supported' in x.lower(), all_sections.keys()), None)
             final_sections = {key: all_sections.pop(key, '')} if key else {}
+            cli_page = CLI_DOWNLOAD_PAGES.get((vendor, name))
+            if cli_page:
+                slug, cli_title = cli_page
+                final_sections["Downloading Data"] = (
+                    f'<p>You can download the {name} dataset to your local machine to run the LEAN '
+                    f'engine locally with the <a href="/docs/v2/lean-cli">LEAN CLI</a>. For the '
+                    f'download commands, prerequisites, and pricing, see '
+                    f'<a href="/docs/v2/lean-cli/datasets/quantconnect/{slug}">{cli_title}</a> in the '
+                    f'LEAN CLI documentation.</p>'
+                )
             final_sections["Example Applications"] = all_sections.pop("Example Applications", '')
             data_point_attributes = all_sections.pop("Data Point Attributes", '')
             if data_point_attributes:
