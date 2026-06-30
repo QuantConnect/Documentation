@@ -6,6 +6,6 @@
 </p>
 
 <ul>
-	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-etf-constituents'>US ETF Constituents</a></li>
-	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equity-coarse-universe'>US Equity Coarse Universe</a></li>	
+	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/us-etf-constituents'>US ETF Constituents</a></li>
+	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/us-equity-coarse-fundamental'>US Equity Coarse Universe</a></li>	
 </ul>

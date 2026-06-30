@@ -6,10 +6,10 @@
 </p>
 
 <ul>
-	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equity-coarse-universe'>US Equity Coarse Universe</a></li>	
-	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-equity-option-universe'>US Equity Option Universe</a></li>
-	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-etf-constituents'>US ETF Constituents</a></li>
-	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/download-in-bulk/us-index-option-universe'>US Index Option Universe</a></li>
+	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/us-equity-coarse-fundamental'>US Equity Coarse Universe</a></li>	
+	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/equity-options#02-Prerequisites'>US Equity Option Universe</a></li>
+	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/us-etf-constituents'>US ETF Constituents</a></li>
+	<li><a href='/docs/v2/lean-cli/datasets/quantconnect/index-options#02-Prerequisites'>US Index Option Universe</a></li>
 </ul>
 
 <p>In cloud deployments, QuantConnect Cloud provides the universe selection datasets.</p>
