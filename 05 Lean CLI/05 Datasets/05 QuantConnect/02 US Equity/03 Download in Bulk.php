@@ -10,7 +10,7 @@
      <pre>$ lean data download --dataset "US Equities" --data-type "Bulk" --resolution "&lt;resolution&gt;" --start "20230101" --end "20230105"</pre> 
 </div>
 
-<p>You can also use the <a href="https://www.quantconnect.com/datasets/algoseek-us-equities/cli">CLI Command Generator</a> on the dataset listing to generate the command. For more information about the interactive wizard and the CLI Command Generator, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#02-Using-the-CLI">Using the CLI</a>.</p>
+<p>You can also use the <a href="https://www.quantconnect.com/datasets/algoseek-us-equities/cli">CLI Command Generator</a> on the dataset listing to generate the command. For more information about the interactive wizard and the CLI Command Generator, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#03-Using-the-CLI">Using the CLI</a>.</p>
 
 <p>After you bulk download the US Equities dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. Subscribe to at least one of the <span class="button-name">US Equity ... Updates by AlgoSeek</span> data packages to unlock the updates. Instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:</p>
 

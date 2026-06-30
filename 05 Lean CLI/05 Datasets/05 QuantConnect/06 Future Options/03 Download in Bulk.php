@@ -7,15 +7,15 @@
 
 <p>To download the US Future Universe data, run:</p>
 <div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Future Universe" --data-type "bulk" --start "20250403" --end "20250403"</pre> 
+     <pre>$ lean data download --dataset "US Future Universe" --data-type "Bulk" --start "20250403" --end "20250403"</pre> 
 </div>
 
 <p>To download the US Future Option Universe data, run:</p>
 <div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Future Option Universe" --data-type "bulk" --start "20250403" --end "20250403"</pre> 
+     <pre>$ lean data download --dataset "US Future Option Universe" --data-type "Bulk" --start "20250403" --end "20250403"</pre> 
 </div>
 
-<p>To download the US Future Options data, use the <a href="https://www.quantconnect.com/datasets/algoseek-us-future-options/cli">CLI Command Generator</a> on the dataset listing to generate your download command, then run it in your organization workspace. For more information, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#02-Using-the-CLI">Using the CLI</a>. You also need the underlying US Futures data; see <a href="/docs/v2/lean-cli/datasets/quantconnect/futures#03-Download-in-Bulk">US Futures</a>.</p>
+<p>To download the US Future Options data, use the <a href="https://www.quantconnect.com/datasets/algoseek-us-future-options/cli">CLI Command Generator</a> on the dataset listing to generate your download command, then run it in your organization workspace. For more information, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#03-Using-the-CLI">Using the CLI</a>. You also need the underlying US Futures data; see <a href="/docs/v2/lean-cli/datasets/quantconnect/futures#03-Download-in-Bulk">US Futures</a>.</p>
 
 <p>After you bulk download the US Future Options dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. Instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions and markets:</p>
 
