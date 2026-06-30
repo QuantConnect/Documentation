@@ -1,12 +1,18 @@
-<p>To download data for selected tickers instead of the full dataset, run a non-interactive <code>lean data download</code> command. First, download the prerequisite datasets:</p>
+<p>To download data for selected tickers instead of the full dataset, run a non-interactive <code>lean data download</code> command. First, download the prerequisite US Equity Security Master:</p>
 <div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Equity Security Master"
-$ lean data download --dataset "US Equity Option Universe" --data-type "bulk" --start "20250403" --end "20250403"</pre> 
+     <pre>$ lean data download --dataset "US Equity Security Master"</pre>
 </div>
 
-<p>Then download the US Equity Options data for the tickers, resolution, and date range you need. For example, to download minute-resolution trade data for GOOG:</p>
+<p>Next, download the US Equity Option Universe data for the underlying ticker to get the available contracts and their daily Greeks and implied volatility:</p>
 <div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Equity Options" --data-type "Trade" --ticker "GOOG" --resolution "Minute" --start "20230101" --end "20230105"</pre> 
+     <pre>$ lean data download --dataset "US Equity Option Universe" --data-type "Trade" --ticker "GOOG" --start "20250630" --end "20260630"</pre>
 </div>
 
-<p>You also need data for the underlying Equity; see <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#04-Download-by-Ticker">US Equity</a>. To download data interactively or to use the CLI Command Generator, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#02-Using-the-CLI">Using the CLI</a>.</p>
+<p>Then download the US Equity Options data for the tickers, resolution, and date range you need. The dataset provides trade, quote, and open interest data, so run a command for each data type you need. For example, to download minute-resolution data for GOOG:</p>
+<div class="cli section-example-container">
+     <pre>$ lean data download --dataset "US Equity Options" --data-type "Trade" --ticker "GOOG" --resolution "Minute" --start "20230101" --end "20230105"
+$ lean data download --dataset "US Equity Options" --data-type "Quote" --ticker "GOOG" --resolution "Minute" --start "20230101" --end "20230105"
+$ lean data download --dataset "US Equity Options" --data-type "Open Interest" --ticker "GOOG" --resolution "Minute" --start "20230101" --end "20230105"</pre>
+</div>
+
+<p>You also need data for the underlying Equity; see <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#04-Download-by-Ticker">US Equity</a>. To download data interactively or to use the CLI Command Generator, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#03-Using-the-CLI">Using the CLI</a>.</p>

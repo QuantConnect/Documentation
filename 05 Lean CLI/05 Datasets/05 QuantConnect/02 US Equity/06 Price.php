@@ -1,5 +1,95 @@
+<h4>Download in Bulk</h4>
+<p>To download the US Equities dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a> subscription. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
+
+<table class="qc-table table" id='us-equities-bulk-download-price'>
+    <thead>
+        <tr>
+            <th>Resolution</th>
+            <th>Quant Researcher</th>
+            <th>Team</th>
+            <th>Trading Firm</th>
+            <th>Institution</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Tick</td>
+            <td>16,800</td>
+            <td>28,800</td>
+            <td>33,600</td>
+            <td>52,800</td>
+        </tr>
+        <tr>
+            <td>Second</td>
+            <td>15,360</td>
+            <td>28,800</td>
+            <td>33,600</td>
+            <td>48,000</td>
+        </tr>
+        <tr>
+            <td>Minute</td>
+            <td>11,760</td>
+            <td>16,800</td>
+            <td>31,200</td>
+            <td>43,200</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>2,136</td>
+            <td>3,480</td>
+            <td>3,480</td>
+            <td>3,480</td>
+        </tr>
+        <tr>
+            <td>Daily</td>
+            <td>2,136</td>
+            <td>3,480</td>
+            <td>3,480</td>
+            <td>3,480</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>After the first bulk subscription ends, subscribe to the updates to keep your local data current. The updates cost the same for all resolutions. The following table shows the price ($/year) of the updates for each organization tier:</p>
+
+<table class="qc-table table" id='us-equities-bulk-update-price'>
+    <thead>
+        <tr>
+            <th>Tier</th>
+            <th>Price ($/Year)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Quant Researcher</td>
+            <td>600</td>
+        </tr>
+        <tr>
+            <td>Team</td>
+            <td>840</td>
+        </tr>
+        <tr>
+            <td>Trading Firm</td>
+            <td>1,440</td>
+        </tr>
+        <tr>
+            <td>Institution</td>
+            <td>2,640</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#us-equities-bulk-download-price td:not(:first-child),
+#us-equities-bulk-download-price th:not(:first-child),
+#us-equities-bulk-update-price td:not(:first-child),
+#us-equities-bulk-update-price th:not(:first-child) {
+    text-align: right;
+}
+</style>
+
 <h4>Download by Ticker</h4>
-<p>US Equity algorithms require the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a> and some data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equities/pricing">US Equities</a> dataset. The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
+<p>The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
 
 <?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
 
@@ -42,34 +132,7 @@
     </tbody>
 </table>
 
-<p>If you add universes to your algorithm, the following table shows the additional datasets you need:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Universe Type</th>
-            <th>Required Dataset</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/fundamental-universes">Fundamental</a> or <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/liquidity-universes">Dollar Volume</a></td>
-            <td><a href="https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-constituents/pricing">US Equity Coarse Universe</a></td>
-            <td>One file per day.</td>
-            <td>5 QCC = $0.05 USD</td>
-        </tr>
-        <tr>
-            <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/etf-constituents-universes">ETF Constituents</a></td>
-            <td><a href="https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents/pricing">US ETF Constituents</a></td>
-            <td>One file per ETF per day.</td>
-            <td>50 QCC = $0.50 USD</td>
-        </tr>
-    </tbody>
-</table>
-
-<p>For example, the following algorithm creates a dollar volume universe with 100 securities and then subscribes to minute resolution data for each US Equity in the universe:</p>
+<p>For example, the following algorithm subscribes to minute resolution data for a US Equity:</p>
 
 <div class="section-example-container">
 <pre class="csharp">public class USEquityDataAlgorithm : QCAlgorithm
@@ -78,16 +141,14 @@
     {
         SetStartDate(2020, 1, 1);
         SetEndDate(2021, 1, 1);
-        UniverseSettings.Asynchronous = true;
-        AddUniverse(Universe.Top(100));
+        AddEquity("SPY", Resolution.Minute);
     }
 }</pre>
 <pre class="python">class USEquityDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2021, 1, 1)
-        self.universe_settings.asynchronous = True
-        self.add_universe(self.universe.top(100))</pre>
+        self.add_equity("SPY", Resolution.MINUTE)</pre>
 </div>
 
 <p>The following table shows the data cost of the preceding algorithm on the Quant Researcher tier:</p>
@@ -109,59 +170,12 @@
             <td>$600 USD/year</td>
         </tr>
         <tr>
-            <td>US Equity Coarse Universe</td>
-            <td>On Premise Download</td>
-            <td>252 trading days 
-                    <br>=&gt; 252 files <br><br>252 files @ 5 QCC/file<br>=&gt; 252 * 5 QCC<br> = 12,600 QCC <br>= $126 USD</td>
-            <td>1 trading day<br>=&gt; 1 file<br><br>1 file/day @ 5 QCC/file<br>=&gt; 5 QCC/day<br>= $0.05 USD/day</td>
-        </tr>
-        <tr>
             <td>US Equity</td>
             <td>Minute Download</td>
-            <td>100 securities over 252 trading days with 2 data formats<br>=&gt; 100 * 252 * 2 files<br>= 50,400 files<br><br>50,400 files @ 5 QCC/file<br>=&gt; 50,400 * 5 QCC <br>= 252,000 QCC <br>= $2,520 USD</td>
-            <td>100 securities with 2 data formats<br>=&gt; 100 * 2 files/day<br>= 200 files/day<br><br>200 files/day @ 5 QCC/file<br>=&gt; 200 * 5 QCC/day<br>= 1,000 QCC/day<br>= $10 USD/day</td>
+            <td>1 security over 252 trading days with 2 data formats<br>=&gt; 1 * 252 * 2 files<br>= 504 files<br><br>504 files @ 5 QCC/file<br>=&gt; 504 * 5 QCC <br>= 2,520 QCC <br>= $25.20 USD</td>
+            <td>1 security with 2 data formats<br>=&gt; 1 * 2 files/day<br>= 2 files/day<br><br>2 files/day @ 5 QCC/file<br>=&gt; 2 * 5 QCC/day<br>= 10 QCC/day<br>= $0.10 USD/day</td>
         </tr>
     </tbody>
 </table>
 
 <p>The preceding table assumes you download trade and quote data, but you can run backtests with only trade data.</p>
-
-<h4>Download in Bulk</h4>
-<p>When you download in bulk, you are billed per file at the same rates as downloading by ticker. The following table describes the file format and costs of each resolution:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Tick</td>
-            <td>One file per security per trading day per data format. Quote and trade data are separate files.</td>
-            <td>6 QCC = $0.06 USD</td>
-        </tr>
-        <tr>
-            <td>Second</td>
-            <td>One file per security per trading day per data format. Quote and trade data are separate files.</td>
-            <td>5 QCC = $0.05 USD</td>
-        </tr>
-        <tr>
-            <td>Minute</td>
-            <td>One file per security per trading day per data format. Quote and trade data are separate files.</td>
-            <td>5 QCC = $0.05 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per security.</td>
-            <td>300 QCC = $3 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per security.</td>
-            <td>100 QCC = $1 USD</td>
-        </tr>
-    </tbody>
-</table>

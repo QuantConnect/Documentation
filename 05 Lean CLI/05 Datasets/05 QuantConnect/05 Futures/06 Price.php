@@ -1,11 +1,124 @@
-<h4>Download by Ticker</h4>
-<p>Futures algorithms require the following data:</p>
-<ul>
-    <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master'>US Futures Security Master</a></li>
-    <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-future-universe'>US Future Universe</a></li>
-    <li>Some data from the <a href='https://www.quantconnect.com/datasets/algoseek-us-futures'>US Futures</a> dataset</li>
-</ul>
+<h4>Download in Bulk</h4>
+<p>To download the US Futures dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/pricing">US Futures Security Master</a> and <a href="https://www.quantconnect.com/datasets/quantconnect-us-future-universe">US Future Universe</a> subscriptions. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
 
+<table class="qc-table table" id='us-futures-bulk-download-price'>
+    <thead>
+        <tr>
+            <th>Resolution</th>
+            <th>Quant Researcher</th>
+            <th>Team</th>
+            <th>Trading Firm</th>
+            <th>Institution</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Tick, Second, and Minute</td>
+            <td>30,000</td>
+            <td>33,600</td>
+            <td>40,800</td>
+            <td>64,800</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>14,400</td>
+            <td>21,000</td>
+            <td>26,400</td>
+            <td>34,800</td>
+        </tr>
+        <tr>
+            <td>Daily</td>
+            <td>12,000</td>
+            <td>15,600</td>
+            <td>18,000</td>
+            <td>21,000</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>After the first bulk subscription ends, subscribe to the updates to keep your local data current. The following table shows the price ($/year) of the updates of each resolution for each organization tier:</p>
+
+<table class="qc-table table" id='us-futures-bulk-update-price'>
+    <thead>
+        <tr>
+            <th>Resolution</th>
+            <th>Quant Researcher</th>
+            <th>Team</th>
+            <th>Trading Firm</th>
+            <th>Institution</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Tick, Second, and Minute</td>
+            <td>1,200</td>
+            <td>1,680</td>
+            <td>2,160</td>
+            <td>2,880</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>1,440</td>
+            <td>1,440</td>
+            <td>1,920</td>
+            <td>2,640</td>
+        </tr>
+        <tr>
+            <td>Daily</td>
+            <td>720</td>
+            <td>960</td>
+            <td>1,440</td>
+            <td>1,920</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following table shows the annual price ($/year) of the US Future Universe historical and updates subscriptions for each organization tier:</p>
+
+<table class="qc-table table" id='us-future-universe-bulk-price'>
+    <thead>
+        <tr>
+            <th>Tier</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Quant Researcher</td>
+            <td>1,200</td>
+            <td>960</td>
+        </tr>
+        <tr>
+            <td>Team</td>
+            <td>1,920</td>
+            <td>1,200</td>
+        </tr>
+        <tr>
+            <td>Trading Firm</td>
+            <td>2,880</td>
+            <td>1,440</td>
+        </tr>
+        <tr>
+            <td>Institution</td>
+            <td>3,960</td>
+            <td>1,680</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#us-futures-bulk-download-price td:not(:first-child),
+#us-futures-bulk-download-price th:not(:first-child),
+#us-futures-bulk-update-price td:not(:first-child),
+#us-futures-bulk-update-price th:not(:first-child),
+#us-future-universe-bulk-price td:not(:first-child),
+#us-future-universe-bulk-price th:not(:first-child) {
+    text-align: right;
+}
+</style>
+
+<h4>Download by Ticker</h4>
 <p>The following table shows the cost of an annual subscription to the US Futures Security Master for each organization tier:</p>
 <? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
 
@@ -146,43 +259,3 @@
 </table>
 
 <p>The preceding table assumes you download trade, quote, and open interest data. However, you can run backtests with only trade data.</p>
-
-<h4>Download in Bulk</h4>
-<p>When you download in bulk, you are billed per file at the same rates as downloading by ticker. The following table describes the file format and costs of each resolution:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Tick</td>
-            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>150 QCC = $1.50 USD</td>
-        </tr>
-        <tr>
-            <td>Second</td>
-            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>100 QCC = $1.00 USD</td>
-        </tr>
-        <tr>
-            <td>Minute</td>
-            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>50 QCC = $0.50 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>1500 QCC = $15 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>1500 QCC = $15 USD</td>
-        </tr>
-    </tbody>
-</table>

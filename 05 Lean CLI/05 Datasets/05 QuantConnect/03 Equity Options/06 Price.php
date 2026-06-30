@@ -1,20 +1,93 @@
+<h4>Download in Bulk</h4>
+<p>To download the US Equity Options dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a>, <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe">US Equity Option Universe</a>, and underlying <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price">US Equities</a> subscriptions. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
+
+<table class="qc-table table" id='us-equity-options-bulk-download-price'>
+    <thead>
+        <tr>
+            <th>Resolution</th>
+            <th>Quant Researcher</th>
+            <th>Team</th>
+            <th>Trading Firm</th>
+            <th>Institution</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Minute</td>
+            <td>30,000</td>
+            <td>33,600</td>
+            <td>40,800</td>
+            <td>64,800</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>14,400</td>
+            <td>21,000</td>
+            <td>26,400</td>
+            <td>34,800</td>
+        </tr>
+        <tr>
+            <td>Daily</td>
+            <td>12,000</td>
+            <td>15,600</td>
+            <td>18,000</td>
+            <td>21,000</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>After the first bulk subscription ends, subscribe to the updates to keep your local data current. The following table shows the price ($/year) of the updates of each resolution for each organization tier:</p>
+
+<table class="qc-table table" id='us-equity-options-bulk-update-price'>
+    <thead>
+        <tr>
+            <th>Resolution</th>
+            <th>Quant Researcher</th>
+            <th>Team</th>
+            <th>Trading Firm</th>
+            <th>Institution</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Minute</td>
+            <td>1,200</td>
+            <td>1,680</td>
+            <td>2,160</td>
+            <td>2,880</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>1,440</td>
+            <td>1,440</td>
+            <td>1,920</td>
+            <td>2,640</td>
+        </tr>
+        <tr>
+            <td>Daily</td>
+            <td>720</td>
+            <td>960</td>
+            <td>1,440</td>
+            <td>1,920</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#us-equity-options-bulk-download-price td:not(:first-child),
+#us-equity-options-bulk-download-price th:not(:first-child),
+#us-equity-options-bulk-update-price td:not(:first-child),
+#us-equity-options-bulk-update-price th:not(:first-child) {
+    text-align: right;
+}
+</style>
+
 <h4>Download by Ticker</h4>
-<p>
-    Equity Option algorithms require the following data:
-</p>
-
-<ul>
-    <li><a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a></li>
-    <li><a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe'>US Equity Option Universe</a></li>
-    <li>Some data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equity-options/pricing">US Equity Options</a> dataset</li>
-    <li>Data for the underlying <a href='/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price'>US Equity universes and assets</a></li>
-</ul>
-
 <p>The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
 
 <? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
 
-<p>The file format of the US Equity Option Universe data is one file per underlying Equity and each file costs 100 QCC = $1 USD.</p>
+<p>The file format of the US Equity Option Universe data is one file per underlying Equity and each file costs 200 QCC = $2 USD.</p>
 
 <p>The US Equity Options dataset is available is several resolutions. The resolution you need depends on the US Equity Option subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
@@ -46,8 +119,6 @@
 </table>
 
 <p>For example, the following algorithm subscribes to minute resolution data for an Equity Option and its underlying asset:<br></p>
-
-
 
 <div class="section-example-container">
 <pre class="csharp">public class USEquityOptionsDataAlgorithm : QCAlgorithm
@@ -96,18 +167,18 @@
                 <br>=&gt; 1 * 252 files
                 <br>= 252 files
                 <br>
-                <br>252 files @ 100 QCC/file
-                <br>=&gt; 252 * 100 QCC
-                <br>= 25,200 QCC
-                <br>= $252 USD
+                <br>252 files @ 200 QCC/file
+                <br>=&gt; 252 * 200 QCC
+                <br>= 50,400 QCC
+                <br>= $504 USD
             </td>
             <td>
                 1 underlying Equity
                 <br>=&gt; 1 file/day
                 <br>
-                <br>1 file/day @ 100 QCC/file
-                <br>= 100 QCC/day
-                <br>= $1 USD/day
+                <br>1 file/day @ 200 QCC/file
+                <br>= 200 QCC/day
+                <br>= $2 USD/day
             </td>
         </tr>
         <tr>
@@ -143,8 +214,8 @@
                 <br>
                 <br>756 files @ 15 QCC/file
                 <br>=&gt; 756 * 15 QCC 
-                <br>= 11,360 QCC 
-                <br>= $113.60 USD
+                <br>= 11,340 QCC
+                <br>= $113.40 USD
             </td>
             <td>
                 1 Option with 3 data formats
@@ -160,33 +231,3 @@
 </table>
 
 <p>The preceding table assumes you download trade, quote, and open interest data. However, you can run backtests with only trade data.</p>
-
-<h4>Download in Bulk</h4>
-<p>When you download in bulk, you are billed per file at the same rates as downloading by ticker. The following table describes the file format and costs of each resolution:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>One file per Option per trading day per data format. Quote, trade, and open interest data are separate files.</td>
-            <td>15 QCC = $0.15 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per Option per year per data format. Trade and open interest data are separate files.</td>
-            <td>900 QCC = $9 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per Option per year. Trade and open interest data are separate files.</td>
-            <td>300 QCC = $3 USD</td>
-        </tr>
-    </tbody>
-</table>

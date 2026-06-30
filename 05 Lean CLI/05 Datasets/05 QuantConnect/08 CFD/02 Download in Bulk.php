@@ -1,9 +1,9 @@
-<p>After you subscribe to local access (see <a href="/docs/v2/lean-cli/datasets/quantconnect/cfd#02-Prerequisites">Prerequisites</a>), open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and run the following command to bulk download the data, replacing <code>&lt;resolution&gt;</code> with daily, hour, minute, or second and adjusting the date range:</p>
+<p>After you subscribe to the CFD dataset on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization, open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and run the following command to bulk download the data, replacing <code>&lt;resolution&gt;</code> with daily, hour, minute, or second and adjusting the date range:</p>
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "CFD Data" --data-type "Bulk" --resolution "&lt;resolution&gt;" --start "20230101" --end "20230105"</pre> 
 </div>
 
-<p>You can also use the <a href="https://www.quantconnect.com/datasets/oanda-cfd-data/cli">CLI Command Generator</a>. For more information, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#02-Using-the-CLI">Using the CLI</a>.</p>
+<p>You can also use the <a href="https://www.quantconnect.com/datasets/oanda-cfd-data/cli">CLI Command Generator</a>. For more information, see <a href="/docs/v2/lean-cli/datasets/quantconnect/key-concepts#03-Using-the-CLI">Using the CLI</a>.</p>
 
 <p>After you bulk download the CFD dataset, new daily updates are available at 3 PM Coordinated Universal Time (UTC) after each trading day. Instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your organization workspace and run it to update your data files. The following example script updates all data resolutions:</p>
 

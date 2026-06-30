@@ -1,5 +1,8 @@
+<h4>Download in Bulk</h4>
+<p>To download the CFD dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price is the same for all resolutions and organization tiers: $800/year to download the historical data and $200/year for the daily updates.</p>
+
 <h4>Download by Ticker</h4>
-<p>CFD algorithms require some data from the <a href="https://www.quantconnect.com/datasets/oanda-cfd-data/pricing">CFD</a> dataset. The CFD dataset is available is several resolutions. The resolution you need depends on the CFD subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
+<p>The CFD dataset is available is several resolutions. The resolution you need depends on the CFD subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
 <table class="qc-table table">
     <thead>
@@ -80,41 +83,6 @@
                 <br>=&gt; 3 QCC/day
                 <br>= $0.03 USD/day
             </td>
-        </tr>
-    </tbody>
-</table>
-
-<h4>Download in Bulk</h4>
-<p>When you download in bulk, you are billed per file at the same rates as downloading by ticker. The following table describes the file format and costs of each resolution:</p>
-
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Second</td>
-            <td>One file per contract per trading day.</td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-        <tr>
-            <td>Minute</td>
-            <td>One file per contract&nbsp;per trading day.<br></td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per contract.<br></td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per contract.<br></td>
-            <td>3 QCC = $0.03 USD</td>
         </tr>
     </tbody>
 </table>
