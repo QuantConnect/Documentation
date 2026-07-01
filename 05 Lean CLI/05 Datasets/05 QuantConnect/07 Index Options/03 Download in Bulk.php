@@ -1,11 +1,11 @@
 <p>After you subscribe to local access (see <a href="/docs/v2/lean-cli/datasets/quantconnect/index-options#02-Prerequisites">Prerequisites</a>), open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and run the following commands to bulk download the data and its prerequisites.</p>
 
-<p>To download the US Index Option Universe data, run:</p>
+<p>To download or update your local copy of the US Index Option Universe data, run:</p>
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "US Index Option Universe" --data-type "Bulk" --start "20250403" --end "20250403"</pre> 
 </div>
 
-<p>To download the US Index Options data for a resolution, run the following command, replacing <code>&lt;resolution&gt;</code> with daily, hour, or minute and adjusting the date range:</p>
+<p>To download or update your local copy of the US Index Options data for a resolution, run the following command, replacing <code>&lt;resolution&gt;</code> with daily, hour, or minute and adjusting the date range:</p>
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "US Index Options" --data-type "Bulk" --resolution "&lt;resolution&gt;" --start "20230101" --end "20230105"</pre> 
 </div>
@@ -25,14 +25,3 @@ include(DOCS_RESOURCES."/datasets/download_bulk_data_script.php");
 ?>
 
 <p>The preceding script checks the date of the most recent minute resolution data you have for SPX. If there is new minute data available, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>
-
-<p>To update your local copy of the US Index Option Universe data, run the following command, or use the universe auto-update script below:</p>
-<div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US Index Option Universe" --data-type "Bulk" --start "20250403" --end "20250403"</pre> 
-</div>
-
-<?
-$dataset = "US Index Option Universe";
-$dirName = "indexoption/usa/universes";
-include(DOCS_RESOURCES."/datasets/download_bulk_data_script_universe.php");
-?>
