@@ -42,7 +42,7 @@
 }
 </style>
 
-<p>The following table shows the total cost of downloading the required datasets in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
+<p>The following table shows the total cost of downloading the required datasets, including minute US Equities data for the selected constituents, in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates.</p>
 
 <table class="qc-table table">
     <thead>
@@ -67,16 +67,22 @@
             <td>$1,200/year</td>
         </tr>
         <tr>
+            <td>US Equities</td>
+            <td>Minute</td>
+            <td>$11,760</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
             <td>Total</td>
             <td></td>
-            <td>$4,200</td>
-            <td>$1,800/year</td>
+            <td>$15,960</td>
+            <td>$2,400/year</td>
         </tr>
     </tbody>
 </table>
 
 <h4>Download by Date</h4>
-<p>When you download by date, the US ETF Constituents data is one file per ETF per day and each file costs 50 QCC = $0.50 USD. The following table shows the cost of downloading one year of data for one ETF by date on the <b>Quant Researcher</b> tier:</p>
+<p>When you download by date, the US ETF Constituents data is one file per ETF per day and each file costs 50 QCC = $0.50 USD. The following table shows the cost of downloading one year of data for one ETF by date on the <b>Quant Researcher</b> tier, assuming you download minute US Equities data for all 500 constituents of an ETF such as SPY:</p>
 
 <table class="qc-table table">
     <thead>
@@ -113,5 +119,27 @@
                 <br>= $0.50 USD/day
             </td>
         </tr>
+        <tr>
+            <td>US Equities</td>
+            <td>Minute</td>
+            <td>500 constituents over 252 trading days with 2 data formats
+                <br>=&gt; 500 * 252 * 2 files
+                <br>= 252,000 files
+                <br>
+                <br>252,000 files @ 5 QCC/file
+                <br>=&gt; 252,000 * 5 QCC
+                <br>= 1,260,000 QCC
+                <br>= $12,600 USD
+            </td>
+            <td>500 constituents with 2 data formats
+                <br>=&gt; 1,000 files/day
+                <br>
+                <br>1,000 files/day @ 5 QCC/file
+                <br>=&gt; 5,000 QCC/day
+                <br>= $50 USD/day
+            </td>
+        </tr>
     </tbody>
 </table>
+
+<p>This example downloads all 500 constituents of an ETF such as SPY to show the maximum cost. The cost depends on your selection, so you can download fewer constituents (for example, 50) to reduce it. As the number of constituents grows, compare the by-date US Equities cost with the bulk cost above to determine when downloading in bulk is cheaper.</p>
