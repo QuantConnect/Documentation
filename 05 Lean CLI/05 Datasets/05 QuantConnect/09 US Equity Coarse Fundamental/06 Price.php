@@ -42,7 +42,7 @@
 }
 </style>
 
-<p>The following table shows the total cost of downloading the required datasets in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
+<p>The following table shows the total cost of downloading the required datasets, including minute US Equities data for the selected securities, in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates.</p>
 
 <table class="qc-table table">
     <thead>
@@ -67,16 +67,22 @@
             <td>$240/year</td>
         </tr>
         <tr>
+            <td>US Equities</td>
+            <td>Minute</td>
+            <td>$11,760</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
             <td>Total</td>
             <td></td>
-            <td>$1,200</td>
-            <td>$840/year</td>
+            <td>$12,960</td>
+            <td>$1,440/year</td>
         </tr>
     </tbody>
 </table>
 
 <h4>Download by Date</h4>
-<p>When you download by date, the US Equity Coarse Universe data is one file per day and each file costs 5 QCC = $0.05 USD. The following table shows the cost of downloading one year of data by date on the <b>Quant Researcher</b> tier:</p>
+<p>When you download by date, the US Equity Coarse Universe data is one file per day and each file costs 5 QCC = $0.05 USD. The following table shows the cost of downloading one year of data by date on the <b>Quant Researcher</b> tier, assuming the universe selects 50 tickers and you download minute US Equities data for them:</p>
 
 <table class="qc-table table">
     <thead>
@@ -113,5 +119,27 @@
                 <br>= $0.05 USD/day
             </td>
         </tr>
+        <tr>
+            <td>US Equities</td>
+            <td>Minute</td>
+            <td>50 tickers over 252 trading days with 2 data formats
+                <br>=&gt; 50 * 252 * 2 files
+                <br>= 25,200 files
+                <br>
+                <br>25,200 files @ 5 QCC/file
+                <br>=&gt; 25,200 * 5 QCC
+                <br>= 126,000 QCC
+                <br>= $1,260 USD
+            </td>
+            <td>50 tickers with 2 data formats
+                <br>=&gt; 100 files/day
+                <br>
+                <br>100 files/day @ 5 QCC/file
+                <br>=&gt; 500 QCC/day
+                <br>= $5 USD/day
+            </td>
+        </tr>
     </tbody>
 </table>
+
+<p>This example assumes the universe selects 50 tickers. As the universe selects more tickers, compare the by-date US Equities cost with the bulk cost above to determine when downloading in bulk is cheaper.</p>
