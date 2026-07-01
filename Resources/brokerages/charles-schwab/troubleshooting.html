@@ -1,4 +1,4 @@
-<p>The following table describes errors you may see when deploying to Charles Schwab:</p>
+<p>The following table describes the errors that cause an order to be rejected when deploying to Charles Schwab:</p>
 
 <table class="table qc-table">
     <thead>
@@ -14,6 +14,93 @@
             </td>
             <td>
                 Your account may not have the necessary permissions to place trades. Log into <a rel="nofollow" target="_blank" href='https://schwab.com/'>schwab.com</a>, navigate to <span class='menu-name'>Trade > Trading Platforms</span>, and click on Enable trading on thinkorswim. The permissions may take up to 48 hours to take effect. If the issue persists, contact Charles Schwab support.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = Order_Sys_0002,</br>Description = The stop price must be above the current ask for buy stop orders and below the bid for sell stop orders.</div>
+            </td>
+            <td>
+                The stop price is on the wrong side of the market. A buy stop must sit above the current ask and a sell stop must sit below the current bid; Schwab rejects the order when the market has already crossed the stop price (for example, a sell stop set at or above the current bid). This often happens when a stop is submitted with a stale price or right at the market. Compute the stop price from the current quote — reference the ask for buy stops and the bid for sell stops — so it always sits on the correct side of the market:
+                <div class="section-example-container">
+                    <pre class="python">security = self.securities[symbol]
+# Buy stop above the ask, sell stop below the bid
+stop_price = security.ask_price * 1.001 if quantity > 0 else security.bid_price * 0.999
+self.stop_market_order(symbol, quantity, stop_price)</pre>
+                    <pre class="csharp">var security = Securities[symbol];
+// Buy stop above the ask, sell stop below the bid
+var stopPrice = quantity > 0 ? security.AskPrice * 1.001m : security.BidPrice * 0.999m;
+StopMarketOrder(symbol, quantity, stopPrice);</pre>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = Position_Sys_0001,</br>Description = This order may result in an oversold/overbought position in your account. Please check your position quantity and/or open orders.</div>
+            </td>
+            <td>
+                Schwab thinks the order quantity plus your existing open orders exceeds your current position (oversold) or buying power (overbought). It commonly appears when you call <code>Liquidate</code>/<code>liquidate</code>, which cancels your open orders and submits a market order to close the position at the same time. Because Schwab hasn't confirmed the cancellation yet, it still counts the resting order and sees the closing order as doubling your exposure. For example, on a short of 82 shares, <code>liquidate</code> cancels a resting buy-82 stop (still <span class='menu-name'>CancelPending</span>) and submits a new market buy-82 to cover, so Schwab sees 164 shares of buying against an 82-share short and flags the order as overbought by 82. Cancel the open orders first, give Schwab about one minute to process the cancellations, and then liquidate:
+                <div class="section-example-container">
+                    <pre class="python">all_cancelled_orders = self.transactions.cancel_open_orders()
+# Wait ~1 minute for Schwab to process the cancellations, then:
+self.liquidate()</pre>
+                    <pre class="csharp">var allCancelledOrders = Transactions.CancelOpenOrders();
+// Wait ~1 minute for Schwab to process the cancellations, then:
+Liquidate();</pre>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Charles Schwab may also return the following warnings alongside an error. They don't reject the order on their own, so when you see one, check the accompanying error above for the actual cause:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Warning Message(s)</th>
+            <th>Meaning</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = Easy_To_Borrow_GTC,</br>Description = This security is currently easy to borrow, good until canceled orders may be subjected to changes in status to hard to borrow resulting in your order being canceled.</div>
+            </td>
+            <td>
+                The security is easy to borrow now, but a good-until-canceled short order may be canceled later if it becomes hard to borrow.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = ETB_WARNING,</br>Description = Please note: although this security is considered easy to borrow at this time, conditions may change including share availability and possible fees associated with hard to borrow securities.</div>
+            </td>
+            <td>
+                The security is easy to borrow now, but share availability and borrow fees may change.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = PRICES_CAN_CHANGE_QUICKLY,</br>Description = With market orders, prices can change quickly in fast market conditions resulting in execution prices that can be different from the quotes displayed at order entry.</div>
+            </td>
+            <td>
+                In fast markets, a market order may fill at a price different from the quote shown when the order was entered.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = SCHW_DO0989,</br>Description = Please note that when a Stop order triggers it becomes a Market order. Because of this and depending on market conditions, this order may execute at a price significantly different than the Stop price.</div>
+            </td>
+            <td>
+                When a stop order triggers it becomes a market order, so it may fill at a price significantly different from the stop price.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Name = STOP_ORDERS_NO_GUARANTEE,</br>Description = With stop orders, there is no guarantee that the execution price will be equal to or near the activation price.</div>
+            </td>
+            <td>
+                A stop order is not guaranteed to fill at or near its activation price.
             </td>
         </tr>
     </tbody>
