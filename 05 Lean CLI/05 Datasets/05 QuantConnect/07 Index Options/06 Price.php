@@ -186,7 +186,7 @@
     </tbody>
 </table>
 
-<p>For example, the following algorithm subscribes to minute resolution data for a universe of VIX Index Option contracts:</p>
+<p>For example, the following algorithm subscribes to minute resolution data for a universe of SPXW Index Option contracts:</p>
 
 <div class="section-example-container">
 <pre class="csharp">public class USIndexOptionsDataAlgorithm : QCAlgorithm
@@ -195,14 +195,14 @@
     {
         SetStartDate(2020, 1, 1);
         SetEndDate(2021, 1, 1);
-        AddIndexOption("VIX");
+        AddIndexOption("SPX", "SPXW");
     }
 }</pre>
 <pre class="python">class USIndexOptionsDataAlgorithm(QCAlgorithm):
     def initialize(self):
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2021, 1, 1)
-        self.add_index_option("VIX")</pre>
+        self.add_index_option("SPX", "SPXW")</pre>
 </div>
 
 <p>The following table shows the data cost of the preceding algorithm:</p>
