@@ -1,5 +1,9 @@
+<p>Both the bulk and by-ticker downloads require the <a href="https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/pricing">US Futures Security Master</a>. The following table shows the cost of an annual subscription to the US Futures Security Master for each organization tier:</p>
+
+<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
+
 <h4>Download in Bulk</h4>
-<p>To download the US Futures dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/pricing">US Futures Security Master</a> and <a href="https://www.quantconnect.com/datasets/quantconnect-us-future-universe">US Future Universe</a> subscriptions. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
+<p>To download the US Futures dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-future-universe">US Future Universe</a> subscription. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
 
 <table class="qc-table table" id='us-futures-bulk-download-price'>
     <thead>
@@ -119,9 +123,6 @@
 </style>
 
 <h4>Download by Ticker</h4>
-<p>The following table shows the cost of an annual subscription to the US Futures Security Master for each organization tier:</p>
-<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
-
 <p>The file format of the US Future Universe dataset is one file per Future per day and each file costs 100 QCC = $1 USD.</p>
 
 <p>
