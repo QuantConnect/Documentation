@@ -1,5 +1,9 @@
+<p>Both the bulk and by-ticker downloads require the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a>. The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
+
+<?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
+
 <h4>Download in Bulk</h4>
-<p>To download the US Equities dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a> subscription. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
+<p>To download the US Equities dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
 
 <table class="qc-table table" id='us-equities-bulk-download-price'>
     <thead>
@@ -89,10 +93,6 @@
 </style>
 
 <h4>Download by Ticker</h4>
-<p>The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
-
-<?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
-
 <p>The US Equities dataset is available is several resolutions. The resolution you need depends on the US Equity subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
 <table class="qc-table table">
