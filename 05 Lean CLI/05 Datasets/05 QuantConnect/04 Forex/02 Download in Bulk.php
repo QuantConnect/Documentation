@@ -1,4 +1,4 @@
-<p>After you subscribe to the FOREX dataset on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization, open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and run the following command to bulk download the data, replacing <code>&lt;resolution&gt;</code> with daily, hour, minute, or second and adjusting the date range:</p>
+<p>After you subscribe to the FOREX dataset on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization, open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> and run the following command to bulk download or update the data, replacing <code>&lt;resolution&gt;</code> with daily, hour, minute, or second and adjusting the date range:</p>
 <div class="cli section-example-container">
      <pre>$ lean data download --dataset "FOREX Data" --data-type "Bulk" --resolution "&lt;resolution&gt;" --start "20230101" --end "20230105"</pre> 
 </div>
