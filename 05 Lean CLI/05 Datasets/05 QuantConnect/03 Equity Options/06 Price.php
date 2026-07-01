@@ -1,3 +1,5 @@
+<p>Equity Options data depends on the underlying <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price">US Equities</a> data and the US Equity Security Master, so review the US Equity prices too. The following prices are in addition to those.</p>
+
 <h4>Download in Bulk</h4>
 <p>To download the US Equity Options dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a>, <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe">US Equity Option Universe</a>, and underlying <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price">US Equities</a> subscriptions. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
 
@@ -73,20 +75,97 @@
     </tbody>
 </table>
 
+<p>The following table shows the annual price ($/year) of the US Equity Option Universe historical and updates subscriptions for each organization tier:</p>
+
+<table class="qc-table table" id='us-equity-option-universe-bulk-price'>
+    <thead>
+        <tr>
+            <th>Tier</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Quant Researcher</td>
+            <td>3,960</td>
+            <td>1,200</td>
+        </tr>
+        <tr>
+            <td>Team</td>
+            <td>5,040</td>
+            <td>1,200</td>
+        </tr>
+        <tr>
+            <td>Trading Firm</td>
+            <td>7,500</td>
+            <td>1,200</td>
+        </tr>
+        <tr>
+            <td>Institution</td>
+            <td>12,000</td>
+            <td>1,200</td>
+        </tr>
+    </tbody>
+</table>
+
 <style>
 #us-equity-options-bulk-download-price td:not(:first-child),
 #us-equity-options-bulk-download-price th:not(:first-child),
 #us-equity-options-bulk-update-price td:not(:first-child),
-#us-equity-options-bulk-update-price th:not(:first-child) {
+#us-equity-options-bulk-update-price th:not(:first-child),
+#us-equity-option-universe-bulk-price td:not(:first-child),
+#us-equity-option-universe-bulk-price th:not(:first-child) {
     text-align: right;
 }
 </style>
 
+<p>The following table shows the total cost of downloading the required datasets in bulk at minute resolution on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Package</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>US Equity Security Master</td>
+            <td>Subscription</td>
+            <td>$600</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
+            <td>US Equity Option Universe</td>
+            <td>Subscription</td>
+            <td>$3,960</td>
+            <td>$1,200/year</td>
+        </tr>
+        <tr>
+            <td>US Equities</td>
+            <td>Minute</td>
+            <td>$11,760</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
+            <td>US Equity Options</td>
+            <td>Minute</td>
+            <td>$30,000</td>
+            <td>$1,200/year</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td></td>
+            <td>$46,320</td>
+            <td>$3,600/year</td>
+        </tr>
+    </tbody>
+</table>
+
 <h4>Download by Ticker</h4>
-<p>The following table shows the cost of an annual subscription to the US Equity Security Master for each organization tier:</p>
-
-<? include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
-
 <p>The file format of the US Equity Option Universe data is one file per underlying Equity and each file costs 200 QCC = $2 USD.</p>
 
 <p>The US Equity Options dataset is available is several resolutions. The resolution you need depends on the US Equity Option subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>

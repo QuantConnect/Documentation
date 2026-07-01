@@ -2,7 +2,7 @@
 
 <p>To download the US ETF Constituents data, run:</p>
 <div class="cli section-example-container">
-     <pre>$ lean data download --dataset "US ETF Constituents" --data-type "Bulk" --start "20090601" --end "20500101"</pre> 
+     <pre>$ lean data download --dataset "US ETF Constituents" --data-type "Bulk" --start "20250701" --end "20260701"</pre> 
 </div>
 
 <p>To download the US Equity Security Master, run:</p>
