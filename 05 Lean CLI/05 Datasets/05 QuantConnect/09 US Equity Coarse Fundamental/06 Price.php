@@ -73,5 +73,5 @@
     </tbody>
 </table>
 
-<h4>Download by Ticker</h4>
+<h4>Download by Date</h4>
 <p>The US Equity Coarse Universe dataset is part of the US Equity universe cost. The data file format is one file per day and each file costs 5 QCC = $0.05 USD. For the full US Equity cost breakdown, see <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price">US Equity</a>.</p>
