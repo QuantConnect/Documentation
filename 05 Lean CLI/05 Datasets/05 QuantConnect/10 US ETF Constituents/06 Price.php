@@ -40,5 +40,38 @@
 }
 </style>
 
+<p>The following table shows the total cost of downloading the required datasets in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Package</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>US Equity Security Master</td>
+            <td>Subscription</td>
+            <td>$600</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
+            <td>US ETF Constituents</td>
+            <td>Subscription</td>
+            <td>$3,600</td>
+            <td>$1,200/year</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td></td>
+            <td>$4,200</td>
+            <td>$1,800/year</td>
+        </tr>
+    </tbody>
+</table>
+
 <h4>Download by Ticker</h4>
 <p>The US ETF Constituents dataset is part of the US Equity universe cost. The data file format is one file per ETF per day and each file costs 50 QCC = $0.50 USD. For the full US Equity cost breakdown, see <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price">US Equity</a>.</p>

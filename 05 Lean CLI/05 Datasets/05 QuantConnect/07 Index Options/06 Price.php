@@ -118,6 +118,39 @@
 }
 </style>
 
+<p>The following table shows the total cost of downloading the required datasets in bulk at minute resolution on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Package</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>US Index Option Universe</td>
+            <td>Subscription</td>
+            <td>$1,200</td>
+            <td>$960/year</td>
+        </tr>
+        <tr>
+            <td>US Index Options</td>
+            <td>Minute</td>
+            <td>$30,000</td>
+            <td>$1,200/year</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td></td>
+            <td>$31,200</td>
+            <td>$2,160/year</td>
+        </tr>
+    </tbody>
+</table>
+
 <h4>Download by Ticker</h4>
 <p>
     The file format of the US Index Option Universe data is one file per underlying Index and each file costs 100 QCC = $1 USD.

@@ -92,6 +92,39 @@
 }
 </style>
 
+<p>The following table shows the total cost of downloading the required datasets in bulk at minute resolution on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Package</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>US Equity Security Master</td>
+            <td>Subscription</td>
+            <td>$600</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
+            <td>US Equities</td>
+            <td>Minute</td>
+            <td>$11,760</td>
+            <td>$600/year</td>
+        </tr>
+        <tr>
+            <td>Total</td>
+            <td></td>
+            <td>$12,360</td>
+            <td>$1,200/year</td>
+        </tr>
+    </tbody>
+</table>
+
 <h4>Download by Ticker</h4>
 <p>The US Equities dataset is available is several resolutions. The resolution you need depends on the US Equity subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 

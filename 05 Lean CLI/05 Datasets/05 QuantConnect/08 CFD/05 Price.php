@@ -1,6 +1,27 @@
 <h4>Download in Bulk</h4>
 <p>To download the CFD dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price is the same for all resolutions and organization tiers: $800/year to download the historical data and $200/year for the daily updates.</p>
 
+<p>The following table shows the total cost of downloading the CFD dataset in bulk. The price is the same for all organization tiers.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Package</th>
+            <th>Historical</th>
+            <th>Updates</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>CFD Data</td>
+            <td>Subscription</td>
+            <td>$800</td>
+            <td>$200/year</td>
+        </tr>
+    </tbody>
+</table>
+
 <h4>Download by Ticker</h4>
 <p>The CFD dataset is available is several resolutions. The resolution you need depends on the CFD subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
