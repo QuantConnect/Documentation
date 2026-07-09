@@ -1,0 +1,39 @@
+<p>Every <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">consolidator</a> keeps a built-in <code>RollingWindow</code> of the bars it produces, so you can access recent consolidated bars without creating and maintaining your own <code>RollingWindow</code>. The window updates automatically each time the consolidator emits a bar. By default, it holds the 2 most recent bars.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Create and register a consolidator.
+_consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(10));
+SubscriptionManager.AddConsolidator("SPY", _consolidator);</pre>
+<pre class="python"># Create and register a consolidator.
+self._consolidator = TradeBarConsolidator(timedelta(minutes=10))
+self.subscription_manager.add_consolidator("SPY", self._consolidator)</pre>
+</div>
+
+<p>To access the trailing consolidated bars, use reverse list access semantics with positive and negative indexing. The current (most recent) bar is at index 0 or the <code class="csharp">Current</code><code class="python">current</code> property, the previous bar is at index 1 or the <code class="csharp">Previous</code><code class="python">previous</code> property, and so on until the length of the window. Before the consolidator emits its first bar, <code class="csharp">Current</code><code class="python">current</code> is <code class="csharp">null</code><code class="python">None</code>, so check the <code class="csharp">Window.Count</code><code class="python">window.count</code> or the window's <code class="csharp">IsReady</code><code class="python">is_ready</code> flag first.</p>
+
+<p class="csharp">The window stores <code>IBaseData</code>, so cast each element to the consolidated bar type to access its properties.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var currentBar = _consolidator.Current as TradeBar;   // or _consolidator[0]
+var previousBar = _consolidator.Previous as TradeBar; // or _consolidator[1]
+var barCount = _consolidator.Window.Count;</pre>
+<pre class="python">current_bar = self._consolidator.current   # or self._consolidator[0]
+previous_bar = self._consolidator.previous # or self._consolidator[1]
+bar_count = self._consolidator.window.count</pre>
+</div>
+
+<p>To access all the consolidated bars in the window, iterate through the consolidator.</p>
+<div class="section-example-container">
+<pre class="csharp">foreach (TradeBar bar in _consolidator)
+{
+    Log(bar.ToString());
+}</pre>
+<pre class="python">for bar in self._consolidator:
+    self.log(f"{bar}")</pre>
+</div>
+
+<p>To keep more than the 2 most recent bars, set the <code class="csharp">Size</code><code class="python">size</code> of the window.</p>
+<div class="section-example-container">
+<pre class="csharp">_consolidator.Window.Size = 10;</pre>
+<pre class="python">self._consolidator.window.size = 10</pre>
+</div>
