@@ -1,16 +1,11 @@
-<p>If you save consolidated bars in a <code>RollingWindow</code>, you can access them by indexing the <code>RollingWindow</code>. <code>RollingWindow</code> objects operate on a first-in, first-out process to allow for reverse list access semantics with positive and negative indexing. Index 0 refers to the most recent item in the window and the largest index refers to the last item in the window. Index -1 refers to the latest item as well.</p>
+<p>The consolidator's built-in <code class="csharp">Window</code><code class="python">window</code> is a <a href="/docs/v2/writing-algorithms/historical-data/rolling-window">RollingWindow</a>, so you can use negative indexing to get the oldest bar it holds.</p>
 <div class="section-example-container">
-	<pre class="csharp">var mostRecentBar = _window[0];
-var previousBar = _window[1];
-var oldestBar = _window[-1];</pre>
-	<pre class="python">most_recent_bar = self._window[0]
-previous_bar = self._window[1]
-oldest_bar = self._window[-1]</pre>
-</div></p>
+	<pre class="csharp">var oldestBar = _consolidator.Window[-1];</pre>
+	<pre class="python">oldest_bar = self._consolidator.window[-1]</pre>
+</div>
 
-
-<p>To get the consolidated bar that was most recently removed from the <code>RollingWindow</code>, use the <code class="csharp">MostRecentlyRemoved</code><code class="python">most_recently_removed</code> property.</p>
+<p>To get the consolidated bar that was most recently removed from the window, use the <code class="csharp">MostRecentlyRemoved</code><code class="python">most_recently_removed</code> property.</p>
 <div class="section-example-container">
-	<pre class="csharp">var removedBar = _window.MostRecentlyRemoved;</pre>
-	<pre class="python">removed_bar = self._window.most_recently_removed</pre>
+	<pre class="csharp">var removedBar = _consolidator.Window.MostRecentlyRemoved;</pre>
+	<pre class="python">removed_bar = self._consolidator.window.most_recently_removed</pre>
 </div>

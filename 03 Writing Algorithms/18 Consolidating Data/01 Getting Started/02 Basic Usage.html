@@ -22,3 +22,12 @@ self._consolidator = self.consolidate(self._symbol, timedelta(minutes=10), self.
 def _consolidation_handler(self, consolidated_bar: TradeBar) -&gt; None:
     pass</pre>
 </div>
+
+<p>Each consolidator keeps a built-in <a href="/docs/v2/writing-algorithms/historical-data/rolling-window">RollingWindow</a> of the bars it produces, so you can access the most recent consolidated bars directly without maintaining your own <code>RollingWindow</code>. For more information, see <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-history">Consolidator History</a>.</p>
+
+<div class='section-example-container'>
+	<pre class='csharp'>var currentBar = _consolidator.Current as TradeBar;   // Most recent consolidated bar
+var previousBar = _consolidator.Previous as TradeBar; // Previous consolidated bar</pre>
+	<pre class='python'>current_bar = self._consolidator.current   # Most recent consolidated bar
+previous_bar = self._consolidator.previous # Previous consolidated bar</pre>
+</div>
