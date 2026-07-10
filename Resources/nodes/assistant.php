@@ -12,6 +12,8 @@
 	Refer to the <a href="/pricing">Pricing</a> page to see the price of each assistant node model.
 	Your first organization includes one free A-MICRO assistant node, which is capped at 100,000 tokens per month.
 	The token cap is lifted and the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization to a paid tier</a> and <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a new assistant node</a>.
+	Paid assistant nodes don't have the 100,000-token cap, but a fair use token allowance applies over a weekly rolling window.
+	If you use tokens beyond the weekly quota, upgrade to the next assistant node model or <a href='/docs/v2/ai-assistance/bring-your-own-key'>bring your own key</a>.
 </p>
 
 <p>
