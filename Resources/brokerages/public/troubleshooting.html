@@ -1,0 +1,38 @@
+<p>The following table describes errors you may see when deploying to Public:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Error Message(s)</th>
+            <th>Possible Cause and Fix</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">A deposit of $&lt;amount&gt; is required to place this order</div>
+            </td>
+            <td>
+                The order costs more than the buying power available for it, so Public rejects it at submission and LEAN reports an invalid order event. The deposit amount in the message is the shortfall. Size the order within your available buying power, or set the <code class="csharp">UseMargin</code><code class="python">use_margin</code> <a href='/docs/v2/cloud-platform/live-trading/brokerages/public#06-Orders'>order property</a> to <code class="csharp">true</code><code class="python">True</code> on a margin account to use margin buying power.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">You can have up to 10 pending orders opening new positions on the same underlying</div>
+            </td>
+            <td>
+                Public allows up to 10 pending orders that open new positions per underlying. Cancel one or more pending orders on the underlying before placing a new trade.
+            </td>
+        </tr>
+        <tr>
+            <td nowrap>
+                <div class="error-messages">Short selling require margin</div>
+            </td>
+            <td>
+                Trading on margin, which includes short selling and buying for more than your settled cash, requires at least $2,000 of cash, equities, and bonds in your account. Deposit funds to meet the minimum or avoid orders that need margin.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you need further support, <a href='/docs/v2/cloud-platform/organizations/support#06-Open-New-Tickets'>open a new support ticket</a> and add the live deployment with the error.</p>
