@@ -12,8 +12,12 @@ $createConsolidatorExtraArgsC = "";
 $createConsolidatorExtraArgsPy = "";
 $resolveConsolidatorExtraArgsC = "";
 $resolveConsolidatorExtraArgsPy = "";
-$resolutionArgExtraExamplesC = "";
-$resolutionArgExtraExamplesPy = "";
+$resolutionArgExtraExamplesC = "_consolidator = QuoteBarConsolidator.FromResolution(Resolution.Daily);
+// Alias:
+// ";
+$resolutionArgExtraExamplesPy = "self._consolidator = QuoteBarConsolidator.from_resolution(Resolution.DAILY)
+# Alias:
+# ";
 $consolidationTextResolution = "minute";
 $consolidationTextReceiveTime1 = "at 9:31";
 $consolidationTextReceiveTime2 = "9:31";
