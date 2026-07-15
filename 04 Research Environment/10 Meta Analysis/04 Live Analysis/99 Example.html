@@ -38,3 +38,112 @@ live_algorithm = api.read_live_algorithm(project_id, deploy_id)
 # Obtain the live algorithm statistics.
 print(live_algorithm.runtime_statistics)</pre>
 </div>
+
+<h4>Example 2: Reconstruct Trades Across Deployments</h4>
+<p>The following example reconstructs the complete trade list across all the live deployments of the current project in a jupyter notebook.</p>
+<div class="section-example-container csharp">
+    <pre class="csharp">// Load the necessary assemblies.
+#load "../Initialize.csx"</pre>
+</div>
+<div class="section-example-container csharp">
+    <pre class="csharp">// Load the necessary assembly files.
+#load "../QuantConnect.csx"</pre>
+</div>
+<div class="section-example-container">
+    <pre class="csharp">using QuantConnect;
+using QuantConnect.Api;
+using QuantConnect.Orders;
+using QuantConnect.Research;
+using QuantConnect.Statistics;
+
+// Instantiate a QuantBook instance to get the project Id.
+var qb = new QuantBook();
+var projectId = qb.ProjectId;
+
+// Get the deployments of the project, sorted by launch time.
+// Request each status separately, since unfiltered requests can time out on large accounts.
+var statuses = new[]
+{
+    AlgorithmStatus.Running, AlgorithmStatus.Stopped, AlgorithmStatus.Liquidated, AlgorithmStatus.RuntimeError
+};
+var deployments = statuses
+    .SelectMany(status =&gt; api.ListLiveAlgorithms(status).Algorithms)
+    .Where(x =&gt; x.ProjectId == projectId)
+    .OrderBy(x =&gt; x.Launched)
+    .ToList();
+Console.WriteLine($"Deployments: {deployments.Count}");
+
+// Get all the orders of the project. A single project-level loop spans every deployment.
+var orders = new List&lt;ApiOrderResponse&gt;();
+var start = 0;
+while (true)
+{
+    var window = api.ReadLiveOrders(projectId, start, start + 100);
+    if (!window.Any()) break;
+    orders.AddRange(window);
+    start += 100;
+}
+
+// Replay the fill events through a trade builder to reconstruct the trades.
+var tradeBuilder = new TradeBuilder(FillGroupingMethod.FillToFill, FillMatchingMethod.FIFO);
+foreach (var response in orders)
+{
+    foreach (var serializedEvent in response.Events.Where(x =&gt; x.FillQuantity != 0))
+    {
+        tradeBuilder.ProcessFill(OrderEvent.FromSerialized(serializedEvent), 1m, serializedEvent.OrderFeeAmount ?? 0m);
+    }
+}
+
+// Print the closed trades of every deployment.
+foreach (var trade in tradeBuilder.ClosedTrades)
+{
+    Console.WriteLine($"{trade.Symbols[0].Value} {trade.Direction} quantity {trade.Quantity} " +
+        $"entry {trade.EntryTime:u} @ {trade.EntryPrice} exit {trade.ExitTime:u} @ {trade.ExitPrice} " +
+        $"profit {trade.ProfitLoss} fees {trade.TotalFees}");
+}</pre>
+    <pre class="python"># Instantiate a QuantBook instance to get the project Id.
+qb = QuantBook()
+project_id = qb.project_id
+
+# Get the deployments of the project, sorted by launch time.
+# Request each status separately, since unfiltered requests can time out on large accounts.
+statuses = [
+    AlgorithmStatus.RUNNING, AlgorithmStatus.STOPPED, AlgorithmStatus.LIQUIDATED, AlgorithmStatus.RUNTIME_ERROR
+]
+deployments = sorted(
+    [x for status in statuses for x in api.list_live_algorithms(status).algorithms if x.project_id == project_id],
+    key=lambda x: x.launched
+)
+print(f'Deployments: {len(deployments)}')
+
+# Get all the orders of the project. A single project-level loop spans every deployment.
+orders = []
+start = 0
+while True:
+    window = api.read_live_orders(project_id, start, start + 100)
+    if not window:
+        break
+    orders.extend(window)
+    start += 100
+
+# Replay the fill events through a trade builder to reconstruct the trades.
+trade_builder = TradeBuilder(FillGroupingMethod.FILL_TO_FILL, FillMatchingMethod.FIFO)
+for response in orders:
+    for event in [x for x in response.events if x.fill_quantity != 0]:
+        fee = event.order_fee_amount if event.order_fee_amount else 0
+        trade_builder.process_fill(OrderEvent.from_serialized(event), 1, fee)
+
+# Organize the closed trades of every deployment into a DataFrame.
+trades = trade_builder.closed_trades
+pd.DataFrame([{
+    'symbol': trade.symbols[0].value,
+    'direction': str(trade.direction),
+    'quantity': trade.quantity,
+    'entry_time': trade.entry_time,
+    'entry_price': trade.entry_price,
+    'exit_time': trade.exit_time,
+    'exit_price': trade.exit_price,
+    'profit_loss': trade.profit_loss,
+    'total_fees': trade.total_fees
+} for trade in trades])</pre>
+</div>
