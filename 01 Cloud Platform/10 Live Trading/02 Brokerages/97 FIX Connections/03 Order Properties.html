@@ -1,0 +1,63 @@
+<p>FIX connections support custom order properties. The following table describes the members of the <code>FixOrderProperties</code> object that you can set to customize order execution:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
+            <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order.</td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">HandleInstruction</code><code class="python">handle_instruction</code></td>
+            <td><code class='csharp'>char?</code><code class='python'>str/NoneType</code></td>
+            <td>The instruction for order handling on the broker floor. The following values are supported:
+                <ul>
+                    <li><code class="csharp">FixOrderProperties.AutomatedExecutionOrderPrivate</code><code class="python">FixOrderProperties.AUTOMATED_EXECUTION_ORDER_PRIVATE</code>: Automated execution order, private, no broker intervention</li>
+                    <li><code class="csharp">FixOrderProperties.AutomatedExecutionOrderPublic</code><code class="python">FixOrderProperties.AUTOMATED_EXECUTION_ORDER_PUBLIC</code>: Automated execution order, public, broker intervention OK</li>
+                    <li><code class="csharp">FixOrderProperties.ManualOrder</code><code class="python">FixOrderProperties.MANUAL_ORDER</code>: Staged order, broker intervention required</li>
+                </ul>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Notes</code><code class="python">notes</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>The free form text instructions that may be sent to the broker.</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">AdditionalProperties</code><code class="python">additional_properties</code></td>
+            <td><code class='csharp'>Dictionary&lt;string, string&gt;</code><code class='python'>Dict[str, str]</code></td>
+            <td>The custom FIX tags to send with the order. The key is the FIX tag number and the value is the tag value.</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Each FIX connection provides an order properties class that inherits the <code>FixOrderProperties</code> class. For example, the Bloomberg FIX connection provides the <code>BloombergFixOrderProperties</code> class.</p>
+
+<p>Some FIX counterparties require extra tags on order messages. For example, a broker behind the Bloomberg FIX connection requires tag 9301=1 to mark orders as direct market access (DMA). To send extra tags with your orders, add them to the <code class="csharp">AdditionalProperties</code><code class="python">additional_properties</code> dictionary:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties to mark orders as direct market access (DMA)
+    var orderProperties = new BloombergFixOrderProperties();
+    orderProperties.AdditionalProperties["9301"] = "1";
+    DefaultOrderProperties = orderProperties;
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set the default order properties to mark orders as direct market access (DMA)
+    order_properties = BloombergFixOrderProperties()
+    order_properties.additional_properties["9301"] = "1"
+    self.default_order_properties = order_properties</pre>
+</div>
