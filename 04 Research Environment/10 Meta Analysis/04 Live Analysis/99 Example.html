@@ -73,9 +73,17 @@ var deployments = statuses
     .ToList();
 Console.WriteLine($"Deployments: {deployments.Count}");
 
-// Get all the orders of the project. A single project-level loop spans every deployment.
+// Get the first window of orders. Retry while it is empty, since the orders may still be loading.
 var orders = new List&lt;ApiOrderResponse&gt;();
-var start = 0;
+for (var attempt = 0; attempt &lt; 10; attempt++)
+{
+    orders = api.ReadLiveOrders(projectId, 0, 100);
+    if (orders.Any()) break;
+    Thread.Sleep(10000);
+}
+
+// Get the remaining orders. A single project-level loop spans every deployment.
+var start = 100;
 while (true)
 {
     var window = api.ReadLiveOrders(projectId, start, start + 100);
@@ -101,7 +109,9 @@ foreach (var trade in tradeBuilder.ClosedTrades)
         $"entry {trade.EntryTime:u} @ {trade.EntryPrice} exit {trade.ExitTime:u} @ {trade.ExitPrice} " +
         $"profit {trade.ProfitLoss} fees {trade.TotalFees}");
 }</pre>
-    <pre class="python"># Instantiate a QuantBook instance to get the project Id.
+    <pre class="python">from time import sleep
+
+# Instantiate a QuantBook instance to get the project Id.
 qb = QuantBook()
 project_id = qb.project_id
 
@@ -116,9 +126,16 @@ deployments = sorted(
 )
 print(f'Deployments: {len(deployments)}')
 
-# Get all the orders of the project. A single project-level loop spans every deployment.
+# Get the first window of orders. Retry while it is empty, since the orders may still be loading.
 orders = []
-start = 0
+for attempt in range(10):
+    orders = api.read_live_orders(project_id, 0, 100)
+    if orders:
+        break
+    sleep(10)
+
+# Get the remaining orders. A single project-level loop spans every deployment.
+start = 100
 while True:
     window = api.read_live_orders(project_id, start, start + 100)
     if not window:
