@@ -208,6 +208,10 @@
 }
 </style>
 
+<?php if ($writingAlgorithms) { ?>
+<p>The <code>InteractiveBrokersFixModel</code> supports the preceding order types, except limit if touched, combo leg limit, and exercise Option orders. It also rejects combo orders that mix Future and Future Option legs.</p>
+<?php } ?>
+
 <h4>Order Properties</h4>
 
 <p><?=  $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties." : "We model custom order properties from the IB API." ?> The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/interactive-brokers#18-Financial-Advisors'>methods for FA accounts</a>.</p>
@@ -292,6 +296,55 @@ def on_data(self, slice: Slice) -&gt; None:
 
     order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
+</div>
+
+<p>The <code>InteractiveBrokersFixModel</code> supports custom order properties. The following table describes the members of the <code>InteractiveBrokersFixOrderProperties</code> object that you can set to customize order execution:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+         <th>Property</th>
+         <th>Data Type</th>
+         <th>Description</th>
+         <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
+            <td><code>TimeInForce</code></td>
+            <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
+                <ul>
+                    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+                </ul>
+            </td>
+            <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">Account</code><code class="python">account</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>The linked account for which to submit the order (only used by Financial Advisors).</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties = new InteractiveBrokersFixOrderProperties
+    {
+        TimeInForce = TimeInForce.GoodTilCanceled,
+        Account = "DU123456"
+    };
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set the default order properties
+    self.default_order_properties = InteractiveBrokersFixOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.account = "DU123456"</pre>
 </div>
 <?php } ?>
 
