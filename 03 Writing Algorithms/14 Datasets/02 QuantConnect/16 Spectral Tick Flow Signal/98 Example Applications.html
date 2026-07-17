@@ -1,0 +1,235 @@
+<p>
+The QuantConnect Spectral Tick-Flow Signal dataset enables you to test strategies using daily tick-flow signals provided by QuantConnect. Examples include the following strategies:
+</p>
+<ul><li>Ranking a large-cap US Equity universe by each security's <code>ExecutionScore</code></li>
+<li>Buying securities with the strongest detected execution-flow activity</li>
+<li>Building a market-neutral strategy based on the top N and bottom N securities in the daily signal universe</li>
+<li>Using tick-flow signal strength as a filter, confirmation variable, or position-sizing input in an existing Equity strategy</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm buys Apple when its Spectral Tick-Flow Signal <code>ExecutionScore</code> clears a threshold, signaling active algorithmic-execution flow. Otherwise, it remains in cash.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class SpectralTickFlowSignalAlgorithm(QCAlgorithm):
+    execution_score_threshold = 15
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        # AAPL is both the traded security and the equity the custom signal is linked to.
+        self._aapl = self.add_equity("AAPL", Resolution.DAILY)
+        self.dataset_symbol = self.add_data(SpectralTickFlowSignal, self._aapl).symbol
+
+    def on_data(self, data: Slice) -&gt; None:
+        # Require current signal and equity data to avoid stale fills.
+        if self.dataset_symbol not in data:
+            return
+        # Hold AAPL on strong algorithmic-execution intensity, otherwise stand aside.
+        execution_score = data[self.dataset_symbol].execution_score
+        target_holdings = 1 if execution_score &gt; self.execution_score_threshold else 0
+        if target_holdings != self.portfolio.invested:
+            self.set_holdings(self._aapl, target_holdings)</pre>
+<pre class="csharp">public class SpectralTickFlowSignalAlgorithm : QCAlgorithm
+{
+    private Equity _aapl;
+    private Symbol _datasetSymbol;
+    private const decimal ExecutionScoreThreshold = 15m;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        // AAPL is both the traded security and the equity the custom signal is linked to.
+        _aapl = AddEquity("AAPL", Resolution.Daily);
+        _datasetSymbol = AddData&lt;SpectralTickFlowSignal&gt;(_aapl.Symbol).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Require current signal and equity data to avoid stale fills.
+        if (!slice.ContainsKey(_datasetSymbol))
+        {
+            return;
+        }
+        // Hold AAPL on strong algorithmic-execution intensity, otherwise stand aside.
+        decimal executionScore = slice[_datasetSymbol].ExecutionScore;
+        var targetHoldings = executionScore &gt; ExecutionScoreThreshold ? 1 : 0;
+        if (targetHoldings == 1 != Portfolio.Invested)
+        {
+            SetHoldings(_aapl.Symbol, targetHoldings);
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm creates a dynamic universe of US Equities that have a confirmed algorithmic-execution signature. It then buys the subset of Equities with the strongest execution intensity and forms an equal-weighted portfolio.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class SpectralTickFlowSignalAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(100000)
+        self.settings.seed_initial_prices = True
+        self.universe_settings.resolution = Resolution.DAILY
+        # Filter to the confirmed execution signatures with the strongest intensity.
+        self.add_universe(SpectralTickFlowSignalUniverse, self.universe_selection)
+        self.add_alpha(SpectralTickFlowSignalAlphaModel())
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.add_risk_management(NullRiskManagementModel())
+        self.set_execution(ImmediateExecutionModel())
+
+    def universe_selection(self, alt_coarse: List[SpectralTickFlowSignalUniverse]) -&gt; List[Symbol]:
+        # Keep only confirmed execution signatures, ranked by intensity.
+        confirmed = [d for d in alt_coarse if d.signature_count &gt; 0]
+        return [d.symbol for d in sorted(confirmed, key=lambda d: d.execution_score)[-50:]]
+
+
+class SpectralTickFlowSignalAlphaModel(AlphaModel):
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        insights = []
+        for dataset_symbol, data_point in slice.get(SpectralTickFlowSignal).items():
+            security = algorithm.securities[dataset_symbol.underlying]
+            # Buy names with a confirmed execution signature, liquidate otherwise.
+            target_direction = InsightDirection.UP if data_point.signature_count &gt; 0 else InsightDirection.FLAT
+            if security.price and target_direction == InsightDirection.UP and not security.invested:
+                insights.append(Insight.price(security, timedelta(7), target_direction))
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            # Subscribe to the daily signal feed for the added equity.
+            dataset = algorithm.add_data(SpectralTickFlowSignal, security, Resolution.DAILY)
+            security.dataset_symbol = dataset.symbol
+        for security in changes.removed_securities:
+            # Unsubscribe from the Spectral Tick-Flow Signal feed.
+            algorithm.remove_security(security.dataset_symbol)</pre>
+<pre class="csharp">public class SpectralTickFlowSignalAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(100000);
+        Settings.SeedInitialPrices = true;
+        UniverseSettings.Resolution = Resolution.Daily;
+        // Filter to the confirmed execution signatures with the strongest intensity.
+        AddUniverse&lt;SpectralTickFlowSignalUniverse&gt;(altCoarse =&gt; altCoarse
+            .Select(d =&gt; d as SpectralTickFlowSignalUniverse)
+            .Where(d =&gt; d.SignatureCount &gt; 0)
+            .OrderBy(d =&gt; d.ExecutionScore)
+            .TakeLast(50)
+            .Select(d =&gt; d.Symbol)
+        );
+        AddAlpha(new SpectralTickFlowSignalAlphaModel());
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        AddRiskManagement(new NullRiskManagementModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+
+public class SpectralTickFlowSignalAlphaModel : AlphaModel
+{
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+        foreach (var (datasetSymbol, dataPoint) in slice.Get&lt;SpectralTickFlowSignal&gt;())
+        {
+            var security = algorithm.Securities[datasetSymbol.Underlying];
+            // Buy names with a confirmed execution signature, liquidate otherwise.
+            var targetDirection = dataPoint.SignatureCount &gt; 0 ? InsightDirection.Up : InsightDirection.Flat;
+            if (security.Price != 0 &amp;&amp; targetDirection == InsightDirection.Up &amp;&amp; !security.Holdings.Invested)
+            {
+                insights.Add(Insight.Price(security.Symbol, TimeSpan.FromDays(7), targetDirection));
+            }
+        }
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            // Subscribe to the daily signal feed for the added equity.
+            var dataset = algorithm.AddData&lt;SpectralTickFlowSignal&gt;(security.Symbol, Resolution.Daily);
+            security.Set("DatasetSymbol", dataset.Symbol);
+        }
+        foreach (var security in changes.RemovedSecurities)
+        {
+            // Unsubscribe from the Spectral Tick-Flow Signal feed.
+            algorithm.RemoveSecurity(security.Get&lt;Symbol&gt;("DatasetSymbol"));
+        }
+    }
+}</pre>
+</div>
+<h4>Research Example</h4>
+<p>The following example lists US Equities with confirmed algorithmic-execution signatures, ranked by execution intensity.</p>
+
+<div class="section-example-container">
+<pre class="csharp">#r "../QuantConnect.DataSource.SpectralTickFlowSignal.dll"
+using QuantConnect.DataSource;
+
+var qb = new QuantBook();
+
+// Requesting data
+var aapl = qb.AddEquity("AAPL", Resolution.Daily).Symbol;
+var symbol = qb.AddData&lt;SpectralTickFlowSignal&gt;(aapl).Symbol;
+
+// Historical data
+var history = qb.History&lt;SpectralTickFlowSignal&gt;(symbol, 30, Resolution.Daily);
+foreach (SpectralTickFlowSignal signal in history)
+{
+    Console.WriteLine($"{signal} at {signal.EndTime}");
+}
+
+// Add Universe Selection
+IEnumerable&lt;Symbol&gt; UniverseSelection(IEnumerable&lt;BaseData&gt; altCoarse)
+{
+    return (from d in altCoarse.OfType&lt;SpectralTickFlowSignalUniverse&gt;()
+        where d.SignatureCount &gt; 0
+        orderby d.ExecutionScore descending select d.Symbol).Take(10);
+}
+var universe = qb.AddUniverse&lt;SpectralTickFlowSignalUniverse&gt;(UniverseSelection);
+
+// Historical Universe data
+var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-5), qb.Time);
+foreach (var signals in universeHistory)
+{
+    foreach (SpectralTickFlowSignalUniverse signal in signals)
+    {
+        Console.WriteLine($"{signal.Symbol} execution score at {signal.EndTime}: {signal.ExecutionScore}");
+    }
+}</pre>
+<pre class="python">qb = QuantBook()
+
+# Requesting Data
+aapl = qb.add_equity("AAPL", Resolution.DAILY)
+symbol = qb.add_data(SpectralTickFlowSignal, aapl).symbol
+
+# Historical data
+history = qb.history(SpectralTickFlowSignal, symbol, 30, Resolution.DAILY)
+for (symbol, time), row in history.iterrows():
+    print(f"{symbol} execution score at {time}: {row['execution_score']}")
+
+# Add Universe Selection
+def universe_selection(alt_coarse: List[SpectralTickFlowSignalUniverse]) -&gt; List[Symbol]:
+    confirmed = [d for d in alt_coarse if d.signature_count &gt; 0]
+    return [d.symbol for d in sorted(confirmed, key=lambda d: d.execution_score, reverse=True)[:10]]
+
+universe = qb.add_universe(SpectralTickFlowSignalUniverse, universe_selection)
+
+# Historical Universe data
+universe_history = qb.universe_history(universe, qb.time-timedelta(5), qb.time)
+for (_, time), signals in universe_history.items():
+    for signal in signals:
+        print(f"{signal.symbol} execution score at {signal.end_time}: {signal.execution_score}")</pre>
+</div>

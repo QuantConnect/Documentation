@@ -1,0 +1,25 @@
+<p>To select a dynamic universe of US Equities based on Spectral Tick-Flow Signal data, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with the <code>SpectralTickFlowSignalUniverse</code> class and a selection function. Each daily universe file delivers the full cross-section, so you can rank or filter every covered name by any signal field, for example, the names with the strongest confirmed algorithmic-execution intensity.</p>
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.resolution = Resolution.DAILY
+    self._universe = self.add_universe(SpectralTickFlowSignalUniverse, self._select_assets)
+
+def _select_assets(self, alt_coarse: List[SpectralTickFlowSignalUniverse]) -&gt; List[Symbol]:
+    confirmed = [d for d in alt_coarse if d.signature_count &gt; 0]
+    return [d.symbol for d in sorted(confirmed, key=lambda d: d.execution_score)[-10:]]</pre>
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
+{
+    UniverseSettings.Resolution = Resolution.Daily;
+    _universe = AddUniverse&lt;SpectralTickFlowSignalUniverse&gt;(altCoarse =&gt;
+    {
+        return altCoarse
+            .OfType&lt;SpectralTickFlowSignalUniverse&gt;()
+            .Where(d =&gt; d.SignatureCount &gt; 0)
+            .OrderBy(d =&gt; d.ExecutionScore)
+            .TakeLast(10)
+            .Select(d =&gt; d.Symbol);
+    });
+}</pre>
+</div>
