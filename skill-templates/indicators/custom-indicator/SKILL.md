@@ -15,7 +15,7 @@ Ask the user: (1) indicator name; (2) formula/logic; (3) input type -- `Indicato
 ## Step 2 -- Generate the Code
 
 Python: `from AlgorithmImports import *` only. Inherit `PythonIndicator`. File: `snake_case.py` in its own file.
-C#: inherit `Indicator` (or `BarIndicator` for OHLCV). Set `WarmUpPeriod` in constructor. File: `PascalCase.cs`.
+C#: inherit `Indicator` (or `BarIndicator` for OHLCV). Declare a `WarmUpPeriod` property (implement `IIndicatorWarmUpPeriodProvider`). File: `PascalCase.cs`.
 Manual warm-up (default): loop py`self.history[TradeBar](symbol, period + 1)`cs`History<TradeBar>(symbol, period + 1, Resolution.Daily)`, call py`indicator.update(bar)`cs`indicator.Update(bar)` before py`self.register_indicator`cs`RegisterIndicator`.
 Automatic warm-up: py`self.settings.automatic_indicator_warm_up = True`cs`Settings.AutomaticIndicatorWarmUp = true` in py`initialize`cs`Initialize`.
 
@@ -37,13 +37,13 @@ class CustomVolatility(PythonIndicator):
         return self._window.is_ready
 ```
 ```csharp
-public class CustomVolatility : Indicator
+public class CustomVolatility : Indicator, IIndicatorWarmUpPeriodProvider
 {
     private readonly RollingWindow<decimal> _window;
+    public int WarmUpPeriod => _window.Size;
     public CustomVolatility(int period) : base("CustomVolatility")
     {
         _window = new RollingWindow<decimal>(period);
-        WarmUpPeriod = period;
     }
     public override bool IsReady => _window.IsReady;
     protected override decimal ComputeNextValue(IndicatorDataPoint input)

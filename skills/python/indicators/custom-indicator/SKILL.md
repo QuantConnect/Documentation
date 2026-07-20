@@ -15,7 +15,7 @@ Ask the user: (1) indicator name; (2) formula/logic; (3) input type -- `Indicato
 ## Step 2 -- Generate the Code
 
 Python: `from AlgorithmImports import *` only. Inherit `PythonIndicator`. File: `snake_case.py` in its own file.
-C#: inherit `Indicator` (or `BarIndicator` for OHLCV). Set `WarmUpPeriod` in constructor. File: `PascalCase.cs`.
+C#: inherit `Indicator` (or `BarIndicator` for OHLCV). Declare a `WarmUpPeriod` property (implement `IIndicatorWarmUpPeriodProvider`). File: `PascalCase.cs`.
 Manual warm-up (default): loop `self.history[TradeBar](symbol, period + 1)`, call `indicator.update(bar)` before `self.register_indicator`.
 Automatic warm-up: `self.settings.automatic_indicator_warm_up = True` in `initialize`.
 
