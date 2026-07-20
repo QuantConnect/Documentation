@@ -1,7 +1,7 @@
 ---
 name: custom-indicator
 description: >
-  Creates a custom indicator class in QuantConnect/LEAN. Invoke for "create a custom indicator", "implement [name] indicator", "I need an indicator LEAN doesn't have", "PythonIndicator", "custom indicator class". Skip for LEAN built-ins (SMA, EMA, RSI).
+  Creates a custom indicator class in QuantConnect/LEAN. Invoke for "create a custom indicator", "implement [name] indicator", "I need an indicator LEAN doesn't have", `PythonIndicator`, "custom indicator class". Skip for LEAN built-ins (SMA, EMA, RSI).
 ---
 
 # /custom-indicator -- QuantConnect Custom Indicator
@@ -15,7 +15,6 @@ Ask the user: (1) indicator name; (2) formula/logic; (3) input type -- `Indicato
 ## Step 2 -- Generate the Code
 
 Python: `from AlgorithmImports import *` only. Inherit `PythonIndicator`. File: `snake_case.py` in its own file.
-C#: inherit `Indicator` (or `BarIndicator` for OHLCV). Set `WarmUpPeriod` in constructor. File: `PascalCase.cs`.
 Manual warm-up (default): loop `self.history[TradeBar](symbol, period + 1)`, call `indicator.update(bar)` before `self.register_indicator`.
 Automatic warm-up: `self.settings.automatic_indicator_warm_up = True` in `initialize`.
 
@@ -36,8 +35,6 @@ class CustomVolatility(PythonIndicator):
     def is_ready(self) -> bool:
         return self._window.is_ready
 ```
-For OHLCV in C#, inherit `BarIndicator` and use `IBaseDataBar` in `ComputeNextValue`.
-
 ### Single-symbol integration
 ```python
 def initialize(self):
@@ -59,12 +56,11 @@ def on_securities_changed(self, changes):
         self.deregister_indicator(security.indicator)
         self.liquidate(security)
 ```
-C# mirrors Python: use `OnSecuritiesChanged`, `RegisterIndicator`, `DeregisterIndicator`, `Liquidate`. Gate reads on `_indicators[symbol].IsReady`.
 
 ## Step 3 -- Write Files via MCP
 
 1. `quantconnect:create_file` with the indicator class.
-2. `quantconnect:update_file_contents` for `main.py` / `Main.cs`.
+2. `quantconnect:update_file_contents` for `main.py`.
 3. Python only: add `from custom_volatility import CustomVolatility` after `from AlgorithmImports import *`.
 
 ## Step 4 -- Compile
