@@ -20,6 +20,20 @@ There are two different option datasets behind the APIs (doc: "There is a daily,
 
 The operating rule that follows: **any intraday decision — entry sizing, delta hedging, IV-threshold checks, strike selection at a decision time — should read the slice's chain.** The py`option_chain()`cs`OptionChain()` method is for **daily contract discovery** (find which contracts exist, filter by prior-day delta/OI, then subscribe); using it for intraday sizing or greeks means every number is one day stale, and nothing errors to tell you. Greeks on slice contracts are computed lazily — accessing py`greeks`cs`Greeks` costs nothing; accessing py`greeks.delta`cs`Greeks.Delta` triggers the calculation — so only read the greeks you need.
 
+## Pick ONE route — and subscribe only what the strategy can trade
+
+Decide the route once, in py`initialize`cs`Initialize`. Mixing them is usually a smell:
+
+- **Universe route** (py`add_option`cs`AddOption` + filter): a universe's purpose is its slice chain. If all selection, pricing, and sizing happen through py`option_chain()`cs`OptionChain()` anyway, the minute-resolution subscriptions are pure cost — either read the slice for the decisions that need live data, or drop the universe and subscribe the picks directly.
+- **Discovery route** (py`option_chain()`cs`OptionChain()` + py`add_option_contract`cs`AddOptionContract`): the daily chain picks the contracts; subscribe each pick. Match the data to the decision: the py`option_chain()`cs`OptionChain()` rows are previous-close values — fine when daily-granularity data suits the strategy (screening, ranking, a daily-cadence rule that tolerates day-old marks), but when the strategy calls for decision-time values (intraday sizing, hedging, entry marks), read the subscribed picks' live quotes from the slice. Whichever you use, know which one you are using.
+- A subscription earns its cost by being **read** or being **held**: a contract you own needs its subscription (position pricing, fills, expiry processing) even if you never read a chain. What doesn't earn its cost is breadth — a wide py`add_option`cs`AddOption` universe where the algorithm neither reads the slice chain nor holds more than its few picks.
+
+Size the subscription to the trade, not to the chain:
+
+- Prefer a **strategy-shaped filter** when one matches the structure — py`u.iron_condor(30, 5, 10)`cs`u.IronCondor(30, 5, 10)`, py`u.straddle(30)`cs`u.Straddle(30)`, py`u.call_spread(30, 5)`cs`u.CallSpread(30, 5)`, and friends subscribe only the legs the strategy needs.
+- Otherwise derive the strike span and DTE window from the structure's own numbers (target deltas, wing widths, expiry rules), adding a delta-band filter (py`u.delta(0.05, 0.30)`cs`u.Delta(0.05m, 0.30m)`) where the structure is delta-targeted. The span should be the tightest one that always contains the tradable candidates — not a safety blanket.
+- py`strikes(-100, 100)`cs`Strikes(-100, 100)`, or an unfiltered py`expiration(0, 500)`cs`Expiration(0, 500)` window, subscribes thousands of minute-resolution contracts — a cost bug even when the algorithm is otherwise correct.
+
 ## Subscription route 1: py`add_option`cs`AddOption` — a filtered basket (universe)
 
 For strategies that pick contracts from a chain at decision time (spreads, condors, straddles, rolling structures), subscribe once in py`initialize`cs`Initialize`:
@@ -112,5 +126,7 @@ Because any option subscription forces the underlying Equity to RAW normalizatio
 - **Trading the canonical symbol**, or passing a contract symbol where the canonical is required (chain lookup, `OptionStrategies` factories).
 - **No py`if not chain:`cs`TryGetValue` guard** — the chain is legitimately absent before the first daily selection and whenever the filter turns over.
 - **Forgetting py`include_weeklys()`cs`IncludeWeeklys()`** when a spec's DTE window (e.g. 21–45 days, closest to 30) needs weekly expiries to hit its target.
+- **Carrying a wide universe you never read** — subscribing a broad chain while doing all selection, pricing, and sizing through py`option_chain()`cs`OptionChain()`: every subscription beyond the contracts actually held is pure cost. Read the universe's slice chain for the decisions that need live data, or drop the universe and use py`add_option_contract`cs`AddOptionContract` on the picks.
+- **Subscribing a huge chain as a tradability crutch** (±100 strikes, unbounded expiries) so any discovered contract can be ordered directly — subscribe the picks with py`add_option_contract`cs`AddOptionContract` instead, and let a strategy-shaped or structure-derived filter keep the universe minimal.
 - **Computing RV/returns on the force-RAW underlying** without an explicit adjusted-normalization history request.
 - Only American-style US equity options are supported; strikes in the filter API are **relative counts**, not dollar offsets — py`strikes(-1, 1)`cs`Strikes(-1, 1)` means one strike either side of the money.
