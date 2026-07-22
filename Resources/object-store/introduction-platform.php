@@ -6,3 +6,7 @@
 </ul>
 
 <p>The Object Store is shared across the entire organization. Using the same key, you can access data across all projects in an organization.</p>
+<? if ($cloudPlatform) { ?>
+
+<p>The Object Store is available to paid organizations. In Free organizations, algorithms that try to save data log "The current user does not have permission to write to the organization Object Store". To use the Object Store, <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a> to a paid tier.</p>
+<? } ?>
