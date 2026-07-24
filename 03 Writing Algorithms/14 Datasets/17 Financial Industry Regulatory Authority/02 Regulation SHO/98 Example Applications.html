@@ -1,0 +1,193 @@
+<p>The FINRA Reg SHO Daily Short Sale Volume dataset lets you see how much of a stock's off-exchange flow is short selling. Examples include:</p>
+
+<ul>
+    <li>Fading a stock once its short volume climbs to an unusually large share of total reported volume.</li>
+    <li>Following persistent short pressure when the short volume ratio stays elevated for several days in a row.</li>
+    <li>Ranking the universe by short volume ratio and rotating toward the most heavily shorted names.</li>
+    <li>Watching short-exempt volume for early signs of aggressive selling around large orders and index events.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm subscribes to FINRA Reg SHO Daily Short Sale Volume data for a US Equity and trades it on the daily short volume ratio:</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class FINRAShortSaleVolumeDataAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.short_volume_symbol = self.add_data(FINRAShortSaleVolume, aapl).symbol
+        history = self.history(FINRAShortSaleVolume, self.short_volume_symbol, 60, Resolution.DAILY)
+
+        self.debug(f"We got {len(history)} items from our history request")
+
+    def on_data(self, slice):
+        points = slice.get(FINRAShortSaleVolume)
+        for point in points.values():
+            # Go short when off-exchange short volume is more than half of total reported volume
+            if point.short_volume_ratio is not None and point.short_volume_ratio &gt; 0.5:
+                self.set_holdings(point.symbol.underlying, -1)
+
+            # Go long otherwise
+            else:
+                self.set_holdings(point.symbol.underlying, 1)</pre>
+<pre class="csharp">public class FINRAShortSaleVolumeDataAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+        var shortVolumeSymbol = AddData&lt;FINRAShortSaleVolume&gt;(aapl).Symbol;
+        var history = History&lt;FINRAShortSaleVolume&gt;(shortVolumeSymbol, 60, Resolution.Daily);
+
+        Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var points = slice.Get&lt;FINRAShortSaleVolume&gt;();
+        foreach (var point in points.Values)
+        {
+            // Go short when off-exchange short volume is more than half of total reported volume
+            if (point.ShortVolumeRatio &gt; 0.5m)
+            {
+                SetHoldings(point.Symbol.Underlying, -1);
+            }
+            // Go long otherwise
+            else
+            {
+                SetHoldings(point.Symbol.Underlying, 1);
+            }
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm uses the Algorithm Framework to trade a manually selected universe from FINRA Reg SHO Daily Short Sale Volume data. An alpha model subscribes each security to the dataset and emits insights from the daily short volume ratio:</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class FINRAShortSaleVolumeFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        symbols = [Symbol.create("AAPL", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+
+        self.add_alpha(FINRAShortPressureAlphaModel())
+
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class FINRAShortPressureAlphaModel(AlphaModel):
+
+    def __init__(self, threshold: float = 0.5) -&gt; None:
+        self._threshold = threshold
+        self._symbols_by_security = {}
+
+    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; List[Insight]:
+        insights = []
+        for security_symbol, short_volume_symbol in self._symbols_by_security.items():
+            if short_volume_symbol not in data:
+                continue
+            ratio = data[short_volume_symbol].short_volume_ratio
+            if ratio is None:
+                continue
+            direction = InsightDirection.DOWN if ratio &gt; self._threshold else InsightDirection.UP
+            insights.append(Insight.price(security_symbol, timedelta(days=7), direction))
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            symbol = security.symbol
+            short_volume_symbol = algorithm.add_data(FINRAShortSaleVolume, symbol).symbol
+            self._symbols_by_security[symbol] = short_volume_symbol
+            history = algorithm.history(FINRAShortSaleVolume, short_volume_symbol, 30, Resolution.DAILY)
+            algorithm.debug(f"Got {len(history)} historical short sale volume rows for {symbol}")
+        for security in changes.removed_securities:
+            short_volume_symbol = self._symbols_by_security.pop(security.symbol, None)
+            if short_volume_symbol is not None:
+                algorithm.remove_security(short_volume_symbol)</pre>
+<pre class="csharp">public class FINRAShortSaleVolumeFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        var symbols = new[] { QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        AddAlpha(new FINRAShortPressureAlphaModel());
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class FINRAShortPressureAlphaModel : AlphaModel
+{
+    private readonly decimal _threshold;
+    private readonly Dictionary&lt;Symbol, Symbol&gt; _symbolsBySecurity = new();
+
+    public FINRAShortPressureAlphaModel(decimal threshold = 0.5m)
+    {
+        _threshold = threshold;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        foreach (var kvp in _symbolsBySecurity)
+        {
+            var securitySymbol = kvp.Key;
+            var shortVolumeSymbol = kvp.Value;
+            if (!data.ContainsKey(shortVolumeSymbol))
+            {
+                continue;
+            }
+            var ratio = data.Get&lt;FINRAShortSaleVolume&gt;(shortVolumeSymbol).ShortVolumeRatio;
+            if (ratio == null)
+            {
+                continue;
+            }
+            var direction = ratio &gt; _threshold ? InsightDirection.Down : InsightDirection.Up;
+            yield return Insight.Price(securitySymbol, TimeSpan.FromDays(7), direction);
+        }
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            var symbol = security.Symbol;
+            var shortVolumeSymbol = algorithm.AddData&lt;FINRAShortSaleVolume&gt;(symbol).Symbol;
+            _symbolsBySecurity[symbol] = shortVolumeSymbol;
+            var history = algorithm.History&lt;FINRAShortSaleVolume&gt;(shortVolumeSymbol, 30, Resolution.Daily);
+            algorithm.Debug($"Got {history.Count()} historical short sale volume rows for {symbol}");
+        }
+        foreach (var security in changes.RemovedSecurities)
+        {
+            if (_symbolsBySecurity.Remove(security.Symbol, out var shortVolumeSymbol))
+            {
+                algorithm.RemoveSecurity(shortVolumeSymbol);
+            }
+        }
+    }
+}</pre>
+</div>

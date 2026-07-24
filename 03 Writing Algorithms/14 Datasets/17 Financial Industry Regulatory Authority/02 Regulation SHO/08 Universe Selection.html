@@ -1,0 +1,21 @@
+<p>To select a dynamic universe of US Equities based on FINRA Reg SHO Daily Short Sale Volume data, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with the <code>FINRAShortSaleVolumeUniverse</code> class and a selection function.</p>
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self._universe = self.add_universe(FINRAShortSaleVolumeUniverse, self.universe_selection)
+
+def universe_selection(self, alt_coarse: List[FINRAShortSaleVolumeUniverse]) -&gt; List[Symbol]:
+    return [d.symbol for d in alt_coarse \
+                if d.short_volume_ratio is not None \
+                and d.short_volume_ratio &gt; 0.5]</pre>
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
+{
+    _universe = AddUniverse&lt;FINRAShortSaleVolumeUniverse&gt;(altCoarse =&gt;
+    {
+        return from d in altCoarse.OfType&lt;FINRAShortSaleVolumeUniverse&gt;()
+            where d.ShortVolumeRatio &gt; 0.5m
+            select d.Symbol;
+    });
+}</pre>
+</div>

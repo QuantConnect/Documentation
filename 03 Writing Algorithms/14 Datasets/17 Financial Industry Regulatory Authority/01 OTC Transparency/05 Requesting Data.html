@@ -1,0 +1,32 @@
+<p>To add FINRA OTC Transparency data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is linked to US Equities, so pass the equity <code>Symbol</code> you want the data for. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<p>The dataset comes in three classes: <code>FINRAShortInterest</code>, <code>FINRAWeeklySummary</code>, and <code>FINRAMonthlySummary</code>. Subscribe to the ones your strategy needs.</p>
+
+<div class="section-example-container">
+<pre class="python">class FINRAOtcTransparencyDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2023, 1, 1)
+        self.set_cash(100000)
+
+        self.symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.short_interest = self.add_data(FINRAShortInterest, self.symbol).symbol
+        self.weekly_summary = self.add_data(FINRAWeeklySummary, self.symbol).symbol
+        self.monthly_summary = self.add_data(FINRAMonthlySummary, self.symbol).symbol</pre>
+<pre class="csharp">public class FINRAOtcTransparencyDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol, _shortInterest, _weeklySummary, _monthlySummary;
+
+    public override void Initialize()
+    {
+        SetStartDate(2022, 1, 1);
+        SetEndDate(2023, 1, 1);
+        SetCash(100000);
+
+        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _shortInterest = AddData&lt;FINRAShortInterest&gt;(_symbol).Symbol;
+        _weeklySummary = AddData&lt;FINRAWeeklySummary&gt;(_symbol).Symbol;
+        _monthlySummary = AddData&lt;FINRAMonthlySummary&gt;(_symbol).Symbol;
+    }
+}</pre>
+</div>

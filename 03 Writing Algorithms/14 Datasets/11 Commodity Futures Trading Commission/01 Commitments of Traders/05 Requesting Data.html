@@ -1,0 +1,30 @@
+<p>To add CFTC Commitments of Traders data to your algorithm, call the <code>AddData</code> method. The dataset is unlinked, so instead of a security <code>Symbol</code> you pass a market from the <code>CFTC.Markets</code> helper. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<p>The reports come in three types, each with its own class: <code>CFTCLegacy</code>, <code>CFTCDisaggregated</code> and <code>CFTCFinancialFutures</code>. Subscribe to the ones your strategy needs. Trader positioning is a signal, not a tradeable instrument, so add a separate tradeable security if you want to place orders.</p>
+
+<div class="section-example-container">
+<pre class="python">class CFTCDataAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._legacy = self.add_data(CFTCLegacy, CFTC.Markets.E_MINI_SP_500, Resolution.DAILY).symbol
+        self._disaggregated = self.add_data(CFTCDisaggregated, CFTC.Markets.GOLD, Resolution.DAILY).symbol
+        self._tff = self.add_data(CFTCFinancialFutures, CFTC.Markets.E_MINI_SP_500, Resolution.DAILY).symbol</pre>
+<pre class="csharp">public class CFTCDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _legacy, _disaggregated, _tff;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _legacy = AddData&lt;CFTCLegacy&gt;(CFTC.Markets.EMiniSP500, Resolution.Daily).Symbol;
+        _disaggregated = AddData&lt;CFTCDisaggregated&gt;(CFTC.Markets.Gold, Resolution.Daily).Symbol;
+        _tff = AddData&lt;CFTCFinancialFutures&gt;(CFTC.Markets.EMiniSP500, Resolution.Daily).Symbol;
+    }
+}</pre>
+</div>

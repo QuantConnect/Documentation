@@ -1,0 +1,33 @@
+<p>To get the current FINRA Reg SHO Daily Short Sale Volume data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.short_volume_symbol):
+        data_point = slice[self.short_volume_symbol]
+        self.log(f"{self.short_volume_symbol} short volume at {slice.time}: {data_point.short_volume}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_shortVolumeSymbol))
+    {
+        var dataPoint = slice[_shortVolumeSymbol];
+        Log($"{_shortVolumeSymbol} short volume at {slice.Time}: {dataPoint.ShortVolume}");
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <code>Slice</code>, call the <code>Get</code> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(FINRAShortSaleVolume).items():
+        self.log(f"{dataset_symbol} short volume at {slice.time}: {data_point.short_volume}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;FINRAShortSaleVolume&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} short volume at {slice.Time}: {dataPoint.ShortVolume}");
+    }
+}</pre>
+</div>
