@@ -1,0 +1,26 @@
+<p>To add FINRA Reg SHO Daily Short Sale Volume data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is linked to US Equities, so pass the equity <code>Symbol</code> you want short sale volume for. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class FINRAShortSaleVolumeDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self.symbol = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.short_volume_symbol = self.add_data(FINRAShortSaleVolume, self.symbol).symbol</pre>
+<pre class="csharp">public class FINRAShortSaleVolumeDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol, _shortVolumeSymbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+        _shortVolumeSymbol = AddData&lt;FINRAShortSaleVolume&gt;(_symbol).Symbol;
+    }
+}</pre>
+</div>

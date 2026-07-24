@@ -1,0 +1,23 @@
+<p>To get historical FINRA OTC Transparency data, call the <code>History</code> method with the dataset <code>Symbol</code>. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python"># DataFrames
+short_interest_history = self.history(self.short_interest, 100, Resolution.DAILY)
+weekly_history = self.history(self.weekly_summary, 100, Resolution.DAILY)
+monthly_history = self.history(self.monthly_summary, 100, Resolution.DAILY)
+history = self.history([self.short_interest, self.weekly_summary, self.monthly_summary], 100, Resolution.DAILY)
+
+# Dataset objects
+short_interest_bars = self.history[FINRAShortInterest](self.short_interest, 100, Resolution.DAILY)
+weekly_bars = self.history[FINRAWeeklySummary](self.weekly_summary, 100, Resolution.DAILY)
+monthly_bars = self.history[FINRAMonthlySummary](self.monthly_summary, 100, Resolution.DAILY)</pre>
+<pre class="csharp">// Dataset objects
+var shortInterestHistory = History&lt;FINRAShortInterest&gt;(_shortInterest, 100, Resolution.Daily);
+var weeklyHistory = History&lt;FINRAWeeklySummary&gt;(_weeklySummary, 100, Resolution.Daily);
+var monthlyHistory = History&lt;FINRAMonthlySummary&gt;(_monthlySummary, 100, Resolution.Daily);
+
+// Slice objects
+var history = History(new[] { _shortInterest, _weeklySummary, _monthlySummary }, 100, Resolution.Daily);</pre>
+</div>
+
+<p>For more information about historical data, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>

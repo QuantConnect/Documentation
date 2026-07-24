@@ -1,0 +1,232 @@
+<p>The CFTC dataset lets you reach into the positioning behind the price. Examples include:</p>
+
+<ul>
+    <li>Trading with the large speculators when the non-commercial net position turns positive, and against them when it turns negative.</li>
+    <li>Fading crowded positioning by shorting a market once managed money net length reaches a multi-year extreme.</li>
+    <li>Confirming a breakout by requiring commercial hedgers to be adding to the same side as the move.</li>
+    <li>Rotating across commodities by ranking markets on the change in managed money net position from one report to the next.</li>
+    <li>Building a leveraged-funds sentiment index across equity index and rate futures from the TFF report.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm reads the Legacy report for the E-mini S&amp;P 500 and trades SPY with the large speculators. When the non-commercial net position is long, the algorithm goes long SPY. When it turns short, the algorithm goes short. The COT is a signal, not a tradeable instrument, so the orders go to a separate security.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class CFTCDataAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._legacy = self.add_data(CFTCLegacy, CFTC.Markets.E_MINI_SP_500, Resolution.DAILY).symbol
+        history = self.history(CFTCLegacy, self._legacy, 60, Resolution.DAILY)
+
+        self.debug(f"We got {len(history)} items from our history request")
+
+    def on_data(self, slice):
+        legacy = slice.get(CFTCLegacy)
+        if not legacy or self._legacy not in legacy:
+            return
+
+        net = legacy[self._legacy].non_commercial_net
+        if net is None:
+            return
+
+        # Go long when the large speculators are net long the E-mini S&amp;P 500
+        if net &gt; 0:
+            self.set_holdings(self._spy, 1)
+
+        # Go short when they are net short
+        elif net &lt; 0:
+            self.set_holdings(self._spy, -1)</pre>
+<pre class="csharp">public class CFTCDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private Symbol _legacy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _legacy = AddData&lt;CFTCLegacy&gt;(CFTC.Markets.EMiniSP500, Resolution.Daily).Symbol;
+        var history = History&lt;CFTCLegacy&gt;(_legacy, 60, Resolution.Daily);
+
+        Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var legacy = slice.Get&lt;CFTCLegacy&gt;();
+        if (!legacy.ContainsKey(_legacy))
+        {
+            return;
+        }
+
+        var net = legacy[_legacy].NonCommercialNet;
+        if (net == null)
+        {
+            return;
+        }
+
+        // Go long when the large speculators are net long the E-mini S&amp;P 500
+        if (net &gt; 0)
+        {
+            SetHoldings(_spy, 1);
+        }
+
+        // Go short when they are net short
+        else if (net &lt; 0)
+        {
+            SetHoldings(_spy, -1);
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm buys SPY when the large speculators are net long the E-mini S&amp;P 500 futures. When they turn net short, it short sells SPY.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class CFTCFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        # We trade SPY as the proxy of the E-mini S&amp;P 500 futures the report covers
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.add_universe_selection(ManualUniverseSelectionModel(symbols))
+        # A custom alpha model that emits trade insights based on CFTC positioning data
+        self.add_alpha(CFTCAlphaModel(self))
+        # Equally invest to dissipate non-systematic capital concentration risk on individual stock
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+
+class CFTCAlphaModel(AlphaModel):
+
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        self.tradable_symbols = []
+
+        # Request the Legacy report for the E-mini S&amp;P 500 for trade signal generation
+        self.cftc_symbol = algorithm.add_data(CFTCLegacy, CFTC.Markets.E_MINI_SP_500, Resolution.DAILY).symbol
+
+        # Historical data
+        history = algorithm.history(CFTCLegacy, self.cftc_symbol, 60, Resolution.DAILY)
+        algorithm.debug(f"We got {len(history)} items from our history request")
+
+    def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
+        # The COT is published weekly, so most days carry no new report
+        points = slice.get(CFTCLegacy)
+        if self.cftc_symbol not in points:
+            return []
+
+        # Non-commercial traders are the large speculators, the "smart money" of the report
+        net = points[self.cftc_symbol].non_commercial_net
+        if net is None:
+            return []
+
+        insights = []
+
+        for symbol in self.tradable_symbols:
+            # Buy when the large speculators are net long, following the positioning of the funds
+            if net &gt; 0:
+                insights += [Insight.price(symbol, timedelta(days=7), InsightDirection.UP)]
+
+            # Short sell when they are net short
+            elif net &lt; 0:
+                insights += [Insight.price(symbol, timedelta(days=7), InsightDirection.DOWN)]
+
+        return insights
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            self.tradable_symbols.append(security.symbol)</pre>
+<pre class="csharp">public class CFTCFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 6, 1);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+        // We trade SPY as the proxy of the E-mini S&amp;P 500 futures the report covers
+        var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
+        AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        // A custom alpha model that emits trade insights based on CFTC positioning data
+        AddAlpha(new CFTCAlphaModel(this));
+        // Equally invest to dissipate non-systematic capital concentration risk on individual stock
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}
+
+
+public class CFTCAlphaModel : AlphaModel
+{
+    private Symbol CFTCSymbol;
+    private List&lt;Symbol&gt; tradableSymbols = new List&lt;Symbol&gt;();
+
+    public CFTCAlphaModel(QCAlgorithm algorithm)
+    {
+        // Request the Legacy report for the E-mini S&amp;P 500 for trade signal generation
+        CFTCSymbol = algorithm.AddData&lt;CFTCLegacy&gt;(CFTC.Markets.EMiniSP500, Resolution.Daily).Symbol;
+
+        // Historical data
+        var history = algorithm.History&lt;CFTCLegacy&gt;(CFTCSymbol, 60, Resolution.Daily);
+        algorithm.Debug($"We got {history.Count()} items from our history request");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        // The COT is published weekly, so most days carry no new report
+        var points = slice.Get&lt;CFTCLegacy&gt;();
+        if (!points.ContainsKey(CFTCSymbol))
+        {
+            return insights;
+        }
+
+        // Non-commercial traders are the large speculators, the "smart money" of the report
+        var net = points[CFTCSymbol].NonCommercialNet;
+        if (net == null)
+        {
+            return insights;
+        }
+
+        foreach (var symbol in tradableSymbols)
+        {
+            // Buy when the large speculators are net long, following the positioning of the funds
+            if (net &gt; 0)
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Up));
+            }
+
+            // Short sell when they are net short
+            if (net &lt; 0)
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Down));
+            }
+        }
+
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            tradableSymbols.Add(security.Symbol);
+        }
+    }
+}</pre>
+</div>

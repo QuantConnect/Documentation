@@ -1,0 +1,19 @@
+<p>To get historical CFTC data, call the <code>History</code> method with the dataset <code>Symbol</code>. If there is no data in the period you request, the history result is empty. The reports are weekly, so a request for 100 data points covers roughly two years.</p>
+
+<div class="section-example-container">
+<pre class="python"># DataFrames
+legacy_history_df = self.history(self._legacy, 100, Resolution.DAILY)
+history_df = self.history([self._legacy, self._disaggregated, self._tff], 100, Resolution.DAILY)
+# Dataset objects
+legacy_history_bars = self.history[CFTCLegacy](self._legacy, 100, Resolution.DAILY)
+disaggregated_history_bars = self.history[CFTCDisaggregated](self._disaggregated, 100, Resolution.DAILY)
+tff_history_bars = self.history[CFTCFinancialFutures](self._tff, 100, Resolution.DAILY)</pre>
+<pre class="csharp">// Dataset objects
+var legacyHistory = History&lt;CFTCLegacy&gt;(_legacy, 100, Resolution.Daily);
+var disaggregatedHistory = History&lt;CFTCDisaggregated&gt;(_disaggregated, 100, Resolution.Daily);
+var tffHistory = History&lt;CFTCFinancialFutures&gt;(_tff, 100, Resolution.Daily);
+// Slice objects
+var history = History(new[] {_legacy, _disaggregated, _tff}, 100, Resolution.Daily);</pre>
+</div>
+
+<p>For more information about historical data, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>

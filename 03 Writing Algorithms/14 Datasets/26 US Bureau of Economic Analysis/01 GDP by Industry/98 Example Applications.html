@@ -1,0 +1,182 @@
+<p>
+The GDP by Industry dataset lets you trade on the composition of growth instead of just its headline. Examples include the following strategies:
+</p>
+
+<ul><li>Rotating into cyclical exposure when an industry's real value added turns up quarter over quarter, and out when it turns down.</li>
+<li>Ranking industries by the change in real gross output to tilt a sector portfolio toward the fastest-growing parts of the economy.</li>
+<li>Reading an industry's price index as an industry-level inflation gauge to time rate-sensitive positions.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm uses BEA GDP by Industry as a macro signal. It reads Manufacturing real value added each quarter and buys SPY when it rises quarter over quarter, then moves to cash when it falls.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class BEAGDPByIndustryDataAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 12, 31)
+        self.set_cash(100000)
+
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._manufacturing = self.add_data(BEAGDPByIndustry, BEA.Industries.MANUFACTURING, Resolution.DAILY).symbol
+        self._previous_real_value_added = None
+
+    def on_data(self, slice):
+        if not slice.contains_key(self._manufacturing):
+            return
+
+        # Real value added rising quarter over quarter is expansionary: go long, otherwise flat.
+        real = slice[self._manufacturing].real_value_added
+        if self._previous_real_value_added is not None and real is not None:
+            if real &gt; self._previous_real_value_added:
+                self.set_holdings(self._spy, 1)
+            else:
+                self.liquidate(self._spy)
+        self._previous_real_value_added = real</pre>
+<pre class="csharp">public class BEAGDPByIndustryDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _manufacturing;
+    private decimal? _previousRealValueAdded;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 12, 31);
+        SetCash(100000);
+
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _manufacturing = AddData&lt;BEAGDPByIndustry&gt;(BEA.Industries.Manufacturing, Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!slice.ContainsKey(_manufacturing))
+        {
+            return;
+        }
+
+        // Real value added rising quarter over quarter is expansionary: go long, otherwise flat.
+        var real = slice.Get&lt;BEAGDPByIndustry&gt;(_manufacturing).RealValueAdded;
+        if (_previousRealValueAdded.HasValue &amp;&amp; real.HasValue)
+        {
+            if (real &gt; _previousRealValueAdded)
+            {
+                SetHoldings(_spy, 1);
+            }
+            else
+            {
+                Liquidate(_spy);
+            }
+        }
+        _previousRealValueAdded = real;
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm implements the same Manufacturing signal in the algorithm framework. It uses a manual universe of SPY, an alpha model that emits insights from BEA GDP by Industry, and equal-weighting portfolio construction.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class BEAGDPByIndustryFrameworkAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 12, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+        self.add_alpha(BEAGDPByIndustryAlphaModel(self))
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+
+class BEAGDPByIndustryAlphaModel(AlphaModel):
+    def __init__(self, algorithm):
+        self._manufacturing = algorithm.add_data(BEAGDPByIndustry, BEA.Industries.MANUFACTURING, Resolution.DAILY).symbol
+        self._previous_real_value_added = None
+        self._tradable_symbols = []
+
+    def update(self, algorithm, slice):
+        insights = []
+        if not slice.contains_key(self._manufacturing):
+            return insights
+
+        real = slice[self._manufacturing].real_value_added
+        if self._previous_real_value_added is not None and real is not None:
+            direction = InsightDirection.UP if real &gt; self._previous_real_value_added else InsightDirection.DOWN
+            insights = [Insight.price(symbol, timedelta(days=90), direction) for symbol in self._tradable_symbols]
+        self._previous_real_value_added = real
+        return insights
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            if security.symbol != self._manufacturing:
+                self._tradable_symbols.append(security.symbol)
+        for security in changes.removed_securities:
+            if security.symbol in self._tradable_symbols:
+                self._tradable_symbols.remove(security.symbol)</pre>
+<pre class="csharp">public class BEAGDPByIndustryFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2020, 12, 31);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+        AddAlpha(new BEAGDPByIndustryAlphaModel(this));
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+    }
+}
+
+public class BEAGDPByIndustryAlphaModel : AlphaModel
+{
+    private readonly Symbol _manufacturing;
+    private decimal? _previousRealValueAdded;
+    private readonly List&lt;Symbol&gt; _tradableSymbols = new();
+
+    public BEAGDPByIndustryAlphaModel(QCAlgorithm algorithm)
+    {
+        _manufacturing = algorithm.AddData&lt;BEAGDPByIndustry&gt;(BEA.Industries.Manufacturing, Resolution.Daily).Symbol;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice slice)
+    {
+        var insights = new List&lt;Insight&gt;();
+        if (!slice.ContainsKey(_manufacturing))
+        {
+            return insights;
+        }
+
+        var real = slice.Get&lt;BEAGDPByIndustry&gt;(_manufacturing).RealValueAdded;
+        if (_previousRealValueAdded.HasValue &amp;&amp; real.HasValue)
+        {
+            var direction = real &gt; _previousRealValueAdded ? InsightDirection.Up : InsightDirection.Down;
+            foreach (var symbol in _tradableSymbols)
+            {
+                insights.Add(Insight.Price(symbol, TimeSpan.FromDays(90), direction));
+            }
+        }
+        _previousRealValueAdded = real;
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            if (security.Symbol != _manufacturing)
+            {
+                _tradableSymbols.Add(security.Symbol);
+            }
+        }
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _tradableSymbols.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>
