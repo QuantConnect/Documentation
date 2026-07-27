@@ -236,12 +236,44 @@ def _table_cell(text: str) -> str:
     return " ".join(html.unescape(text).split()).replace("|", "\\|")
 
 
-def format_fundamental_lookup(lookup: dict) -> str:
+def _norm_path(path: str) -> str:
+    """Language-neutral path form: strip the `f.` root, drop underscores, lowercase —
+    so a template scope written as `financial_statements.income_statement` matches both
+    `f.financial_statements.income_statement...` and `f.FinancialStatements.IncomeStatement...`."""
+    p = path[2:] if path[:2] in ("f.", "F.") else path
+    return p.replace("_", "").lower()
+
+
+def format_fundamental_lookup(lookup: dict, scopes: list[str] | None = None) -> str:
     """Render the data-point table (path + description), then each enum's
     constants — as a Value/Description table where the inspector documents them,
-    or a plain list where it doesn't (e.g. MorningstarIndustryGroupCode)."""
+    or a plain list where it doesn't (e.g. MorningstarIndustryGroupCode).
+
+    `scopes` filters rows by path prefix (comma tokens from the template marker):
+    plain tokens include matching subtrees; `!token` excludes them (no plain
+    tokens = start from everything). The Classification-code-constants section is
+    emitted only when the filtered rows still contain `asset_classification` paths,
+    since only those compare against the constants. No scopes = the full table
+    (backward compatible)."""
+    rows = lookup["rows"]
+    if scopes:
+        pos = [_norm_path(s) for s in scopes if not s.startswith("!")]
+        neg = [_norm_path(s[1:]) for s in scopes if s.startswith("!")]
+
+        def keep(path: str) -> bool:
+            p = _norm_path(path)
+            ok = any(p.startswith(x) for x in pos) if pos else True
+            return ok and not any(p.startswith(x) for x in neg)
+
+        rows = [(p, d) for p, d in rows if keep(p)]
+        if not rows:
+            raise SystemExit(f"fundamental-lookup scopes matched no rows: {scopes}")
+    include_enums = any(_norm_path(p).startswith("assetclassification") for p, _ in rows)
     table = ["| Data point | Description |", "|---|---|"]
-    table += [f"| `{path}` | {_table_cell(desc)} |" for path, desc in lookup["rows"]]
+    table += [f"| `{path}` | {_table_cell(desc)} |" for path, desc in rows]
+
+    if not include_enums:
+        return "\n".join(table)
 
     sections = []
     for type_name, values in lookup["enums"].items():
@@ -370,21 +402,28 @@ def main() -> int:
     # Wipe the build dir so deletions in the source propagate.
     remove_tree(skills_root, dry_run=args.dry_run)
 
-    fund_lookup_marker = "<!-- fundamental-lookup -->"
-    # Lazily fetched per language; populated only when a skill needs the lookup.
-    fundamental_lookup: dict[str, str] = {}
+    # `<!-- fundamental-lookup -->` = full table; `<!-- fundamental-lookup: a, b, !c -->`
+    # = rows scoped by path prefix (see format_fundamental_lookup). The raw inspector
+    # tree is fetched lazily, once per language, and filtered per marker.
+    fund_marker_re = re.compile(r"<!--\s*fundamental-lookup(?::([^>]*?))?\s*-->")
+    fundamental_lookup_raw: dict[str, dict] = {}
 
     # Build: split each skill into a Python and a C# tree.
     for skill in skills:
         for lang in LANGS:
             content = split_for_language(skill.content, lang)
-            if fund_lookup_marker in content:
-                if lang not in fundamental_lookup:
+            if fund_marker_re.search(content):
+                if lang not in fundamental_lookup_raw:
                     print(f"Fetching Fundamental property tree ({lang}) from inspector...")
-                    fundamental_lookup[lang] = format_fundamental_lookup(
-                        fetch_fundamental_lookup(lang)
+                    fundamental_lookup_raw[lang] = fetch_fundamental_lookup(lang)
+
+                def _expand(m: "re.Match[str]") -> str:
+                    scopes = [t.strip() for t in (m.group(1) or "").split(",") if t.strip()]
+                    return format_fundamental_lookup(
+                        fundamental_lookup_raw[lang], scopes or None
                     )
-                content = content.replace(fund_lookup_marker, fundamental_lookup[lang])
+
+                content = fund_marker_re.sub(_expand, content)
             write_file(
                 skills_root / lang / skill.rel_dir / "SKILL.md",
                 content,
