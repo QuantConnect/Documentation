@@ -7,6 +7,8 @@ description: Use when selecting a QuantConnect/LEAN universe based on per-symbol
 
 The pattern: stream the universe's daily data through one indicator instance per symbol, then filter or rank the universe by the indicator's value. Wrap the per-symbol state in a `SelectionData` class kept in a per-symbol dict on the algorithm.
 
+Base universe mechanics — the MINUTE resolution default and warm-up return behavior — are in the **universes** skill. For selection CADENCE, this skill's "Leave universe selection on its daily schedule" section below refines that skill's calendar-matching rule: indicator periods are denominated in selection fires, so the cadence must match the indicator's intended unit (a day-denominated indicator needs daily selection; a month-denominated one is correctly fed by monthly fires).
+
 ## Basic pattern (Equity / Fundamentals)
 
 US Equities only support **data-point indicators** for universe selection (SMA, EMA, RSI, StandardDeviation, BollingerBands, etc. — anything that updates from `(time, value)`), not bar indicators (ATR, candle patterns).

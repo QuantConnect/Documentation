@@ -11,6 +11,14 @@ description: Use whenever placing orders, sizing positions to target weights, ex
 - Let QC convert weights to share counts — do NOT hand-compute quantities or place raw `MarketOrder`s to hit a target weight.
 - FUTURES are the exception: `SetHoldings` sizes off (already-leveraged) buying power and over-levers a futures position, so size futures by integer contracts from notional — see the futures skill.
 
+## Small target weights silently dropped — the minimum-order filter
+`SetHoldings` / `PortfolioTarget` sizing runs every target through minimum-order thresholds (`Settings.MinAbsolutePortfolioTargetPercentage`, `Settings.MinimumOrderMarginPortfolioPercentage`). On a broad book — hundreds of names, value-weighted legs whose tail weights are a few basis points — targets below the threshold are SILENTLY skipped: selected constituents never get an order and nothing errors. When the method's portfolio legitimately contains very small weights, zero the thresholds in `Initialize`:
+```csharp
+Settings.MinAbsolutePortfolioTargetPercentage = 0;
+Settings.MinimumOrderMarginPortfolioPercentage = 0;
+```
+Never "fix" this by pruning tiny weights in strategy code — that silently changes the method's portfolio. And check starting cash first: if the smallest intended position is only a few hundred dollars, minimum per-order fees dominate returns and high-priced names round to zero shares — scale `SetCash` to the book's breadth (smallest weight × cash ≥ roughly $10,000) rather than dropping names.
+
 ## Sizing to a target weight AT THE CLOSE (market-on-close)
 `SetHoldings` sends MARKET orders (next-bar fill), so it does NOT give a close fill. When the method requires entering/exiting at the official close, compute the quantity for the target weight, then place a market-on-close order:
 ```csharp
