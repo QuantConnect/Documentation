@@ -7,6 +7,7 @@ description: Use for any cross-sectional strategy that ranks a large universe an
 
 A cross-sectional strategy screens a large universe but trades only a small subset (e.g. a long-short of two quintiles). The cost trap: add the whole universe and compute the signal in `OnData`/the rebalance — QC then subscribes to every screened name and streams its data every bar, and the algorithm crawls. The principle is to narrow to a bounded set as early as possible, store the target weights, and return only that bounded set so QC subscribes to just those; the rebalance then places the orders.
 
+Universe mechanics shared by every dynamic universe — the MINUTE resolution default, scheduling selection to the rebalance calendar, and what to return during warm-up — are in the **universes** skill; apply them here too. 
 ## Where the ranking can happen depends on the universe dataset
 The universe selection function hands you that dataset's universe data points, and **each dataset exposes different attributes — and some datasets provide no universe selection at all.** So there is no one recipe; pick by what the data point gives you:
 - **Ranking inputs ARE in the data point** (e.g. a Fundamental universe exposes `f.Price`, `f.MarketCap`, valuation/financial ratios) → rank directly from those attributes in the universe selection function.

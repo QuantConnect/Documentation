@@ -7,6 +7,8 @@ description: Use when selecting or screening a QuantConnect/LEAN Equity universe
 
 Select or screen an Equity universe on Morningstar fundamentals by passing a `Fundamental` callback to py`add_universe(...)`cs`AddUniverse(...)`. Each `Fundamental` object `f` is one company's snapshot; the Morningstar data hangs off it in a large, deeply nested tree. py`f.financial_statements.net_income`cs`f.FinancialStatements.NetIncome` does not exist — net income lives on `IncomeStatement`, one level deeper. For the exact path of any field — net income, operating cash flow, PE ratio, sector code, and so on — see the **equity-fundamental-data** skill; guessing a path wastes a backtest run.
 
+Before wiring the universe itself, apply the **universes** skill: set py`universe_settings.resolution`cs`UniverseSettings.Resolution` explicitly (the default is MINUTE — a strategy that decides after the close and fills at the next open streams ~400× the data it needs on the minute default; intraday decision or fill times still need intraday data), schedule selection to the strategy's rebalance calendar with py`universe_settings.schedule.on(...)`cs`UniverseSettings.Schedule.On(...)`, and return no symbols during warm-up (for a sparse scheduled universe, except the final pre-start selection).
+
 <!-- python-only -->
 ## Static type checking
 
