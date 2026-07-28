@@ -41,6 +41,9 @@ Market-on-close fills at an exchange's official closing auction. Cryptocurrencie
 - Exit AT THE CLOSE: `liquidate` sends a market order, so for a close fill flatten with an MOC order for the negative of the current position:
   `self.market_on_close_order(symbol, -self.portfolio[symbol].quantity)`.
 
+## Engine-generated delisting liquidations in the order records
+When a held security delists, LEAN automatically closes the position with a market order tagged `Liquidate from delisting` — outside the strategy's own schedule. These are platform processing, not strategy orders: expect a few in any long backtest that holds many names. When verifying order records against the strategy's timing invariants ("orders only at rebalances", "flat by close", ...), count these engine liquidations as compliant platform behavior, not violations — and do not add special delisting handling unless the method explicitly requires it.
+
 ## Reversing a position
 A reversal needs only ONE order, not a `liquidate` then a separate entry. With `set_holdings` this is automatic — `set_holdings(symbol, new_weight)` (e.g. the opposite sign) computes and places the single net order for you, so prefer it and write nothing extra. Manage it by hand ONLY when the spec mandates a manual share count; then place one order for the NET delta:
 ```python
