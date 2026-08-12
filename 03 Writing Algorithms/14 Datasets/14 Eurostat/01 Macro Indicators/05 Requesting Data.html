@@ -1,0 +1,34 @@
+<p>To add Macroeconomic Indicators data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is unlinked, so instead of a security <code>Symbol</code> you pass the geo code of the economy you want. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class EurostatIndicatorsDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.prices = self.add_data(EurostatConsumerPrices, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self.production = self.add_data(EurostatIndustrialProduction, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self.gdp = self.add_data(EurostatGrossDomesticProduct, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol</pre>
+<pre class="csharp">public class EurostatIndicatorsDataAlgorithm : QCAlgorithm
+{
+    private Symbol _equity, _prices, _production, _gdp;
+
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _prices = AddData&lt;EurostatConsumerPrices&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _production = AddData&lt;EurostatIndustrialProduction&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _gdp = AddData&lt;EurostatGrossDomesticProduct&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+    }
+}</pre>
+</div>
+
+<p>Each indicator arrives on its own release schedule, so an algorithm subscribed to several reacts to whichever one moves rather than waiting for a combined print.</p>

@@ -1,0 +1,41 @@
+<p>To get the current Business and Consumer Surveys data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. The surveys are monthly, so most days carry no new data. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it, and check the property you want against <code class="csharp">null</code><code class="python">None</code> before you act on it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    data = slice.get(EurostatConsumerSurvey)
+    if self.consumer in data:
+        data_point = data[self.consumer]
+        if data_point.consumer_confidence is not None:
+            self.log(f"{self.consumer} consumer confidence at {slice.time}: {data_point.consumer_confidence}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var data = slice.Get&lt;EurostatConsumerSurvey&gt;();
+    if (data.ContainsKey(_consumer))
+    {
+        var dataPoint = data[_consumer];
+        if (dataPoint.ConsumerConfidence.HasValue)
+        {
+            Log($"{_consumer} consumer confidence at {slice.Time}: {dataPoint.ConsumerConfidence}");
+        }
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the economies subscribed to a survey in the current <code>Slice</code>, call the <code class="csharp">Get</code><code class="python">get</code> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(EurostatIndustrySurvey).items():
+        self.log(f"{dataset_symbol} industrial confidence at {slice.time}: {data_point.industrial_confidence}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;EurostatIndustrySurvey&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} industrial confidence at {slice.Time}: {dataPoint.IndustrialConfidence}");
+    }
+}</pre>
+</div>
+
+<p>The <code>Value</code> property of each class is that survey's own confidence indicator.</p>

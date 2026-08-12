@@ -1,0 +1,28 @@
+<p>To add Fama-French Factors data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is unlinked, a single market-wide series, so instead of a security <code>Symbol</code> you pass the fixed identifier "FF". Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<p>The factors are a signal rather than a tradeable instrument, so add a separate tradeable security if you want to place orders.</p>
+
+<div class="section-example-container">
+<pre class="python">class FamaFrenchDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 12, 31)
+        self.set_cash(100000)
+
+        self.spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self.fama_french = self.add_data(FamaFrench, "FF", Resolution.DAILY).symbol</pre>
+<pre class="csharp">public class FamaFrenchDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _famaFrench;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2020, 12, 31);
+        SetCash(100000);
+
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _famaFrench = AddData&lt;FamaFrench&gt;("FF", Resolution.Daily).Symbol;
+    }
+}</pre>
+</div>

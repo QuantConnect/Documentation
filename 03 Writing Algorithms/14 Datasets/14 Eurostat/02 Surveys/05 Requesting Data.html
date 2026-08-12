@@ -1,0 +1,34 @@
+<p>To add Business and Consumer Surveys data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is unlinked, so instead of a security <code>Symbol</code> you pass the geo code of the economy you want. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class EurostatSurveysDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.consumer = self.add_data(EurostatConsumerSurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self.industry = self.add_data(EurostatIndustrySurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self.services = self.add_data(EurostatServicesSurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol</pre>
+<pre class="csharp">public class EurostatSurveysDataAlgorithm : QCAlgorithm
+{
+    private Symbol _equity, _consumer, _industry, _services;
+
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _consumer = AddData&lt;EurostatConsumerSurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _industry = AddData&lt;EurostatIndustrySurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _services = AddData&lt;EurostatServicesSurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+    }
+}</pre>
+</div>
+
+<p>Subscribe to as many surveys as you need for the same economy. The surveys describe economies and are not tradeable, so add a separate tradeable security if you want to place orders.</p>

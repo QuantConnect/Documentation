@@ -1,0 +1,18 @@
+<p>To get the current Fama-French Factors data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.fama_french):
+        factors = slice[self.fama_french]
+        self.log(f"Momentum at {slice.time}: {factors.momentum}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_famaFrench))
+    {
+        var factors = slice[_famaFrench];
+        Log($"Momentum at {slice.Time}: {factors.Momentum}");
+    }
+}</pre>
+</div>
+
+<p>Every factor is nullable, because the source marks a missing observation with a sentinel that the processor writes as an empty cell, so check for a missing value before you act on it. The <code>Value</code> property carries the value factor (HML), and the <code>IsEstimate</code> property tells you whether the row was published by the Ken French Data Library or reconstructed by QuantConnect.</p>
