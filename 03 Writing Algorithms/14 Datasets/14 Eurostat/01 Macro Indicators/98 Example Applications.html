@@ -1,0 +1,274 @@
+<p>The Macroeconomic Indicators dataset lets you read the European economy as it is measured. Examples include the following strategies:</p>
+
+<ul><li>Anticipating European Central Bank decisions from the HICP release, whose euro area flash lands the same day the period closes.</li>
+<li>Separating energy from core inflation to tell an external price shock apart from broad inflation.</li>
+<li>Comparing the industrial cycle across economies, for example German production against Spanish, to rotate country exposure.</li>
+<li>Combining producer prices with consumer prices to watch cost pressure move down the chain into inflation.</li>
+<li>Using the unemployment rate and the GDP components as a regime filter that scales risk up or down.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm reads German industrial production as a growth signal and holds SPY while output is rising, stepping aside when it contracts. It also logs the HICP, so the position can be read against what inflation was doing at the time.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class EurostatIndicatorsExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.prices = self.add_data(EurostatConsumerPrices, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self.production = self.add_data(EurostatIndustrialProduction, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+
+        self.previous_production = None
+
+    def on_data(self, slice):
+        prices = slice.get(EurostatConsumerPrices)
+        if self.prices in prices:
+            data_point = prices[self.prices]
+            self.debug(f"HICP all items: {data_point.all_items}, core: {data_point.core}, energy: {data_point.energy}")
+
+        production = slice.get(EurostatIndustrialProduction)
+        if self.production not in production:
+            return
+
+        total_industry = production[self.production].total_industry
+        if total_industry is None:
+            return
+
+        # Rising output is the risk-on read; a contracting month steps aside.
+        if self.previous_production is not None:
+            if total_industry &gt; self.previous_production:
+                self.set_holdings(self.equity, 1)
+            else:
+                self.liquidate(self.equity)
+
+        self.previous_production = total_industry</pre>
+<pre class="csharp">public class EurostatIndicatorsExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _equity, _prices, _production;
+    private decimal? _previousProduction;
+
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _prices = AddData&lt;EurostatConsumerPrices&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _production = AddData&lt;EurostatIndustrialProduction&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var prices = slice.Get&lt;EurostatConsumerPrices&gt;();
+        if (prices.ContainsKey(_prices))
+        {
+            var dataPoint = prices[_prices];
+            Debug($"HICP all items: {dataPoint.AllItems}, core: {dataPoint.Core}, energy: {dataPoint.Energy}");
+        }
+
+        var production = slice.Get&lt;EurostatIndustrialProduction&gt;();
+        if (!production.ContainsKey(_production))
+        {
+            return;
+        }
+
+        var totalIndustry = production[_production].TotalIndustry;
+        if (!totalIndustry.HasValue)
+        {
+            return;
+        }
+
+        // Rising output is the risk-on read; a contracting month steps aside.
+        if (_previousProduction.HasValue)
+        {
+            if (totalIndustry &gt; _previousProduction)
+            {
+                SetHoldings(_equity, 1);
+            }
+            else
+            {
+                Liquidate(_equity);
+            }
+        }
+
+        _previousProduction = totalIndustry;
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm trades a manually selected universe from the macro cycle. An alpha model subscribes to German industrial production and the unemployment rate, then emits an up insight only when output is rising and unemployment is not, which is a two-sided reading of the same expansion.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class EurostatIndicatorsFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+
+        self.add_alpha(EurostatMacroCycleAlphaModel(self))
+
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class EurostatMacroCycleAlphaModel(AlphaModel):
+    """Emits insights from the European macro cycle, read across output and unemployment."""
+
+    def __init__(self, algorithm):
+        self._production = algorithm.add_data(EurostatIndustrialProduction, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self._labour = algorithm.add_data(EurostatLabourMarket, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+
+        history = algorithm.history(EurostatIndustrialProduction, self._production, timedelta(days=1825), Resolution.DAILY)
+        algorithm.debug(f"Got {len(history)} historical industrial production rows")
+
+        self._previous_production = None
+        self._previous_unemployment = None
+        self._symbols = []
+
+    def update(self, algorithm, data):
+        insights = []
+
+        production = data.get(EurostatIndustrialProduction)
+        if self._production not in production:
+            return insights
+
+        total_industry = production[self._production].total_industry
+        if total_industry is None:
+            return insights
+
+        # The labour market publishes on its own schedule, so the last reading is read from the
+        # cache rather than from this slice.
+        labour_point = algorithm.securities[self._labour].cache.get_data(EurostatLabourMarket)
+        unemployment = labour_point.unemployment_rate if labour_point else None
+
+        if self._previous_production is not None:
+            expanding = total_industry &gt; self._previous_production
+            if expanding and unemployment is not None and self._previous_unemployment is not None:
+                expanding = unemployment &lt;= self._previous_unemployment
+
+            direction = InsightDirection.UP if expanding else InsightDirection.FLAT
+            insights = [Insight.price(symbol, timedelta(days=30), direction) for symbol in self._symbols]
+
+        self._previous_production = total_industry
+        if unemployment is not None:
+            self._previous_unemployment = unemployment
+
+        return insights
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._symbols.append(security.symbol)
+
+        for security in changes.removed_securities:
+            if security.symbol in self._symbols:
+                self._symbols.remove(security.symbol)</pre>
+<pre class="csharp">public class EurostatIndicatorsFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        AddAlpha(new EurostatMacroCycleAlphaModel(this));
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class EurostatMacroCycleAlphaModel : AlphaModel
+{
+    private readonly Symbol _production;
+    private readonly Symbol _labour;
+    private readonly List&lt;Symbol&gt; _symbols = new();
+
+    private decimal? _previousProduction;
+    private decimal? _previousUnemployment;
+
+    public EurostatMacroCycleAlphaModel(QCAlgorithm algorithm)
+    {
+        _production = algorithm.AddData&lt;EurostatIndustrialProduction&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _labour = algorithm.AddData&lt;EurostatLabourMarket&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+
+        var history = algorithm.History&lt;EurostatIndustrialProduction&gt;(_production, TimeSpan.FromDays(1825), Resolution.Daily);
+        algorithm.Debug($"Got {history.Count()} historical industrial production rows");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        var production = data.Get&lt;EurostatIndustrialProduction&gt;();
+        if (!production.ContainsKey(_production))
+        {
+            return insights;
+        }
+
+        var totalIndustry = production[_production].TotalIndustry;
+        if (!totalIndustry.HasValue)
+        {
+            return insights;
+        }
+
+        // The labour market publishes on its own schedule, so the last reading is read from the
+        // cache rather than from this slice.
+        var labourPoint = algorithm.Securities[_labour].Cache.GetData&lt;EurostatLabourMarket&gt;();
+        var unemployment = labourPoint?.UnemploymentRate;
+
+        if (_previousProduction.HasValue)
+        {
+            var expanding = totalIndustry &gt; _previousProduction;
+            if (expanding &amp;&amp; unemployment.HasValue &amp;&amp; _previousUnemployment.HasValue)
+            {
+                expanding = unemployment &lt;= _previousUnemployment;
+            }
+
+            var direction = expanding ? InsightDirection.Up : InsightDirection.Flat;
+            insights = _symbols.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), direction)).ToList();
+        }
+
+        _previousProduction = totalIndustry;
+        if (unemployment.HasValue)
+        {
+            _previousUnemployment = unemployment;
+        }
+
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _symbols.Add(security.Symbol);
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _symbols.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>

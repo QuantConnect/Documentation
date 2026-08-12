@@ -1,0 +1,274 @@
+<p>The Business and Consumer Surveys dataset lets you read the European economy before it shows up in any measured statistic. Examples include the following strategies:</p>
+
+<ul><li>Timing exposure to European equities or the euro on the direction of consumer confidence, the earliest reading of the five.</li>
+<li>Reading price expectations across industry, construction, retail and services as an inflation signal that leads both producer and consumer prices.</li>
+<li>Watching industrial order books, and export order books in particular, as a lead on industrial production and on external demand.</li>
+<li>Comparing confidence across economies, for example German industry against Spanish, to rotate country exposure.</li>
+<li>Combining the five surveys into a breadth measure of how much of the economy is improving at once, rather than reading any single sector.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm reads German consumer confidence as a risk-on signal and holds SPY while households are turning less pessimistic, stepping aside when they are not. It also logs what manufacturers expect to charge, which is pipeline inflation months before a price index measures it.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class EurostatSurveysExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.consumer = self.add_data(EurostatConsumerSurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self.industry = self.add_data(EurostatIndustrySurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+
+        self.previous_confidence = None
+
+    def on_data(self, slice):
+        industry = slice.get(EurostatIndustrySurvey)
+        if self.industry in industry:
+            data_point = industry[self.industry]
+            self.debug(f"Industrial confidence: {data_point.industrial_confidence}, selling price expectations: {data_point.selling_price_expectation}")
+
+        consumer = slice.get(EurostatConsumerSurvey)
+        if self.consumer not in consumer:
+            return
+
+        confidence = consumer[self.consumer].consumer_confidence
+        if confidence is None:
+            return
+
+        # Households turning less pessimistic is the risk-on read.
+        if self.previous_confidence is not None:
+            if confidence &gt; self.previous_confidence:
+                self.set_holdings(self.equity, 1)
+            else:
+                self.liquidate(self.equity)
+
+        self.previous_confidence = confidence</pre>
+<pre class="csharp">public class EurostatSurveysExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _equity, _consumer, _industry;
+    private decimal? _previousConfidence;
+
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _consumer = AddData&lt;EurostatConsumerSurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _industry = AddData&lt;EurostatIndustrySurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var industry = slice.Get&lt;EurostatIndustrySurvey&gt;();
+        if (industry.ContainsKey(_industry))
+        {
+            var dataPoint = industry[_industry];
+            Debug($"Industrial confidence: {dataPoint.IndustrialConfidence}, selling price expectations: {dataPoint.SellingPriceExpectation}");
+        }
+
+        var consumer = slice.Get&lt;EurostatConsumerSurvey&gt;();
+        if (!consumer.ContainsKey(_consumer))
+        {
+            return;
+        }
+
+        var confidence = consumer[_consumer].ConsumerConfidence;
+        if (!confidence.HasValue)
+        {
+            return;
+        }
+
+        // Households turning less pessimistic is the risk-on read.
+        if (_previousConfidence.HasValue)
+        {
+            if (confidence &gt; _previousConfidence)
+            {
+                SetHoldings(_equity, 1);
+            }
+            else
+            {
+                Liquidate(_equity);
+            }
+        }
+
+        _previousConfidence = confidence;
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm trades a manually selected universe from the confidence surveys. An alpha model subscribes to the German consumer and industry surveys, then emits an up insight only when households and manufacturers are turning more confident in the same round, which is a breadth reading rather than a single sector one.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class EurostatSurveysFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+
+        self.add_alpha(EurostatConfidenceAlphaModel(self))
+
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class EurostatConfidenceAlphaModel(AlphaModel):
+    """Emits insights from the direction of European confidence, read across households and industry."""
+
+    def __init__(self, algorithm):
+        self._consumer = algorithm.add_data(EurostatConsumerSurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+        self._industry = algorithm.add_data(EurostatIndustrySurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol
+
+        history = algorithm.history(EurostatConsumerSurvey, self._consumer, timedelta(days=1825), Resolution.DAILY)
+        algorithm.debug(f"Got {len(history)} historical consumer survey rows")
+
+        self._previous_consumer = None
+        self._previous_industry = None
+        self._symbols = []
+
+    def update(self, algorithm, data):
+        insights = []
+
+        consumer = data.get(EurostatConsumerSurvey)
+        if self._consumer not in consumer:
+            return insights
+
+        confidence = consumer[self._consumer].consumer_confidence
+        if confidence is None:
+            return insights
+
+        # The industry survey shares its release date with the consumer one, so the confirmation
+        # is read from the same round.
+        industry_point = algorithm.securities[self._industry].cache.get_data(EurostatIndustrySurvey)
+        industrial = industry_point.industrial_confidence if industry_point else None
+
+        if self._previous_consumer is not None:
+            improving = confidence &gt; self._previous_consumer
+            if improving and industrial is not None and self._previous_industry is not None:
+                improving = industrial &gt; self._previous_industry
+
+            direction = InsightDirection.UP if improving else InsightDirection.FLAT
+            insights = [Insight.price(symbol, timedelta(days=30), direction) for symbol in self._symbols]
+
+        self._previous_consumer = confidence
+        if industrial is not None:
+            self._previous_industry = industrial
+
+        return insights
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._symbols.append(security.symbol)
+
+        for security in changes.removed_securities:
+            if security.symbol in self._symbols:
+                self._symbols.remove(security.symbol)</pre>
+<pre class="csharp">public class EurostatSurveysFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        AddAlpha(new EurostatConfidenceAlphaModel(this));
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class EurostatConfidenceAlphaModel : AlphaModel
+{
+    private readonly Symbol _consumer;
+    private readonly Symbol _industry;
+    private readonly List&lt;Symbol&gt; _symbols = new();
+
+    private decimal? _previousConsumer;
+    private decimal? _previousIndustry;
+
+    public EurostatConfidenceAlphaModel(QCAlgorithm algorithm)
+    {
+        _consumer = algorithm.AddData&lt;EurostatConsumerSurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+        _industry = algorithm.AddData&lt;EurostatIndustrySurvey&gt;(Eurostat.Economies.Germany, Resolution.Daily).Symbol;
+
+        var history = algorithm.History&lt;EurostatConsumerSurvey&gt;(_consumer, TimeSpan.FromDays(1825), Resolution.Daily);
+        algorithm.Debug($"Got {history.Count()} historical consumer survey rows");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        var insights = new List&lt;Insight&gt;();
+
+        var consumer = data.Get&lt;EurostatConsumerSurvey&gt;();
+        if (!consumer.ContainsKey(_consumer))
+        {
+            return insights;
+        }
+
+        var confidence = consumer[_consumer].ConsumerConfidence;
+        if (!confidence.HasValue)
+        {
+            return insights;
+        }
+
+        // The industry survey shares its release date with the consumer one, so the confirmation
+        // is read from the same round.
+        var industryPoint = algorithm.Securities[_industry].Cache.GetData&lt;EurostatIndustrySurvey&gt;();
+        var industrial = industryPoint?.IndustrialConfidence;
+
+        if (_previousConsumer.HasValue)
+        {
+            var improving = confidence &gt; _previousConsumer;
+            if (improving &amp;&amp; industrial.HasValue &amp;&amp; _previousIndustry.HasValue)
+            {
+                improving = industrial &gt; _previousIndustry;
+            }
+
+            var direction = improving ? InsightDirection.Up : InsightDirection.Flat;
+            insights = _symbols.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), direction)).ToList();
+        }
+
+        _previousConsumer = confidence;
+        if (industrial.HasValue)
+        {
+            _previousIndustry = industrial;
+        }
+
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _symbols.Add(security.Symbol);
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _symbols.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>

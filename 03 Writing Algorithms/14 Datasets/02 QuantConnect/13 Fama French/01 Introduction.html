@@ -1,0 +1,45 @@
+<p>
+The Fama-French Factors dataset by QuantConnect gives you the academic factor returns that quants use to explain where a portfolio's performance actually came from: the market, size, value, profitability, investment and momentum premiums, plus the risk-free rate. It covers the whole US equity market, goes back to January 1998, and updates daily.
+</p>
+<p>
+QuantConnect computes the factors instead of republishing them. Every June the universe is sorted into portfolios on size, book-to-market, operating profitability and asset growth using company financials from <a href="/datasets/morning-star-us-fundamentals">US Fundamental Data</a>, momentum is ranked daily on the trailing year, and each factor is the value-weighted return of the long portfolios minus the short ones, priced off the <a href="/datasets/quantconnect-us-coarse-universe-constituents">US Equity Coarse Universe</a>. The definitions are the ones published by the Kenneth R. French Data Library. The reason for computing them is timing: the library re-publishes on a monthly cycle, so its own values trail the present by about two months, which is too late to trade on. These arrive the day after the session they measure.
+</p>
+<p>
+Because the inputs are different, these are close to the library's own numbers but not identical to them. Measured against the published daily factors:
+</p>
+
+<table class="table qc-table"><thead><tr><th>Factor</th>
+            <th>Correlation, 2000 to 2026</th>
+            <th>Correlation, 2020 to 2026</th>
+            <th>Beta</th>
+        </tr></thead><tbody><tr><td>Mkt-RF</td>
+            <td>0.995</td>
+            <td>0.999</td>
+            <td>0.98</td>
+        </tr><tr><td>Momentum</td>
+            <td>0.973</td>
+            <td>0.988</td>
+            <td>0.90</td>
+        </tr><tr><td>HML</td>
+            <td>0.956</td>
+            <td>0.980</td>
+            <td>0.90</td>
+        </tr><tr><td>SMB</td>
+            <td>0.949</td>
+            <td>0.988</td>
+            <td>0.95</td>
+        </tr><tr><td>RMW</td>
+            <td>0.819</td>
+            <td>0.931</td>
+            <td>0.98</td>
+        </tr><tr><td>CMA</td>
+            <td>0.815</td>
+            <td>0.968</td>
+            <td>0.88</td>
+        </tr></tbody></table>
+
+<p>
+The two columns differ because the input data gets materially better over time, and RMW and CMA are the ones that feel it. The recent column is the one live trading operates in. Use these factors to read a regime, to measure what your portfolio is exposed to, or to attribute your returns; if you need the exact published values for a paper, take them from the library. The <code>IsEstimate</code> property tells you which rows QuantConnect computed.
+</p>
+
+<p>For more information about the Fama French dataset, including CLI commands and pricing, see the <a href="/datasets/quantconnect-fama-french">dataset listing</a>.<p>

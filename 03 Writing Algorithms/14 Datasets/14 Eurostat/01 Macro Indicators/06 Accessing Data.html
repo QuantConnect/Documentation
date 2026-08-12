@@ -1,0 +1,41 @@
+<p>To get the current Macroeconomic Indicators data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. The indicators are monthly and quarterly, so most days carry no new data. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it, and check the property you want against <code class="csharp">null</code><code class="python">None</code> before you act on it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    data = slice.get(EurostatConsumerPrices)
+    if self.prices in data:
+        data_point = data[self.prices]
+        if data_point.all_items is not None:
+            self.log(f"{self.prices} HICP at {slice.time}: {data_point.all_items}, core {data_point.core}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var data = slice.Get&lt;EurostatConsumerPrices&gt;();
+    if (data.ContainsKey(_prices))
+    {
+        var dataPoint = data[_prices];
+        if (dataPoint.AllItems.HasValue)
+        {
+            Log($"{_prices} HICP at {slice.Time}: {dataPoint.AllItems}, core {dataPoint.Core}");
+        }
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the economies subscribed to an indicator in the current <code>Slice</code>, call the <code class="csharp">Get</code><code class="python">get</code> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(EurostatIndustrialProduction).items():
+        self.log(f"{dataset_symbol} industrial production at {slice.time}: {data_point.total_industry}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;EurostatIndustrialProduction&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} industrial production at {slice.Time}: {dataPoint.TotalIndustry}");
+    }
+}</pre>
+</div>
+
+<p>The <code>Value</code> property of each class is that indicator's headline reading, falling back to zero when Eurostat has not published it. Read the typed property if you need to tell a missing reading from a real one, since zero is not a possible index level.</p>
