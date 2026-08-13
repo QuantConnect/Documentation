@@ -46,3 +46,20 @@ include(DOCS_RESOURCES."/trading-and-orders/stop-algorithm.php");
 </div>
 
 <p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-cloud-live-command#04-Options'>Options</a>.</p>
+
+<h4>Broadcast Commands</h4>
+<p>To send a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/commands'>command</a> to every live algorithm that runs in your organization, open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> and then run <code>lean cloud live broadcast --data "&lt;payload&gt;"</code>.</p>
+
+<div class="cli section-example-container">
+<pre>$ lean cloud live broadcast --data "{'ticker': 'AAPL', 'quantity': 1}"</pre>
+</div>
+
+<p>The payload follows the same rules as the one you pass to <code>lean cloud live command</code>, so include a <code>$type</code> key to run the logic you wrap in a <code>Command</code> class and use <code>`$type</code> in PowerShell.</p>
+
+<p>The command targets the organization of the current Lean CLI directory. To broadcast to another organization, pass its name or Id to the <code>--organization</code> option. To leave one project out of the broadcast, pass its name or Id to the <code>--exclude-project</code> option.</p>
+
+<div class="cli section-example-container">
+<pre>$ lean cloud live broadcast --data "{'$type': 'MyCommand', 'ticker': 'AAPL', 'quantity': 1}" --organization "My Organization" --exclude-project "My Project"</pre>
+</div>
+
+<p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-cloud-live-broadcast#04-Options'>Options</a>.</p>
