@@ -1,16 +1,68 @@
-<p>To place trades using a subset of client accounts, <a rel="nofollow" target="_blank" href="https://www.ibkrguides.com/traderworkstation/create-an-account-group-for-share-allocation.htm">create Account Groups in Trader Workstation</a> and then define the <code>InteractiveBrokersOrderProperties</code> when you create orders.</p>
+<p>To trade through an existing subset of managed accounts, <a rel="nofollow" target="_blank" href="https://www.ibkrguides.com/traderworkstation/create-an-account-group-for-share-allocation.htm">create an Allocation Group in Trader Workstation</a>. Set the <code class="csharp">FaGroup</code><code class="python">fa_group</code> property of an <code>InteractiveBrokersOrderProperties</code> object to the group name.</p>
+
+<table class="table qc-table">
+    <thead><tr><th>Property</th><th>FA behavior</th><th>Default</th></tr></thead>
+    <tbody>
+        <tr><td><code class="csharp">Account</code><code class="python">account</code></td><td>Routes the order directly to one managed account. Don't set <code class="csharp">FaGroup</code><code class="python">fa_group</code> or <code class="csharp">FaProfile</code><code class="python">fa_profile</code> on the same order.</td><td>Empty</td></tr>
+        <tr><td><code class="csharp">FaGroup</code><code class="python">fa_group</code></td><td>Routes the order to an existing Allocation Group. In unified mode, leave it empty only when the deployment group filter supplies the route.</td><td>Empty</td></tr>
+        <tr><td><code class="csharp">FaMethod</code><code class="python">fa_method</code></td><td>Overrides a calculated group method when supported. Leave it empty to use the saved method. Unified saved <code>ContractsOrShares</code>, <code>Ratio</code>, and <code>Percent</code> groups require an empty value.</td><td>Empty</td></tr>
+        <tr><td><code class="csharp">FaPercentage</code><code class="python">fa_percentage</code></td><td>Supplies the integer percentage for the legacy <code>PctChange</code> route when unified groups are disabled.</td><td>0</td></tr>
+        <tr><td><code class="csharp">FaProfile</code><code class="python">fa_profile</code></td><td>Routes through a legacy Allocation Profile. Unified groups don't support profiles.</td><td>Empty</td></tr>
+    </tbody>
+</table>
+
+<p>The following unified-group example uses the group's saved method. Request the group scope and wait for a <code>Ready</code> snapshot that contains the group before you submit this implicit-method order.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">DefaultOrderProperties = new InteractiveBrokersOrderProperties
+    <pre class="csharp">var properties = new InteractiveBrokersOrderProperties
 {
-    FaGroup = "TestGroupEQ",
-    FaMethod = "Equal",
-    Account = "DU123456"
-};</pre>
-    <pre class="python">self.default_order_properties = InteractiveBrokersOrderProperties()
-self.default_order_properties.fa_group = "TestGroupEQ"
-self.default_order_properties.fa_method = "Equal"
-self.default_order_properties.account = "DU123456"</pre>
+    // Leave FaMethod empty to use the saved method.
+    FaGroup = "TestGroupEQ"
+};
+MarketOrder(_symbol, 100, orderProperties: properties);</pre>
+    <pre class="python">properties = InteractiveBrokersOrderProperties()
+# Leave fa_method empty to use the saved method.
+properties.fa_group = "TestGroupEQ"
+self.market_order(self._symbol, 100, order_properties=properties)</pre>
 </div>
 
-<p><a href='/docs/v2/writing-algorithms/portfolio/holdings'>SecurityHolding</a> objects aggregate your positions across all the account groups. If you have two groups where group A has 10 shares of SPY and group B has -10 shares of SPY, then <code class='python'>self.portfolio["SPY"].quantity</code><code class='csharp'>Portfolio["SPY"].Quantity</code> is zero.</p>
+<p>To route an order directly to one managed account, set <code class="csharp">Account</code><code class="python">account</code> instead.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var properties = new InteractiveBrokersOrderProperties
+{
+    Account = "DU123456"
+};
+MarketOrder(_symbol, 10, orderProperties: properties);</pre>
+    <pre class="python">properties = InteractiveBrokersOrderProperties()
+properties.account = "DU123456"
+self.market_order(self._symbol, 10, order_properties=properties)</pre>
+</div>
+
+<p><code class="csharp">Account</code><code class="python">account</code>, <code class="csharp">FaGroup</code><code class="python">fa_group</code>, and <code class="csharp">FaProfile</code><code class="python">fa_profile</code> are mutually exclusive routes. A nonempty account takes precedence, clears the group and method, and bypasses group snapshot and mutation-gate validation. Unified groups don't support legacy separate Allocation Profiles.</p>
+
+<p>Treat a submitted order's FA routing properties as immutable. Create a new <code>InteractiveBrokersOrderProperties</code> object for a different route instead of changing its account, group, method, or percentage after submission.</p>
+
+<p>In unified mode, every leg of a combo order must resolve to the same account, group, and allocation method. Unified account and group routing doesn't apply to option exercise orders. IB routes an exercise through the connection's configured account.</p>
+
+<h4>Use a deployment group filter</h4>
+
+<p>The <code>ib-financial-advisors-group-filter</code> setting limits an algorithm to one group. If you configure it, an order can omit <code class="csharp">FaGroup</code><code class="python">fa_group</code> to use that group. When unified groups are enabled, LEAN trims the configured value, compares explicit groups without regard to case, and requires an explicitly named group to match the filter. Leave the setting empty to discover and trade multiple groups, and set the group on each group order.</p>
+
+<p>A filter-routed order uses the group's saved method, so a supported order-level <code class="csharp">FaMethod</code><code class="python">fa_method</code> doesn't override it. Explicit <code>PctChange</code> is rejected in unified mode. The brokerage doesn't refresh snapshots during order admission. Request the filtered group and wait for a <code>Ready</code> snapshot that contains it before placing the order.</p>
+
+<p>When unified groups are enabled, any nonempty method outside the supported unified set, including <code>PctChange</code>, is rejected before submission. For supported method and saved-vector rules, see <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#03-Allocation-Methods">Allocation Methods</a>.</p>
+
+<p>On an FA master with unified groups enabled, the configured filter also classifies an order without <code>InteractiveBrokersOrderProperties</code> as a group order. LEAN applies the master execution to the aggregate parent order and doesn't count child allocations as extra parent fills. A non-FA connection or a deployment with unified groups disabled retains legacy execution handling.</p>
+
+<h4>Reconcile account-level results</h4>
+
+<p>LEAN publishes aggregate parent <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events">order events</a> for an FA group order. It doesn't publish a child execution event for each managed account. After a parent order reaches a terminal status, request newer <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#05-Account-Snapshots">brokerage account snapshots</a> for the original group and its original members. Reconcile only a later <code>Ready</code> snapshot that contains every required account.</p>
+
+<p>Unified direct-account and supported group routes preserve IB's decimal execution quantities in LEAN's fill accounting. The parent event remains aggregate for a group route, and the account snapshot remains the authority for each child account.</p>
+
+<p>A newer snapshot generation or timestamp doesn't prove that IB's account-position stream contains a recent execution. Continue until a qualifying snapshot shows the expected account-level effect, or stop after an algorithm-owned timeout for manual review.</p>
+
+<p>Position reconciliation can't distinguish an allocation fill from another trade in the same account and symbol that later offsets it. Keep manual and external trading in that symbol inactive while your retry policy depends on an unchanged position.</p>
+
+<p><a href="/docs/v2/writing-algorithms/portfolio/holdings">SecurityHolding</a> objects aggregate positions across managed accounts. If one group holds 10 shares of SPY and another holds -10, then <code class="csharp">Portfolio["SPY"].Quantity</code><code class="python">self.portfolio["SPY"].quantity</code> is zero. Portfolio helpers retain aggregate symbol and lot-size semantics. Use <code class="csharp">BrokerageAccountSnapshot</code><code class="python">brokerage_account_snapshot</code> as the authority for per-account and fractional FA inventory.</p>
