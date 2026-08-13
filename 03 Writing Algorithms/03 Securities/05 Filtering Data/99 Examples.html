@@ -120,6 +120,133 @@ class BatsDataFilter(SecurityDataFilter):
         </pre>
 </div>
 
+<h4>Example 3: Perturb Prices for Robustness Tests</h4>
+<p>
+	A data filter can edit a data point instead of just accepting or rejecting it.
+	LEAN applies the filter before it assembles the <code>Slice</code> object and then passes the same data point to the <code>Security</code> objects, the <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started'>consolidators</a>, and your <code class="csharp">OnData</code><code class="python">on_data</code> method, so an edit inside the filter reaches every part of your algorithm, including the <a href='/docs/v2/writing-algorithms/indicators/key-concepts'>indicators</a> that you create with the <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators'>automatic indicator</a> helper methods.
+	The following example multiplies each bar by a small random shock so that you can re-run a backtest across many synthetic price paths and measure how much of your performance depends on the exact price history.
+	It derives the shock from the bar end time so that the trade and quote subscriptions of the security apply the same multiplier to the same bar, and it applies that single positive multiplier to all the price fields, which preserves the relationship between the open, high, low, and close prices and between the bid and ask prices.
+	To generate a different price path, change the <code>seed</code> parameter and run the backtest again.
+	<a href='/docs/v2/writing-algorithms/historical-data/history-requests'>History requests</a> don't pass through the data filter, so they return the original prices.
+</p>
+<div class="section-example-container testable">
+	<pre class="csharp">public class PriceNoiseFilterAlgorithm : QCAlgorithm
+{
+    private ExponentialMovingAverage _ema;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 3);
+        SetEndDate(2024, 9, 5);
+        var equity = AddEquity("AAPL", Resolution.Minute);
+        // Set the data filter. Change the seed to get a different price path.
+        var seed = GetParameter("seed", 1);
+        var sigma = GetParameter("sigma", 0.0005);
+        equity.SetDataFilter(new PriceNoiseFilter(seed, sigma));
+        // The filter perturbs the data before the consolidators update it, so this
+        // indicator is built from the perturbed prices.
+        _ema = EMA(equity.Symbol, 20, Resolution.Minute);
+    }
+}
+
+class PriceNoiseFilter : SecurityDataFilter
+{
+    private readonly int _seed;
+    private readonly double _sigma;
+
+    public PriceNoiseFilter(int seed, double sigma) : base()
+    {
+        _seed = seed;
+        _sigma = sigma;
+    }
+
+    public override bool Filter(Security vehicle, BaseData data)
+    {
+        // Seed on the bar time so that the trade and quote subscriptions
+        // apply the same shock to the same bar.
+        var rng = new Random(_seed ^ data.EndTime.GetHashCode());
+        // Draw a standard normal value with the Box-Muller transform.
+        var z = Math.Sqrt(-2 * Math.Log(1 - rng.NextDouble())) * Math.Sin(2 * Math.PI * rng.NextDouble());
+        var shock = (decimal)(1 + z * _sigma);
+        if (data is TradeBar tradeBar)
+        {
+            // The Close setter also updates the Value property.
+            tradeBar.Open *= shock;
+            tradeBar.High *= shock;
+            tradeBar.Low *= shock;
+            tradeBar.Close *= shock;
+        }
+        else if (data is QuoteBar quoteBar)
+        {
+            foreach (var side in new[] { quoteBar.Bid, quoteBar.Ask })
+            {
+                if (side == null)
+                {
+                    continue;
+                }
+                side.Open *= shock;
+                side.High *= shock;
+                side.Low *= shock;
+                side.Close *= shock;
+            }
+            // The Value property of a QuoteBar isn't derived from the Bid and Ask
+            // properties, so scale it explicitly.
+            quoteBar.Value *= shock;
+        }
+        // Return true (keep) or false (discard).
+        return true;
+    }
+}</pre>
+	<pre class="python">import random
+
+
+class PriceNoiseFilterAlgorithm(QCAlgorithm):
+
+    def initialize(self) -> None:
+        self.set_start_date(2024, 9, 3)
+        self.set_end_date(2024, 9, 5)
+        equity = self.add_equity("AAPL", Resolution.MINUTE)
+        # Set the data filter. Change the seed to get a different price path.
+        seed = self.get_parameter("seed", 1)
+        sigma = self.get_parameter("sigma", 0.0005)
+        equity.set_data_filter(PriceNoiseFilter(seed, sigma))
+        # The filter perturbs the data before the consolidators update it, so this
+        # indicator is built from the perturbed prices.
+        self._ema = self.ema(equity.symbol, 20, Resolution.MINUTE)
+
+
+class PriceNoiseFilter(SecurityDataFilter):
+
+    def __init__(self, seed: int, sigma: float) -> None:
+        super().__init__()
+        self._seed = seed
+        self._sigma = sigma
+
+    def filter(self, vehicle: Security, data: BaseData) -> bool:
+        # Seed on the bar time so that the trade and quote subscriptions
+        # apply the same shock to the same bar.
+        rng = random.Random(f"{self._seed}:{data.end_time}")
+        shock = 1 + rng.gauss(0, self._sigma)
+        if isinstance(data, TradeBar):
+            # The close setter also updates the value property.
+            data.open *= shock
+            data.high *= shock
+            data.low *= shock
+            data.close *= shock
+        elif isinstance(data, QuoteBar):
+            for side in [data.bid, data.ask]:
+                if side:
+                    side.open *= shock
+                    side.high *= shock
+                    side.low *= shock
+                    side.close *= shock
+            # The value property of a QuoteBar isn't derived from the bid and ask
+            # properties, so scale it explicitly.
+            data.value *= shock
+        # Return True (keep) or False (discard).
+        return True</pre>
+</div>
+
 <h4>Other Examples</h4>
 <p>For more examples, see the following algorithms:</p>
 <div class="example-fieldset">
