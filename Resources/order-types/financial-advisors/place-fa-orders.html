@@ -47,7 +47,7 @@ self.market_order(self._symbol, 10, order_properties=properties)</pre>
 
 <h4>Use a deployment group filter</h4>
 
-<p>The <code>ib-financial-advisors-group-filter</code> setting limits an algorithm to one group. If you configure it, an order can omit <code class="csharp">FaGroup</code><code class="python">fa_group</code> to use that group. When unified groups are enabled, LEAN trims the configured value, compares explicit groups without regard to case, and requires an explicitly named group to match the filter. Leave the setting empty to discover and trade multiple groups, and set the group on each group order.</p>
+<p>The <code>ib-financial-advisors-group-filter</code> setting limits selected financial-state collection, mutations, and group-order routing to one group. <code class="csharp">AllGroups</code><code class="python">all_groups</code> can still expose discovered topology outside this scope. If you configure the filter, an order can omit <code class="csharp">FaGroup</code><code class="python">fa_group</code> to use that group. When unified groups are enabled, LEAN trims the configured value, compares explicit groups without regard to case, and requires an explicitly named group to match the filter. Leave the setting empty to collect financial state for and trade multiple groups, and set the group on each group order.</p>
 
 <p>A filter-routed order uses the group's saved method, so a supported order-level <code class="csharp">FaMethod</code><code class="python">fa_method</code> doesn't override it. Explicit <code>PctChange</code> is rejected in unified mode. The brokerage doesn't refresh snapshots during order admission. Request the filtered group and wait for a <code>Ready</code> snapshot that contains it before placing the order.</p>
 
@@ -57,7 +57,7 @@ self.market_order(self._symbol, 10, order_properties=properties)</pre>
 
 <h4>Reconcile account-level results</h4>
 
-<p>LEAN publishes aggregate parent <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events">order events</a> for an FA group order. It doesn't publish a child execution event for each managed account. After a parent order reaches a terminal status, request newer <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#05-Account-Snapshots">brokerage account snapshots</a> for the original group and its original members. Reconcile only a later <code>Ready</code> snapshot that contains every required account.</p>
+<p>LEAN publishes aggregate parent <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events">order events</a> for an FA group order. It doesn't publish a child execution event for each managed account. After a parent order reaches a terminal status, request newer <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#05-Account-Snapshots">brokerage account snapshots</a> for the original group. In an unfiltered deployment, include any original member that no longer belongs to the group as an additional account. A filtered deployment can't request additional accounts outside its group. Reconcile only a later <code>Ready</code> snapshot that contains every required account.</p>
 
 <p>Unified direct-account and supported group routes preserve IB's decimal execution quantities in LEAN's fill accounting. The parent event remains aggregate for a group route, and the account snapshot remains the authority for each child account.</p>
 

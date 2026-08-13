@@ -10,7 +10,7 @@
 
 <p>A null snapshot and invalid identifiers throw synchronously. A non-<code>Ready</code> snapshot, missing version tokens, unavailable manager, or inactive mutation lifecycle returns <code class="csharp">false</code><code class="python">False</code>. Provider validation of scope, topology, and allocation values can also reject or throw before asynchronous work is accepted.</p>
 
-<p>Mutation requests are disabled during <code class="csharp">Initialize</code><code class="python">initialize</code> and teardown. Request them only after initialization while the algorithm is running. Unsupported brokerages and backtests expose <code>Unavailable</code> and return false.</p>
+<p>Mutation requests return <code class="csharp">false</code><code class="python">False</code> during <code class="csharp">Initialize</code><code class="python">initialize</code>. Request them only during the normal algorithm run after initialization. Don't request them from <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> or teardown because a request can be accepted before the run exits without being guaranteed to reach IB or publish a result. Unsupported brokerages and backtests expose <code>Unavailable</code> and return false.</p>
 
 <p>The following example assumes <code>TargetGroup</code> is saved with the <code>Equal</code> method:</p>
 

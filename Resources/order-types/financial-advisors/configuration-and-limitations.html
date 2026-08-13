@@ -17,7 +17,7 @@
     <tbody>
         <tr>
             <td><code>ib-financial-advisors-group-filter</code></td>
-            <td>Limits the deployment to one group. Leave it empty for multi-group discovery and set <code class="csharp">FaGroup</code><code class="python">fa_group</code> on group orders. With unified groups enabled, a nonempty value is a strict snapshot, mutation, and group-order-routing boundary.</td>
+            <td>Limits selected financial-state collection, mutations, and group-order routing to one group. <code class="csharp">AllGroups</code><code class="python">all_groups</code> can still expose discovered topology outside this scope. Leave the setting empty to collect financial state for and trade multiple groups, and set <code class="csharp">FaGroup</code><code class="python">fa_group</code> on group orders.</td>
             <td>Empty</td>
         </tr>
         <tr>
@@ -43,7 +43,7 @@
 
 <p>Before you enable unified groups on an existing deployment, cancel or otherwise resolve open orders for groups saved with <code>PctChange</code>. Unified mode rejects new saved or explicit <code>PctChange</code> orders, and a recovered open order with an omitted method doesn't contain enough information for LEAN to classify its fill accounting safely.</p>
 
-<div class="highlight">The current QuantConnect Cloud and LEAN CLI deployment schemas don't expose the two Boolean enablement settings. Use a direct local configuration or another host that supplies the exact brokerage-data keys. Don't assume snapshots or mutations are active merely because an FA account is connected.</div>
+<div class="highlight">The current public LEAN CLI deployment schema doesn't expose the two Boolean enablement settings. For any deployment surface that doesn't offer these fields, use a direct local configuration or another host that supplies the exact brokerage-data keys. Don't assume snapshots or mutations are active merely because an FA account is connected.</div>
 
 <h4>Own the freshness policy</h4>
 
@@ -57,7 +57,7 @@
     <li>Account and financial rows are collected over an interval, not as one atomic brokerage read. <code class="csharp">CollectionStartedUtc</code><code class="python">collection_started_utc</code> and <code class="csharp">AsOfUtc</code><code class="python">as_of_utc</code> bound that window. A snapshot can combine identity data sampled near the start with financial data sampled later.</li>
     <li>A refresh aborts instead of publishing <code>Ready</code> if group configuration, managed accounts, aliases, or family codes change during collection.</li>
     <li>A snapshot can omit a non-base currency from a child's <code class="csharp">CashBalances</code><code class="python">cash_balances</code> when that currency nets to exactly zero across a collected group. Base-currency cash remains available. Use a collection and validation policy appropriate for currency-sensitive decisions.</li>
-    <li>IB's grouped position response doesn't positively identify every flat child account. An empty child <code class="csharp">Positions</code><code class="python">positions</code> collection can represent a genuinely flat account or an omitted child row, so independently confirm flatness when that distinction controls an irreversible action.</li>
+    <li>An empty child <code class="csharp">Positions</code><code class="python">positions</code> collection doesn't positively prove that IB observed the account as flat. Independently confirm flatness when that distinction controls an irreversible action.</li>
     <li>If a group name matches a managed account identifier without regard to case, collection remains correct but falls back to a slower collection path for affected members and logs an error-level diagnostic.</li>
     <li>A configured group filter makes every refresh scoped. In that configuration, <code class="csharp">IsComplete</code><code class="python">is_complete</code> remains false even for the parameterless refresh overload.</li>
     <li><code class="csharp">IsComplete</code><code class="python">is_complete</code> reports provider-assessed topology and account-state collection completeness. It doesn't mean every discovered group's saved method is executable or mutable.</li>

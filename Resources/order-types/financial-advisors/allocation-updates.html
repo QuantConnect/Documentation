@@ -6,6 +6,8 @@
 
 <p>A null snapshot or allocation input and invalid identifiers throw synchronously. A non-<code>Ready</code> snapshot, missing version tokens, unavailable manager, or inactive mutation lifecycle returns <code class="csharp">false</code><code class="python">False</code>. Provider validation of topology, methods, complete membership, and allocation values can also reject or throw before asynchronous work is accepted. Reading <code class="csharp">BrokerageAccountGroupAllocationUpdate</code><code class="python">brokerage_account_group_allocation_update</code> performs no external request and returns the latest published result, or <code>Unavailable</code> before a result exists.</p>
 
+<p>Mutation requests return <code class="csharp">false</code><code class="python">False</code> during <code class="csharp">Initialize</code><code class="python">initialize</code>. Request them only during the normal algorithm run after initialization. Don't request them from <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> or teardown because a request can be accepted before the run exits without being guaranteed to reach IB or publish a result.</p>
+
 <p>The following example replaces a two-member <code>Percent</code> group's complete vector:</p>
 
 <div class="section-example-container">
