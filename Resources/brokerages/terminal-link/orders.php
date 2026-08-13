@@ -155,6 +155,17 @@
             <td></td>
         </tr>
         <tr>
+            <td><code class="csharp">IsCfdTrade</code><code class="python">is_cfd_trade</code></td>
+            <td><code>bool</code></td>
+            <td>
+                A flag that books the order as a contract for differences (CFD) instead of a regular trade.
+                Maps to the <code>CFD</code> option of the <code>Booking Type</code> drop-down on the EMSX trading ticket and sets the <code>EMSX_CFD_FLAG</code> element.
+                EMSX applies this flag at the order level, not per security.
+                A regular trade is the EMSX default, so the brokerage only sends the element when you set this property to <code class="csharp">true</code><code class="python">True</code>.
+            </td>
+            <td><code class="csharp">false</code><code class="python">False</code></td>
+        </tr>
+        <tr>
             <td><code class="csharp">Strategy</code><code class="python">strategy</code></td>
             <td><code>StrategyParameters</code></td>
             <td>
@@ -188,6 +199,16 @@
             <td><code>Exchange</code></td>
             <td>Defines the exchange name for sending the order to.</td>
             <td></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">AdditionalProperties</code><code class="python">additional_properties</code></td>
+            <td><code class='csharp'>BaseExtendedDictionary&lt;string, string&gt;</code><code class='python'>BaseExtendedDictionary[str, str]</code></td>
+            <td>
+                The custom EMSX elements to send with the order. The key is the EMSX element name and the value is the element value.
+                The other order properties take precedence, so an entry that targets an element they already set has no effect.
+                The brokerage skips entries that the EMSX schema doesn't define instead of rejecting the order.
+            </td>
+            <td>An empty dictionary</td>
         </tr>
     </tbody>
 </table>
@@ -261,6 +282,28 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <? } ?>
+
+<p>The <code class="csharp">AdditionalProperties</code><code class="python">additional_properties</code> dictionary lets you set EMSX elements that the preceding properties don't cover, without waiting for a new LEAN release. <code class="csharp">IsCfdTrade</code><code class="python">is_cfd_trade</code> reads and writes the <code>EMSX_CFD_FLAG</code> entry of this dictionary, so setting either of them is equivalent. The following example books the orders as CFD trades and adds the odd lot element, which no dedicated property covers:</p>
+
+<? if ($writingAlgorithms) { ?>
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties to book the orders as CFD trades and to flag them as odd lots
+    var orderProperties = new TerminalLinkOrderProperties { IsCfdTrade = true };
+    orderProperties.AdditionalProperties["EMSX_ODD_LOT"] = "1";
+    DefaultOrderProperties = orderProperties;
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    # Set the default order properties to book the orders as CFD trades and to flag them as odd lots
+    order_properties = TerminalLinkOrderProperties()
+    order_properties.is_cfd_trade = True
+    order_properties.additional_properties["EMSX_ODD_LOT"] = "1"
+    self.default_order_properties = order_properties</pre>
+</div>
+<? } ?>
+
+<p class="python">The dictionary starts empty and you can't replace it with a plain Python dictionary. To add several elements at once, call the <code>update</code> method with a dictionary. To remove all the elements, call the <code>clear</code> method.</p>
 
 <p>For more information about the format that the Bloomberg EMSX API expects, see <a href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/requestResponse.html#create-order-and-route-extended-request' rel='nofollow' target='_blank'>Create Order and Route Extended Request</a> in the EMSX API documentation and the <a rel='nofollow' target='_blank' href='https://www.mathworks.com/help/datafeed/emsx.createorderandroutewithstrat.html'>createOrderAndRouteWithStrat documentation</a> on the MathWorks website.</p>
 
