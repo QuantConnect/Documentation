@@ -1,0 +1,205 @@
+<p>An allocation update replaces every saved per-account value for one existing Allocation Group. It doesn't change group membership. Use a <code>Ready</code> snapshot whose selected <code class="csharp">Groups</code><code class="python">groups</code> contains the target, and calculate a complete vector whose keys exactly match its current members. Seeing the target only in <code class="csharp">AllGroups</code><code class="python">all_groups</code> isn't sufficient.</p>
+
+<h4>Request an allocation update</h4>
+
+<p>C# supports <code class="csharp">IReadOnlyDictionary&lt;string, decimal&gt;</code> and <code class="csharp">IEnumerable&lt;KeyValuePair&lt;string, decimal&gt;&gt;</code> overloads of <code>RequestBrokerageAccountGroupAllocationUpdate</code>. Python requires a native <code>dict</code> with string account keys and values convertible to a CLR <code>decimal</code>; it doesn't accept an arbitrary mapping object.</p>
+
+<p>A null snapshot or allocation input and invalid identifiers throw synchronously. A non-<code>Ready</code> snapshot, missing version tokens, unavailable manager, or inactive mutation lifecycle returns <code class="csharp">false</code><code class="python">False</code>. Provider validation of topology, methods, complete membership, and allocation values can also reject or throw before asynchronous work is accepted. Reading <code class="csharp">BrokerageAccountGroupAllocationUpdate</code><code class="python">brokerage_account_group_allocation_update</code> performs no external request and returns the latest published result, or <code>Unavailable</code> before a result exists.</p>
+
+<p>The following example replaces a two-member <code>Percent</code> group's complete vector:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private long _allocationGeneration = -1;
+private string _allocationGroupName;
+private string _allocationMembershipHash;
+private string _allocationGroupConfigurationVersion;
+private DateTime _allocationDeadlineUtc;
+
+private void RequestAllocationUpdate()
+{
+    if (_allocationGeneration &gt;= 0)
+    {
+        return;
+    }
+
+    var snapshot = BrokerageAccountSnapshot;
+    if (!snapshot.IsReady ||
+        !snapshot.Groups.TryGetValue("WeightedGroup", out var group) ||
+        !string.Equals(group.AllocationMethod, "Percent", StringComparison.OrdinalIgnoreCase) ||
+        group.AccountIds.Count != 2)
+    {
+        return;
+    }
+
+    var values = new Dictionary&lt;string, decimal&gt;
+    {
+        [group.AccountIds[0]] = 60m,
+        [group.AccountIds[1]] = 40m
+    };
+    var generation = BrokerageAccountGroupAllocationUpdate.Generation;
+    if (RequestBrokerageAccountGroupAllocationUpdate(
+            group.Name,
+            values,
+            snapshot))
+    {
+        _allocationGeneration = generation;
+        _allocationGroupName = group.Name;
+        _allocationMembershipHash = snapshot.MembershipHash;
+        _allocationGroupConfigurationVersion = snapshot.GroupConfigurationVersion;
+        _allocationDeadlineUtc = UtcTime.AddSeconds(30);
+    }
+    else
+    {
+        Debug("The FA allocation update wasn't accepted.");
+    }
+
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    self._allocation_generation = None
+
+def _request_allocation_update(self) -&gt; None:
+    if self._allocation_generation is not None:
+        return
+
+    snapshot = self.brokerage_account_snapshot
+    group = next(
+        (group for group in list(snapshot.groups.values)
+         if group.name.lower() == "weightedgroup"),
+        None)
+    if (not snapshot.is_ready or group is None
+            or group.allocation_method.lower() != "percent"
+            or len(group.account_ids) != 2):
+        return
+
+    values = {
+        group.account_ids[0]: 60,
+        group.account_ids[1]: 40
+    }
+    generation = self.brokerage_account_group_allocation_update.generation
+    if self.request_brokerage_account_group_allocation_update(
+            group.name, values, snapshot):
+        self._allocation_generation = generation
+        self._allocation_group_name = group.name
+        self._allocation_membership_hash = snapshot.membership_hash
+        self._allocation_group_configuration_version = snapshot.group_configuration_version
+        self._allocation_deadline_utc = self.utc_time + timedelta(seconds=30)
+    else:
+        self.debug("The FA allocation update wasn't accepted.")</pre>
+</div>
+
+<p>After the same snapshot, method, and membership checks shown above, you can make the single C# request through the enumerable overload:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private bool RequestAllocationUpdateWithEnumerable(
+    BrokerageAccountGroup group,
+    BrokerageAccountSnapshot snapshot)
+{
+    IEnumerable&lt;KeyValuePair&lt;string, decimal&gt;&gt; values = new[]
+    {
+        new KeyValuePair&lt;string, decimal&gt;(group.AccountIds[0], 60m),
+        new KeyValuePair&lt;string, decimal&gt;(group.AccountIds[1], 40m)
+    };
+    return RequestBrokerageAccountGroupAllocationUpdate(
+        group.Name, values, snapshot);
+}</pre>
+    <pre class="python"># Python uses the native dict overload shown above.</pre>
+</div>
+
+<p>Each overload returns <code class="csharp">true</code><code class="python">True</code> when the provider accepts the asynchronous request, not when IB confirms the update. Acceptance publishes a newer-generation <code>Pending</code> result, and the terminal result replaces it at the same mutation generation. Capture the current allocation-result generation before calling. Poll <code class="csharp">BrokerageAccountGroupAllocationUpdate</code><code class="python">brokerage_account_group_allocation_update</code> for a greater generation that matches the group and expected membership and configuration versions, then require <code>Succeeded</code> or <code>Failed</code>. A fast operation can publish a terminal result before your next read. Confirmation can stall or the account snapshot can become <code>Failed</code> or <code>Stale</code>, so enforce an algorithm-owned timeout.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private void PollAllocationUpdate()
+{
+    if (_allocationGeneration &lt; 0)
+    {
+        return;
+    }
+
+    var result = BrokerageAccountGroupAllocationUpdate;
+    var matches = result.Generation &gt; _allocationGeneration &&
+        _allocationGroupName.Equals(
+            result.GroupName,
+            StringComparison.OrdinalIgnoreCase) &&
+        result.ExpectedMembershipHash == _allocationMembershipHash &&
+        result.ExpectedGroupConfigurationVersion == _allocationGroupConfigurationVersion;
+    if (matches && result.IsCompleted)
+    {
+        _allocationGeneration = -1;
+        if (result.Status != BrokerageAccountGroupAllocationUpdateStatus.Succeeded)
+        {
+            Error(result.ErrorMessage);
+        }
+    }
+    else if (UtcTime &gt;= _allocationDeadlineUtc)
+    {
+        _allocationGeneration = -1;
+        Error("The FA allocation update timed out.");
+    }
+}</pre>
+    <pre class="python">def _poll_allocation_update(self) -&gt; None:
+    if self._allocation_generation is None:
+        return
+
+    result = self.brokerage_account_group_allocation_update
+    matches = (
+        result.generation &gt; self._allocation_generation
+        and result.group_name.lower() == self._allocation_group_name.lower()
+        and result.expected_membership_hash == self._allocation_membership_hash
+        and result.expected_group_configuration_version == self._allocation_group_configuration_version
+    )
+    if matches and result.is_completed:
+        self._allocation_generation = None
+        if result.status != BrokerageAccountGroupAllocationUpdateStatus.SUCCEEDED:
+            self.error(result.error_message)
+    elif self.utc_time &gt;= self._allocation_deadline_utc:
+        self._allocation_generation = None
+        self.error("The FA allocation update timed out.")</pre>
+</div>
+
+<p>Call <code class="csharp">PollAllocationUpdate</code><code class="python">_poll_allocation_update</code> from <code class="csharp">OnData</code><code class="python">on_data</code> or a scheduled callback while the request is outstanding.</p>
+
+<h4>Validate the complete vector</h4>
+
+<table class="table qc-table">
+    <thead><tr><th>Saved method</th><th>Complete-vector rule</th></tr></thead>
+    <tbody>
+        <tr><td><code>ContractsOrShares</code></td><td>Every value must be greater than or equal to zero.</td></tr>
+        <tr><td><code>Ratio</code></td><td>Every value must be greater than zero.</td></tr>
+        <tr><td><code>Percent</code></td><td>Every value must be greater than zero, and the values must total exactly 100.</td></tr>
+        <tr><td><code>Equal</code>, <code>NetLiq</code>, <code>AvailableEquity</code>, <code>PctChange</code>, or another method</td><td>Complete saved-vector replacement isn't supported.</td></tr>
+    </tbody>
+</table>
+
+<p>After a successful <code>ContractsOrShares</code> update, confirm the readback and submit a parent order whose absolute quantity equals the saved vector's total. The parent quantity must also satisfy the security's lot size.</p>
+
+<h4>Allocation result members</h4>
+
+<p>The published <code>BrokerageAccountGroupAllocationUpdate</code> result has get-only properties and copied read-only dictionaries. It has the following public members:</p>
+
+<table class="table qc-table">
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr><td><code class="csharp">Unavailable</code><code class="python">UNAVAILABLE</code></td><td>The shared result when the capability is unsupported or no request has produced a result.</td></tr>
+        <tr><td><code class="csharp">Status</code><code class="python">status</code></td><td>The allocation-update status.</td></tr>
+        <tr><td><code class="csharp">Generation</code><code class="python">generation</code></td><td>The monotonically increasing update-result generation.</td></tr>
+        <tr><td><code class="csharp">AsOfUtc</code><code class="python">as_of_utc</code></td><td>The UTC publication time.</td></tr>
+        <tr><td><code class="csharp">GroupName</code><code class="python">group_name</code></td><td>The existing group being updated.</td></tr>
+        <tr><td><code class="csharp">AllocationMethod</code><code class="python">allocation_method</code></td><td>The method observed at admission and confirmed after success.</td></tr>
+        <tr><td><code class="csharp">RequestedAccountAllocationValues</code><code class="python">requested_account_allocation_values</code></td><td>The requested complete vector.</td></tr>
+        <tr><td><code class="csharp">ResultingAccountAllocationValues</code><code class="python">resulting_account_allocation_values</code></td><td>The complete vector confirmed by readback for a succeeded result.</td></tr>
+        <tr><td><code class="csharp">ExpectedMembershipHash</code><code class="python">expected_membership_hash</code></td><td>The membership version supplied by the request.</td></tr>
+        <tr><td><code class="csharp">ResultingMembershipHash</code><code class="python">resulting_membership_hash</code></td><td>The membership version after confirmed readback.</td></tr>
+        <tr><td><code class="csharp">ExpectedGroupConfigurationVersion</code><code class="python">expected_group_configuration_version</code></td><td>The complete configuration version supplied by the request.</td></tr>
+        <tr><td><code class="csharp">ResultingGroupConfigurationVersion</code><code class="python">resulting_group_configuration_version</code></td><td>The complete version after confirmed readback.</td></tr>
+        <tr><td><code class="csharp">ErrorMessage</code><code class="python">error_message</code></td><td>A provider diagnostic or failure message.</td></tr>
+        <tr><td><code class="csharp">IsPending</code><code class="python">is_pending</code></td><td>Whether the status is <code>Pending</code>.</td></tr>
+        <tr><td><code class="csharp">IsCompleted</code><code class="python">is_completed</code></td><td>Whether the status isn't <code>Pending</code>. This value is also true for <code>Unavailable</code>, so require a matching newer generation before using it.</td></tr>
+        <tr><td><code>BrokerageAccountGroupAllocationUpdate(...)</code></td><td>The public constructor creates a provider result from the preceding operation fields. It validates the nonnegative generation and group identifier and copies both allocation dictionaries.</td></tr>
+    </tbody>
+</table>
+
+<p><code>BrokerageAccountGroupAllocationUpdateStatus</code> has four values. <code class="csharp">Unavailable</code><code class="python">UNAVAILABLE</code> means the capability or a result isn't available. <code class="csharp">Pending</code><code class="python">PENDING</code> means the provider accepted the request and hasn't published a terminal result. <code class="csharp">Succeeded</code><code class="python">SUCCEEDED</code> means the provider confirmed the requested saved vector and refreshed account state. <code class="csharp">Failed</code><code class="python">FAILED</code> means the operation didn't complete with the confirmed requested vector; inspect the error message.</p>
+
+<h4>Brokerage manager interface</h4>
+
+<p><code>IBrokerageAccountGroupAllocationManager</code> is the optional brokerage capability behind these QCAlgorithm members. <code class="csharp">GetAccountGroupAllocationUpdate()</code><code class="python">get_account_group_allocation_update()</code> reads the latest result. <code class="csharp">RequestAccountGroupAllocationUpdate(groupName, accountAllocationValues, expectedMembershipHash, expectedGroupConfigurationVersion)</code><code class="python">request_account_group_allocation_update(group_name, account_allocation_values, expected_membership_hash, expected_group_configuration_version)</code> submits an optimistically versioned request. Its Boolean result means accepted, not completed; consumers poll the getter for a matching newer result and enforce a timeout. QCAlgorithm integration also requires the brokerage to implement <code>IBrokerageAccountStateProvider</code>. Algorithms normally pass an observed snapshot to the QCAlgorithm method.</p>

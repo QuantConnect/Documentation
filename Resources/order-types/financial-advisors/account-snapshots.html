@@ -1,0 +1,273 @@
+<p>The brokerage account snapshot API provides published group topology, account values, cash balances, and positions for managed accounts. Reading <code class="csharp">BrokerageAccountSnapshot</code><code class="python">brokerage_account_snapshot</code> returns the latest cached snapshot and doesn't contact the brokerage.</p>
+
+<h4>Request a refresh</h4>
+
+<p>The following methods request new account data:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">RequestBrokerageAccountSnapshotRefresh()</code><code class="python">request_brokerage_account_snapshot_refresh()</code></td>
+            <td>Requests provider-default discovery. For an unfiltered IB deployment, this requests complete discovery. A configured IB group filter keeps the result scoped, so always inspect <code class="csharp">IsComplete</code><code class="python">is_complete</code>.</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">RequestBrokerageAccountSnapshotRefresh(groupNames, additionalAccountIds = null)</code><code class="python">request_brokerage_account_snapshot_refresh(group_names, additional_account_ids=None)</code></td>
+            <td>Requests financial state for the selected groups and optional managed accounts outside those groups. The snapshot still includes complete discovered topology in <code class="csharp">AllGroups</code><code class="python">all_groups</code>. Additional accounts require at least one explicit group. With an IB group filter, request only that group and don't pass additional accounts; an out-of-scope request isn't accepted.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The scoped overload publishes <code class="csharp">IsComplete == false</code><code class="python">is_complete == False</code> even if the selected groups happen to contain every account. The parameterless overload can also be incomplete when the provider has a configured scope such as an IB group filter.</p>
+
+<p>For both methods, <code class="csharp">true</code><code class="python">True</code> means the provider accepted or coalesced the asynchronous request. It doesn't mean collection completed. Capture the current generation before the call, then poll for a <code>Ready</code> snapshot with a greater generation. A fast request can reach a terminal status before your next read, so don't require observing <code>Refreshing</code>. A failure or disconnect can publish <code>Failed</code> or <code>Stale</code> without advancing the generation. Your algorithm must enforce its own timeout.</p>
+
+<p>Invalid null scopes, blank or duplicate identifiers, and additional accounts without an explicit group throw synchronously. Handle those input errors separately from a <code class="csharp">false</code><code class="python">False</code> return, which means the request wasn't accepted for asynchronous processing.</p>
+
+<p>The following example schedules scoped discovery every minute and complete discovery every third tick. Both the scheduled callback and <code class="csharp">OnData</code><code class="python">on_data</code> poll the result, so processing continues when no market data arrives. The example sets a 30-second deadline and checks it whenever either callback runs.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private long _refreshGeneration = -1;
+private DateTime _refreshDeadlineUtc;
+private int _refreshTick;
+
+public override void Initialize()
+{
+    Schedule.On(
+        DateRules.EveryDay(),
+        TimeRules.Every(TimeSpan.FromMinutes(1)),
+        RefreshSnapshot);
+}
+
+private void RefreshSnapshot()
+{
+    PollSnapshotRefresh();
+    if (_refreshGeneration &gt;= 0)
+    {
+        return;
+    }
+
+    var snapshot = BrokerageAccountSnapshot;
+    var generation = snapshot.Generation;
+    var complete = ++_refreshTick % 3 == 0;
+    var accepted = complete
+        ? RequestBrokerageAccountSnapshotRefresh()
+        : RequestBrokerageAccountSnapshotRefresh(new[] { "TestGroupEQ" });
+    if (accepted)
+    {
+        _refreshGeneration = generation;
+        _refreshDeadlineUtc = UtcTime.AddSeconds(30);
+    }
+    else
+    {
+        Debug("The FA snapshot refresh wasn't accepted.");
+    }
+}
+
+public override void OnData(Slice slice)
+{
+    PollSnapshotRefresh();
+}
+
+private void PollSnapshotRefresh()
+{
+    if (_refreshGeneration &lt; 0)
+    {
+        return;
+    }
+
+    var snapshot = BrokerageAccountSnapshot;
+    if (snapshot.IsReady && snapshot.Generation &gt; _refreshGeneration)
+    {
+        _refreshGeneration = -1;
+        // Use the new snapshot.
+    }
+    else if (snapshot.Status == BrokerageAccountSnapshotStatus.Failed ||
+         snapshot.Status == BrokerageAccountSnapshotStatus.Stale ||
+         snapshot.Status == BrokerageAccountSnapshotStatus.Unavailable)
+    {
+        _refreshGeneration = -1;
+        Error($"The FA snapshot refresh ended with status {snapshot.Status}.");
+    }
+    else if (UtcTime &gt;= _refreshDeadlineUtc)
+    {
+        _refreshGeneration = -1;
+        Error($"The FA snapshot refresh timed out with status {snapshot.Status}.");
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    self._refresh_generation = None
+    self._refresh_tick = 0
+    self.schedule.on(
+        self.date_rules.every_day(),
+        self.time_rules.every(timedelta(minutes=1)),
+        self._refresh_snapshot)
+
+def _refresh_snapshot(self) -&gt; None:
+    self._poll_snapshot_refresh()
+    if self._refresh_generation is not None:
+        return
+
+    snapshot = self.brokerage_account_snapshot
+    generation = snapshot.generation
+    self._refresh_tick += 1
+    complete = self._refresh_tick % 3 == 0
+    accepted = (
+        self.request_brokerage_account_snapshot_refresh()
+        if complete else
+        self.request_brokerage_account_snapshot_refresh(["TestGroupEQ"])
+    )
+    if accepted:
+        self._refresh_generation = generation
+        self._refresh_deadline_utc = self.utc_time + timedelta(seconds=30)
+    else:
+        self.debug("The FA snapshot refresh wasn't accepted.")
+
+def on_data(self, slice: Slice) -&gt; None:
+    self._poll_snapshot_refresh()
+
+def _poll_snapshot_refresh(self) -&gt; None:
+    if self._refresh_generation is None:
+        return
+
+    snapshot = self.brokerage_account_snapshot
+    if snapshot.is_ready and snapshot.generation &gt; self._refresh_generation:
+        self._refresh_generation = None
+        # Use the new snapshot.
+    elif snapshot.status in [
+            BrokerageAccountSnapshotStatus.FAILED,
+            BrokerageAccountSnapshotStatus.STALE,
+            BrokerageAccountSnapshotStatus.UNAVAILABLE]:
+        self._refresh_generation = None
+        self.error(f"The FA snapshot refresh ended with status {snapshot.status}.")
+    elif self.utc_time &gt;= self._refresh_deadline_utc:
+        self._refresh_generation = None
+        self.error(f"The FA snapshot refresh timed out with status {snapshot.status}.")</pre>
+</div>
+
+<h4>Snapshot status</h4>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th><code>BrokerageAccountSnapshotStatus</code></th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td><code class="csharp">Unavailable</code><code class="python">UNAVAILABLE</code></td><td>The brokerage doesn't expose account-level state, or no request has produced a snapshot.</td></tr>
+        <tr><td><code class="csharp">Refreshing</code><code class="python">REFRESHING</code></td><td>An accepted refresh is queued or running. This publication doesn't advance the generation.</td></tr>
+        <tr><td><code class="csharp">Ready</code><code class="python">READY</code></td><td>The latest refresh completed successfully.</td></tr>
+        <tr><td><code class="csharp">Stale</code><code class="python">STALE</code></td><td>The account state is no longer current, such as after a disconnect. Last-known data, if any, can remain in the snapshot.</td></tr>
+        <tr><td><code class="csharp">Failed</code><code class="python">FAILED</code></td><td>The latest refresh failed. Last-known data can remain in the snapshot.</td></tr>
+    </tbody>
+</table>
+
+<h4>Snapshot members</h4>
+
+<p><code>BrokerageAccountSnapshot</code> has get-only properties and copies its input collections into read-only collections. Its public members are:</p>
+
+<table class="table qc-table">
+    <thead><tr><th>Member</th><th>Type</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr><td><code class="csharp">Unavailable</code><code class="python">UNAVAILABLE</code></td><td><code>BrokerageAccountSnapshot</code></td><td>The shared no-snapshot result.</td></tr>
+        <tr><td><code class="csharp">Status</code><code class="python">status</code></td><td><code>BrokerageAccountSnapshotStatus</code></td><td>The current publication status.</td></tr>
+        <tr><td><code class="csharp">Generation</code><code class="python">generation</code></td><td><code class="csharp">long</code><code class="python">int</code></td><td>A monotonically increasing successful-snapshot generation.</td></tr>
+        <tr><td><code class="csharp">AsOfUtc</code><code class="python">as_of_utc</code></td><td><code class="csharp">DateTime</code><code class="python">datetime</code></td><td>The UTC publication time. It isn't a causal execution timestamp.</td></tr>
+        <tr><td><code class="csharp">LastSuccessfulUpdateUtc</code><code class="python">last_successful_update_utc</code></td><td><code class="csharp">DateTime</code><code class="python">datetime</code></td><td>The UTC time of the last successful refresh.</td></tr>
+        <tr><td><code class="csharp">CollectionStartedUtc</code><code class="python">collection_started_utc</code></td><td><code class="csharp">DateTime</code><code class="python">datetime</code></td><td>The UTC time collection started, when available.</td></tr>
+        <tr><td><code class="csharp">Groups</code><code class="python">groups</code></td><td><code class="csharp">IReadOnlyDictionary&lt;string, BrokerageAccountGroup&gt;</code><code class="python">read-only CLR mapping</code></td><td>The groups selected for financial-state collection.</td></tr>
+        <tr><td><code class="csharp">AllGroups</code><code class="python">all_groups</code></td><td><code class="csharp">IReadOnlyDictionary&lt;string, BrokerageAccountGroup&gt;</code><code class="python">read-only CLR mapping</code></td><td>The complete group topology supplied by the provider, including groups outside a scoped refresh.</td></tr>
+        <tr><td><code class="csharp">PrimaryAccountId</code><code class="python">primary_account_id</code></td><td><code class="csharp">string</code><code class="python">str</code></td><td>The primary account configured for the connection.</td></tr>
+        <tr><td><code class="csharp">ManagedAccountIds</code><code class="python">managed_account_ids</code></td><td><code class="csharp">IReadOnlyList&lt;string&gt;</code><code class="python">read-only CLR collection</code></td><td>Every identifier returned by managed-account discovery.</td></tr>
+        <tr><td><code class="csharp">AccountDirectory</code><code class="python">account_directory</code></td><td><code class="csharp">IReadOnlyDictionary&lt;string, BrokerageAccountDirectoryEntry&gt;</code><code class="python">read-only CLR mapping</code></td><td>Discovered accounts and identity metadata. Scoped entries can exist without state in <code class="csharp">Accounts</code><code class="python">accounts</code>.</td></tr>
+        <tr><td><code class="csharp">Accounts</code><code class="python">accounts</code></td><td><code class="csharp">IReadOnlyDictionary&lt;string, BrokerageAccountState&gt;</code><code class="python">read-only CLR mapping</code></td><td>The account states collected for the request scope.</td></tr>
+        <tr><td><code class="csharp">UnassignedAccountIds</code><code class="python">unassigned_account_ids</code></td><td><code class="csharp">IReadOnlyList&lt;string&gt;</code><code class="python">read-only CLR collection</code></td><td>Managed subaccounts outside every visible group. Scoped discovery only collects their state when explicitly requested.</td></tr>
+        <tr><td><code class="csharp">MembershipHash</code><code class="python">membership_hash</code></td><td><code class="csharp">string</code><code class="python">str</code></td><td>An opaque version of the selected group names, allocation methods, and membership, and of the managed-account universe, account aliases, and family codes. It excludes per-account allocation values. Use it through the mutation methods by passing the observed snapshot.</td></tr>
+        <tr><td><code class="csharp">GroupConfigurationVersion</code><code class="python">group_configuration_version</code></td><td><code class="csharp">string</code><code class="python">str</code></td><td>An opaque brokerage-wide version of the complete group configuration, including per-account allocation values.</td></tr>
+        <tr><td><code class="csharp">ErrorMessage</code><code class="python">error_message</code></td><td><code class="csharp">string</code><code class="python">str</code></td><td>A provider diagnostic for the current status.</td></tr>
+        <tr><td><code class="csharp">IsReady</code><code class="python">is_ready</code></td><td><code class="csharp">bool</code><code class="python">bool</code></td><td>True only when <code class="csharp">Status == Ready</code><code class="python">status == READY</code>.</td></tr>
+        <tr><td><code class="csharp">IsComplete</code><code class="python">is_complete</code></td><td><code class="csharp">bool</code><code class="python">bool</code></td><td>Whether the provider reports complete group topology and eligible managed-account state.</td></tr>
+        <tr><td><code class="csharp">HasUnmappedPositions</code><code class="python">has_unmapped_positions</code></td><td><code class="csharp">bool</code><code class="python">bool</code></td><td>Whether any collected account has a position that LEAN couldn't map to a <code>Symbol</code>.</td></tr>
+        <tr><td><code>BrokerageAccountSnapshot(...)</code></td><td>Constructor</td><td>Creates a provider snapshot from the preceding fields. <code>PrimaryAccountId</code>, <code>ManagedAccountIds</code>, <code>AllGroups</code>, <code>AccountDirectory</code>, <code>IsComplete</code>, and <code>CollectionStartedUtc</code> are optional constructor inputs. The constructor validates required collections, nonnegative generation, and timestamps for a <code>Ready</code> result.</td></tr>
+    </tbody>
+</table>
+
+<h4>Group and account members</h4>
+
+<p>The values in a snapshot use the following public types. Their properties are get-only and their collection inputs are copied:</p>
+
+<table class="table qc-table">
+    <thead><tr><th>Type</th><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr><td rowspan="5"><code>BrokerageAccountGroup</code></td><td><code class="csharp">Name</code><code class="python">name</code></td><td>The canonical group name.</td></tr>
+        <tr><td><code class="csharp">AllocationMethod</code><code class="python">allocation_method</code></td><td>The saved TWS allocation method.</td></tr>
+        <tr><td><code class="csharp">AccountIds</code><code class="python">account_ids</code></td><td>The canonical, sorted member identifiers.</td></tr>
+        <tr><td><code class="csharp">AccountAllocationValues</code><code class="python">account_allocation_values</code></td><td>The saved per-member values. This mapping can be empty for broker-computed methods.</td></tr>
+        <tr><td><code>BrokerageAccountGroup(...)</code></td><td>Constructs a group from a name, allocation method, members, and optional values. An allocation key must identify a member.</td></tr>
+
+        <tr><td rowspan="7"><code>BrokerageAccountDirectoryEntry</code></td><td><code class="csharp">AccountId</code><code class="python">account_id</code></td><td>The account identifier.</td></tr>
+        <tr><td><code class="csharp">Relationship</code><code class="python">relationship</code></td><td>The account's API-topology classification.</td></tr>
+        <tr><td><code class="csharp">GroupNames</code><code class="python">group_names</code></td><td>The visible groups that contain the account.</td></tr>
+        <tr><td><code class="csharp">AccountType</code><code class="python">account_type</code></td><td>The brokerage account type when state was collected and IB supplied it; otherwise, an empty string.</td></tr>
+        <tr><td><code class="csharp">FamilyCode</code><code class="python">family_code</code></td><td>The brokerage family-code value, or an empty string.</td></tr>
+        <tr><td><code class="csharp">AccountAlias</code><code class="python">account_alias</code></td><td>The brokerage account alias, or an empty string.</td></tr>
+        <tr><td><code>BrokerageAccountDirectoryEntry(...)</code></td><td>Constructs an entry from the account, relationship, groups, and optional identity metadata.</td></tr>
+
+        <tr><td rowspan="14"><code>BrokerageAccountState</code></td><td><code class="csharp">AccountId</code><code class="python">account_id</code></td><td>The managed account identifier.</td></tr>
+        <tr><td><code class="csharp">GroupNames</code><code class="python">group_names</code></td><td>The visible groups that contain the account.</td></tr>
+        <tr><td><code class="csharp">AccountType</code><code class="python">account_type</code></td><td>The account type, or an empty string.</td></tr>
+        <tr><td><code class="csharp">NetLiquidation</code><code class="python">net_liquidation</code></td><td>The account net liquidation value, or null when IB omits it.</td></tr>
+        <tr><td><code class="csharp">TotalCashValue</code><code class="python">total_cash_value</code></td><td>The total cash value, or null when IB omits it.</td></tr>
+        <tr><td><code class="csharp">AvailableFunds</code><code class="python">available_funds</code></td><td>The available funds, or null when IB omits them.</td></tr>
+        <tr><td><code class="csharp">ExcessLiquidity</code><code class="python">excess_liquidity</code></td><td>The excess liquidity, or null when IB omits it.</td></tr>
+        <tr><td><code class="csharp">BuyingPower</code><code class="python">buying_power</code></td><td>The buying power, or null when IB omits it.</td></tr>
+        <tr><td><code class="csharp">ValuationCurrency</code><code class="python">valuation_currency</code></td><td>The currency for the scalar account values, or an empty string.</td></tr>
+        <tr><td><code class="csharp">CashBalances</code><code class="python">cash_balances</code></td><td>The exact per-currency cash balances reported for the account.</td></tr>
+        <tr><td><code class="csharp">Positions</code><code class="python">positions</code></td><td>The positions mapped to LEAN symbols.</td></tr>
+        <tr><td><code class="csharp">UnmappedPositions</code><code class="python">unmapped_positions</code></td><td>The brokerage positions LEAN couldn't safely map.</td></tr>
+        <tr><td><code class="csharp">HasUnmappedPositions</code><code class="python">has_unmapped_positions</code></td><td>Whether the unmapped-position collection is nonempty.</td></tr>
+        <tr><td><code>BrokerageAccountState(...)</code></td><td>Constructs an account state from its identity, nullable scalar values, cash, mapped positions, and optional unmapped positions.</td></tr>
+
+        <tr><td rowspan="5"><code>BrokerageAccountPosition</code></td><td><code class="csharp">Symbol</code><code class="python">symbol</code></td><td>The mapped LEAN symbol.</td></tr>
+        <tr><td><code class="csharp">Quantity</code><code class="python">quantity</code></td><td>The exact decimal position quantity.</td></tr>
+        <tr><td><code class="csharp">AveragePrice</code><code class="python">average_price</code></td><td>The average position price.</td></tr>
+        <tr><td><code class="csharp">ModelCode</code><code class="python">model_code</code></td><td>The IB model code, or an empty string.</td></tr>
+        <tr><td><code>BrokerageAccountPosition(...)</code></td><td>Constructs a mapped position and requires a non-null <code>Symbol</code>.</td></tr>
+
+        <tr><td rowspan="19"><code>BrokerageAccountUnmappedPosition</code></td><td><code class="csharp">BrokerageContractId</code><code class="python">brokerage_contract_id</code></td><td>The brokerage contract identifier.</td></tr>
+        <tr><td><code class="csharp">BrokerageSymbol</code><code class="python">brokerage_symbol</code></td><td>The brokerage symbol.</td></tr>
+        <tr><td><code class="csharp">LocalSymbol</code><code class="python">local_symbol</code></td><td>The brokerage local symbol.</td></tr>
+        <tr><td><code class="csharp">BrokerageSecurityType</code><code class="python">brokerage_security_type</code></td><td>The brokerage security-type code.</td></tr>
+        <tr><td><code class="csharp">Currency</code><code class="python">currency</code></td><td>The contract currency.</td></tr>
+        <tr><td><code class="csharp">Exchange</code><code class="python">exchange</code></td><td>The contract exchange.</td></tr>
+        <tr><td><code class="csharp">PrimaryExchange</code><code class="python">primary_exchange</code></td><td>The primary exchange.</td></tr>
+        <tr><td><code class="csharp">TradingClass</code><code class="python">trading_class</code></td><td>The brokerage trading class.</td></tr>
+        <tr><td><code class="csharp">Expiration</code><code class="python">expiration</code></td><td>The raw brokerage expiration text.</td></tr>
+        <tr><td><code class="csharp">Strike</code><code class="python">strike</code></td><td>The normalized decimal strike, or zero when normalization fails.</td></tr>
+        <tr><td><code class="csharp">BrokerageStrike</code><code class="python">brokerage_strike</code></td><td>The raw brokerage strike retained when normalization fails.</td></tr>
+        <tr><td><code class="csharp">Right</code><code class="python">right</code></td><td>The brokerage option-right text.</td></tr>
+        <tr><td><code class="csharp">Multiplier</code><code class="python">multiplier</code></td><td>The brokerage contract multiplier.</td></tr>
+        <tr><td><code class="csharp">Quantity</code><code class="python">quantity</code></td><td>The exact decimal position quantity.</td></tr>
+        <tr><td><code class="csharp">AveragePrice</code><code class="python">average_price</code></td><td>The normalized average price, or zero when normalization fails.</td></tr>
+        <tr><td><code class="csharp">BrokerageAverageCost</code><code class="python">brokerage_average_cost</code></td><td>The raw brokerage average cost retained when normalization fails.</td></tr>
+        <tr><td><code class="csharp">ModelCode</code><code class="python">model_code</code></td><td>The IB model code, or an empty string.</td></tr>
+        <tr><td><code class="csharp">ErrorMessage</code><code class="python">error_message</code></td><td>The mapping or normalization diagnostic.</td></tr>
+        <tr><td><code>BrokerageAccountUnmappedPosition(...)</code></td><td>Constructs a diagnostic position from raw brokerage identity, economics, and optional error fields.</td></tr>
+    </tbody>
+</table>
+
+<p><code>BrokerageAccountRelationship</code> describes API topology, not legal ownership. <code class="csharp">Unknown</code><code class="python">UNKNOWN</code> means the provider couldn't classify the account. <code class="csharp">Primary</code><code class="python">PRIMARY</code> is the connection's configured account. <code class="csharp">Aggregate</code><code class="python">AGGREGATE</code> is an aggregate/master row that isn't a managed child. <code class="csharp">Managed</code><code class="python">MANAGED</code> is a managed subaccount.</p>
+
+<p>In Python, these read-only CLR mappings and collections aren't native <code>dict</code> or <code>list</code> objects. Use indexing to retrieve a known key or project a mapping's <code>values</code> property, for example <code>list(snapshot.groups.values)</code>. CLR <code>decimal</code> values in the published models project through Python.NET as Python <code>float</code> values. Use a suitable tolerance, and don't assume converting the float back to <code>Decimal</code> recovers the exact original value.</p>
+
+<p>The Engine wires the snapshot property and refresh methods before <code class="csharp">Initialize</code><code class="python">initialize</code>, so you can read or request a snapshot during initialization. Unsupported brokerages and backtests expose <code>Unavailable</code>, and request methods return false.</p>
+
+<h4>Brokerage provider interface</h4>
+
+<p><code>IBrokerageAccountStateProvider</code> is the optional brokerage capability behind the QCAlgorithm property and methods. <code class="csharp">GetAccountSnapshot()</code><code class="python">get_account_snapshot()</code> reads the latest immutable value without an external request. <code class="csharp">RequestAccountSnapshotRefresh(groupNames, additionalAccountIds)</code><code class="python">request_account_snapshot_refresh(group_names, additional_account_ids)</code> requests an asynchronous refresh. Its Boolean result means accepted or coalesced, not completed; consumers poll <code class="csharp">GetAccountSnapshot()</code><code class="python">get_account_snapshot()</code> with the same generation, status, and timeout rules described above. Brokerage integrations implement this interface; algorithms normally use the QCAlgorithm members.</p>

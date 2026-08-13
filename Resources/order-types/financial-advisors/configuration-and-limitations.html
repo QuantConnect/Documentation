@@ -1,0 +1,89 @@
+<p>The unified FA features are opt-in live-trading capabilities. They require compatible LEAN, Interactive Brokers brokerage, and IBAutomater versions that expose these settings and APIs.</p>
+
+<h4>Configure the deployment</h4>
+
+<p>Set the following keys in your Interactive Brokers deployment brokerage settings. For a direct local LEAN source deployment, add them to <span class="public-file-name">Launcher/config.json</span>:</p>
+
+<div class="section-example-container">
+    <pre class="json">{
+    "ib-financial-advisors-group-filter": "",
+    "ib-financial-advisors-unified-groups-enabled": true,
+    "ib-financial-advisors-group-management-enabled": false
+}</pre>
+</div>
+
+<table class="table qc-table">
+    <thead><tr><th>Setting</th><th>Description</th><th>Default</th></tr></thead>
+    <tbody>
+        <tr>
+            <td><code>ib-financial-advisors-group-filter</code></td>
+            <td>Limits the deployment to one group. Leave it empty for multi-group discovery and set <code class="csharp">FaGroup</code><code class="python">fa_group</code> on group orders. With unified groups enabled, a nonempty value is a strict snapshot, mutation, and group-order-routing boundary.</td>
+            <td>Empty</td>
+        </tr>
+        <tr>
+            <td><code>ib-financial-advisors-unified-groups-enabled</code></td>
+            <td>Enables unified Allocation Group discovery, validation, snapshots, and group routing. It also requests the selected state of the IB Gateway <span class="box-name">Use Account Groups with Allocation Methods</span> check box before the brokerage connects.</td>
+            <td><code>false</code></td>
+        </tr>
+        <tr>
+            <td><code>ib-financial-advisors-group-management-enabled</code></td>
+            <td>Enables assignment and saved-allocation updates for existing groups. This setting requires unified groups.</td>
+            <td><code>false</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The Boolean settings use strict Boolean text. A missing or empty value defaults to <code>false</code>, and an invalid value prevents brokerage creation. The settings are fixed before IB Gateway starts, so you must redeploy to change them. Don't try to set them from <code class="csharp">Initialize</code><code class="python">initialize</code> or an algorithm parameter.</p>
+
+<h4>Understand the Gateway setting</h4>
+
+<p>IBAutomater treats <code>ib-financial-advisors-unified-groups-enabled</code> as the desired state of the recognized <span class="box-name">Use Account Groups with Allocation Methods</span> check box. When the value is <code>true</code>, it selects the check box and verifies the selected state. When the value is <code>false</code> or omitted, it retains the established behavior of deselecting and verifying a recognized check box. IBAutomater applies the same desired state after a Gateway restart.</p>
+
+<p>When unified groups are requested, startup fails and the Gateway stops if the check box is absent, ambiguous, or disabled while unchecked. Under either requested state, startup also fails if a present control doesn't retain the requested state. Selecting this setting doesn't prove that the connection is an FA master, that any group exists, or that the account has the necessary IB permissions. The account must still be recognized as an FA master and its groups must satisfy the requirements on this page.</p>
+
+<p>Before you enable unified groups on an existing deployment, cancel or otherwise resolve open orders for groups saved with <code>PctChange</code>. Unified mode rejects new saved or explicit <code>PctChange</code> orders, and a recovered open order with an omitted method doesn't contain enough information for LEAN to classify its fill accounting safely.</p>
+
+<div class="highlight">The current QuantConnect Cloud and LEAN CLI deployment schemas don't expose the two Boolean enablement settings. Use a direct local configuration or another host that supplies the exact brokerage-data keys. Don't assume snapshots or mutations are active merely because an FA account is connected.</div>
+
+<h4>Own the freshness policy</h4>
+
+<p>The brokerage doesn't perform periodic snapshot refreshes. Schedule refresh requests in your algorithm and choose a cadence that fits the strategy and IB pacing budget. A practical starting point is about 60 seconds for scoped group state and 180 seconds for complete account state. Enforce a maximum age with <code class="csharp">CollectionStartedUtc</code><code class="python">collection_started_utc</code>, <code class="csharp">LastSuccessfulUpdateUtc</code><code class="python">last_successful_update_utc</code>, and <code class="csharp">AsOfUtc</code><code class="python">as_of_utc</code>.</p>
+
+<p>A disconnect publishes <code>Stale</code>. After a confirmed physical reconnect, the brokerage issues one refresh with the most recently requested scope only if the algorithm previously had an accepted snapshot request in that service session. This is reconnect recovery, not a periodic cadence. An algorithm that never requests snapshots creates no automatic snapshot traffic.</p>
+
+<h4>Handle collection limitations</h4>
+
+<ul>
+    <li>Account and financial rows are collected over an interval, not as one atomic brokerage read. <code class="csharp">CollectionStartedUtc</code><code class="python">collection_started_utc</code> and <code class="csharp">AsOfUtc</code><code class="python">as_of_utc</code> bound that window. A snapshot can combine identity data sampled near the start with financial data sampled later.</li>
+    <li>A refresh aborts instead of publishing <code>Ready</code> if group configuration, managed accounts, aliases, or family codes change during collection.</li>
+    <li>A snapshot can omit a non-base currency from a child's <code class="csharp">CashBalances</code><code class="python">cash_balances</code> when that currency nets to exactly zero across a collected group. Base-currency cash remains available. Use a collection and validation policy appropriate for currency-sensitive decisions.</li>
+    <li>IB's grouped position response doesn't positively identify every flat child account. An empty child <code class="csharp">Positions</code><code class="python">positions</code> collection can represent a genuinely flat account or an omitted child row, so independently confirm flatness when that distinction controls an irreversible action.</li>
+    <li>If a group name matches a managed account identifier without regard to case, collection remains correct but falls back to a slower collection path for affected members and logs an error-level diagnostic.</li>
+    <li>A configured group filter makes every refresh scoped. In that configuration, <code class="csharp">IsComplete</code><code class="python">is_complete</code> remains false even for the parameterless refresh overload.</li>
+    <li><code class="csharp">IsComplete</code><code class="python">is_complete</code> reports provider-assessed topology and account-state collection completeness. It doesn't mean every discovered group's saved method is executable or mutable.</li>
+    <li>Every selected Allocation Group must contain managed subaccounts only. A selected group with a primary, aggregate, unknown, or undiscovered member prevents a <code>Ready</code> publication until you correct it in TWS. In scoped discovery, an invalid unselected group can remain visible in <code class="csharp">AllGroups</code><code class="python">all_groups</code>, but it isn't usable for mutation. Selecting it makes the refresh fail until you correct it in TWS.</li>
+    <li>Identifiers are matched without regard to case, but you should reuse the spelling supplied by the brokerage. Group member collections are canonicalized and don't preserve TWS XML order.</li>
+</ul>
+
+<h4>Coordinate mutations and orders</h4>
+
+<ul>
+    <li>Request assignments and allocation updates only while the algorithm is running after initialization. Don't request them from <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> or teardown because an accepted request isn't guaranteed to reach IB or publish a result.</li>
+    <li>While a configuration mutation or its reconciliation is active, LEAN rejects new FA group orders and every update to an FA group order. Cancel rather than update a group order during a mutation. Direct managed-account orders remain a separate route.</li>
+    <li>LEAN checks open FA group orders known to its order provider before a mutation. It can't prevent a manual TWS, Client Portal, or another API client from racing the change.</li>
+    <li>Use one configuration and order writer for each TWS session. IB doesn't provide an atomic operation that checks open orders and replaces group configuration.</li>
+    <li>With a configured group filter, assignments can only move accounts between that group and the global unassigned state. Leave the filter empty to move accounts among multiple discovered groups.</li>
+    <li>Manage group creation and deletion in TWS. The APIs only change membership and saved values for existing groups.</li>
+</ul>
+
+<h4>Start with the examples</h4>
+
+<p>The <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#09-Examples">Examples</a> page contains minimal unified and legacy group-order algorithms. Replace their group names, saved-method assumptions, quantities, and freshness policy before you use them with a live account.</p>
+
+<h4>Avoid reserved Python property names</h4>
+
+<p>The new QCAlgorithm properties reserve <code>brokerage_account_snapshot</code>, <code>brokerage_account_group_assignment</code>, and <code>brokerage_account_group_allocation_update</code>. Don't assign algorithm state to these names because they are read-only descriptors.</p>
+
+<h4>Implement a custom account-service consumer</h4>
+
+<p><code>IBrokerageAccountServiceConsumer</code> is a public Engine and brokerage integration contract. Its members are <code class="csharp">SetBrokerageAccountStateProvider(IBrokerageAccountStateProvider provider)</code><code class="python">set_brokerage_account_state_provider(provider)</code>, <code class="csharp">SetBrokerageAccountGroupManager(IBrokerageAccountGroupManager manager)</code><code class="python">set_brokerage_account_group_manager(manager)</code>, and <code class="csharp">SetBrokerageAccountGroupAllocationManager(IBrokerageAccountGroupAllocationManager manager)</code><code class="python">set_brokerage_account_group_allocation_manager(manager)</code>. The standard Engine supplies supported services before algorithm initialization and can pass null for unsupported managers. <code>QCAlgorithm</code> implements the setters explicitly and exposes no public mutation-activation hook, so ordinary algorithms should use the QCAlgorithm properties and methods instead. A custom consumer must define and enforce its own mutation lifecycle.</p>

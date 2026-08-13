@@ -1,0 +1,171 @@
+<p>Group assignments move a managed account from every current Allocation Group into one existing group, or leave it unassigned. The operation doesn't move cash or positions, create a group, delete a group, or replace a group's complete saved allocation vector.</p>
+
+<h4>Request an assignment</h4>
+
+<p>Call <code class="csharp">RequestBrokerageAccountGroupAssignment(accountId, targetGroupName, targetAllocationValue, observedSnapshot)</code><code class="python">request_brokerage_account_group_assignment(account_id, target_group_name, target_allocation_value, observed_snapshot)</code> with the <code>Ready</code> snapshot on which you based the change. Pass the exact empty string as the target to remove the account from every group.</p>
+
+<p>The snapshot must be complete, or its selected <code class="csharp">Groups</code><code class="python">groups</code> scope must include the destination and every current source group that contains the account. Merely seeing a group in <code class="csharp">AllGroups</code><code class="python">all_groups</code> isn't sufficient. Refresh the complete mutation scope before requesting a cross-group move.</p>
+
+<p>The method returns <code class="csharp">true</code><code class="python">True</code> when the request is accepted for asynchronous processing, not when IB confirms it. Acceptance publishes a newer-generation <code>Pending</code> result, and the terminal result replaces it at the same mutation generation. Capture <code class="csharp">BrokerageAccountGroupAssignment.Generation</code><code class="python">brokerage_account_group_assignment.generation</code> before the call. Poll the property for a greater generation that matches the account and target group, then require <code>Succeeded</code> or <code>Failed</code>. Publication can move to the terminal result before your next read. Confirmation can stall or the account snapshot can become <code>Failed</code> or <code>Stale</code>, so your algorithm must enforce its own timeout.</p>
+
+<p>A null snapshot and invalid identifiers throw synchronously. A non-<code>Ready</code> snapshot, missing version tokens, unavailable manager, or inactive mutation lifecycle returns <code class="csharp">false</code><code class="python">False</code>. Provider validation of scope, topology, and allocation values can also reject or throw before asynchronous work is accepted.</p>
+
+<p>Mutation requests are disabled during <code class="csharp">Initialize</code><code class="python">initialize</code> and teardown. Request them only after initialization while the algorithm is running. Unsupported brokerages and backtests expose <code>Unavailable</code> and return false.</p>
+
+<p>The following example assumes <code>TargetGroup</code> is saved with the <code>Equal</code> method:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private long _assignmentGeneration = -1;
+private string _assignmentAccountId;
+private string _assignmentTargetGroupName;
+private DateTime _assignmentDeadlineUtc;
+
+private void RequestAssignment(
+    string accountId,
+    BrokerageAccountSnapshot snapshot)
+{
+    if (!snapshot.IsReady || _assignmentGeneration &gt;= 0)
+    {
+        return;
+    }
+
+    var generation = BrokerageAccountGroupAssignment.Generation;
+    var accepted = RequestBrokerageAccountGroupAssignment(
+        accountId,
+        "TargetGroup",
+        null, // Equal doesn't take a saved allocation value.
+        snapshot);
+    if (accepted)
+    {
+        _assignmentGeneration = generation;
+        _assignmentAccountId = accountId;
+        _assignmentTargetGroupName = "TargetGroup";
+        _assignmentDeadlineUtc = UtcTime.AddSeconds(30);
+    }
+    else
+    {
+        Debug("The FA group assignment wasn't accepted.");
+    }
+}
+
+private void PollAssignment()
+{
+    if (_assignmentGeneration &lt; 0)
+    {
+        return;
+    }
+
+    var result = BrokerageAccountGroupAssignment;
+    var matches = result.Generation &gt; _assignmentGeneration &&
+        _assignmentAccountId.Equals(
+            result.AccountId,
+            StringComparison.OrdinalIgnoreCase) &&
+        _assignmentTargetGroupName.Equals(
+            result.TargetGroupName,
+            StringComparison.OrdinalIgnoreCase);
+    if (matches && result.IsCompleted)
+    {
+        _assignmentGeneration = -1;
+        if (result.Status != BrokerageAccountGroupAssignmentStatus.Succeeded)
+        {
+            Error(result.ErrorMessage);
+        }
+    }
+    else if (UtcTime &gt;= _assignmentDeadlineUtc)
+    {
+        _assignmentGeneration = -1;
+        Error("The FA group assignment timed out.");
+    }
+}</pre>
+    <pre class="python">def initialize(self) -&gt; None:
+    self._assignment_generation = None
+    self._assignment_target_group_name = "TargetGroup"
+
+def _request_assignment(
+        self, account_id: str, snapshot: BrokerageAccountSnapshot) -&gt; None:
+    if not snapshot.is_ready or self._assignment_generation is not None:
+        return
+
+    generation = self.brokerage_account_group_assignment.generation
+    accepted = self.request_brokerage_account_group_assignment(
+        account_id,
+        self._assignment_target_group_name,
+        None,  # Equal doesn't take a saved allocation value.
+        snapshot)
+    if accepted:
+        self._assignment_generation = generation
+        self._assignment_account_id = account_id
+        self._assignment_deadline_utc = self.utc_time + timedelta(seconds=30)
+    else:
+        self.debug("The FA group assignment wasn't accepted.")
+
+def _poll_assignment(self) -&gt; None:
+    if self._assignment_generation is None:
+        return
+
+    result = self.brokerage_account_group_assignment
+    matches = (
+        result.generation &gt; self._assignment_generation
+        and result.account_id.lower() == self._assignment_account_id.lower()
+        and result.target_group_name.lower() == self._assignment_target_group_name.lower()
+    )
+    if matches and result.is_completed:
+        self._assignment_generation = None
+        if result.status != BrokerageAccountGroupAssignmentStatus.SUCCEEDED:
+            self.error(result.error_message)
+    elif self.utc_time &gt;= self._assignment_deadline_utc:
+        self._assignment_generation = None
+        self.error("The FA group assignment timed out.")</pre>
+</div>
+
+<p>Call <code class="csharp">PollAssignment</code><code class="python">_poll_assignment</code> from <code class="csharp">OnData</code><code class="python">on_data</code> or a scheduled callback while the request is outstanding.</p>
+
+<h4>Set the destination allocation value</h4>
+
+<p>The destination group's saved allocation method determines whether <code class="csharp">targetAllocationValue</code><code class="python">target_allocation_value</code> is required when adding an account:</p>
+
+<table class="table qc-table">
+    <thead><tr><th>Saved method</th><th>Value rule</th></tr></thead>
+    <tbody>
+        <tr><td><code>Equal</code>, <code>NetLiq</code>, or <code>AvailableEquity</code></td><td>Pass <code class="csharp">null</code><code class="python">None</code>.</td></tr>
+        <tr><td><code>ContractsOrShares</code></td><td>Pass a value greater than or equal to zero.</td></tr>
+        <tr><td><code>Ratio</code></td><td>Pass a value greater than zero.</td></tr>
+        <tr><td><code>Percent</code></td><td>Pass exactly 100 for the sole first member of an empty group. Pass a value greater than zero and less than 100 when adding to a nonempty group; existing values are proportionally normalized into the remaining percentage.</td></tr>
+        <tr><td><code>PctChange</code> or another method</td><td>Membership mutation isn't supported.</td></tr>
+    </tbody>
+</table>
+
+<p>When an account already belongs to a user-specified destination group, pass no value to preserve its saved allocation. Removing an account from a saved <code>Percent</code> source group proportionally renormalizes the remaining positive values to total 100. IB doesn't allow an operation that removes the final member of a source group. Add another member first, or manage group creation and deletion in TWS.</p>
+
+<h4>Assignment result members</h4>
+
+<p>Reading <code class="csharp">BrokerageAccountGroupAssignment</code><code class="python">brokerage_account_group_assignment</code> performs no external request. It returns the latest published <code>BrokerageAccountGroupAssignment</code> result, whose properties are get-only and whose public members are:</p>
+
+<table class="table qc-table">
+    <thead><tr><th>Member</th><th>Description</th></tr></thead>
+    <tbody>
+        <tr><td><code class="csharp">Unavailable</code><code class="python">UNAVAILABLE</code></td><td>The shared result when the capability is unsupported or no request has produced a result.</td></tr>
+        <tr><td><code class="csharp">Status</code><code class="python">status</code></td><td>The assignment status.</td></tr>
+        <tr><td><code class="csharp">Generation</code><code class="python">generation</code></td><td>The monotonically increasing assignment-result generation.</td></tr>
+        <tr><td><code class="csharp">AsOfUtc</code><code class="python">as_of_utc</code></td><td>The UTC publication time.</td></tr>
+        <tr><td><code class="csharp">AccountId</code><code class="python">account_id</code></td><td>The managed account being assigned.</td></tr>
+        <tr><td><code class="csharp">TargetGroupName</code><code class="python">target_group_name</code></td><td>The requested destination, or an empty string for global unassignment.</td></tr>
+        <tr><td><code class="csharp">TargetAllocationValue</code><code class="python">target_allocation_value</code></td><td>The optional requested value for a user-specified destination.</td></tr>
+        <tr><td><code class="csharp">PreviousGroupNames</code><code class="python">previous_group_names</code></td><td>The account's groups before the operation.</td></tr>
+        <tr><td><code class="csharp">ResultingGroupNames</code><code class="python">resulting_group_names</code></td><td>The groups confirmed by readback for a succeeded result.</td></tr>
+        <tr><td><code class="csharp">ExpectedMembershipHash</code><code class="python">expected_membership_hash</code></td><td>The membership version supplied by the request.</td></tr>
+        <tr><td><code class="csharp">ResultingMembershipHash</code><code class="python">resulting_membership_hash</code></td><td>The membership version after confirmed readback.</td></tr>
+        <tr><td><code class="csharp">ExpectedGroupConfigurationVersion</code><code class="python">expected_group_configuration_version</code></td><td>The complete group-configuration version supplied by the request.</td></tr>
+        <tr><td><code class="csharp">ResultingGroupConfigurationVersion</code><code class="python">resulting_group_configuration_version</code></td><td>The version after confirmed readback.</td></tr>
+        <tr><td><code class="csharp">ErrorMessage</code><code class="python">error_message</code></td><td>A provider diagnostic or failure message.</td></tr>
+        <tr><td><code class="csharp">IsPending</code><code class="python">is_pending</code></td><td>Whether the status is <code>Pending</code>.</td></tr>
+        <tr><td><code class="csharp">IsCompleted</code><code class="python">is_completed</code></td><td>Whether the status isn't <code>Pending</code>. This value is also true for <code>Unavailable</code>, so require a matching newer generation before using it.</td></tr>
+        <tr><td><code>BrokerageAccountGroupAssignment(...)</code></td><td>The public constructor creates a provider result from the preceding operation fields, including the optional target allocation value. It validates the nonnegative generation, required account and target identifiers, and copied group-name collections.</td></tr>
+    </tbody>
+</table>
+
+<p><code>BrokerageAccountGroupAssignmentStatus</code> has four values. <code class="csharp">Unavailable</code><code class="python">UNAVAILABLE</code> means the capability or a result isn't available. <code class="csharp">Pending</code><code class="python">PENDING</code> means the provider accepted the request and hasn't published a terminal result. <code class="csharp">Succeeded</code><code class="python">SUCCEEDED</code> means the provider confirmed the requested topology and refreshed account state. <code class="csharp">Failed</code><code class="python">FAILED</code> means the operation didn't complete with confirmed requested topology; inspect the error message.</p>
+
+<h4>Brokerage manager interface</h4>
+
+<p><code>IBrokerageAccountGroupManager</code> is the optional brokerage capability behind these QCAlgorithm members. <code class="csharp">GetAccountGroupAssignment()</code><code class="python">get_account_group_assignment()</code> reads the latest result. <code class="csharp">RequestAccountGroupAssignment(accountId, targetGroupName, expectedMembershipHash, expectedGroupConfigurationVersion, targetAllocationValue = null)</code><code class="python">request_account_group_assignment(account_id, target_group_name, expected_membership_hash, expected_group_configuration_version, target_allocation_value=None)</code> submits an optimistically versioned request. Its Boolean result means accepted, not completed; consumers poll the getter for a matching newer result and enforce a timeout. QCAlgorithm integration also requires the brokerage to implement <code>IBrokerageAccountStateProvider</code>. Algorithms normally pass an observed snapshot to the QCAlgorithm method instead of handling version strings directly.</p>

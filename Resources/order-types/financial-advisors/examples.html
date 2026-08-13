@@ -1,0 +1,235 @@
+<p>The following examples show the two group-routing modes. Replace the group names and quantities, confirm the saved group method in TWS, and test with an IB paper account before you trade live.</p>
+
+<h4>Example 1: Unified saved-method group order</h4>
+
+<p>This algorithm requests one group, waits for a newer <code>Ready</code> snapshot, verifies that the group is saved with <code>Equal</code>, and submits an aggregate parent order with an empty order-level method. Enable <code>ib-financial-advisors-unified-groups-enabled</code> in the deployment settings before IB Gateway starts. The request return value means accepted or coalesced, not completed, so the algorithm owns a 30-second timeout.</p>
+
+<div class="section-example-container testable">
+    <pre class="csharp">public class UnifiedFinancialAdvisorGroupAlgorithm : QCAlgorithm
+{
+    private const string GroupName = "TestGroupEQ";
+    private Symbol _symbol;
+    private long _refreshGeneration = -1;
+    private DateTime _refreshDeadlineUtc;
+    private bool _submitted;
+    private bool _stopped;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 9, 5);
+        SetBrokerageModel(
+            BrokerageName.InteractiveBrokersBrokerage,
+            AccountType.Margin);
+        _symbol = AddEquity("SPY", Resolution.Minute).Symbol;
+
+        if (!LiveMode)
+        {
+            return;
+        }
+
+        Schedule.On(
+            DateRules.EveryDay(),
+            TimeRules.Every(TimeSpan.FromMinutes(1)),
+            RefreshOrPoll);
+        RequestSnapshot();
+    }
+
+    public override void OnData(Slice slice)
+    {
+        PollSnapshot();
+    }
+
+    private void RefreshOrPoll()
+    {
+        PollSnapshot();
+        if (!_submitted && !_stopped && _refreshGeneration &lt; 0)
+        {
+            RequestSnapshot();
+        }
+    }
+
+    private void RequestSnapshot()
+    {
+        var snapshot = BrokerageAccountSnapshot;
+        if (RequestBrokerageAccountSnapshotRefresh(new[] { GroupName }))
+        {
+            _refreshGeneration = snapshot.Generation;
+            _refreshDeadlineUtc = UtcTime.AddSeconds(30);
+        }
+        else
+        {
+            Debug("The FA snapshot refresh wasn't accepted.");
+        }
+    }
+
+    private void PollSnapshot()
+    {
+        if (_submitted || _stopped || _refreshGeneration &lt; 0)
+        {
+            return;
+        }
+
+        var snapshot = BrokerageAccountSnapshot;
+        if (snapshot.IsReady && snapshot.Generation &gt; _refreshGeneration)
+        {
+            _refreshGeneration = -1;
+            if (!snapshot.Groups.TryGetValue(GroupName, out var group) ||
+                !group.AllocationMethod.Equals(
+                    "Equal", StringComparison.OrdinalIgnoreCase))
+            {
+                _stopped = true;
+                Error($"{GroupName} isn't a selected Equal group.");
+                return;
+            }
+
+            var properties = new InteractiveBrokersOrderProperties
+            {
+                FaGroup = group.Name
+                // Leave FaMethod empty to use the saved method.
+            };
+            _submitted = true;
+            MarketOrder(_symbol, 10, orderProperties: properties);
+        }
+        else if (snapshot.Status == BrokerageAccountSnapshotStatus.Failed ||
+            snapshot.Status == BrokerageAccountSnapshotStatus.Stale)
+        {
+            _refreshGeneration = -1;
+            Error($"The FA snapshot refresh ended with {snapshot.Status}.");
+        }
+        else if (UtcTime &gt;= _refreshDeadlineUtc)
+        {
+            _refreshGeneration = -1;
+            Error("The FA snapshot refresh timed out.");
+        }
+    }
+}</pre>
+    <pre class="python">class UnifiedFinancialAdvisorGroupAlgorithm(QCAlgorithm):
+    _group_name = "TestGroupEQ"
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 9, 5)
+        self.set_brokerage_model(
+            BrokerageName.INTERACTIVE_BROKERS_BROKERAGE,
+            AccountType.MARGIN)
+        self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
+        self._refresh_generation = None
+        self._submitted = False
+        self._stopped = False
+
+        if not self.live_mode:
+            return
+
+        self.schedule.on(
+            self.date_rules.every_day(),
+            self.time_rules.every(timedelta(minutes=1)),
+            self._refresh_or_poll)
+        self._request_snapshot()
+
+    def on_data(self, slice: Slice) -&gt; None:
+        self._poll_snapshot()
+
+    def _refresh_or_poll(self) -&gt; None:
+        self._poll_snapshot()
+        if (not self._submitted and not self._stopped
+                and self._refresh_generation is None):
+            self._request_snapshot()
+
+    def _request_snapshot(self) -&gt; None:
+        snapshot = self.brokerage_account_snapshot
+        if self.request_brokerage_account_snapshot_refresh([self._group_name]):
+            self._refresh_generation = snapshot.generation
+            self._refresh_deadline_utc = self.utc_time + timedelta(seconds=30)
+        else:
+            self.debug("The FA snapshot refresh wasn't accepted.")
+
+    def _poll_snapshot(self) -&gt; None:
+        if self._submitted or self._stopped or self._refresh_generation is None:
+            return
+
+        snapshot = self.brokerage_account_snapshot
+        if snapshot.is_ready and snapshot.generation &gt; self._refresh_generation:
+            self._refresh_generation = None
+            group = next(
+                (group for group in list(snapshot.groups.values)
+                 if group.name.lower() == self._group_name.lower()),
+                None)
+            if group is None or group.allocation_method.lower() != "equal":
+                self._stopped = True
+                self.error(f"{self._group_name} isn't a selected Equal group.")
+                return
+
+            properties = InteractiveBrokersOrderProperties()
+            properties.fa_group = group.name
+            # Leave fa_method empty to use the saved method.
+            self._submitted = True
+            self.market_order(self._symbol, 10, order_properties=properties)
+        elif snapshot.status in [
+                BrokerageAccountSnapshotStatus.FAILED,
+                BrokerageAccountSnapshotStatus.STALE]:
+            self._refresh_generation = None
+            self.error(f"The FA snapshot refresh ended with {snapshot.status}.")
+        elif self.utc_time &gt;= self._refresh_deadline_utc:
+            self._refresh_generation = None
+            self.error("The FA snapshot refresh timed out.")</pre>
+</div>
+
+<p>The snapshot timestamps bound collection but don't prove that a specific execution is present. If your strategy depends on child-account effects, add the terminal-order reconciliation described in <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#02-Group-Routing">Group Routing</a>.</p>
+
+<h4>Example 2: Legacy explicit-method group order</h4>
+
+<p>This algorithm uses the pre-existing group-order route with unified groups disabled. It explicitly names the <code>Equal</code> method and doesn't use snapshots or mutations.</p>
+
+<div class="section-example-container testable">
+    <pre class="csharp">public class LegacyFinancialAdvisorGroupAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private bool _submitted;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 9, 5);
+        SetBrokerageModel(
+            BrokerageName.InteractiveBrokersBrokerage,
+            AccountType.Margin);
+        _symbol = AddEquity("SPY", Resolution.Minute).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (_submitted || !LiveMode)
+        {
+            return;
+        }
+
+        var properties = new InteractiveBrokersOrderProperties
+        {
+            FaGroup = "TestGroupEQ",
+            FaMethod = "Equal"
+        };
+        _submitted = true;
+        MarketOrder(_symbol, 10, orderProperties: properties);
+    }
+}</pre>
+    <pre class="python">class LegacyFinancialAdvisorGroupAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 9, 5)
+        self.set_brokerage_model(
+            BrokerageName.INTERACTIVE_BROKERS_BROKERAGE,
+            AccountType.MARGIN)
+        self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
+        self._submitted = False
+
+    def on_data(self, slice: Slice) -&gt; None:
+        if self._submitted or not self.live_mode:
+            return
+
+        properties = InteractiveBrokersOrderProperties()
+        properties.fa_group = "TestGroupEQ"
+        properties.fa_method = "Equal"
+        self._submitted = True
+        self.market_order(self._symbol, 10, order_properties=properties)</pre>
+</div>
