@@ -44,19 +44,6 @@ if self._log_level &gt;= 2:
     self._trace(2, f"{self.time}: {symbol} at {price}")</pre>
 </div>
 
-<h4>Don't Log Prices</h4>
-
-<p>
-  Logging dataset information is not permitted, and a price log writes one line per bar per security, which is the largest and least useful log a backtest can produce.
-  To see a series, <a href="/docs/v2/writing-algorithms/charting">plot it</a> instead.
-</p>
-
-<p>
-  If you suspect the data itself is wrong, don't hunt for it with log statements across a full backtest.
-  Confirm the values in the <a href="/docs/v2/research-environment/key-concepts/getting-started">Research Environment</a> with a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a> for the symbol and period in question, then <a href="/datasets/report-issue">report the data issue</a>.
-  Attach the notebook, or a short algorithm that runs over the affected days and shows the problem.
-</p>
-
 <h4>Record Trade Information on the Order</h4>
 
 <p>
