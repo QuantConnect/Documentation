@@ -1,14 +1,19 @@
 <p>
-  LEAN runs on .NET.
-  A C# algorithm compiles and runs as native .NET code, while a Python algorithm runs in the interpreter through <a href="/docs/v2/writing-algorithms/key-concepts/python-and-lean">Python.NET</a>.
-  Plain Python executes more slowly than compiled C#, and that difference, not the interop between the two runtimes, is what you see in a slow backtest.
+  LEAN runs on .NET, and the engine does the heavy work in C# whichever language you write in.
+  It reads and decompresses the data, builds each slice, updates the consolidators and the built-in indicators, and processes the orders.
+  Your algorithm sits on the surface of that, and it is the only part that runs in the interpreter when you write in <a href="/docs/v2/writing-algorithms/key-concepts/python-and-lean">Python</a>.
 </p>
 
 <p>
-  The gap is paid per operation, so it scales with the amount of work your own code does on each event.
-  A daily-resolution strategy on a few securities spends most of its time loading data and the language barely shows.
-  A tick-resolution or large-universe strategy runs your code millions of times and the language becomes the dominant cost.
-  Write tick-resolution and other high-event-rate strategies in C#.
+  So the same algorithm is marginally faster in C# than in Python.
+  The saving applies to your own code, not to the engine work that usually dominates the runtime, so changing language is not the way to turn a slow backtest into a fast one.
+  Cut the data volume and the work per event first.
+</p>
+
+<p>
+  The gap widens with the amount of work your code does on each event.
+  A daily-resolution strategy on a few securities spends nearly all its time in the engine and the language barely shows.
+  A tick-resolution or large-universe strategy runs your code millions of times, which is where C# earns the rewrite.
   For everything else, choose the language you are most productive in and apply the practices below.
 </p>
 

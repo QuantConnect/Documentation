@@ -17,7 +17,7 @@ $faqSchema = <<<'JSON'
             "name": "Would rewriting the algorithm in C# let it use all the cores?",
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": "No. C# removes the Global Interpreter Lock as a constraint, but your algorithm's events still fire synchronously in backtesting, so one backtest never saturates several cores with strategy logic. C# is worth the rewrite when the strategy processes a high rate of events, such as tick resolution or a large universe, because compiled C# executes your code faster than the Python interpreter does. See <a href=\"/docs/v2/writing-algorithms/key-concepts/algorithm-performance#06-Language-Choice\">Language Choice</a>."
+                "text": "No. C# removes the Global Interpreter Lock as a constraint, but your algorithm's events still fire synchronously in backtesting, so one backtest never saturates several cores with strategy logic. C# is also only marginally faster overall, because the engine does the heavy work in C# either way and the language of your algorithm applies to your own code alone. The rewrite pays off when the strategy processes a high rate of events, such as tick resolution or a large universe. See <a href=\"/docs/v2/writing-algorithms/key-concepts/algorithm-performance#06-Language-Choice\">Language Choice</a>."
             }
         },
         {
