@@ -1,0 +1,122 @@
+<p>
+  Profile the algorithm before you optimize it.
+  Guessing at the bottleneck usually leads to changes that alter the strategy without making it faster.
+</p>
+
+<h4>Reproduce the Slowdown on a Short Backtest</h4>
+
+<p>
+  Record the original start date, end date, and universe, then shrink both to the smallest backtest that still shows the slowdown.
+  One to three months and a handful of securities is usually enough.
+  A short backtest lets you re-run after each change and compare the same region of the chart.
+</p>
+
+<h4>Enable the Performance Chart</h4>
+
+<p>
+  The <a href="/docs/v2/cloud-platform/backtesting/results#05-Performance-Chart">Performance chart</a> reports CPU usage, RAM usage, and the execution time LEAN spends in each of its subsystems.
+  The chart is disabled by default.
+  To enable it, set the <span class="csharp"><code>Settings.PerformanceSamplePeriod</code> property</span><span class="python"><code>self.settings.performance_sample_period</code> attribute</span> to the sampling period you want:
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Sample the algorithm's resource usage and subsystem timings once a week.
+Settings.PerformanceSamplePeriod = TimeSpan.FromDays(7);</pre>
+    <pre class="python"># Sample the algorithm's resource usage and subsystem timings once a week.
+self.settings.performance_sample_period = timedelta(7)</pre>
+</div>
+
+<p>
+  Because the chart is off by default, a backtest you already ran has no Performance chart to inspect.
+  Enable the setting across your projects so the data is there when you need it.
+</p>
+
+<h4>Read the Dominant Series</h4>
+
+<p>
+  Find the series with the tallest spike, or the highest sustained plateau if there is no single spike, and fix the code path it points to.
+  The following table maps each series to the changes that reduce it:
+</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style="width: 25%">Series</th>
+            <th style="width: 75%">What To Change</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Subscriptions</td>
+            <td>Request a coarser resolution, subscribe to fewer securities, and drop resolutions the algorithm never reads.</td>
+        </tr>
+        <tr>
+            <td>Selection</td>
+            <td>Cap the size of the universe, move expensive queries out of the selection function, and cache results that hold across calls.</td>
+        </tr>
+        <tr>
+            <td>Slice</td>
+            <td>Reduce the subscription count, the resolution, and the number of custom data fields.</td>
+        </tr>
+        <tr>
+            <td>Consolidators</td>
+            <td>Consolidate fewer securities, consolidate to a coarser period, and share one consolidator across the subscribers that need the same bars.</td>
+        </tr>
+        <tr>
+            <td>OnData</td>
+            <td>Move heavy logic to a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a> and replace hand-written series calculations with <a href="/docs/v2/writing-algorithms/indicators/key-concepts">indicators</a>.</td>
+        </tr>
+        <tr>
+            <td>Schedule</td>
+            <td>Lower the event frequency and cache the intermediate results the handler computes.</td>
+        </tr>
+        <tr>
+            <td>HistoryDataPoints</td>
+            <td>Remove <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a> from repeated code paths, or request fewer securities, fields, and bars.</td>
+        </tr>
+        <tr>
+            <td>Securities</td>
+            <td>Reduce the number of active securities, which is the securities the universe selected plus the ones you hold or have open orders for.</td>
+        </tr>
+        <tr>
+            <td>ActiveSecurities</td>
+            <td>Liquidate stale positions and cancel stale orders so securities leave the universe when selection drops them.</td>
+        </tr>
+        <tr>
+            <td>Transactions</td>
+            <td>Rebalance less often and batch orders through <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts">portfolio targets</a>.</td>
+        </tr>
+        <tr>
+            <td>SplitsDividendsDelisting</td>
+            <td>Reduce the universe size or move the corporate action logic out of the handler.</td>
+        </tr>
+        <tr>
+            <td>WallTime</td>
+            <td>Read this series to see the real time each sampling period cost, which tells you whether a change actually helped.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+  When several series spike together, start with the earliest one in the pipeline.
+  <code>Subscriptions</code> comes before <code>Consolidators</code>, <code>Consolidators</code> comes before <code>OnData</code>, and <code>Selection</code> comes before <code>Securities</code> and <code>Transactions</code>.
+  Treat the <code>CPU</code>, <code>ManagedRAM</code>, and <code>TotalRAM</code> series as symptoms until one of the timing series names the code path.
+</p>
+
+<h4 class="python">Profile the Python Code</h4>
+
+<p class="python">
+  When CPU or RAM is high and no timing series isolates the cost, add a <a rel="nofollow" target="_blank" href="https://docs.python.org/3/library/profile.html">Python profiler</a> to find the expensive function.
+  See <a href="/docs/v2/writing-algorithms/key-concepts/debugging-tools#06-Performance-Chart">Debugging Tools</a> for the full recipe.
+  Remove the profiler once you have the measurement.
+</p>
+
+<h4>Read the Resource Usage Outside the IDE</h4>
+
+<p>The following list shows the ways to collect resource usage across many backtests:</p>
+
+<ul>
+  <li>On the <b>Overview</b> tab of the backtest results, click <b>Download Results</b> to get the charts as JSON with UTC timestamps.</li>
+  <li>Call the <a href="/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/charts">Read Backtest Chart</a> endpoint with the chart name <code>Performance</code> to read one backtest's chart programmatically.</li>
+  <li>Read the <a href="/docs/v2/writing-algorithms/key-concepts/debugging-tools#07-Memory-Metrics"><code>OS</code> class members</a> from inside the algorithm for spot checks during a run.</li>
+</ul>

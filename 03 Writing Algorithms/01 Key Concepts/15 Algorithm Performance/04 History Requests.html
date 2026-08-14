@@ -1,0 +1,61 @@
+<p>
+  A <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a> reads and decompresses data outside the streaming data feed.
+  The work is not shared with the subscriptions the algorithm already has, so every call pays the full cost of loading the data again.
+  A bulk history request in the <code class="csharp">Initialize</code><code class="python">initialize</code> method can allocate more memory than the node has, which stops the algorithm with a memory error or a timeout that no larger node fixes.
+</p>
+
+<h4>Let LEAN Warm Up Your Indicators</h4>
+
+<p>
+  Most history requests exist to fill a rolling calculation before the strategy starts trading.
+  LEAN does that for you.
+  The following list shows the options in order of preference:
+</p>
+
+<ol>
+  <li>An <a href="/docs/v2/writing-algorithms/indicators/key-concepts">indicator</a> with a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">warm-up period</a>, which LEAN feeds from the data it already loads.</li>
+  <li>An <a href="/docs/v2/writing-algorithms/indicators/combining-indicators">indicator extension</a>, when the value you need is a function of other indicators.</li>
+  <li>The <a href="/docs/v2/writing-algorithms/securities/handling-data#05-Market-Session"><code class="csharp">Security.Session</code><code class="python">Security.session</code></a> property, for open, high, low, close, and volume values LEAN already caches.</li>
+  <li>A <a href="/docs/v2/writing-algorithms/historical-data/rolling-window"><code>RollingWindow</code></a>, only when LEAN has no built-in equivalent.</li>
+</ol>
+
+<div class="section-example-container">
+    <pre class="csharp">// Warm up the indicators from the data feed instead of requesting history.
+Settings.AutomaticIndicatorWarmUp = true;
+_sma = SMA(_symbol, 200, Resolution.Daily);</pre>
+    <pre class="python"># Warm up the indicators from the data feed instead of requesting history.
+self.settings.automatic_indicator_warm_up = True
+self._sma = self.sma(self._symbol, 200, Resolution.DAILY)</pre>
+</div>
+
+<h4>Keep History Requests Out of Repeated Code Paths</h4>
+
+<p>
+  Never call the <code class="csharp">History</code><code class="python">history</code> method inside the <code class="csharp">OnData</code><code class="python">on_data</code> method, inside a loop over the securities in your universe, or inside a universe selection function.
+  Each of those runs on every time step, so one history request becomes millions over a backtest.
+  A large <code>HistoryDataPoints</code> series on the Performance chart is the signature of this pattern.
+</p>
+
+<h4>Batch the Requests You Cannot Remove</h4>
+
+<p>
+  When the strategy genuinely needs history, make one request for all the securities instead of one request per security.
+  Request only the bars and fields you use.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Request the history of every symbol in one call.
+var history = History&lt;TradeBar&gt;(_symbols, 30, Resolution.Daily);</pre>
+    <pre class="python"># Request the history of every symbol in one call.
+history = self.history[TradeBar](self._symbols, 30, Resolution.DAILY)</pre>
+</div>
+
+<p class="python">
+  Iterating the typed enumerable, as in the preceding example, avoids building a <code>DataFrame</code>.
+  The <code>DataFrame</code> conversion is a large part of the cost of a Python history request, so skip it when you only need to loop over the bars.
+</p>
+
+<p>
+  Cache the result in a member variable so later time steps reuse it.
+  For data you derive once and reuse across backtests, save it to the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a> and load it at the start of the algorithm.
+</p>

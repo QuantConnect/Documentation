@@ -1,0 +1,136 @@
+<p>
+  LEAN reads, decompresses, and dispatches every data point your algorithm subscribes to, so the runtime is roughly proportional to the number of data points processed.
+  Cutting the data volume is the change with the largest effect on backtest speed, and it is usually the cheapest one to make.
+</p>
+
+<h4>Request the Coarsest Resolution That Answers the Question</h4>
+
+<p>
+  A minute subscription delivers about 390 bars per US Equity per trading day and a daily subscription delivers one.
+  Tick subscriptions deliver several orders of magnitude more than minute.
+  Use daily or hourly data for strategies that make decisions once a day, and reserve tick data for strategies whose logic depends on individual trades and quotes.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Subscribe to daily data when the strategy only makes one decision a day.
+UniverseSettings.Resolution = Resolution.Daily;</pre>
+    <pre class="python"># Subscribe to daily data when the strategy only makes one decision a day.
+self.universe_settings.resolution = Resolution.DAILY</pre>
+</div>
+
+<h4>Warm Up at the Resolution You Need</h4>
+
+<p>
+  The <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">warm-up period</a> streams data through the algorithm like any other period, so it counts toward the data volume.
+  When you set it with a time span alone, LEAN warms up at the resolution of your subscriptions.
+  A year of warm-up on a minute subscription is a year of minute data before the algorithm places its first trade.
+</p>
+
+<p>
+  Pass the resolution you actually need for the warm-up.
+  Daily indicators and a year of universe selection history, such as a trailing year of PE ratios, only need daily bars.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Warm up with a year of daily bars instead of a year of the subscription's resolution.
+SetWarmUp(TimeSpan.FromDays(365), Resolution.Daily);</pre>
+    <pre class="python"># Warm up with a year of daily bars instead of a year of the subscription's resolution.
+self.set_warm_up(timedelta(365), Resolution.DAILY)</pre>
+</div>
+
+<p>
+  If you registered indicators or consolidators for automatic updates, the warm-up resolution must be at or below the lowest resolution they use.
+</p>
+
+<p>
+  Universe selection runs during the warm-up period too.
+  When you only want to accumulate selection data and not trade yet, return <code class="csharp">Universe.Unchanged</code><code class="python">Universe.UNCHANGED</code> while the algorithm warms up.
+  The selection function still receives the data, so you collect what you need without adding and removing securities.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Record the selection data during warm-up, but leave the universe alone.
+private IEnumerable&lt;Symbol&gt; SelectSymbols(IEnumerable&lt;Fundamental&gt; fundamental)
+{
+    RecordPeRatios(fundamental);
+    if (IsWarmingUp) return Universe.Unchanged;
+    return fundamental.OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(50).Select(f =&gt; f.Symbol);
+}</pre>
+    <pre class="python"># Record the selection data during warm-up, but leave the universe alone.
+def _select_symbols(self, fundamental):
+    self._record_pe_ratios(fundamental)
+    if self.is_warming_up:
+        return Universe.UNCHANGED
+    return [f.symbol for f in sorted(fundamental, key=lambda f: f.valuation_ratios.pe_ratio)[:50]]</pre>
+</div>
+
+<h4>Cap the Universe Size</h4>
+
+<p>
+  Give every <a href="/docs/v2/writing-algorithms/universes/key-concepts">universe</a> selection function an explicit limit on the number of securities it returns.
+  An unbounded selection function can return thousands of securities on a single day, which multiplies the subscription count, the <code>Slice</code> construction cost, and the memory footprint at once.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Return a fixed number of securities so the subscription count stays bounded.
+return fundamentals.OrderByDescending(f => f.DollarVolume).Take(50).Select(f => f.Symbol);</pre>
+    <pre class="python"># Return a fixed number of securities so the subscription count stays bounded.
+return [f.symbol for f in sorted(fundamentals, key=lambda f: f.dollar_volume, reverse=True)[:50]]</pre>
+</div>
+
+<h4>Filter Option Chains Tightly</h4>
+
+<p>
+  An unfiltered Option chain contains every strike and expiry that traded, so the contract count dwarfs the underlying subscription.
+  Narrow the <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a> to the contracts the strategy trades.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Select the contracts within 3 strikes of the underlying price that expire within 30 days.
+option.SetFilter(u => u.Strikes(-3, 3).Expiration(0, 30));</pre>
+    <pre class="python"># Select the contracts within 3 strikes of the underlying price that expire within 30 days.
+option.set_filter(lambda u: u.strikes(-3, 3).expiration(0, 30))</pre>
+</div>
+
+<p>
+  The arguments of the <code class="csharp">Strikes</code><code class="python">strikes</code> method are a <i>count of strikes</i> from the at-the-money strike, not a percentage of the underlying price.
+  <code class="csharp">Strikes(-3, 3)</code><code class="python">strikes(-3, 3)</code> selects three strikes below and three strikes above the underlying price.
+</p>
+
+<p>
+  The default filter selects standard <i>and</i> weekly contracts, so weeklys are in the chain unless you exclude them.
+  When the strategy only trades standard expiries, call the <code class="csharp">StandardsOnly</code><code class="python">standards_only</code> method to drop the rest.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Drop the weekly contracts when the strategy only trades standard expiries.
+option.SetFilter(u =&gt; u.Strikes(-3, 3).Expiration(0, 30).StandardsOnly());</pre>
+    <pre class="python"># Drop the weekly contracts when the strategy only trades standard expiries.
+option.set_filter(lambda u: u.strikes(-3, 3).expiration(0, 30).standards_only())</pre>
+</div>
+
+<p>
+  When you need end-of-day contract statistics rather than a live chain, read the <a href="/docs/v2/writing-algorithms/historical-data/universe-data">Option Universe data</a> instead of subscribing to the contracts.
+</p>
+
+<h4>Chain Universes Instead of Accumulating Subscriptions</h4>
+
+<p>
+  To trade Options on a dynamic Equity universe, <a href="/docs/v2/writing-algorithms/universes/equity/chained-universes">chain the universes</a> rather than adding contracts by hand.
+  A chained universe adds and removes the Option contracts as the underlying universe changes, so the subscription count tracks the current selection instead of growing with every security the algorithm has ever selected.
+</p>
+
+<h4>Remove Subscriptions You Finished With</h4>
+
+<p>
+  Each subscription costs memory and dispatch time for as long as it lives.
+  Call the <code class="csharp">RemoveSecurity</code><code class="python">remove_security</code> method to <a href="/docs/v2/writing-algorithms/securities/requesting-data#07-Remove-Subscriptions">remove one</a> when the strategy no longer needs it.
+  The method cancels your open orders for the security and liquidates your holdings, so only call it when you intend to exit the position.
+</p>
+
+<h4>Turn Off Data the Strategy Never Reads</h4>
+
+<p>
+  Extended market hours data roughly doubles the bar count for a US Equity subscription.
+  Leave <a href="/docs/v2/writing-algorithms/universes/settings#05-Extended-Market-Hours">extended market hours</a> off unless the strategy trades in the pre-market or post-market session, and drop any secondary resolution the algorithm subscribes to but never reads.
+</p>
