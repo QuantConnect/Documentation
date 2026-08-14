@@ -68,6 +68,10 @@
       <td>OnData</td>
       <td>The total execution time of <code class="csharp">OnData</code><code class="python">on_data</code> method call and <code class="csharp">Alpha.Update</code><code class="python">alpha.update</code>, measured in seconds, recorded since the last sampling event.</td>
     </tr>
+    <tr>
+      <td>WallTime</td>
+      <td>The real time that elapsed since the last sampling event, measured in seconds.</td>
+    </tr>
   </tbody>
 </table>
 

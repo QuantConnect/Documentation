@@ -1,0 +1,69 @@
+<p>
+  LEAN runs on .NET.
+  A C# algorithm compiles into the engine and calls it directly.
+  A Python algorithm runs through <a href="/docs/v2/writing-algorithms/key-concepts/python-and-lean">Python.NET</a>, which marshals every call that crosses between the two runtimes.
+</p>
+
+<p>
+  The cost of that boundary is paid per call, not per backtest, so it scales with the event rate of the strategy.
+  A daily-resolution strategy on a few securities crosses the boundary a few thousand times and the overhead is not measurable next to the data loading.
+  A tick-resolution or large-universe strategy crosses it millions of times and the overhead becomes the dominant cost.
+  Write tick-resolution and other high-event-rate strategies in C#.
+  For everything else, choose the language you are most productive in and apply the practices below.
+</p>
+
+<h4 class="python">Cache the Objects You Read Repeatedly</h4>
+
+<p class="python">
+  Every read of a LEAN object from Python crosses the boundary, so fetching the same object again on every bar is pure overhead.
+  Resolve it once and read your own copy afterwards.
+  The <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events"><code class="python">on_securities_changed</code> event handler</a> is the natural place to do it.
+</p>
+
+<div class="python section-example-container">
+    <pre class="python"># Resolve the Security objects once, when the universe changes.
+def on_securities_changed(self, changes):
+    for security in changes.added_securities:
+        self._securities[security.symbol] = security
+    for security in changes.removed_securities:
+        self._securities.pop(security.symbol, None)
+
+# Read from the plain Python dictionary in the event handler.
+def on_data(self, data):
+    for symbol, security in self._securities.items():
+        price = security.price</pre>
+</div>
+
+<h4 class="python">Track Order State Instead of Querying It</h4>
+
+<p class="python">
+  The <code class="python">self.transactions.get_open_orders()</code> method rebuilds the list of open orders on every call, and it is usually called from the hottest loop in the algorithm.
+  A strategy that maintains several stop-loss and take-profit orders per security across a large universe pays this cost on every bar.
+  Maintain your own dictionary of open tickets and update it from the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events">order event handler</a>.
+</p>
+
+<div class="python section-example-container">
+    <pre class="python"># Update your own view of the open orders when their state changes.
+def on_order_event(self, order_event):
+    if order_event.status.is_closed():
+        self._open_tickets.pop(order_event.order_id, None)</pre>
+</div>
+
+<p class="python">
+  The same rule applies to any property you read more than once in a time step, including portfolio holdings, security prices, and symbol properties.
+  Read the value into a local variable at the top of the handler, then use the local variable.
+</p>
+
+<p class="csharp">
+  In C#, reading a <code>Security</code> object or querying the open orders is an ordinary in-process call with no marshalling cost, so you do not need to cache these values to avoid a boundary crossing.
+</p>
+
+<h4 class="python">Push the Arithmetic into Compiled Code</h4>
+
+<p class="python">The following list shows how to keep numerical work out of the Python interpreter:</p>
+
+<ul class="python">
+  <li>Use the <a href="/docs/v2/writing-algorithms/indicators/supported-indicators">built-in indicators</a>, which execute as C#, instead of computing the same values in Python.</li>
+  <li>Vectorize array work with NumPy rather than looping in Python.</li>
+  <li>Apply <a href="/docs/v2/writing-algorithms/key-concepts/debugging-tools#08-JIT-Compilation">just-in-time compilation and caching</a> to the pure-Python functions that remain hot.</li>
+</ul>

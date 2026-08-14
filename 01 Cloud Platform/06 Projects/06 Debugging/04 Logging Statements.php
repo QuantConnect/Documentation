@@ -11,3 +11,5 @@
 
 <h4>Quit</h4>
 <? include(DOCS_RESOURCES."/logging-statements/quit.php"); ?>
+
+<? include(DOCS_RESOURCES."/logging-statements/best-practices.php"); ?>

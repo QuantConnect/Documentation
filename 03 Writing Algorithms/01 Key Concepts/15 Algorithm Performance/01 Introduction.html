@@ -1,0 +1,26 @@
+<p>
+  The time a backtest takes is mostly decided by how you write the algorithm, not by the machine that runs it.
+  LEAN's runtime scales with the number of data points your algorithm consumes and with the amount of work you do on each one, so the largest speed gains come from subscribing to less data and keeping your event handlers thin.
+</p>
+
+<p>The following list shows the order to work through when a backtest runs too slowly:</p>
+
+<ol>
+  <li>Measure the algorithm and name the dominant cost before you change any code.</li>
+  <li>Reduce the volume of data the algorithm consumes.</li>
+  <li>Remove history requests from the code paths that run repeatedly.</li>
+  <li>Move expensive work out of the data event handlers.</li>
+  <li>Choose the language that suits the event rate of the strategy.</li>
+  <li>Size the node, once the preceding steps are done.</li>
+</ol>
+
+<p>
+  The order matters.
+  A strategy that subscribes to minute data for 50 US Equities processes tens of millions of data points over a decade, so halving the resolution or the universe size saves more time than any node upgrade.
+  Node size is last on the list because a single backtest runs on a single node and cannot be split across several of them.
+</p>
+
+<p>
+  This section covers the performance of the algorithm you write.
+  For the throughput of the engine itself, see the <a href="/docs/v2/cloud-platform/backtesting/engine-performance">Engine Performance</a> page, which reports the results of the benchmark algorithms QuantConnect runs against LEAN.
+</p>
