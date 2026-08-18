@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/brokerages/bloomberg/orders.php"); ?>

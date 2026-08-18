@@ -317,9 +317,7 @@ if __name__ == '__main__':
                 # Wolverine brokerage is currently under maintance.
                 'WolverineSettings',
                 # Need permission to use RBI brokerage
-                'RBIBrokerageSettings',
-                # Need a provisioned Bloomberg FIX session to use Bloomberg FIX brokerage
-                'BloombergFixSettings'
+                'RBIBrokerageSettings'
             ]
             if model.schema_name in schemas_to_skip:
                 continue  
