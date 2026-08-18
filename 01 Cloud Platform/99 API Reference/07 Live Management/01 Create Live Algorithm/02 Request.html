@@ -100,6 +100,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "AlpacaBrokerageSettings": object,
   "WebullBrokerageSettings": object,
   "PublicBrokerageSettings": object,
+  "BloombergFixSettings": object,
 },
   "dataProviders": 
 }</pre>
@@ -885,6 +886,61 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "id": "PublicBrokerage",
   "public-secret-key": "string",
   "public-account-number": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>BloombergFixSettings</code> Model - Settings for using Bloomberg FIX as the brokerage for a live algorithm.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> Id of the module. Options : ['BloombergFixBrokerage']</td>
+</tr>
+<tr>
+<td width="20%">bloomberg-fix-sender-sub-id</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Your QuantConnect user Id. The connection sends it as FIX tag 50 so Bloomberg can map the orders to you.</td>
+</tr>
+<tr>
+<td width="20%">bloomberg-fix-on-behalf-of-comp-id</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> The CompID that identifies your trading firm, sent as FIX tag 115. Bloomberg assigns it when they provision your FIX session.</td>
+</tr>
+<tr>
+<td width="20%">bloomberg-fix-deliver-to-comp-id</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> The CompID of the prime brokerage that receives your orders, sent as FIX tag 128.</td>
+</tr>
+<tr>
+<td width="20%">bloomberg-fix-environment</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> The environment to run in. Options : ['Live']</td>
+</tr>
+<tr>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
+</tr>
+<tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "BloombergFixBrokerage",
+  "bloomberg-fix-sender-sub-id": "string",
+  "bloomberg-fix-on-behalf-of-comp-id": "string",
+  "bloomberg-fix-deliver-to-comp-id": "string",
+  "bloomberg-fix-environment": "Live",
+  "cash": [
+    {
+      "amount": 0,
+      "currency": "string"
+    }
+  ],
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
