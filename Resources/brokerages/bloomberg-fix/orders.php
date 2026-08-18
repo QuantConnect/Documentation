@@ -72,13 +72,13 @@
 <h4>Order Properties</h4>
 <p><?= $writingAlgorithms ? "The <code>BloombergFixBrokerageModel</code> supports custom order properties." : "We model custom order properties from the Bloomberg&trade; FIX connection." ?> The <code>BloombergFixOrderProperties</code> class inherits the <code>FixOrderProperties</code> class that every <a href='/docs/v2/cloud-platform/live-trading/brokerages/fix-connections'>FIX connection</a> shares. The following table describes the members of the <code>BloombergFixOrderProperties</code> object that you can set to customize order execution:</p>
 
-<table class="table qc-table">
+<table class="table qc-table" id="bloomberg-fix-order-properties-table">
     <thead>
         <tr>
-         <th>Property</th>
-         <th>Data Type</th>
-         <th>Description</th>
-         <th>Default Value</th>
+         <th style="width: 18%">Property</th>
+         <th style="width: 17%">Data Type</th>
+         <th style="width: 45%">Description</th>
+         <th style="width: 20%">Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -126,6 +126,18 @@
         </tr>
     </tbody>
 </table>
+
+<style>
+#bloomberg-fix-order-properties-table {
+    table-layout: fixed;
+}
+
+#bloomberg-fix-order-properties-table td,
+#bloomberg-fix-order-properties-table code {
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+</style>
 
 <? if ($writingAlgorithms) { ?>
 <div class="section-example-container">

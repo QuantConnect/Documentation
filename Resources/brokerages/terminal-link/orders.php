@@ -62,13 +62,13 @@
 <h4>Order Properties</h4>
 <p>We model custom order properties from the Bloomberg EMSX API. The following table describes the members of the <code>TerminalLinkOrderProperties</code> object that you can set to customize order execution:</p>
 
-<table class="table qc-table" class='order-properties-table'>
+<table class="table qc-table" id="terminal-link-order-properties-table">
     <thead>
         <tr>
-         <th>Property</th>
-         <th>Data Type</th>
-         <th>Description</th>
-         <th>Default Value</th>
+         <th style="width: 18%">Property</th>
+         <th style="width: 17%">Data Type</th>
+         <th style="width: 45%">Description</th>
+         <th style="width: 20%">Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -212,6 +212,18 @@
         </tr>
     </tbody>
 </table>
+
+<style>
+#terminal-link-order-properties-table {
+    table-layout: fixed;
+}
+
+#terminal-link-order-properties-table td,
+#terminal-link-order-properties-table code {
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+</style>
 
 <? if ($writingAlgorithms) { ?>
 <div class="section-example-container">
