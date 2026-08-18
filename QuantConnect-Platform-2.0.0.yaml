@@ -3313,6 +3313,7 @@ components:
             - $ref: '#/components/schemas/AlpacaBrokerageSettings'
             - $ref: '#/components/schemas/WebullBrokerageSettings'
             - $ref: '#/components/schemas/PublicBrokerageSettings'
+            - $ref: '#/components/schemas/BloombergFixSettings'
         dataProviders:
           type: object
           description: Dictionary of data provider configurations to be used in the live algorithm. Provide at least one. The order in which you define the providers defines their order of precedence.
@@ -4070,6 +4071,45 @@ components:
           items:
             $ref: '#/components/schemas/BrokerageHolding'
       description: Settings for using TerminalLink as the brokerage for a live algorithm.
+    BloombergFixSettings:
+      type: object
+      required:
+        - id
+        - bloomberg-fix-sender-sub-id
+        - bloomberg-fix-on-behalf-of-comp-id
+        - bloomberg-fix-deliver-to-comp-id
+        - bloomberg-fix-environment
+      properties:
+        id:
+          type: string
+          description: Id of the module.
+          enum:
+            - BloombergFixBrokerage
+        bloomberg-fix-sender-sub-id:
+          type: string
+          description: Your QuantConnect user Id. The connection sends it as FIX tag 50 so Bloomberg can map the orders to you.
+        bloomberg-fix-on-behalf-of-comp-id:
+          type: string
+          description: The CompID that identifies your trading firm, sent as FIX tag 115. Bloomberg assigns it when they provision your FIX session.
+        bloomberg-fix-deliver-to-comp-id:
+          type: string
+          description: The CompID of the prime brokerage that receives your orders, sent as FIX tag 128.
+        bloomberg-fix-environment:
+          type: string
+          description: The environment to run in.
+          enum:
+            - Live
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/BrokerageHolding'
+      description: Settings for using Bloomberg FIX as the brokerage for a live algorithm.
     RBIBrokerageSettings:
       type: object
       required:

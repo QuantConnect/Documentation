@@ -1,4 +1,6 @@
-<p>You need to <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
+<p>This section explains how to deploy with Terminal Link. To deploy with the Bloomberg&trade; FIX connection, see <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg#13-Deploy-Live-Algorithms-FIX'>Deploy Live Algorithms FIX</a>.</p>
+
+<p>You need to <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
 
 <?
 $brokerageName = "Terminal Link";
