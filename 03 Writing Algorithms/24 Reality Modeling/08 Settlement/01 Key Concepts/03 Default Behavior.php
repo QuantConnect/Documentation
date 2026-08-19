@@ -7,4 +7,4 @@ include(DOCS_RESOURCES."/reality-modeling/default-settlement-models.php");
 ?>
 
 
-<p>The default delayed settlement rule for US Equity trades is T+2 at 8 AM Eastern Time (ET). For example, if you sell on Monday, the trade settles on Wednesday at 8 AM. The default delayed settlement rule for Future and Option contracts is T+1 at 8 AM.</p>
+<p>The default delayed settlement rule for US Equity and Option trades is T+1 at 6 AM Eastern Time (ET), where T+1 counts trading days. For example, if you sell on Monday, the trade settles on Tuesday at 6 AM. This delay only applies to cash accounts. Future contracts instead settle their profit and loss daily.</p>
