@@ -43,3 +43,5 @@
   </tr>
 </tbody>
 </table>
+
+<p>To see the resources of the node that runs the algorithm, see <a href='/docs/v2/writing-algorithms/statistics/server-statistics'>Server Statistics</a>.</p>

@@ -66,6 +66,14 @@ The <code>/backtests/read</code> API provides a response in the following format
       "Unrealized": "$100.00",
       "Volume": "$100.00"
     },
+    "serverStatistics": {
+      "CPU Usage": "0.0%",
+      "Used RAM (MB)": "241",
+      "Total RAM (MB)": "16384",
+      "Hostname": "BACKTESTING-48-b663526eb061eda8efa07d9bde55c24f",
+      "LEAN Version": "v2.5.0.0.18009",
+      "Up Time": "0d 00:00:03"
+    },
     "statistics": {
       "Total Orders": "string",
       "Average Win": "string",
@@ -168,11 +176,14 @@ The <code>/backtests/read</code> API provides a response in the following format
       },
       "closedTrades": [
         {
-          "symbol": {
-            "value": "string",
-            "id": "string",
-            "permtick": "string"
-          },
+          "id": "e1936b18-446b-4d57-95a6-6fd1a420e261",
+          "symbols": [
+            {
+              "value": "string",
+              "id": "string",
+              "permtick": "string"
+            }
+          ],
           "entryTime": "2021-11-26T15:18:27.693Z",
           "entryPrice": 0,
           "direction": 0,
@@ -184,7 +195,11 @@ The <code>/backtests/read</code> API provides a response in the following format
           "mae": 0,
           "mfe": 0,
           "duration": "string",
-          "endTradeDrawdown": 0
+          "endTradeDrawdown": 0,
+          "isWin": true,
+          "orderIds": [
+            "integer"
+          ]
         }
       ]
     },
@@ -288,6 +303,9 @@ The <code>/backtests/read</code> API provides a response in the following format
 <td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object<br/><i><sub>required</sub></i></code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI.</td>
 </tr>
 <tr>
+<td width="20%">serverStatistics</td> <td> <code>ServerStatistics object</code> <br/> Status of the node that ran the backtest, including its CPU and RAM usage. The available keys depend on the version of LEAN that produced the results.</td>
+</tr>
+<tr>
 <td width="20%">statistics</td> <td> <code>StatisticsResult object<br/><i><sub>required</sub></i></code> <br/> Statistics information sent during the algorithm operations.</td>
 </tr>
 <tr>
@@ -347,6 +365,14 @@ The <code>/backtests/read</code> API provides a response in the following format
     "Return": "50.00%",
     "Unrealized": "$100.00",
     "Volume": "$100.00"
+  },
+  "serverStatistics": {
+    "CPU Usage": "0.0%",
+    "Used RAM (MB)": "241",
+    "Total RAM (MB)": "16384",
+    "Hostname": "BACKTESTING-48-b663526eb061eda8efa07d9bde55c24f",
+    "LEAN Version": "v2.5.0.0.18009",
+    "Up Time": "0d 00:00:03"
   },
   "statistics": {
     "Total Orders": "string",
@@ -450,11 +476,14 @@ The <code>/backtests/read</code> API provides a response in the following format
     },
     "closedTrades": [
       {
-        "symbol": {
-          "value": "string",
-          "id": "string",
-          "permtick": "string"
-        },
+        "id": "e1936b18-446b-4d57-95a6-6fd1a420e261",
+        "symbols": [
+          {
+            "value": "string",
+            "id": "string",
+            "permtick": "string"
+          }
+        ],
         "entryTime": "2021-11-26T15:18:27.693Z",
         "entryPrice": 0,
         "direction": 0,
@@ -466,7 +495,11 @@ The <code>/backtests/read</code> API provides a response in the following format
         "mae": 0,
         "mfe": 0,
         "duration": "string",
-        "endTradeDrawdown": 0
+        "endTradeDrawdown": 0,
+        "isWin": true,
+        "orderIds": [
+          "integer"
+        ]
       }
     ]
   },
@@ -580,6 +613,45 @@ The <code>/backtests/read</code> API provides a response in the following format
   "Return": "50.00%",
   "Unrealized": "$100.00",
   "Volume": "$100.00"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ServerStatistics</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">CPU Usage</td> <td> <code>string<br/><i><sub>example: 0.0%</sub></i></code> <br/> Percentage of the node CPU in use.</td>
+</tr>
+<tr>
+<td width="20%">Used RAM (MB)</td> <td> <code>string<br/><i><sub>example: 241</sub></i></code> <br/> RAM the algorithm uses, in megabytes.</td>
+</tr>
+<tr>
+<td width="20%">Total RAM (MB)</td> <td> <code>string<br/><i><sub>example: 16384</sub></i></code> <br/> RAM the node provides, in megabytes.</td>
+</tr>
+<tr>
+<td width="20%">Hostname</td> <td> <code>string<br/><i><sub>example: BACKTESTING-48-b663526eb061eda8efa07d9bde55c24f</sub></i></code> <br/> Name of the machine that runs the algorithm, which starts with the type of deployment.</td>
+</tr>
+<tr>
+<td width="20%">LEAN Version</td> <td> <code>string<br/><i><sub>example: v2.5.0.0.18009</sub></i></code> <br/> Version of LEAN that runs the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">Up Time</td> <td> <code>string<br/><i><sub>example: 0d 00:00:03</sub></i></code> <br/> Time the node has been running, in days, hours, minutes, and seconds.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "CPU Usage": "0.0%",
+  "Used RAM (MB)": "241",
+  "Total RAM (MB)": "16384",
+  "Hostname": "BACKTESTING-48-b663526eb061eda8efa07d9bde55c24f",
+  "LEAN Version": "v2.5.0.0.18009",
+  "Up Time": "0d 00:00:03"
 }</pre>
 </div>
 </td>
@@ -720,7 +792,7 @@ The <code>/backtests/read</code> API provides a response in the following format
 <td width="20%">portfolioStatistics</td> <td> <code>PortfolioStatistics object</code> <br/> Represents a set of statistics calculated from equity and benchmark samples.</td>
 </tr>
 <tr>
-<td width="20%">closedTrades</td> <td> <code>Trade Array</code> <br/> The algorithm statistics on portfolio.</td>
+<td width="20%">closedTrades</td> <td> <code>ClosedTrade Array</code> <br/> The algorithm statistics on portfolio.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
@@ -799,11 +871,14 @@ The <code>/backtests/read</code> API provides a response in the following format
   },
   "closedTrades": [
     {
-      "symbol": {
-        "value": "string",
-        "id": "string",
-        "permtick": "string"
-      },
+      "id": "e1936b18-446b-4d57-95a6-6fd1a420e261",
+      "symbols": [
+        {
+          "value": "string",
+          "id": "string",
+          "permtick": "string"
+        }
+      ],
       "entryTime": "2021-11-26T15:18:27.693Z",
       "entryPrice": 0,
       "direction": 0,
@@ -815,7 +890,11 @@ The <code>/backtests/read</code> API provides a response in the following format
       "mae": 0,
       "mfe": 0,
       "duration": "string",
-      "endTradeDrawdown": 0
+      "endTradeDrawdown": 0,
+      "isWin": true,
+      "orderIds": [
+        "integer"
+      ]
     }
   ]
 }</pre>
@@ -1119,11 +1198,14 @@ The <code>/backtests/read</code> API provides a response in the following format
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>Trade</code> Model - Represents a closed trade.</th>
+<th colspan="2"><code>ClosedTrade</code> Model - Represents a closed trade of a backtest or a live algorithm.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
+<td width="20%">id</td> <td> <code>string<br/><i><sub>example: e1936b18-446b-4d57-95a6-6fd1a420e261</sub></i></code> <br/> Unique identifier of the closed trade.</td>
+</tr>
+<tr>
+<td width="20%">symbols</td> <td> <code>Symbol Array</code> <br/> The securities involved in the trade.</td>
 </tr>
 <tr>
 <td width="20%">entryTime</td> <td> <code>string($date-time)</code> <br/> The date and time the trade was opened.</td>
@@ -1162,15 +1244,24 @@ The <code>/backtests/read</code> API provides a response in the following format
 <td width="20%">endTradeDrawdown</td> <td> <code>number</code> <br/> The amount of profit given back before the trade was closed.</td>
 </tr>
 <tr>
+<td width="20%">isWin</td> <td> <code>boolean</code> <br/> Whether the trade closed at a profit.</td>
+</tr>
+<tr>
+<td width="20%">orderIds</td> <td> <code>integer Array</code> <br/> Ids of the orders that opened and closed the trade.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "symbol": {
-    "value": "string",
-    "id": "string",
-    "permtick": "string"
-  },
+  "id": "e1936b18-446b-4d57-95a6-6fd1a420e261",
+  "symbols": [
+    {
+      "value": "string",
+      "id": "string",
+      "permtick": "string"
+    }
+  ],
   "entryTime": "2021-11-26T15:18:27.693Z",
   "entryPrice": 0,
   "direction": 0,
@@ -1182,7 +1273,11 @@ The <code>/backtests/read</code> API provides a response in the following format
   "mae": 0,
   "mfe": 0,
   "duration": "string",
-  "endTradeDrawdown": 0
+  "endTradeDrawdown": 0,
+  "isWin": true,
+  "orderIds": [
+    "integer"
+  ]
 }</pre>
 </div>
 </td>

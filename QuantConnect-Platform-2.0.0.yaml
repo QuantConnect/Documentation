@@ -588,6 +588,32 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readBacktestOrders
+  /backtests/trades/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 04 Trades
+      summary: Read out the closed trades of a backtest.
+      requestBody:
+        description: Fetch the closed trades of a backtest for the project Id, backtest Id and steps provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestTradesRequest'
+        required: true
+      responses:
+        "200":
+          description: Closed trades of the backtest within range.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestTradesResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktestTrades
   /backtests/read/report:
     post:
       tags:
@@ -646,7 +672,7 @@ paths:
         - 99 API Reference
         - 05 Backtest Management
         - 02 Read Backtest
-        - 04 Insights
+        - 05 Insights
       summary: Read out the insights of a backtest.
       requestBody:
         description: Fetch the insights of a backtest for the project Id, backtest Id and steps provided.
@@ -885,7 +911,7 @@ paths:
         - 99 API Reference
         - 07 Live Management
         - 02 Read Live Algorithm
-        - 06 Logs
+        - 07 Logs
       summary: Get the logs of a live algorithm. The snapshot updates about every 5 minutes.
       requestBody:
         description: Information about the algorithm to read live logs from.
@@ -958,6 +984,34 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readLiveAlgorithmOrders
+  /live/trades/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 07 Live Management
+        - 02 Read Live Algorithm
+        - 05 Trades
+      summary: Read out the closed trades of a live algorithm. The snapshot updates about every 10 minutes.
+      requestBody:
+        description: Fetch the closed trades of a live algorithm for the project Id and steps provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadLiveTradesRequest'
+        required: true
+      responses:
+        "200":
+          description: Closed trades of the live algorithm within range.
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/LoadingResponse'
+                  - $ref: '#/components/schemas/LiveTradesResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readLiveAlgorithmTrades
   /live/insights/read:
     post:
       tags:
@@ -965,7 +1019,7 @@ paths:
         - 99 API Reference
         - 07 Live Management
         - 02 Read Live Algorithm
-        - 05 Insights
+        - 06 Insights
       summary: Read out the insights of a live algorithm. The snapshot updates about every 10 minutes.
       requestBody:
         description: Fetch the insights of a live algorithm for the project Id and steps provided.
@@ -2337,7 +2391,7 @@ components:
           type: array
           description: The algorithm statistics on portfolio.
           items:
-            $ref: '#/components/schemas/Trade'
+            $ref: '#/components/schemas/ClosedTrade'
       description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
     AnalysisResult:
       type: object
@@ -2386,6 +2440,26 @@ components:
           type: integer
           description: Total number of returned orders
       description: Contains orders and the number of orders of the backtest in the request criteria.
+    BacktestTradesResponse:
+      type: object
+      properties:
+        trades:
+          type: array
+          description: Collection of closed trades.
+          items:
+            $ref: '#/components/schemas/ClosedTradeWithOrders'
+        length:
+          type: integer
+          description: Total number of closed trades matching the request criteria.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Contains the closed trades and the number of closed trades of the backtest in the request criteria.
     BacktestInsightsResponse:
       type: object
       properties:
@@ -2599,6 +2673,11 @@ components:
         runtimeStatistics:
           $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
+        serverStatistics:
+          $ref: '#/components/schemas/ServerStatistics'
+          description: >-
+            Status of the node that ran the backtest, including its CPU and RAM usage. The
+            available keys depend on the version of LEAN that produced the results.
         statistics:
           $ref: '#/components/schemas/StatisticsResult'
           description: Statistics information sent during the algorithm operations.
@@ -5227,6 +5306,11 @@ components:
         runtimeStatistics:
           $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.
+        serverStatistics:
+          $ref: '#/components/schemas/ServerStatistics'
+          description: >-
+            Status of the node that runs the live algorithm, including its CPU and RAM usage.
+            It's empty if the algorithm is not running.
         charts:
           $ref: '#/components/schemas/ChartSummary'
           description: Chart updates for the live algorithm since the last result packet.
@@ -5431,6 +5515,26 @@ components:
           items:
             type: string
       description: Contains orders and the number of orders of the live algorithm in the request criteria.
+    LiveTradesResponse:
+      type: object
+      properties:
+        trades:
+          type: array
+          description: Collection of closed trades.
+          items:
+            $ref: '#/components/schemas/ClosedTradeWithOrders'
+        length:
+          type: integer
+          description: Total number of closed trades matching the request criteria.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Contains the closed trades and the number of closed trades of the live algorithm in the request criteria.
     LiveInsightsResponse:
       type: object
       properties:
@@ -6711,6 +6815,38 @@ components:
             - 23456789
           description: Id of the project from which to read the live algorithm.
       description: Request to read orders from a live algorithm.
+    ReadLiveTradesRequest:
+      required:
+        - start
+        - end
+        - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project from which to read the live algorithm.
+        deployId:
+          type: string
+          examples:
+            - L-6e9d8a78f5af89d401f630585be90e43
+          description: >-
+            Deploy Id of the live algorithm. When you provide it, the response contains the closed
+            trades of that deployment. When you omit it, the response contains the closed trades of
+            every deployment of the project. If you provide it, it must be a string. The API rejects
+            a null value.
+        start:
+          type: integer
+          examples:
+            - 0
+          description: Starting index of the closed trades to be fetched.
+        end:
+          type: integer
+          examples:
+            - 100
+          description: Last index of the closed trades to be fetched. Note that end - start must be <= 1,000.
+      description: Request to read closed trades from a live algorithm.
     ReadLiveInsightsRequest:
       required:
         - end
@@ -6859,6 +6995,35 @@ components:
             - 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to read the orders.
       description: Request to read orders from a backtest.
+    ReadBacktestTradesRequest:
+      required:
+        - start
+        - end
+        - projectId
+        - backtestId
+      type: object
+      properties:
+        start:
+          type: integer
+          examples:
+            - 0
+          description: Starting index of the closed trades to be fetched.
+        end:
+          type: integer
+          examples:
+            - 100
+          description: Last index of the closed trades to be fetched.
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project from which to read the backtest.
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to read the closed trades.
+      description: Request to read closed trades from a backtest.
     ReadBacktestInsightsRequest:
       required:
         - start
@@ -7041,6 +7206,39 @@ components:
           description: Total transaction volume.
           examples:
             - '$100.00'
+    ServerStatistics:
+      type: object
+      properties:
+        CPU Usage:
+          type: string
+          description: Percentage of the node CPU in use.
+          examples:
+            - '0.0%'
+        Used RAM (MB):
+          type: string
+          description: RAM the algorithm uses, in megabytes.
+          examples:
+            - '241'
+        Total RAM (MB):
+          type: string
+          description: RAM the node provides, in megabytes.
+          examples:
+            - '16384'
+        Hostname:
+          type: string
+          description: Name of the machine that runs the algorithm, which starts with the type of deployment.
+          examples:
+            - BACKTESTING-48-b663526eb061eda8efa07d9bde55c24f
+        LEAN Version:
+          type: string
+          description: Version of LEAN that runs the algorithm.
+          examples:
+            - v2.5.0.0.18009
+        Up Time:
+          type: string
+          description: Time the node has been running, in days, hours, minutes, and seconds.
+          examples:
+            - 0d 00:00:03
     ChartResolution:
       type: string
       description: Storage format of the charting data
@@ -7217,11 +7415,19 @@ components:
           type: string
           description: The ticker at IPO for this security.
       description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
-    Trade:
+    ClosedTrade:
       type: object
       properties:
-        symbol:
-          $ref: '#/components/schemas/Symbol'
+        id:
+          type: string
+          description: Unique identifier of the closed trade.
+          examples:
+            - e1936b18-446b-4d57-95a6-6fd1a420e261
+        symbols:
+          type: array
+          description: The securities involved in the trade.
+          items:
+            $ref: '#/components/schemas/Symbol'
         entryTime:
           type: string
           description: The date and time the trade was opened.
@@ -7271,7 +7477,91 @@ components:
           type: number
           description: The amount of profit given back before the trade was closed.
           format: float
-      description: Represents a closed trade.
+        isWin:
+          type: boolean
+          description: Whether the trade closed at a profit.
+        orderIds:
+          type: array
+          description: Ids of the orders that opened and closed the trade.
+          items:
+            type: integer
+      description: Represents a closed trade of a backtest or a live algorithm.
+    ClosedTradeWithOrders:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the closed trade.
+          examples:
+            - e1936b18-446b-4d57-95a6-6fd1a420e261
+        symbols:
+          type: array
+          description: The securities involved in the trade.
+          items:
+            $ref: '#/components/schemas/Symbol'
+        entryTime:
+          type: string
+          description: The date and time the trade was opened.
+          format: date-time
+        entryPrice:
+          type: number
+          description: The price at which the trade was opened (or the average price if multiple entries).
+          format: float
+        direction:
+          type: integer
+          description: Direction of a trade. 0=Long, 1=Short.
+          enum:
+            - 0
+            - 1
+        quantity:
+          type: number
+          description: The total unsigned quantity of the trade.
+          format: float
+        exitTime:
+          type: string
+          description: The date and time the trade was closed.
+          format: date-time
+        exitPrice:
+          type: number
+          description: The price at which the trade was closed (or the average price if multiple exits).
+          format: float
+        profitLoss:
+          type: number
+          description: The gross profit/loss of the trade (as account currency).
+          format: float
+        totalFees:
+          type: number
+          description: The total fees associated with the trade (always positive value) (as account currency).
+          format: float
+        mae:
+          type: number
+          description: The Maximum Adverse Excursion (as account currency).
+          format: float
+        mfe:
+          type: number
+          description: The Maximum Favorable Excursion (as account currency).
+          format: float
+        duration:
+          type: string
+          description: The duration of the trade.
+        endTradeDrawdown:
+          type: number
+          description: The amount of profit given back before the trade was closed.
+          format: float
+        isWin:
+          type: boolean
+          description: Whether the trade closed at a profit.
+        orderIds:
+          type: array
+          description: Ids of the orders that opened and closed the trade.
+          items:
+            type: integer
+        orders:
+          type: array
+          description: The orders that opened and closed the trade.
+          items:
+            $ref: '#/components/schemas/Order'
+      description: Represents a closed trade of a backtest or a live algorithm, with the orders that opened and closed it.
     TradeStatistics:
       type: object
       properties:

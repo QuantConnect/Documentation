@@ -192,20 +192,29 @@ class APIReferenceGenerator:
                 return ""
             component = content["schema"]
             if "$ref" in component:
-                root_path = self._ref_path(component["$ref"])
+                root_paths = [self._ref_path(component["$ref"])]
             elif "items" in component and "$ref" in component["items"]:
-                root_path = self._ref_path(component["items"]["$ref"])
+                root_paths = [self._ref_path(component["items"]["$ref"])]
                 is_array = True
                 order = 1
+            elif "oneOf" in component:
+                # The response is one of several models. Document all of them.
+                root_paths = [
+                    self._ref_path(variant["$ref"])
+                    for variant in component["oneOf"]
+                    if "$ref" in variant
+                ]
+                if not root_paths:
+                    return self._build_inline_schema_table(schema_or_ref, component)
             else:
                 return self._build_inline_schema_table(schema_or_ref, component)
         elif "$ref" in schema_or_ref:
-            root_path = self._ref_path(schema_or_ref["$ref"])
+            root_paths = [self._ref_path(schema_or_ref["$ref"])]
         else:
             return ""
 
         # --- BFS over schemas ---
-        queue = [root_path]
+        queue = list(root_paths)
         html_parts = []
         idx = 0
 
@@ -439,6 +448,8 @@ class APIReferenceGenerator:
 
         # --- example annotation (overrides json_value) ---
         eg = self._get_example(prop)
+        # An example that is already a list closes its own brackets
+        eg_is_sequence = isinstance(eg, (dict, list))
         if eg is not None:
             type_label += f"<br/><i><sub>example: {eg}</sub></i>"
             if isinstance(eg, str):
@@ -450,7 +461,7 @@ class APIReferenceGenerator:
             json_value = str(eg)
 
         # --- array bracket closure ---
-        if "Array" in type_label:
+        if "Array" in type_label and not eg_is_sequence:
             json_value += "\n" + tab + "  ]"
 
         return type_label, desc, json_value, prop
