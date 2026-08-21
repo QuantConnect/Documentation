@@ -1,0 +1,253 @@
+<p>The Euro Area Yield Curve dataset lets you read European rate expectations directly rather than inferring them from prices. Examples include the following strategies:</p>
+
+<ul><li>Reading the slope of the curve, the ten year rate against the two year, as a regime signal for European equity exposure.</li>
+<li>Trading the spread between the all issuers and triple A curves as a gauge of sovereign stress.</li>
+<li>Anticipating European Central Bank decisions from the instantaneous forward curve, which prices what the market expects rates to be at a future moment.</li>
+<li>Timing rate sensitive sectors from moves at the short end, where policy expectations show up first.</li>
+<li>Comparing the euro area term structure against the US Treasury curve for cross market positioning.</li>
+<li>Building a European risk free curve for discounting or for pricing options on euro denominated assets.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm reads the credit spread the market charges the weaker euro area sovereigns, which is the all issuers curve minus the triple A curve at ten years. It holds SPY while the spread is tight and steps aside while it is wide, so the European sovereign market drives the risk decision.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.triple_a = self.add_data(ECBYieldCurve, ECB.YieldCurves.AAA_SPOT, Resolution.DAILY).symbol
+        self.all_issuers = self.add_data(ECBYieldCurve, ECB.YieldCurves.ALL_ISSUERS_SPOT, Resolution.DAILY).symbol
+
+        history = self.history[ECBYieldCurve](self.triple_a, timedelta(days=365), Resolution.DAILY)
+        self.debug(f"Got {len(list(history))} historical curve readings")
+
+        self.triple_a_ten_year = None
+        self.all_issuers_ten_year = None
+
+    def on_data(self, slice):
+        curves = slice.get(ECBYieldCurve)
+
+        # The two curves need not arrive in the same slice, so the latest reading of each is kept.
+        if self.triple_a in curves:
+            self.triple_a_ten_year = curves[self.triple_a].ten_year
+        if self.all_issuers in curves:
+            self.all_issuers_ten_year = curves[self.all_issuers].ten_year
+
+        if self.triple_a_ten_year is None or self.all_issuers_ten_year is None:
+            return
+
+        # The curve lands hours before the US session, so wait for the bar before trading.
+        if self.equity not in slice.bars:
+            return
+
+        spread = (self.all_issuers_ten_year - self.triple_a_ten_year) * 100
+
+        if spread &gt; 60:
+            if self.portfolio[self.equity].invested:
+                self.liquidate(self.equity)
+        elif not self.portfolio[self.equity].invested:
+            self.set_holdings(self.equity, 1)</pre>
+<pre class="csharp">public class ECBYieldCurveExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _equity, _tripleA, _allIssuers;
+    private decimal? _tripleATenYear, _allIssuersTenYear;
+
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _tripleA = AddData&lt;ECBYieldCurve&gt;(ECB.YieldCurves.AaaSpot, Resolution.Daily).Symbol;
+        _allIssuers = AddData&lt;ECBYieldCurve&gt;(ECB.YieldCurves.AllIssuersSpot, Resolution.Daily).Symbol;
+
+        var history = History&lt;ECBYieldCurve&gt;(_tripleA, TimeSpan.FromDays(365), Resolution.Daily);
+        Debug($"Got {history.Count()} historical curve readings");
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var curves = slice.Get&lt;ECBYieldCurve&gt;();
+
+        // The two curves need not arrive in the same slice, so the latest reading of each is kept.
+        if (curves.ContainsKey(_tripleA))
+        {
+            _tripleATenYear = curves[_tripleA].TenYear;
+        }
+        if (curves.ContainsKey(_allIssuers))
+        {
+            _allIssuersTenYear = curves[_allIssuers].TenYear;
+        }
+
+        if (!_tripleATenYear.HasValue || !_allIssuersTenYear.HasValue)
+        {
+            return;
+        }
+
+        // The curve lands hours before the US session, so wait for the bar before trading.
+        if (!slice.Bars.ContainsKey(_equity))
+        {
+            return;
+        }
+
+        var spread = (_allIssuersTenYear.Value - _tripleATenYear.Value) * 100m;
+
+        if (spread &gt; 60m)
+        {
+            if (Portfolio[_equity].Invested)
+            {
+                Liquidate(_equity);
+            }
+        }
+        else if (!Portfolio[_equity].Invested)
+        {
+            SetHoldings(_equity, 1);
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm trades a manually selected universe from the shape of the curve. An alpha model subscribes to the triple A spot curve and reads its slope, the ten year rate minus the two year, emitting an up insight while the curve is upward sloping and a flat one once it inverts, which is the classic recession signal read on the European curve instead of the US one.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class ECBYieldCurveFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+
+        self.add_alpha(ECBCurveSlopeAlphaModel(self))
+
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class ECBCurveSlopeAlphaModel(AlphaModel):
+    """Emits insights from the slope of the euro area yield curve."""
+
+    def __init__(self, algorithm):
+        self._curve = algorithm.add_data(ECBYieldCurve, ECB.YieldCurves.AAA_SPOT, Resolution.DAILY).symbol
+
+        history = algorithm.history[ECBYieldCurve](self._curve, timedelta(days=365), Resolution.DAILY)
+        algorithm.debug(f"Got {len(list(history))} historical curve readings")
+
+        self._slope = None
+        self._symbols = []
+
+    def update(self, algorithm, data):
+        curves = data.get(ECBYieldCurve)
+        if self._curve in curves:
+            data_point = curves[self._curve]
+            if data_point.ten_year is not None and data_point.two_year is not None:
+                self._slope = data_point.ten_year - data_point.two_year
+
+        if self._slope is None:
+            return []
+
+        # An upward sloping curve is the expansion read; an inversion steps aside.
+        direction = InsightDirection.UP if self._slope &gt; 0 else InsightDirection.FLAT
+
+        # The curve lands hours before the US session, so an insight waits for the bar.
+        return [Insight.price(symbol, timedelta(days=30), direction)
+                for symbol in self._symbols if symbol in data.bars]
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._symbols.append(security.symbol)
+
+        for security in changes.removed_securities:
+            if security.symbol in self._symbols:
+                self._symbols.remove(security.symbol)</pre>
+<pre class="csharp">public class ECBYieldCurveFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        AddAlpha(new ECBCurveSlopeAlphaModel(this));
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class ECBCurveSlopeAlphaModel : AlphaModel
+{
+    private readonly Symbol _curve;
+    private readonly List&lt;Symbol&gt; _symbols = new();
+
+    private decimal? _slope;
+
+    public ECBCurveSlopeAlphaModel(QCAlgorithm algorithm)
+    {
+        _curve = algorithm.AddData&lt;ECBYieldCurve&gt;(ECB.YieldCurves.AaaSpot, Resolution.Daily).Symbol;
+
+        var history = algorithm.History&lt;ECBYieldCurve&gt;(_curve, TimeSpan.FromDays(365), Resolution.Daily);
+        algorithm.Debug($"Got {history.Count()} historical curve readings");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        var curves = data.Get&lt;ECBYieldCurve&gt;();
+        if (curves.ContainsKey(_curve))
+        {
+            var dataPoint = curves[_curve];
+            if (dataPoint.TenYear.HasValue &amp;&amp; dataPoint.TwoYear.HasValue)
+            {
+                _slope = dataPoint.TenYear.Value - dataPoint.TwoYear.Value;
+            }
+        }
+
+        if (!_slope.HasValue)
+        {
+            return new List&lt;Insight&gt;();
+        }
+
+        // An upward sloping curve is the expansion read; an inversion steps aside.
+        var direction = _slope &gt; 0m ? InsightDirection.Up : InsightDirection.Flat;
+
+        // The curve lands hours before the US session, so an insight waits for the bar.
+        return _symbols
+            .Where(symbol =&gt; data.Bars.ContainsKey(symbol))
+            .Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), direction))
+            .ToList();
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _symbols.Add(security.Symbol);
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _symbols.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>

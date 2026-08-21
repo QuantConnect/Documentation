@@ -1,0 +1,32 @@
+<p>To add Euro Area Yield Curve data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is unlinked, so instead of a security <code>Symbol</code> you pass the curve you want. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class ECBYieldCurveDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2018, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.curve = self.add_data(ECBYieldCurve, ECB.YieldCurves.AAA_SPOT, Resolution.DAILY).symbol
+        self.all_issuers = self.add_data(ECBYieldCurve, ECB.YieldCurves.ALL_ISSUERS_SPOT, Resolution.DAILY).symbol</pre>
+<pre class="csharp">public class ECBYieldCurveDataAlgorithm : QCAlgorithm
+{
+    private Symbol _equity, _curve, _allIssuers;
+
+    public override void Initialize()
+    {
+        SetStartDate(2018, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _curve = AddData&lt;ECBYieldCurve&gt;(ECB.YieldCurves.AaaSpot, Resolution.Daily).Symbol;
+        _allIssuers = AddData&lt;ECBYieldCurve&gt;(ECB.YieldCurves.AllIssuersSpot, Resolution.Daily).Symbol;
+    }
+}</pre>
+</div>
+
+<p>A curve reaches your algorithm on the business day after the one it measures, at midday Frankfurt time, which is still hours before the US cash session opens. An algorithm pairing this data with a US equity should wait for that security's bar before trading, or it will order against a security that has no price yet.</p>

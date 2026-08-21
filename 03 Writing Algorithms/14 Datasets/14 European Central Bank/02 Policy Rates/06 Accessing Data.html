@@ -1,0 +1,28 @@
+<p>To get the current Euro Area Policy Rates data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<p>The euro short-term rate is empty before October 2019 and on days the TARGET system is closed, so check it against null before acting on it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    rates = slice.get(ECBPolicyRates)
+    if self._rates in rates:
+        point = rates[self._rates]
+        if point.euro_short_term_rate is not None:
+            self.log(f"{point.end_time} overnight {point.euro_short_term_rate} against a "
+                     f"deposit floor of {point.deposit_facility_rate}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var rates = slice.Get&lt;ECBPolicyRates&gt;();
+    if (rates.ContainsKey(_rates))
+    {
+        var point = rates[_rates];
+        if (point.EuroShortTermRate.HasValue)
+        {
+            Log($"{point.EndTime} overnight {point.EuroShortTermRate} against a "
+                + $"deposit floor of {point.DepositFacilityRate}");
+        }
+    }
+}</pre>
+</div>
+
+<p>The <code>Value</code> property is the main refinancing rate, the headline of the corridor.</p>

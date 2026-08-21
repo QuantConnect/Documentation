@@ -1,0 +1,289 @@
+<p>The Systemic Stress dataset lets you read financial stress as the ECB measures it rather than building a proxy from volatility. Examples include the following strategies:</p>
+
+<ul><li>Scaling risk exposure down as the composite indicator rises.</li>
+<li>Reading the euro area against the United States to tell a regional upset from a global one.</li>
+<li>Watching the financial intermediaries contribution, the segment whose stress reaches the real economy fastest.</li>
+<li>Using sovereign stress to time peripheral versus core European exposure.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>Steps out of risk when systemic stress is elevated on both sides of the Atlantic. Reading the euro area and the United States together is what separates a local upset from a systemic one, which is the distinction the indicator is built to make.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class ECBSystemicStressAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+
+        self.euro_area = self.add_data(ECBSystemicStress, ECB.StressAreas.EURO_AREA, Resolution.DAILY).symbol
+        self.united_states = self.add_data(ECBSystemicStress, ECB.StressAreas.UNITED_STATES, Resolution.DAILY).symbol
+
+        self.euro_area_stress = None
+        self.united_states_stress = None
+
+    def on_data(self, slice: Slice) -&gt; None:
+        readings = slice.get(ECBSystemicStress)
+
+        # The two economies need not arrive in the same slice, so the latest reading of each is
+        # kept. A reading with an empty composite must not clear it: the Reader writes None for an
+        # empty cell, and assigning it would silently stop the algorithm until a filled one arrives.
+        if self.euro_area in readings and readings[self.euro_area].composite is not None:
+            self.euro_area_stress = readings[self.euro_area].composite
+
+            self.log(f"{readings[self.euro_area].end_time} euro area stress {self.euro_area_stress}, "
+                     f"of which intermediaries {readings[self.euro_area].financial_intermediaries_contribution}")
+
+        if self.united_states in readings and readings[self.united_states].composite is not None:
+            self.united_states_stress = readings[self.united_states].composite
+
+        if self.euro_area_stress is None or self.united_states_stress is None:
+            return
+
+        # The readings land in the European morning, hours before the US session opens, so wait for
+        # the bar rather than ordering against a security that has no price yet.
+        if self.equity not in slice.bars:
+            return
+
+        # Stress on both sides at once is the systemic case worth stepping aside for.
+        stressed = self.euro_area_stress &gt; 0.1 and self.united_states_stress &gt; 0.1
+
+        if stressed:
+            if self.portfolio[self.equity].invested:
+                self.liquidate(self.equity)
+        elif not self.portfolio[self.equity].invested:
+            self.set_holdings(self.equity, 1)</pre>
+<pre class="csharp">public class ECBSystemicStressAlgorithm : QCAlgorithm
+{
+    private Symbol _equity;
+    private Symbol _euroArea;
+    private Symbol _unitedStates;
+
+    private decimal? _euroAreaStress;
+    private decimal? _unitedStatesStress;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+
+        _euroArea = AddData&lt;ECBSystemicStress&gt;(ECB.StressAreas.EuroArea, Resolution.Daily).Symbol;
+        _unitedStates = AddData&lt;ECBSystemicStress&gt;(ECB.StressAreas.UnitedStates, Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var readings = slice.Get&lt;ECBSystemicStress&gt;();
+
+        // The two economies need not arrive in the same slice, so the latest reading of each
+        // is kept.
+        // A reading with an empty composite must not clear the one being carried: the
+        // Reader writes null for an empty cell, and assigning it would silently stop the
+        // algorithm until a filled reading arrives.
+        if (readings.ContainsKey(_euroArea) &amp;&amp; readings[_euroArea].Composite.HasValue)
+        {
+            _euroAreaStress = readings[_euroArea].Composite;
+
+            Log($"{readings[_euroArea].EndTime} euro area stress {_euroAreaStress}, "
+                + $"of which intermediaries {readings[_euroArea].FinancialIntermediariesContribution}");
+        }
+
+        if (readings.ContainsKey(_unitedStates) &amp;&amp; readings[_unitedStates].Composite.HasValue)
+        {
+            _unitedStatesStress = readings[_unitedStates].Composite;
+        }
+
+        if (!_euroAreaStress.HasValue || !_unitedStatesStress.HasValue)
+        {
+            return;
+        }
+
+        // The readings land in the European morning, hours before the US session opens, so
+        // wait for the bar rather than ordering against a security that has no price yet.
+        if (!slice.Bars.ContainsKey(_equity))
+        {
+            return;
+        }
+
+        // Stress on both sides at once is the systemic case worth stepping aside for.
+        var stressed = _euroAreaStress &gt; 0.1m &amp;&amp; _unitedStatesStress &gt; 0.1m;
+
+        if (stressed)
+        {
+            if (Portfolio[_equity].Invested)
+            {
+                Liquidate(_equity);
+            }
+        }
+        else if (!Portfolio[_equity].Invested)
+        {
+            SetHoldings(_equity, 1);
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm trades a manually selected universe from systemic stress on both sides of the Atlantic. An alpha model subscribes to the euro area and the United States, and emits a flat insight while both readings are elevated and an up insight once either falls back.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class ECBSystemicStressFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+
+        self.add_alpha(ECBSystemicStressAlphaModel(self))
+
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class ECBSystemicStressAlphaModel(AlphaModel):
+    """Emits insights from systemic stress on both sides of the Atlantic."""
+
+    def __init__(self, algorithm):
+        self._euro_area = algorithm.add_data(ECBSystemicStress, ECB.StressAreas.EURO_AREA, Resolution.DAILY).symbol
+        self._united_states = algorithm.add_data(ECBSystemicStress, ECB.StressAreas.UNITED_STATES, Resolution.DAILY).symbol
+
+        history = algorithm.history[ECBSystemicStress](self._euro_area, timedelta(days=365), Resolution.DAILY)
+        algorithm.debug(f"Got {len(list(history))} historical stress readings")
+
+        self._euro_area_stress = None
+        self._united_states_stress = None
+        self._symbols = []
+
+    def update(self, algorithm, data):
+        readings = data.get(ECBSystemicStress)
+
+        # A reading with an empty composite must not clear the one being carried: the Reader
+        # writes None for an empty cell, and assigning it would silently stop the model.
+        if self._euro_area in readings and readings[self._euro_area].composite is not None:
+            self._euro_area_stress = readings[self._euro_area].composite
+
+        if self._united_states in readings and readings[self._united_states].composite is not None:
+            self._united_states_stress = readings[self._united_states].composite
+
+        if self._euro_area_stress is None or self._united_states_stress is None:
+            return []
+
+        # Stress on both sides at once is the systemic case worth stepping aside for.
+        stressed = self._euro_area_stress &gt; 0.1 and self._united_states_stress &gt; 0.1
+        direction = InsightDirection.FLAT if stressed else InsightDirection.UP
+
+        # The ECB releases a whole week of readings at once, so a reading reaches the algorithm
+        # once a week. The insight outlives two of those releases, which keeps it alive across a
+        # batch that a TARGET holiday pushes back rather than lapsing between readings.
+        # The readings land in the European morning, hours before the US session, so an insight
+        # waits for the bar rather than being emitted against a security that has no price yet.
+        return [Insight.price(symbol, timedelta(days=14), direction)
+                for symbol in self._symbols if symbol in data.bars]
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._symbols.append(security.symbol)
+
+        for security in changes.removed_securities:
+            if security.symbol in self._symbols:
+                self._symbols.remove(security.symbol)</pre>
+<pre class="csharp">public class ECBSystemicStressFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        AddAlpha(new ECBSystemicStressAlphaModel(this));
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class ECBSystemicStressAlphaModel : AlphaModel
+{
+    private readonly Symbol _euroArea;
+    private readonly Symbol _unitedStates;
+    private readonly List&lt;Symbol&gt; _symbols = new();
+
+    private decimal? _euroAreaStress;
+    private decimal? _unitedStatesStress;
+
+    public ECBSystemicStressAlphaModel(QCAlgorithm algorithm)
+    {
+        _euroArea = algorithm.AddData&lt;ECBSystemicStress&gt;(ECB.StressAreas.EuroArea, Resolution.Daily).Symbol;
+        _unitedStates = algorithm.AddData&lt;ECBSystemicStress&gt;(ECB.StressAreas.UnitedStates, Resolution.Daily).Symbol;
+
+        var history = algorithm.History&lt;ECBSystemicStress&gt;(_euroArea, TimeSpan.FromDays(365), Resolution.Daily);
+        algorithm.Debug($"Got {history.Count()} historical stress readings");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        var readings = data.Get&lt;ECBSystemicStress&gt;();
+
+        // A reading with an empty composite must not clear the one being carried: the Reader
+        // writes null for an empty cell, and assigning it would silently stop the model.
+        if (readings.ContainsKey(_euroArea) &amp;&amp; readings[_euroArea].Composite.HasValue)
+        {
+            _euroAreaStress = readings[_euroArea].Composite;
+        }
+
+        if (readings.ContainsKey(_unitedStates) &amp;&amp; readings[_unitedStates].Composite.HasValue)
+        {
+            _unitedStatesStress = readings[_unitedStates].Composite;
+        }
+
+        if (!_euroAreaStress.HasValue || !_unitedStatesStress.HasValue)
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+
+        // Stress on both sides at once is the systemic case worth stepping aside for.
+        var stressed = _euroAreaStress &gt; 0.1m &amp;&amp; _unitedStatesStress &gt; 0.1m;
+        var direction = stressed ? InsightDirection.Flat : InsightDirection.Up;
+
+        // The ECB releases a whole week of readings at once, so a reading reaches the algorithm
+        // once a week. The insight outlives two of those releases, which keeps it alive across a
+        // batch that a TARGET holiday pushes back rather than lapsing between readings.
+        // The readings land in the European morning, hours before the US session, so an insight
+        // waits for the bar rather than being emitted against a security that has no price yet.
+        return _symbols.Where(symbol =&gt; data.Bars.ContainsKey(symbol))
+            .Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(14), direction));
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _symbols.Add(security.Symbol);
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _symbols.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>
