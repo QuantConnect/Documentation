@@ -1,0 +1,262 @@
+<p>The Euro Area Policy Rates dataset lets you read the ECB's stance directly rather than inferring it from prices. Examples include the following strategies:</p>
+
+<ul><li>Tracking the gap between the overnight rate and the deposit facility as a funding stress signal.</li>
+<li>Trading the run-up to Governing Council decisions from where the corridor sits.</li>
+<li>Building a euro funding cost into carry and financing calculations.</li>
+<li>Comparing the ECB's stance against the Federal Reserve's for cross-currency positioning.</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>Trades on where the market's overnight rate sits against the floor of the ECB's corridor. The euro short-term rate trades below the deposit facility, because non-banks cannot park cash at the ECB, and that gap widens when liquidity is abundant. When it closes back toward the floor, funding is tightening ahead of any policy move, which is the moment to step out of risk.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class ECBPolicyRatesAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+        self.rates = self.add_data(ECBPolicyRates, ECB.PolicyRates.EURO_AREA, Resolution.DAILY).symbol
+
+        self.spread = None
+
+    def on_data(self, slice: Slice) -&gt; None:
+        rates = slice.get(ECBPolicyRates)
+        if self.rates in rates:
+            point = rates[self.rates]
+
+            if point.euro_short_term_rate is not None and point.deposit_facility_rate is not None:
+                self.log(f"{point.end_time} corridor: deposit {point.deposit_facility_rate}, "
+                         f"main {point.main_refinancing_rate}, lending {point.marginal_lending_rate}, "
+                         f"overnight {point.euro_short_term_rate}")
+
+                # How far the overnight rate trades below the deposit facility, which is the floor
+                # of the corridor and the rate that steers euro money markets. The gap is negative
+                # because non-banks cannot park cash at the ECB, so a wide one is abundant
+                # liquidity and a gap closing back toward the floor is funding tightening.
+                self.spread = point.euro_short_term_rate - point.deposit_facility_rate
+
+        if self.spread is None:
+            return
+
+        # The rates land at 08:00 in Frankfurt, hours before the US session opens, so the latest
+        # reading is kept and acted on once the bar arrives. Ordering in the slice that carried the
+        # rates would order against a security that has no price yet.
+        if self.equity not in slice.bars:
+            return
+
+        if self.spread &gt; -0.05:
+            if self.portfolio[self.equity].invested:
+                self.liquidate(self.equity)
+        elif not self.portfolio[self.equity].invested:
+            self.set_holdings(self.equity, 1)</pre>
+<pre class="csharp">public class ECBPolicyRatesAlgorithm : QCAlgorithm
+{
+    private Symbol _equity;
+    private Symbol _rates;
+
+    private decimal? _spread;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+        _rates = AddData&lt;ECBPolicyRates&gt;(ECB.PolicyRates.EuroArea, Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        var rates = slice.Get&lt;ECBPolicyRates&gt;();
+        if (rates.ContainsKey(_rates))
+        {
+            var point = rates[_rates];
+
+            if (point.EuroShortTermRate.HasValue &amp;&amp; point.DepositFacilityRate.HasValue)
+            {
+                Log($"{point.EndTime} corridor: deposit {point.DepositFacilityRate}, "
+                    + $"main {point.MainRefinancingRate}, lending {point.MarginalLendingRate}, "
+                    + $"overnight {point.EuroShortTermRate}");
+
+                // How far the overnight rate trades below the deposit facility, which is the
+                // floor of the corridor and the rate that steers euro money markets. The gap
+                // is negative because non-banks cannot park cash at the ECB, so a wide one is
+                // abundant liquidity and a gap closing back toward the floor is funding
+                // tightening.
+                _spread = point.EuroShortTermRate.Value - point.DepositFacilityRate.Value;
+            }
+        }
+
+        if (!_spread.HasValue)
+        {
+            return;
+        }
+
+        // The rates land at 08:00 in Frankfurt, hours before the US session opens, so the
+        // latest reading is kept and acted on once the bar arrives. Ordering in the slice that
+        // carried the rates would order against a security that has no price yet.
+        if (!slice.Bars.ContainsKey(_equity))
+        {
+            return;
+        }
+
+        if (_spread &gt; -0.05m)
+        {
+            if (Portfolio[_equity].Invested)
+            {
+                Liquidate(_equity);
+            }
+        }
+        else if (!Portfolio[_equity].Invested)
+        {
+            SetHoldings(_equity, 1);
+        }
+    }
+}</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm trades a manually selected universe from where the market's overnight rate sits against the floor of the ECB's corridor. An alpha model subscribes to the euro area rates and measures how far the euro short-term rate trades below the deposit facility, emitting an up insight while that gap is wide and a flat one once it closes back toward the floor.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+class ECBPolicyRatesFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+
+        symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
+        self.set_universe_selection(ManualUniverseSelectionModel(symbols))
+
+        self.add_alpha(ECBCorridorAlphaModel(self))
+
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class ECBCorridorAlphaModel(AlphaModel):
+    """Emits insights from where the overnight rate sits against the corridor floor."""
+
+    def __init__(self, algorithm):
+        self._rates = algorithm.add_data(ECBPolicyRates, ECB.PolicyRates.EURO_AREA, Resolution.DAILY).symbol
+
+        history = algorithm.history[ECBPolicyRates](self._rates, timedelta(days=365), Resolution.DAILY)
+        algorithm.debug(f"Got {len(list(history))} historical rate readings")
+
+        self._spread = None
+        self._symbols = []
+
+    def update(self, algorithm, data):
+        rates = data.get(ECBPolicyRates)
+        if self._rates in rates:
+            data_point = rates[self._rates]
+            if data_point.euro_short_term_rate is not None and data_point.deposit_facility_rate is not None:
+                # How far the overnight rate trades below the deposit facility, the floor of the
+                # corridor. The gap is negative, and it widens when liquidity is abundant.
+                self._spread = data_point.euro_short_term_rate - data_point.deposit_facility_rate
+
+        if self._spread is None:
+            return []
+
+        # A gap closing back toward the floor is funding tightening ahead of any policy move.
+        direction = InsightDirection.UP if self._spread &lt;= -0.05 else InsightDirection.FLAT
+
+        # The rates land at 08:00 in Frankfurt, hours before the US session, so an insight waits
+        # for the bar rather than returning early and never reaching the slice that carries it.
+        return [Insight.price(symbol, timedelta(days=30), direction)
+                for symbol in self._symbols if symbol in data.bars]
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._symbols.append(security.symbol)
+
+        for security in changes.removed_securities:
+            if security.symbol in self._symbols:
+                self._symbols.remove(security.symbol)</pre>
+<pre class="csharp">public class ECBPolicyRatesFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+
+        var symbols = new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+        SetUniverseSelection(new ManualUniverseSelectionModel(symbols));
+
+        AddAlpha(new ECBCorridorAlphaModel(this));
+
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+    }
+}
+
+public class ECBCorridorAlphaModel : AlphaModel
+{
+    private readonly Symbol _rates;
+    private readonly List&lt;Symbol&gt; _symbols = new();
+
+    private decimal? _spread;
+
+    public ECBCorridorAlphaModel(QCAlgorithm algorithm)
+    {
+        _rates = algorithm.AddData&lt;ECBPolicyRates&gt;(ECB.PolicyRates.EuroArea, Resolution.Daily).Symbol;
+
+        var history = algorithm.History&lt;ECBPolicyRates&gt;(_rates, TimeSpan.FromDays(365), Resolution.Daily);
+        algorithm.Debug($"Got {history.Count()} historical rate readings");
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        var rates = data.Get&lt;ECBPolicyRates&gt;();
+        if (rates.ContainsKey(_rates))
+        {
+            var dataPoint = rates[_rates];
+            if (dataPoint.EuroShortTermRate.HasValue &amp;&amp; dataPoint.DepositFacilityRate.HasValue)
+            {
+                // How far the overnight rate trades below the deposit facility, the floor of the
+                // corridor. The gap is negative, and it widens when liquidity is abundant.
+                _spread = dataPoint.EuroShortTermRate.Value - dataPoint.DepositFacilityRate.Value;
+            }
+        }
+
+        if (!_spread.HasValue)
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+
+        // A gap closing back toward the floor is funding tightening ahead of any policy move.
+        var direction = _spread &lt;= -0.05m ? InsightDirection.Up : InsightDirection.Flat;
+
+        // The rates land at 08:00 in Frankfurt, hours before the US session, so an insight waits
+        // for the bar rather than returning early and never reaching the slice that carries it.
+        return _symbols.Where(symbol =&gt; data.Bars.ContainsKey(symbol))
+            .Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), direction));
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _symbols.Add(security.Symbol);
+        }
+
+        foreach (var security in changes.RemovedSecurities)
+        {
+            _symbols.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>

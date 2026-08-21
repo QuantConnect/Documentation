@@ -1,0 +1,26 @@
+<p>To get the current Systemic Stress data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step, so check before you index it.</p>
+
+<p>Only the euro area carries the segment contributions. For an individual economy those properties are null, so check them before acting on them rather than assuming a reading of zero.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    readings = slice.get(ECBSystemicStress)
+    if self._euro_area in readings:
+        point = readings[self._euro_area]
+        self.log(f"{point.end_time} stress {point.composite}, of which "
+                 f"intermediaries {point.financial_intermediaries_contribution}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var readings = slice.Get&lt;ECBSystemicStress&gt;();
+    if (readings.ContainsKey(_euroArea))
+    {
+        var point = readings[_euroArea];
+        Log($"{point.EndTime} stress {point.Composite}, of which "
+            + $"intermediaries {point.FinancialIntermediariesContribution}");
+    }
+}</pre>
+</div>
+
+<p>The <code>Value</code> property is the composite indicator itself.</p>
+
+<p>The ECB releases a whole week of readings at once, and data reaches an algorithm at its release, so <code class="csharp">OnData</code><code class="python">on_data</code> runs once a week with that week's latest reading rather than once a day. Over January 2020 the euro area's 23 readings arrived as 5 points, one per Wednesday release.</p>
