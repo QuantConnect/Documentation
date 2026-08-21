@@ -1,0 +1,10 @@
+<p>To get historical Systemic Stress data, call the <code class="csharp">History</code><code class="python">history</code> method with the dataset <code>Symbol</code>. If there is no data in the period you request, the history result is empty. Ask for a period rather than a bar count: a count is read in daily bars and includes the weekends and holidays the indicator does not report on.</p>
+
+<div class="section-example-container">
+<pre class="python">history = self.history[ECBSystemicStress](self._euro_area, timedelta(days=365), Resolution.DAILY)</pre>
+<pre class="csharp">var history = History&lt;ECBSystemicStress&gt;(_euroArea, TimeSpan.FromDays(365), Resolution.Daily);</pre>
+</div>
+
+<p>History follows the release schedule, so it returns one row per weekly batch, the same readings <code class="csharp">OnData</code><code class="python">on_data</code> receives. Over the same January 2020 window it returns 5. The daily readings are all in the file, and a dataframe history request returns the 23 of them.</p>
+
+<p>For more information about historical data, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>
