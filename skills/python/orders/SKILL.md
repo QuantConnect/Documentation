@@ -36,6 +36,9 @@ When a method enters or exits at the close, sample the signal and submit the MOC
 ## Market-on-close is for exchange-traded assets only — NOT crypto
 Market-on-close fills at an exchange's official closing auction. Cryptocurrencies trade 24/7 and have no closing auction, so `market_on_close_order` and its submission-buffer timing do NOT apply to crypto. For a daily crypto rebalance, fire a scheduled event at your chosen daily boundary (e.g. midnight UTC) and rebalance with `set_holdings` / market orders. Do not deliberate market-on-close for crypto — it is not a thing there.
 
+## MarketOnOpen fills on daily resolution
+A market order submitted while the market is closed converts to MarketOnOpen; on daily resolution it is not processed until the session's daily bar arrives, and fills at that bar's open. Nothing can observe the fill before then — never schedule an event to check whether it filled, and never `self.quit()` earlier: the order still reads `Submitted` with flat equity, which looks like a platform bug but is just a truncated run. Verify fills from the completed backtest's order records instead.
+
 ## Exiting / flattening
 - Market-order exit: `self.liquidate()` closes ALL holdings, `self.liquidate(symbol)` closes one.
 - Exit AT THE CLOSE: `liquidate` sends a market order, so for a close fill flatten with an MOC order for the negative of the current position:
