@@ -46,7 +46,10 @@ public override void OnData(Slice slice)
 | `CoinGecko` | Crypto Market Cap | `Coin`, `Volume`, `MarketCap` |
 | `NasdaqCustomColumns` | Data Link | `Value` |
 | `NasdaqDataLink` | Data Link | `Period` |
+| `EstimizeConsensus` | Estimize | `Id`, `Source`, `Type`, `Mean`, `High`, `Low`, `StandardDeviation`, `Count`, `UpdatedAt`, `FiscalYear`, `FiscalQuarter` |
+| `EstimizeEstimate` | Estimize | `Id`, `Ticker`, `FiscalYear`, `FiscalQuarter`, `CreatedAt`, `Eps`, `Revenue`, `UserName`, `AnalystId`, `Flagged` |
 | `EstimizeRelease` | Estimize | `Id`, `FiscalYear`, `FiscalQuarter`, `ReleaseDate`, `Eps`, `Revenue`, `WallStreetEpsEstimate`, `WallStreetRevenueEstimate`, `ConsensusEpsEstimate`, `ConsensusRevenueEstimate`, `ConsensusWeightedEpsEstimate`, `ConsensusWeightedRevenueEstimate` |
+| `ECBYieldCurve` | Euro Yield Curve | `ThreeMonth`, `SixMonth`, `OneYear`, `TwoYear`, `ThreeYear`, `FiveYear`, `SevenYear`, `TenYear`, `TwentyYear`, `ThirtyYear` |
 | `FamaFrench` | Fama French | `MarketExcessReturn`, `Smb`, `Hml`, `Rmw`, `Cma`, `Momentum`, `RiskFreeRate`, `IsEstimate` |
 | `FearGreedIndex` | Fear and Greed | `Spx`, `SpxSma`, `MarketMomentum`, `StocksAtYearlyHighs`, `StocksAtYearlyLows`, `TotalForStrength`, `NetYearlyHighsAndLows`, `StockPriceStrength`, `StocksUpDaily`, `StocksDownDaily`, `TotalForBreadth`, `McClellanSummationIndex`, `StockPriceBreadth`, `PutCallRatioDaily`, `PutCallRatioSma`, `PutCallRatioNormalized`, `Vix`, `VixSma`, `MarketVolatility`, `StockReturns`, `BondReturns`, `StockBondReturnDifference`, `SafeHavenDemand`, `JunkBondYield`, `InvestmentGradeBondYield`, `BondYieldSpread`, `JunkBondDemand`, `QCIndex`, `CNNIndex` |
 | `BEAGDPByIndustry` | GDP by Industry | `ValueAdded`, `RealValueAdded`, `ValueAddedPriceIndex`, `ValueAddedQuantityIndex`, `ShareOfGDP`, `GrossOutput`, `RealGrossOutput`, `GrossOutputPriceIndex`, `GrossOutputQuantityIndex`, `IntermediateInputs`, `RealIntermediateInputs`, `IntermediateInputsPriceIndex`, `IntermediateInputsQuantityIndex` |
@@ -57,11 +60,13 @@ public override void OnData(Slice slice)
 | `FINRAMonthlySummary` | OTC Transparency | `ShareQuantity`, `TradeCount`, `Notional` |
 | `FINRAShortInterest` | OTC Transparency | `ShortInterest`, `PreviousShortInterest`, `AverageDailyVolume`, `DaysToCover`, `Change` |
 | `FINRAWeeklySummary` | OTC Transparency | `ShareQuantity`, `TradeCount`, `Notional` |
+| `ECBPolicyRates` | Policy Rates | `MainRefinancingRate`, `DepositFacilityRate`, `MarginalLendingRate`, `EuroShortTermRate` |
 | `FINRAShortSaleVolume` | Regulation SHO | `ShortVolume`, `ShortExemptVolume`, `TotalVolume`, `ShortVolumeRatio` |
 | `SpectralTickFlowSignal` | Spectral Tick Flow Signal | `TradeCount`, `VolumeVarianceExplained`, `VolumeDominantPeriodSeconds`, `ExecutionScore`, `ExecutionPeriodSeconds`, `ExecutionSize`, `ExecutionSigned`, `ExecutionRayleigh`, `SignatureCount` |
 | `EurostatConsumerSurvey` | Surveys | `ConsumerConfidence`, `FinancialSituationExpectation`, `EconomicSituationExpectation`, `PriceExpectation`, `UnemploymentExpectation`, `MajorPurchaseExpectation`, `SavingsExpectation` |
 | `EurostatIndustrySurvey` | Surveys | `IndustrialConfidence`, `OrderBooks`, `ExportOrderBooks`, `StocksOfFinishedProducts`, `ProductionExpectation`, `SellingPriceExpectation`, `EmploymentExpectation` |
 | `EurostatServicesSurvey` | Surveys | `ServicesConfidence`, `BusinessSituation`, `DemandDevelopment`, `DemandExpectation`, `EmploymentExpectation`, `PriceExpectation` |
+| `ECBSystemicStress` | Systemic Stress | `Composite`, `SovereignStress`, `BondMarketContribution`, `EquityMarketContribution`, `FinancialIntermediariesContribution`, `ForeignExchangeContribution`, `MoneyMarketContribution`, `CorrelationContribution`, `SovereignStressEqualWeighted`, `SovereignStressGdpWeighted` |
 | `ExtractAlphaTacticalModel` | Tactical | `Reversal`, `FactorMomentum`, `LiquidityShock`, `Seasonality`, `Score` |
 | `TiingoNews` | Tiingo News Feed | `Source`, `CrawlDate`, `Url`, `PublishedDate`, `Tags`, `Description`, `Title`, `ArticleID`, `Symbols` |
 | `EODHDUpcomingDividends` | Upcoming Dividends | `DividendDate`, `DeclarationDate`, `ReportDate`, `PaymentDate`, `Dividend` |
@@ -103,8 +108,6 @@ public override void OnData(Slice slice)
 | `QuiverCNBCs`->`QuiverCNBC` | CNBC Trading | `Notes`, `Direction`, `Traders`, `AdviceDate` |
 | `QuiverLobbyings`->`QuiverLobbying` | Corporate Lobbying | `Client`, `Issue`, `SpecificIssue`, `Amount` |
 | `EODHDEconomicEvents`->`EODHDEconomicEvent` | Economic Events | `EventType`, `EventPeriod`, `Country`, `EventTime`, `Previous`, `Estimate` |
-| `EstimizeConsensus`->`EstimizeConsensusDataPoint` | Estimize | `Id`, `Source`, `Type`, `Mean`, `High`, `Low`, `StandardDeviation`, `Count`, `UpdatedAt`, `FiscalYear`, `FiscalQuarter` |
-| `EstimizeEstimate`->`EstimizeEstimateDataPoint` | Estimize | `Id`, `Ticker`, `FiscalYear`, `FiscalQuarter`, `CreatedAt`, `Eps`, `Revenue`, `UserName`, `AnalystId`, `Flagged` |
 | `EODHDMacroIndicators`->`EODHDMacroIndicator` | Macroeconomics Indicators | `Indicator`, `Country`, `Frequency` |
 | `ExtractAlphaTrueBeats`->`ExtractAlphaTrueBeat` | True Beats | `FiscalPeriod`, `EarningsMetric`, `AnalystEstimatesCount`, `TrueBeat`, `ExpertBeat`, `TrendBeat`, `ManagementBeat` |
 | `QuiverCongress`->`QuiverCongressDataPoint` | US Congress Trading | `RecordDate`, `UpdatedAt`, `ReportDate`, `TransactionDate`, `Representative`, `Transaction`, `Amount`, `MaximumAmount`, `House`, `Party`, `District`, `State` |
