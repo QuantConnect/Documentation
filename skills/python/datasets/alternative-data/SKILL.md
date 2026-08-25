@@ -42,7 +42,10 @@ def on_data(self, slice: Slice) -> None:
 | `CoinGecko` | Crypto Market Cap | `coin`, `volume`, `market_cap` |
 | `NasdaqCustomColumns` | Data Link | `value` |
 | `NasdaqDataLink` | Data Link | `period` |
+| `EstimizeConsensus` | Estimize | `id`, `source`, `type`, `mean`, `high`, `low`, `standard_deviation`, `count`, `updated_at`, `fiscal_year`, `fiscal_quarter` |
+| `EstimizeEstimate` | Estimize | `id`, `ticker`, `fiscal_year`, `fiscal_quarter`, `created_at`, `eps`, `revenue`, `user_name`, `analyst_id`, `flagged` |
 | `EstimizeRelease` | Estimize | `id`, `fiscal_year`, `fiscal_quarter`, `release_date`, `eps`, `revenue`, `wall_street_eps_estimate`, `wall_street_revenue_estimate`, `consensus_eps_estimate`, `consensus_revenue_estimate`, `consensus_weighted_eps_estimate`, `consensus_weighted_revenue_estimate` |
+| `ECBYieldCurve` | Euro Yield Curve | `three_month`, `six_month`, `one_year`, `two_year`, `three_year`, `five_year`, `seven_year`, `ten_year`, `twenty_year`, `thirty_year` |
 | `FamaFrench` | Fama French | `market_excess_return`, `smb`, `hml`, `rmw`, `cma`, `momentum`, `risk_free_rate`, `is_estimate` |
 | `FearGreedIndex` | Fear and Greed | `spx`, `spx_sma`, `market_momentum`, `stocks_at_yearly_highs`, `stocks_at_yearly_lows`, `total_for_strength`, `net_yearly_highs_and_lows`, `stock_price_strength`, `stocks_up_daily`, `stocks_down_daily`, `total_for_breadth`, `mc_clellan_summation_index`, `stock_price_breadth`, `put_call_ratio_daily`, `put_call_ratio_sma`, `put_call_ratio_normalized`, `vix`, `vix_sma`, `market_volatility`, `stock_returns`, `bond_returns`, `stock_bond_return_difference`, `safe_haven_demand`, `junk_bond_yield`, `investment_grade_bond_yield`, `bond_yield_spread`, `junk_bond_demand`, `qc_index`, `cnn_index` |
 | `BEAGDPByIndustry` | GDP by Industry | `value_added`, `real_value_added`, `value_added_price_index`, `value_added_quantity_index`, `share_of_gdp`, `gross_output`, `real_gross_output`, `gross_output_price_index`, `gross_output_quantity_index`, `intermediate_inputs`, `real_intermediate_inputs`, `intermediate_inputs_price_index`, `intermediate_inputs_quantity_index` |
@@ -53,11 +56,13 @@ def on_data(self, slice: Slice) -> None:
 | `FINRAMonthlySummary` | OTC Transparency | `share_quantity`, `trade_count`, `notional` |
 | `FINRAShortInterest` | OTC Transparency | `short_interest`, `previous_short_interest`, `average_daily_volume`, `days_to_cover`, `change` |
 | `FINRAWeeklySummary` | OTC Transparency | `share_quantity`, `trade_count`, `notional` |
+| `ECBPolicyRates` | Policy Rates | `main_refinancing_rate`, `deposit_facility_rate`, `marginal_lending_rate`, `euro_short_term_rate` |
 | `FINRAShortSaleVolume` | Regulation SHO | `short_volume`, `short_exempt_volume`, `total_volume`, `short_volume_ratio` |
 | `SpectralTickFlowSignal` | Spectral Tick Flow Signal | `trade_count`, `volume_variance_explained`, `volume_dominant_period_seconds`, `execution_score`, `execution_period_seconds`, `execution_size`, `execution_signed`, `execution_rayleigh`, `signature_count` |
 | `EurostatConsumerSurvey` | Surveys | `consumer_confidence`, `financial_situation_expectation`, `economic_situation_expectation`, `price_expectation`, `unemployment_expectation`, `major_purchase_expectation`, `savings_expectation` |
 | `EurostatIndustrySurvey` | Surveys | `industrial_confidence`, `order_books`, `export_order_books`, `stocks_of_finished_products`, `production_expectation`, `selling_price_expectation`, `employment_expectation` |
 | `EurostatServicesSurvey` | Surveys | `services_confidence`, `business_situation`, `demand_development`, `demand_expectation`, `employment_expectation`, `price_expectation` |
+| `ECBSystemicStress` | Systemic Stress | `composite`, `sovereign_stress`, `bond_market_contribution`, `equity_market_contribution`, `financial_intermediaries_contribution`, `foreign_exchange_contribution`, `money_market_contribution`, `correlation_contribution`, `sovereign_stress_equal_weighted`, `sovereign_stress_gdp_weighted` |
 | `ExtractAlphaTacticalModel` | Tactical | `reversal`, `factor_momentum`, `liquidity_shock`, `seasonality`, `score` |
 | `TiingoNews` | Tiingo News Feed | `source`, `crawl_date`, `url`, `published_date`, `tags`, `description`, `title`, `article_id`, `symbols` |
 | `EODHDUpcomingDividends` | Upcoming Dividends | `dividend_date`, `declaration_date`, `report_date`, `payment_date`, `dividend` |
@@ -93,8 +98,6 @@ def on_data(self, slice: Slice) -> None:
 | `QuiverCNBCs`->`QuiverCNBC` | CNBC Trading | `notes`, `direction`, `traders`, `advice_date` |
 | `QuiverLobbyings`->`QuiverLobbying` | Corporate Lobbying | `client`, `issue`, `specific_issue`, `amount` |
 | `EODHDEconomicEvents`->`EODHDEconomicEvent` | Economic Events | `event_type`, `event_period`, `country`, `event_time`, `previous`, `estimate` |
-| `EstimizeConsensus`->`EstimizeConsensusDataPoint` | Estimize | `id`, `source`, `type`, `mean`, `high`, `low`, `standard_deviation`, `count`, `updated_at`, `fiscal_year`, `fiscal_quarter` |
-| `EstimizeEstimate`->`EstimizeEstimateDataPoint` | Estimize | `id`, `ticker`, `fiscal_year`, `fiscal_quarter`, `created_at`, `eps`, `revenue`, `user_name`, `analyst_id`, `flagged` |
 | `EODHDMacroIndicators`->`EODHDMacroIndicator` | Macroeconomics Indicators | `indicator`, `country`, `frequency` |
 | `ExtractAlphaTrueBeats`->`ExtractAlphaTrueBeat` | True Beats | `fiscal_period`, `earnings_metric`, `analyst_estimates_count`, `true_beat`, `expert_beat`, `trend_beat`, `management_beat` |
 | `QuiverCongress`->`QuiverCongressDataPoint` | US Congress Trading | `record_date`, `updated_at`, `report_date`, `transaction_date`, `representative`, `transaction`, `amount`, `maximum_amount`, `house`, `party`, `district`, `state` |
