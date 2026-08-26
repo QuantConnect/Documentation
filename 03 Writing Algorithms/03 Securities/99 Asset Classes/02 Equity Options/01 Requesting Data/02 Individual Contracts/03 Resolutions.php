@@ -8,4 +8,10 @@
     <pre class="python">self.add_option_contract(self._contract_symbol, Resolution.MINUTE)</pre>
 </div>
 
+<?php
+$csharpSubscription = 'AddOptionContract(_contractSymbol, resolution);';
+$pythonSubscription = 'self.add_option_contract(self._contract_symbol, resolution)';
+include(DOCS_RESOURCES."/securities/resolutions/options-live-second.php");
+?>
+
 <p>To create custom resolution periods, see <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">Consolidating Data</a>.</p>
