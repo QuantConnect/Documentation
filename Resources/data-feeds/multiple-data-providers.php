@@ -10,6 +10,6 @@
 
 <ol>
   <li>The QuantConnect data provider on its own. It's free and it's high quality, and it covers most asset classes.</li>
-  <li>The QuantConnect data provider first and a provider that supplies Index data second. The QuantConnect data provider doesn't supply Index data, so you need this configuration to trade Index Options, which need the underlying index (for example, SPX, VIX, and NDX).</li>
+  <li>The QuantConnect data provider first and a provider that fills its gaps second. The QuantConnect data provider doesn't supply Index data (for example, SPX, VIX, and NDX) or Future Options data, so you need this configuration to trade Index Options, which need the underlying index, and to trade Future Options.</li>
   <li>The <?=$brokerageName?> data provider first and the QuantConnect data provider last. Use this configuration if you want to trade on <?=$brokerageName?> prices and let the QuantConnect data provider cover the rest.</li>
 </ol>
