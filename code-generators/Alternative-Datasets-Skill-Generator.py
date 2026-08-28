@@ -1,9 +1,9 @@
 """Generate the alternative-data and alternative-data-universes SKILL.md files.
 
-Walks the QC alternative-data dump JSON, scrapes `add_data` / `add_universe`
-class references and accessing-data list markers from each dataset's section
-content, then enriches the alt-data skill with C#/Python property names
-fetched from the QC inspector in parallel.
+Walks the dataset listings read live from the QuantConnect API, scrapes
+`add_data` / `add_universe` class references and accessing-data list markers
+from each dataset's section content, then enriches the alt-data skill with
+C#/Python property names fetched from the QC inspector in parallel.
 
 Page generation lives in `Alternative-Datasets-Code-Generator.py`; this file
 only writes the two SKILL.md files.
@@ -15,8 +15,9 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.request import urlopen
 
+from _code_generation_helpers import get_dataset_listings
 
-DUMP_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"
+
 INSPECTOR_URL = (
     "https://www.quantconnect.com/services/inspector"
     "?language={lang}&type=T:QuantConnect.DataSource.{cls}"
@@ -286,7 +287,7 @@ def _build_alt_data_skill(skill_data, props_lookup=None):
     return "\n".join(parts) + "\n"
 
 
-# === Dump traversal ===
+# === Listing traversal ===
 
 def _ordered_sections(dataset):
     """Flatten the dataset's about + documentation entries into a {title: content} dict."""
@@ -340,8 +341,8 @@ def _scrape_skill_data(docs):
 
 
 def main():
-    print(f"Downloading alt-data dump from {DUMP_URL}")
-    docs = json.loads(urlopen(DUMP_URL).read().decode("utf-8"))
+    print("Reading the dataset listings from the QuantConnect API...")
+    docs = get_dataset_listings()
 
     alt_universe_skill_data, alt_data_skill_data = _scrape_skill_data(docs)
 
