@@ -56,6 +56,7 @@ def on_data(self, slice: Slice) -> None:
 | `FINRAMonthlySummary` | OTC Transparency | `share_quantity`, `trade_count`, `notional` |
 | `FINRAShortInterest` | OTC Transparency | `short_interest`, `previous_short_interest`, `average_daily_volume`, `days_to_cover`, `change` |
 | `FINRAWeeklySummary` | OTC Transparency | `share_quantity`, `trade_count`, `notional` |
+| `USPTOPatentMaintenance` | Patent Maintenance | `patents_expired`, `maintenance_paid_fourth_year`, `maintenance_paid_eighth_year`, `maintenance_paid_twelfth_year`, `maintenance_surcharges`, `net_maintenance_change` |
 | `ECBPolicyRates` | Policy Rates | `main_refinancing_rate`, `deposit_facility_rate`, `marginal_lending_rate`, `euro_short_term_rate` |
 | `FINRAShortSaleVolume` | Regulation SHO | `short_volume`, `short_exempt_volume`, `total_volume`, `short_volume_ratio` |
 | `SpectralTickFlowSignal` | Spectral Tick Flow Signal | `trade_count`, `volume_variance_explained`, `volume_dominant_period_seconds`, `execution_score`, `execution_period_seconds`, `execution_size`, `execution_signed`, `execution_rayleigh`, `signature_count` |

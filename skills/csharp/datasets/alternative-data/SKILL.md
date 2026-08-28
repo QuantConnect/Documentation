@@ -60,6 +60,7 @@ public override void OnData(Slice slice)
 | `FINRAMonthlySummary` | OTC Transparency | `ShareQuantity`, `TradeCount`, `Notional` |
 | `FINRAShortInterest` | OTC Transparency | `ShortInterest`, `PreviousShortInterest`, `AverageDailyVolume`, `DaysToCover`, `Change` |
 | `FINRAWeeklySummary` | OTC Transparency | `ShareQuantity`, `TradeCount`, `Notional` |
+| `USPTOPatentMaintenance` | Patent Maintenance | `PatentsExpired`, `MaintenancePaidFourthYear`, `MaintenancePaidEighthYear`, `MaintenancePaidTwelfthYear`, `MaintenanceSurcharges`, `NetMaintenanceChange` |
 | `ECBPolicyRates` | Policy Rates | `MainRefinancingRate`, `DepositFacilityRate`, `MarginalLendingRate`, `EuroShortTermRate` |
 | `FINRAShortSaleVolume` | Regulation SHO | `ShortVolume`, `ShortExemptVolume`, `TotalVolume`, `ShortVolumeRatio` |
 | `SpectralTickFlowSignal` | Spectral Tick Flow Signal | `TradeCount`, `VolumeVarianceExplained`, `VolumeDominantPeriodSeconds`, `ExecutionScore`, `ExecutionPeriodSeconds`, `ExecutionSize`, `ExecutionSigned`, `ExecutionRayleigh`, `SignatureCount` |
