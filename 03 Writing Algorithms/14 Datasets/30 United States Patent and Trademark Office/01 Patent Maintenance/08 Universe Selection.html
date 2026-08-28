@@ -1,0 +1,22 @@
+<p>To select a dynamic universe of US Equities based on USPTO Patent Maintenance data, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with the <code>USPTOPatentMaintenanceUniverse</code> class and a selection function.</p>
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.resolution = Resolution.DAILY
+    self.add_universe(USPTOPatentMaintenanceUniverse, self.universe_selection)
+
+def universe_selection(self, data: List[USPTOPatentMaintenanceUniverse]) -&gt; List[Symbol]:
+    renewing = [d for d in data if d.net_maintenance_change is not None and d.net_maintenance_change &gt; 0]
+    renewing.sort(key=lambda d: d.net_maintenance_change, reverse=True)
+    return [d.symbol for d in renewing[:10]]</pre>
+<pre class="csharp">UniverseSettings.Resolution = Resolution.Daily;
+AddUniverse&lt;USPTOPatentMaintenanceUniverse&gt;(data =&gt;
+{
+    return data
+        .OfType&lt;USPTOPatentMaintenanceUniverse&gt;()
+        .Where(d =&gt; d.NetMaintenanceChange.HasValue &amp;&amp; d.NetMaintenanceChange.Value &gt; 0)
+        .OrderByDescending(d =&gt; d.NetMaintenanceChange.Value)
+        .Take(10)
+        .Select(d =&gt; d.Symbol);
+});</pre>
+</div>

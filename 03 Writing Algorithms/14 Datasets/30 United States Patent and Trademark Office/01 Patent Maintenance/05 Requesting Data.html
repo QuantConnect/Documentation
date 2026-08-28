@@ -1,0 +1,25 @@
+<p>To add USPTO Patent Maintenance data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class USPTOPatentMaintenanceAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+
+        ibm = self.add_equity("IBM", Resolution.DAILY).symbol
+        self._patents = self.add_data(USPTOPatentMaintenance, ibm).symbol</pre>
+<pre class="csharp">public class USPTOPatentMaintenanceAlgorithm : QCAlgorithm
+{
+    private Symbol _patents;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+
+        var ibm = AddEquity("IBM", Resolution.Daily).Symbol;
+        _patents = AddData&lt;USPTOPatentMaintenance&gt;(ibm).Symbol;
+    }
+}</pre>
+</div>

@@ -1,0 +1,20 @@
+<p>To get the current USPTO Patent Maintenance data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><code>Slice</code></a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<p>USPTO publishes the maintenance fee file every Tuesday, covering events through the preceding Monday. One data point is one publication week: its `time` is the start of the week and it reaches your algorithm on the Tuesday the file is published.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    points = slice.get(USPTOPatentMaintenance)
+    if self._patents in points:
+        point = points[self._patents]
+        self.log(f"{point.symbol} expired {point.patents_expired} patents on {point.time}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    var points = slice.Get&lt;USPTOPatentMaintenance&gt;();
+    if (points.ContainsKey(_patents))
+    {
+        var point = points[_patents];
+        Log($"{point.Symbol} expired {point.PatentsExpired} patents on {point.Time}");
+    }
+}</pre>
+</div>
