@@ -1,7 +1,12 @@
-from json import dumps
+from base64 import b64encode
+from concurrent.futures import ThreadPoolExecutor
+from hashlib import sha256
+from json import dumps, loads
+from os import environ
 from re import findall, finditer
+from time import time
 from typing import List
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 WRITING_ALGORITHMS = '03 Writing Algorithms'
 INDICATORS = f'{WRITING_ALGORITHMS}/28 Indicators/01 Supported Indicators'
@@ -47,6 +52,93 @@ def get_lean_cli_commands() -> dict:
             desc = lines[i + 2] if i + 2 < len(lines) else ''
             commands[name] = desc.rstrip('.')
     return commands
+
+QC_API = 'https://www.quantconnect.com/api/v2'
+SECTION_GROUPS = ('about', 'documentation', 'examples')
+
+def get_api_credentials() -> tuple:
+    """User id and API token from the environment."""
+    user_id, api_token = environ.get('QUANTCONNECT_USER_ID'), environ.get('QUANTCONNECT_API_TOKEN')
+    if not user_id or not api_token:
+        raise RuntimeError('Set QUANTCONNECT_USER_ID and QUANTCONNECT_API_TOKEN. In Actions '
+                           'they are empty on a pull request from a fork.')
+    return str(user_id), api_token
+
+def api_post(endpoint: str, payload: dict = None) -> dict:
+    """POST to the QuantConnect API v2 and return the envelope. Raises on failure."""
+    user_id, api_token = get_api_credentials()
+    timestamp = str(int(time()))
+    hashed_token = sha256(f'{api_token}:{timestamp}'.encode('utf-8')).hexdigest()
+    auth = b64encode(f'{user_id}:{hashed_token}'.encode('utf-8')).decode('ascii')
+    request = Request(f'{QC_API}{endpoint}', data=dumps(payload or {}).encode('utf-8'),
+                      headers={'Authorization': f'Basic {auth}', 'Timestamp': timestamp,
+                               'Content-Type': 'application/json'})
+    body = loads(urlopen(request, timeout=120).read())
+    if not body.get('success'):
+        raise RuntimeError(f'{endpoint} failed: {body.get("errors")}')
+    return body
+
+def get_organization_id() -> str:
+    """The organization id that market/sections/read requires on every call.
+
+    Any organization the account belongs to works; it need not own the dataset. Omitting
+    it fails with the unhelpful 'Organization not found. '.
+    """
+    if environ.get('QUANTCONNECT_ORGANIZATION_ID'):
+        return environ['QUANTCONNECT_ORGANIZATION_ID']
+    organizations = api_post('/organizations/list').get('organizations', [])
+    if not organizations:
+        raise RuntimeError('The account belongs to no organizations.')
+    print(f'note: QUANTCONNECT_ORGANIZATION_ID unset, using {organizations[0]["id"]} '
+          f'({organizations[0].get("name")})')
+    return organizations[0]['id']
+
+DATASET_DUMP = 'https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json'
+
+def get_public_dataset_slugs() -> set:
+    """Which datasets are public, per the dump. Nothing in the API records this."""
+    return {d['url'].rsplit('/', 1)[-1] for d in loads(get_text_content(DATASET_DUMP))}
+
+def get_dataset_listings() -> List[dict]:
+    """Every public dataset listing, with its page sections read live from the API.
+
+    The dump says which datasets are public; the API says what each page holds, so edits
+    to a listing reach the docs without waiting for a dump re-upload. Each record carries
+    what the dataset generators use:
+
+        {"name": ..., "vendorName": ..., "url": "/datasets/<slug>",
+         "about": [{"title": ..., "content": ...}, ...], "documentation": [...],
+         "examples": [...]}
+
+    Drift between the two sources is reported, not applied -- either direction needs a
+    person to decide.
+    """
+    organization_id = get_organization_id()
+    public = get_public_dataset_slugs()
+    masters = {m['url']: m for m in api_post('/market/data/list')['list'] if not m.get('pending')}
+
+    for slug in sorted(set(masters) - public):
+        print(f'note: {slug} is a live listing but is not in the dump, so it gets no docs '
+              f'page. Refresh the dump if it should be public.')
+    for slug in sorted(public - set(masters)):
+        print(f'note: {slug} is in the dump but no longer a listing; it has been retired.')
+
+    def read(master):
+        sections = api_post('/market/sections/read',
+                            {'id': master['id'], 'organizationId': organization_id})['sections']
+        listing = {'name': master.get('name'), 'vendorName': master.get('vendorName'),
+                   'url': f'/datasets/{master.get("url")}'}
+        for group in SECTION_GROUPS:
+            # Sort by position: the generators index into `about` for the vendor landing
+            # page, so reading order is load-bearing, not cosmetic.
+            listing[group] = [{'title': s.get('title'), 'content': s.get('content')}
+                              for s in sorted(sections.get(group) or [],
+                                              key=lambda s: s.get('position') or 0)]
+        return listing
+
+    masters = [m for slug, m in masters.items() if slug in public]
+    with ThreadPoolExecutor(8) as executor:
+        return list(executor.map(read, masters))
 
 def get_json_content(url: str) -> List:
     content = get_text_content(url) \

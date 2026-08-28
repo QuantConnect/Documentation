@@ -1,0 +1,53 @@
+name: Sync Dataset Page Supported Assets
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - 'Resources/datasets/supported-securities/**'
+      - 'code-generators/sync_supported_assets.py'
+      - '.github/workflows/sync_supported_assets.yml'
+  push:
+    branches: [master]
+    paths:
+      - 'Resources/datasets/supported-securities/**'
+      - 'code-generators/sync_supported_assets.py'
+      - '.github/workflows/sync_supported_assets.yml'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Report what would change without writing'
+        type: boolean
+        default: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Sync the dataset pages
+        env:
+          QUANTCONNECT_USER_ID: ${{ secrets.QUANTCONNECT_USER_ID }}
+          QUANTCONNECT_API_TOKEN: ${{ secrets.QUANTCONNECT_API_TOKEN }}
+          QUANTCONNECT_ORGANIZATION_ID: ${{ secrets.QUANTCONNECT_ORGANIZATION_ID }}
+        run: |
+          if [[ -z "$QUANTCONNECT_API_TOKEN" ]]; then
+            echo "::notice::No QuantConnect credentials available; skipping the sync."
+            exit 0
+          fi
+          if [[ "${{ github.event_name }}" == "push" || "${{ inputs.dry_run }}" == "false" ]]; then
+            python code-generators/sync_supported_assets.py --snapshot snapshot.json
+          else
+            python code-generators/sync_supported_assets.py --dry-run --snapshot snapshot.json
+          fi
+
+      - name: Upload the pre-change sections
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dataset-page-snapshot
+          path: snapshot.json
+          if-no-files-found: ignore
+          retention-days: 90

@@ -4,10 +4,8 @@ from pathlib import Path
 from itertools import groupby
 from shutil import move, rmtree
 from bs4 import BeautifulSoup
-from urllib.request import urlopen
-import json
 
-from _code_generation_helpers import generate_landing_page
+from _code_generation_helpers import generate_landing_page, get_dataset_listings
 
 
 DATASET = "03 Writing Algorithms/14 Datasets"
@@ -115,8 +113,7 @@ def _parse_content(content):
     return content
 
 if __name__ == '__main__':
-    url = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json"
-    docs = json.loads(urlopen(url).read().decode('utf-8'))
+    docs = get_dataset_listings()
     for d in docs:
         if d["vendorName"].strip() == "CoinAPI":
             d["vendorName"] = "QuantConnect"
