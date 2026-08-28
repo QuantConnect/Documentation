@@ -1,0 +1,150 @@
+<p>The USPTO Patent Maintenance dataset lets you trade on how a company manages the intellectual property it already holds, rather than on how much of it the company files. Examples include the following strategies:</p>
+
+<ul><li>Ranking a universe by renewals against abandonments, and favouring the companies still paying to keep their portfolio alive.</li><li>Detecting a change of regime at a single company, where a business that renewed almost everything starts abandoning patents in volume. That shift usually accompanies a cost programme.</li><li>Treating twelfth-year renewals as a conviction measure, since paying to keep an eleven and a half year old patent alive says it still earns its cost.</li><li>Comparing an abandonment rate against sector peers, to separate a company decision from an industry-wide one.</li></ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm trades IBM on the rate of change in its patent renewals against its own trailing quarter, buying when abandonment slows and selling when it accelerates.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+from QuantConnect.DataSource import *
+
+class USPTOAlgorithm(QCAlgorithm):
+    '''Example algorithm using USPTO patent activity as a source of alpha. A mature portfolio always
+    abandons more patents than it renews, so the absolute sign of the net change carries no
+    information. What does carry information is the rate against the company's own history: when
+    abandonment slows relative to the trailing quarter, the company is choosing to keep paying for
+    patents it was previously letting go.'''
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.set_cash(100000)
+
+        self._ibm = self.add_equity("IBM", Resolution.DAILY).symbol
+
+        # Patent activity is an equity-linked signal on the same security we trade.
+        self._patents = self.add_data(USPTOPatentMaintenance, self._ibm).symbol
+
+        # Maintenance fee events publish weekly, so a quarter of readings is roughly 13 points.
+        self._net = RollingWindow(13)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        points = slice.get(USPTOPatentMaintenance)
+        if self._patents not in points:
+            return
+
+        point = points[self._patents]
+        self.debug(f"{self.time:%Y-%m-%d} expired: {point.patents_expired}, "
+                   f"renewed 12yr: {point.maintenance_paid_twelfth_year}")
+
+        if point.net_maintenance_change is None:
+            return
+
+        if self._net.is_ready:
+            # Compare the newest reading with the trailing quarter it is about to join. Above the
+            # average means abandonment is slowing; below it means the pruning is accelerating.
+            average = sum(self._net) / self._net.count
+            if point.net_maintenance_change &gt; average and not self.portfolio[self._ibm].invested:
+                self.set_holdings(self._ibm, 1)
+            elif point.net_maintenance_change &lt; average and self.portfolio[self._ibm].invested:
+                self.liquidate(self._ibm)
+
+        self._net.add(point.net_maintenance_change)
+
+    def on_order_event(self, order_event: OrderEvent) -&gt; None:
+        if order_event.status == OrderStatus.FILLED:
+            self.debug(f"{self.time} - Filled: {order_event.symbol} {order_event.fill_quantity}")</pre>
+<pre class="csharp">using QuantConnect.Data;
+using QuantConnect.Orders;
+using QuantConnect.Algorithm;
+using QuantConnect.DataSource;
+using QuantConnect.Indicators;
+
+/// &lt;summary&gt;
+/// Example algorithm using USPTO patent activity as a source of alpha. A mature portfolio
+/// always abandons more patents than it renews, so the absolute sign of the net change carries
+/// no information. What does carry information is the rate against the company's own history:
+/// when abandonment slows relative to the trailing quarter, the company is choosing to keep
+/// paying for patents it was previously letting go.
+/// &lt;/summary&gt;
+public class USPTOAlgorithm : QCAlgorithm
+{
+    private Symbol _ibm;
+    private Symbol _patents;
+    private RollingWindow&lt;decimal&gt; _net;
+
+    /// &lt;summary&gt;
+    /// Initialise the data and resolution required, as well as the cash and start-end dates.
+    /// &lt;/summary&gt;
+    public override void Initialize()
+    {
+        SetStartDate(2020, 1, 1);
+        SetEndDate(2021, 1, 1);
+        SetCash(100000);
+
+        _ibm = AddEquity("IBM", Resolution.Daily).Symbol;
+
+        // Patent activity is an equity-linked signal on the same security we trade.
+        _patents = AddData&lt;USPTOPatentMaintenance&gt;(_ibm).Symbol;
+
+        // Maintenance fee events publish weekly, so a quarter of readings is roughly 13 points.
+        _net = new RollingWindow&lt;decimal&gt;(13);
+    }
+
+    /// &lt;summary&gt;
+    /// OnData event is the primary entry point for your algorithm. Each new data point is here.
+    /// &lt;/summary&gt;
+    /// &lt;param name="slice"&gt;Slice object keyed by symbol containing the data&lt;/param&gt;
+    public override void OnData(Slice slice)
+    {
+        var points = slice.Get&lt;USPTOPatentMaintenance&gt;();
+        if (!points.ContainsKey(_patents))
+        {
+            return;
+        }
+
+        var point = points[_patents];
+        Debug($"{Time:yyyy-MM-dd} expired: {point.PatentsExpired}, renewed 12yr: {point.MaintenancePaidTwelfthYear}");
+
+        if (!point.NetMaintenanceChange.HasValue)
+        {
+            return;
+        }
+
+        if (_net.IsReady)
+        {
+            // Compare the newest reading with the trailing quarter it is about to join. Above
+            // the average means abandonment is slowing; below it means pruning is accelerating.
+            var total = 0m;
+            foreach (var value in _net)
+            {
+                total += value;
+            }
+
+            var average = total / _net.Count;
+            if (point.NetMaintenanceChange.Value &gt; average &amp;&amp; !Portfolio[_ibm].Invested)
+            {
+                SetHoldings(_ibm, 1);
+            }
+            else if (point.NetMaintenanceChange.Value &lt; average &amp;&amp; Portfolio[_ibm].Invested)
+            {
+                Liquidate(_ibm);
+            }
+        }
+
+        _net.Add(point.NetMaintenanceChange.Value);
+    }
+
+    /// &lt;summary&gt;
+    /// Order fill event handler.
+    /// &lt;/summary&gt;
+    /// &lt;param name="orderEvent"&gt;Order event details&lt;/param&gt;
+    public override void OnOrderEvent(OrderEvent orderEvent)
+    {
+        if (orderEvent.Status.IsFill())
+        {
+            Debug($"{Time} - Filled: {orderEvent.Symbol} {orderEvent.FillQuantity}");
+        }
+    }
+}</pre>
+</div>
