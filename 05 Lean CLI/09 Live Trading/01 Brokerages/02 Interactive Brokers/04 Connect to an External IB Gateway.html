@@ -1,0 +1,47 @@
+<p>
+    By default, when you deploy a local live algorithm with the Interactive Brokers (IB) brokerage, LEAN launches its own IB Gateway instance inside the Docker container and logs in with the credentials you provide to the deployment wizard.
+    Alternatively, you can run IB Gateway on your desktop and connect LEAN to it with the <code>--ib-host</code> and <code>--ib-port</code> options of the <code>lean live deploy</code> command.
+    In this setup, you log in to IB Gateway yourself, you can inspect the connection status in the IB Gateway window, and you can run several live deployments at the same time by launching one IB Gateway instance for each deployment.
+</p>
+
+<h4>Configure IB Gateway</h4>
+<p>Follow these steps to launch and configure an IB Gateway instance that LEAN can connect to:</p>
+<ol>
+    <li><a href='https://www.interactivebrokers.com/en/trading/ibgateway-stable.php' rel='nofollow' target='_blank'>Download</a> and install IB Gateway on your Windows, Mac, or Ubuntu desktop, and then launch it.</li>
+    <li>Log in to IB Gateway with your IB username and password, including any 2FA required.</li>
+    <li>In the IB Gateway window, click <span class="menu-name">Configure &gt; Settings &gt; API &gt; Settings</span>.</li>
+    <li>Clear the <span class="box-name">Read-Only API</span> check box so that LEAN can place orders.</li>
+    <li>Note the value of the <span class="field-name">Socket port</span> field. By default, the port is 4001 for live trading accounts and 4002 for paper trading accounts. You need this value when you deploy the algorithm.</li>
+    <li>Click <span class="menu-name">API &gt; Precautions</span> and then disable all of the precautions that IB Gateway enforces on API orders by selecting all of the <span class="box-name">Bypass</span> check boxes. If you leave the precautions enabled, IB Gateway blocks LEAN's orders with confirmation dialogs.</li>
+    <li>Click <span class="button-name">OK</span>.</li>
+    <li>Leave IB Gateway running. Until LEAN connects, the Connection Status table in the IB Gateway window shows the <span class="page-section-name">API Client</span> row in red with a <span class="page-section-name">disconnected</span> status.
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ib-gateway-disconnected.png" alt="IB Gateway window with the API Client row in red and a disconnected status">
+    </li>
+</ol>
+
+<h4>Deploy Algorithms</h4>
+<p>
+    To connect LEAN to the IB Gateway instance on your desktop, run <code>lean live deploy</code> with the <code>--ib-host</code> option set to <code>host.docker.internal</code> and the <code>--ib-port</code> option set to the port you noted in the IB Gateway settings.
+    Docker resolves the <code>host.docker.internal</code> hostname to your desktop from inside the LEAN container.
+</p>
+<div class='cli section-example-container'>
+<pre>$ lean live deploy "My Project" --ib-host "host.docker.internal" --ib-port 4001</pre>
+</div>
+<p>
+    Follow the rest of the deployment wizard as described in the <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#03-Deploy-Local-Algorithms">Deploy Local Algorithms</a> section.
+    When LEAN connects, the <span class="page-section-name">API Client</span> row in the IB Gateway window turns green and shows the number of connected clients.
+</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ib-gateway-connected.png" alt="IB Gateway window with the API Client row in green and a 1 connected status">
+
+<h4>Run Multiple Deployments</h4>
+<p>To run multiple live deployments at the same time, launch a separate IB Gateway instance for each deployment and configure each instance to listen on a different port. Follow these steps:</p>
+<ol>
+    <li>Launch and log in to one IB Gateway instance for each deployment.</li>
+    <li>In each instance, follow the steps in the <span class="page-section-name">Configure IB Gateway</span> section and set the <span class="field-name">Socket port</span> field to a unique value (for example, 4001, 4002, and 4003).</li>
+    <li>Deploy each algorithm with the <code>--ib-port</code> option set to the port of the IB Gateway instance that the algorithm should use. To keep the terminal free for the next deployment, add the <code>--detach</code> option.
+    <div class='cli section-example-container'>
+<pre>$ lean live deploy "My Project" --ib-host "host.docker.internal" --ib-port 4001 --detach
+$ lean live deploy "My Other Project" --ib-host "host.docker.internal" --ib-port 4002 --detach</pre>
+    </div>
+    </li>
+</ol>
