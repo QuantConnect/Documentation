@@ -1,7 +1,38 @@
 <p>
-    By default, when you deploy a local live algorithm with the Interactive Brokers (IB) brokerage, LEAN launches its own IB Gateway instance inside the Docker container and logs in with the credentials you provide to the deployment wizard.
+    By default, when you deploy a local live algorithm with the Interactive Brokers (IB) brokerage, LEAN launches its own IB Gateway instance inside the Docker container, logs in with the credentials you provide to the deployment wizard, and manages the connection for the lifetime of the deployment.
     Alternatively, you can run IB Gateway on your desktop and connect LEAN to it with the <code>--ib-host</code> and <code>--ib-port</code> options of the <code>lean live deploy</code> command.
     In this setup, you log in to IB Gateway yourself, you can inspect the connection status in the IB Gateway window, and you can run several live deployments at the same time by launching one IB Gateway instance for each deployment.
+    In exchange, LEAN doesn't manage the IB Gateway instance for you, so you're responsible for the login, restart, and connection maintenance that LEAN and QuantConnect Cloud otherwise handle automatically.
+</p>
+
+<h4>Connection Maintenance</h4>
+<p>
+    When you deploy with the IB Gateway instance inside the LEAN container, LEAN launches IB Gateway, logs in with your credentials, triggers the IB Key notification on your device, restarts IB Gateway at the weekly restart time you choose, and restarts it again if the connection to IB fails.
+    When you connect to an external IB Gateway instance, LEAN skips all of this automation and only opens an API connection to the host and port you specify.
+    You're responsible for the following tasks:
+</p>
+<ul>
+    <li><b>Log in every day</b>: IB Gateway logs you off or restarts every day at the time you set in <span class="menu-name">Configure &gt; Settings &gt; Lock and Exit</span>, and IB requires you to re-authenticate with your IB Key device at least once a week. LEAN doesn't log in for you and doesn't trigger the IB Key notification, so you must log in to IB Gateway yourself, including the 2FA challenge, before each trading session.</li>
+    <li><b>Handle IB Gateway restarts</b>: LEAN doesn't schedule the weekly restart and can't restart IB Gateway if it exits, crashes, or updates. After each restart, log in again and confirm that the <span class="page-section-name">API Client</span> row in the IB Gateway window turns green.</li>
+    <li><b>Monitor the connection</b>: If IB Gateway exits or logs you off, LEAN loses its connection to IB, waits a limited time for the connection to return, and then stops the algorithm. To recover, log in to IB Gateway and then redeploy the algorithm.</li>
+</ul>
+<p>
+    If you want LEAN to handle these tasks for you, deploy with the default IB Gateway instance inside the LEAN container as described in the <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#03-Deploy-Local-Algorithms">Deploy Local Algorithms</a> section, or deploy to QuantConnect Cloud as described in the <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#02-Deploy-Cloud-Algorithms">Deploy Cloud Algorithms</a> section.
+</p>
+
+<h4>Data Availability</h4>
+<p>
+    The only data sources available to your algorithm are the live data providers you select in the <code>lean live deploy</code> wizard.
+    For most users, this is the IB Gateway instance itself, which serves raw price data for the assets you have an IB market data subscription for.
+    Data that's served exclusively in QuantConnect Cloud isn't available from IB Gateway. For example, the following data isn't available without an additional data subscription:
+</p>
+<ul>
+    <li>The QuantConnect universe files, such as the US Equity coarse and fine fundamental universes, the US ETF constituents universe, and the Equity Option, Index Option, Futures, and Future Option universes.</li>
+    <li>The corporate actions in the US Equity Security Master, which LEAN needs to serve adjusted Equity prices, and the US Futures Security Master, which LEAN needs to serve continuous Futures contracts.</li>
+</ul>
+<p>
+    If your algorithm depends on any of this data, subscribe to the datasets in the <a href="https://www.quantconnect.com/datasets">Dataset Market</a>, download them with the CLI before you deploy, and keep your local copy up to date.
+    For more information, see the <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#05-Data-Provider">Data Provider</a> section.
 </p>
 
 <h4>Configure IB Gateway</h4>
