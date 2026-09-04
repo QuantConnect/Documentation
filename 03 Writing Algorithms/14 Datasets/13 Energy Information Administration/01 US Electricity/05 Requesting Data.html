@@ -1,0 +1,28 @@
+<p>To add US Electricity data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. The dataset is unlinked, so instead of a security <code>Symbol</code> you pass a balancing authority code from the <code>EIA.BalancingAuthorities</code> helper. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<p>One subscription carries every series the authority reports: demand, the day-ahead demand forecast, net generation, net interchange with neighbouring grids and the generation split across sixteen fuel types. Grid operations are a signal, not a tradeable instrument, so add a separate tradeable security if you want to place orders.</p>
+
+<div class="section-example-container">
+<pre class="python">class EIAElectricityDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 6, 1)
+        self.set_end_date(2020, 9, 1)
+        self.set_cash(100000)
+
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._pjm = self.add_data(EIAElectricity, EIA.BalancingAuthorities.PJM, Resolution.DAILY).symbol</pre>
+<pre class="csharp">public class EIAElectricityDataAlgorithm : QCAlgorithm
+{
+    private Symbol _spy, _pjm;
+
+    public override void Initialize()
+    {
+        SetStartDate(2020, 6, 1);
+        SetEndDate(2020, 9, 1);
+        SetCash(100000);
+
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _pjm = AddData&lt;EIAElectricity&gt;(EIA.BalancingAuthorities.PJM, Resolution.Daily).Symbol;
+    }
+}</pre>
+</div>
