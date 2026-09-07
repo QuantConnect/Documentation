@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/nodes/assistant.php"); ?>
+<? include(DOCS_RESOURCES."/nodes/agent.php"); ?>
