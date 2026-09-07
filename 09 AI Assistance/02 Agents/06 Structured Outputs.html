@@ -1,0 +1,31 @@
+<p>
+  A structured output is a JSON schema that constrains what the agent returns.
+  When you specify one, the agent produces a response that conforms to the schema instead of free-form prose.
+  This is the difference between an agent that says "the residuals look stationary, with a p-value around 0.03" and one that returns <code>{"stationary": true, "p_value": 0.03}</code>.
+</p>
+<p>
+  Use a structured output when something downstream consumes the result.
+  Some examples include another agent in a chain, a custom API response handler, or just a human who needs to quickly scan for the key insight.
+  Without a schema, the next step has to parse prose, which fails the moment the wording shifts.
+</p>
+<p>
+  To use one, define the JSON schema in the <span class="page-section-name">Output Schema</span> field of the agent configuration.
+  Keep the schema as flat as the next step needs.
+  Nested schemas are valid but add room for the agent to drift from the shape you wanted.
+</p>
+<p>For example, the schema that produces the preceding stationarity output would look like this:</p>
+
+<pre>{
+  "type": "object",
+  "properties": {
+    "stationary": {
+      "type": "boolean",
+      "description": "Whether the residuals pass an ADF stationarity test."
+    },
+    "p_value": {
+      "type": "number",
+      "description": "The p-value from the ADF test."
+    }
+  },
+  "required": ["stationary", "p_value"]
+}</pre>
