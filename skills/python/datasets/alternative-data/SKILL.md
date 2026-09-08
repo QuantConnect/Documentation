@@ -74,6 +74,7 @@ def on_data(self, slice: Slice) -> None:
 | `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `all_items`, `core_cpi`, `food`, `food_at_home`, `food_away_from_home`, `energy`, `shelter`, `rent_of_primary_residence`, `gasoline`, `medical_care`, `apparel`, `education_and_communication`, `new_vehicles`, `used_cars_and_trucks`, `college_tuition_and_fees` |
 | `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `job_openings`, `job_openings_rate`, `hires`, `hires_rate`, `quits`, `quits_rate`, `total_separations`, `layoffs_and_discharges` |
 | `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `final_demand`, `core_ppi`, `final_demand_less_food_energy_trade`, `final_demand_goods`, `final_demand_services`, `final_demand_construction`, `all_commodities`, `farm_products`, `processed_foods_and_feeds`, `crude_petroleum`, `final_demand_goods_less_foods` |
+| `EIAElectricity` | US Electricity | `demand`, `demand_forecast`, `net_generation`, `total_interchange`, `coal`, `natural_gas`, `nuclear`, `hydro`, `wind`, `solar`, `geothermal`, `oil`, `other`, `unknown`, `pumped_storage`, `battery`, `other_storage`, `unknown_storage`, `solar_with_storage`, `wind_with_storage` |
 | `USEnergy` | US Energy Information Administration (EIA) | `value` |
 | `Fred` | US Federal Reserve (FRED) | `value` |
 | `QuiverGovernmentContract` | US Government Contracts | `description`, `agency`, `amount` |

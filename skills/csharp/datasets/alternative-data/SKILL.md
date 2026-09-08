@@ -78,6 +78,7 @@ public override void OnData(Slice slice)
 | `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `AllItems`, `CoreCpi`, `Food`, `FoodAtHome`, `FoodAwayFromHome`, `Energy`, `Shelter`, `RentOfPrimaryResidence`, `Gasoline`, `MedicalCare`, `Apparel`, `EducationAndCommunication`, `NewVehicles`, `UsedCarsAndTrucks`, `CollegeTuitionAndFees` |
 | `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `JobOpenings`, `JobOpeningsRate`, `Hires`, `HiresRate`, `Quits`, `QuitsRate`, `TotalSeparations`, `LayoffsAndDischarges` |
 | `BLSEconomicSurveysPpi` | US Bureau of Labor Statistics (BLS) | `FinalDemand`, `CorePpi`, `FinalDemandLessFoodEnergyTrade`, `FinalDemandGoods`, `FinalDemandServices`, `FinalDemandConstruction`, `AllCommodities`, `FarmProducts`, `ProcessedFoodsAndFeeds`, `CrudePetroleum`, `FinalDemandGoodsLessFoods` |
+| `EIAElectricity` | US Electricity | `Demand`, `DemandForecast`, `NetGeneration`, `TotalInterchange`, `Coal`, `NaturalGas`, `Nuclear`, `Hydro`, `Wind`, `Solar`, `Geothermal`, `Oil`, `Other`, `Unknown`, `PumpedStorage`, `Battery`, `OtherStorage`, `UnknownStorage`, `SolarWithStorage`, `WindWithStorage` |
 | `USEnergy` | US Energy Information Administration (EIA) | `Value` |
 | `Fred` | US Federal Reserve (FRED) | `Value` |
 | `QuiverGovernmentContract` | US Government Contracts | `Description`, `Agency`, `Amount` |
