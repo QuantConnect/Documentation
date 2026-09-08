@@ -5,6 +5,6 @@
     <li>Bybit</li>
     <li>Coinbase</li>
     <li>Kraken</li>
-<ul>
+</ul>
 
 <? include(DOCS_RESOURCES."/live-trading/europe-region.html"); ?>
