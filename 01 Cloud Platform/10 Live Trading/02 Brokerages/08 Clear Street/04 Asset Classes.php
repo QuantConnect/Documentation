@@ -1,5 +1,5 @@
 <?
-include(DOCS_RESOURCES."/brokerages/clearstreet/asset-classes.php");
+include(DOCS_RESOURCES."/brokerages/clear-street/asset-classes.php");
 
 $brokerageName = "Clear Street";
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
