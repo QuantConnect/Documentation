@@ -27,6 +27,7 @@ Decide the route once, in `Initialize`. Mixing them is usually a smell:
 - **Universe route** (`AddOption` + filter): a universe's purpose is its slice chain. If all selection, pricing, and sizing happen through `OptionChain()` anyway, the minute-resolution subscriptions are pure cost — either read the slice for the decisions that need live data, or drop the universe and subscribe the picks directly.
 - **Discovery route** (`OptionChain()` + `AddOptionContract`): the daily chain picks the contracts; subscribe each pick. Match the data to the decision: the `OptionChain()` rows are previous-close values — fine when daily-granularity data suits the strategy (screening, ranking, a daily-cadence rule that tolerates day-old marks), but when the strategy calls for decision-time values (intraday sizing, hedging, entry marks), read the subscribed picks' live quotes from the slice. Whichever you use, know which one you are using.
 - A subscription earns its cost by being **read** or being **held**: a contract you own needs its subscription (position pricing, fills, expiry processing) even if you never read a chain. What doesn't earn its cost is breadth — a wide `AddOption` universe where the algorithm neither reads the slice chain nor holds more than its few picks.
+- `OptionChain()` needs **no option subscription** — the underlying's equity subscription is sufficient. Never add `AddOption`, a filter, or `AddUniverseOptions` just to make a chain available; an empty chain has some other cause.
 
 Size the subscription to the trade, not to the chain:
 
