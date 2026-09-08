@@ -24,6 +24,9 @@ if ($cloudPlatform) {
     } 
     ?>
 
+    <? if ($cloudPlatform) { ?>
+    <li>In the <span class="page-section-name">Region</span> section, click the <a href="/docs/v2/cloud-platform/live-trading/getting-started#06-Redundancy">region</a> where you want to run the algorithm.</li>
+    <? } ?>
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
     <li><span class='qualifier'>(Optional)</span> In the <span class='page-section-name'>Data Provider</span> section, click <span class='button-name'>Show</span> and change the data provider or add additional providers.</li>    
 

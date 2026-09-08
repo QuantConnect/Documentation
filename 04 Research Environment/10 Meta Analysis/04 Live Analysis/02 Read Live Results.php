@@ -28,7 +28,7 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
         <tr>
             <td>Cloud Platform</td>
             <td><a href='/docs/v2/cloud-platform/projects/getting-started#13-Get-Project-Id'>Get Project Id</a></td>
-            <td><a href='/docs/v2/cloud-platform/live-trading/getting-started#08-Get-Deployment-Id'>Get Deployment Id</a></td>
+            <td><a href='/docs/v2/cloud-platform/live-trading/getting-started#10-Get-Deployment-Id'>Get Deployment Id</a></td>
         </tr>
         <tr>
             <td>Local Platform</td>

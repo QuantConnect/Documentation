@@ -8,6 +8,8 @@
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Lightning icon"> <span class="icon-name">Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name"><?=$brokerageName?></span> from the drop-down menu.</li>
     <?=$authentication?>
+    <li>In the <span class="page-section-name">Region</span> section, click the <a href="/docs/v2/cloud-platform/live-trading/getting-started#06-Redundancy">region</a> where you want to run the algorithm.</li>
+    <?=isset($regionNote) ? $regionNote : "";?>
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
     <? if (!isset($omitTemplateDataProviderText)) { ?>
         <li><span class='qualifier'>(Optional)</span> In the <span class='page-section-name'>Data Provider</span> section, click <span class='button-name'>Show</span> and change the data provider or add additional providers.</li>    

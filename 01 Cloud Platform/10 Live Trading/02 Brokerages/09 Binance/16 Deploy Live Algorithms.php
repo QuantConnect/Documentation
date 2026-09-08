@@ -26,6 +26,7 @@ $authentication = "<li>Enter your API key and secret.</li>
         </tr>
     </tbody>
 </table>";
+$regionNote = file_get_contents(DOCS_RESOURCES."/live-trading/europe-region.html");
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
 ?>

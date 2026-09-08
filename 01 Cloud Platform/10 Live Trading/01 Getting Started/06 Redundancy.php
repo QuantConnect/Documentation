@@ -1,0 +1,34 @@
+<p>You can choose the geographic region that hosts your live algorithm. Spreading your live algorithms across regions gives you better redundancy because an incident in one region doesn't affect the algorithms that run in the other regions.</p>
+
+<p>The following table describes the available regions:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style="width: 25%">Region</th>
+            <th style="width: 25%">Code</th>
+            <th style="width: 50%">Location</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>America</td>
+            <td>NY7</td>
+            <td>New York, United States</td>
+        </tr>
+        <tr>
+            <td>Canada</td>
+            <td>TOR</td>
+            <td>Toronto, Canada</td>
+        </tr>
+        <tr>
+            <td>Europe</td>
+            <td>WAW</td>
+            <td>Warsaw, Poland</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>America (NY7) is the default region. To use a different one, select it in the <span class="page-section-name">Region</span> section of the Deploy Live page. The <span class="field-name">Node</span> field then only lists the <a href="/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes">live trading nodes</a> in your organization that are available in the region you select.</p>
+
+<? include(DOCS_RESOURCES."/live-trading/europe-region.html"); ?>
