@@ -6,7 +6,7 @@ $brokerageDetails = "
 Access token: ********************************
 Account id: 125046</pre>
 </div>
-" . file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/clearstreet.html") . "
+" . file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/clear-street.html") . "
 </li>";
 $dataProviderDetails = "";
 $brokerageName="Clear Street";
