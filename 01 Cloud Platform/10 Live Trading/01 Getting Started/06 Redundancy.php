@@ -30,3 +30,5 @@
 </table>
 
 <p>America (NY7) is the default region. To use a different one, select it in the <span class="page-section-name">Region</span> section of the Deploy Live page. The <span class="field-name">Node</span> field then only lists the <a href="/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes">live trading nodes</a> in your organization that are available in the region you select.</p>
+
+<? include(DOCS_RESOURCES."/live-trading/europe-region.html"); ?>

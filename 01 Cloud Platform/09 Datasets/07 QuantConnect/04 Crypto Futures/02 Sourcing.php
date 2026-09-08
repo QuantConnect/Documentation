@@ -4,3 +4,5 @@
     <li>Bybit</li>
     <li>dYdX</li>
 <ul>
+
+<? include(DOCS_RESOURCES."/live-trading/europe-region.html"); ?>
