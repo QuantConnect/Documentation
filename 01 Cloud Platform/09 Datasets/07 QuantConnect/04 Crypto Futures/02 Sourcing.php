@@ -3,6 +3,6 @@
     <li>Binance</li>
     <li>Bybit</li>
     <li>dYdX</li>
-<ul>
+</ul>
 
 <? include(DOCS_RESOURCES."/live-trading/europe-region.html"); ?>
