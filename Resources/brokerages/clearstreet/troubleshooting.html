@@ -1,0 +1,54 @@
+<p>The following table describes errors you may see when deploying to Clear Street:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Error Message(s)</th>
+            <th>Possible Cause and Fix</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <div class="error-messages">401 Unauthorized</br>The Authorization header is missing or contains an invalid or expired API key</div>
+            </td>
+            <td>
+                Your API key may be incorrect, revoked, or expired. Log in to the <a rel="nofollow" target="_blank" href='https://app.clearstreet.com/'>Clear Street web app</a>, open <span class='menu-name'>Account > API keys</span>, check the status and expiration of your key, and generate a new one if necessary.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="error-messages">order_type Stop is not allowed for security_type Option</div>
+            </td>
+            <td>
+                Clear Street accepts only market and limit orders for Equity Options and Index Options. Use a limit order instead of a stop market, stop limit, or trailing stop order.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="error-messages">Invalid limit price: must be positive</div>
+            </td>
+            <td>
+                The limit or stop price of the order is zero or negative. This usually happens when you compute the price from a security that has no price data yet. Check that the security has a price before you place the order.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="error-messages">The position of '&lt;symbol&gt;' carries no average price, so it is skipped.</div>
+            </td>
+            <td>
+                Clear Street reports no average price for the position, so LEAN can't load it into the algorithm portfolio. Close the position in the Clear Street web app before you deploy, or avoid trading that symbol in your algorithm.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="error-messages">Order connection with Clear Street lost.</div>
+            </td>
+            <td>
+                Our integration reads your order updates by polling the Clear Street API. It reports a disconnect after the polling fails for one minute and reconnects as soon as the API answers again. If the problem persists, check your API key and the Clear Street service status.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you need further support, <a href='/docs/v2/cloud-platform/organizations/support#06-Open-New-Tickets'>open a new support ticket</a> and add the live deployment with the error.</p>

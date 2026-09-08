@@ -35,7 +35,8 @@ $brokerages = array(
       "Eze",
       "dYdX",
       "Webull",
-      "Public"
+      "Public",
+      "Clear Street"
 );
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 
@@ -92,6 +93,7 @@ Select a brokerage:
 19) dYdX
 20) Webull
 21) Public
+22) Clear Street
 Enter an option: <?=$brokerageNumber?></pre>
 </div>
 
