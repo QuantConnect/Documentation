@@ -62,7 +62,10 @@ class ImageGenerator:
         self.fonts = fonts
         self.x = 63
         self.y = 256
-        self.max_text_width = self.canvas.size[0]-self.x*2
+        # Left edge and bottom of the artwork on the right of every template. A line that
+        # overlaps the artwork band is cut before the artwork, the lines below it can run wider.
+        self.artwork_x, self.artwork_bottom = 960, 400
+        self.max_x = self.canvas.size[0] - self.x
 
     def AddTextToImage(self, lines, outputfile):
         font = self.fonts[max(0, len(lines) - 4)]
@@ -72,9 +75,25 @@ class ImageGenerator:
         I1 = ImageDraw.Draw(image)
         for i, line in enumerate(lines):
             xy = (self.x + i * dx, self.y + i * dy)
-            I1.text(xy, line, fill='#000', font=font)
+            max_x = self.artwork_x if xy[1] < self.artwork_bottom else self.max_x
+            I1.text(xy, self._fit(line, font, max_x - xy[0]), fill='#000', font=font)
         image.save(f'{outputfile}.png')
         image.close()
+
+    def _fit(self, text, font, max_width):
+        """Truncates the text with '...' so it fits in max_width, at a word boundary when possible."""
+        if font.getlength(text) <= max_width:
+            return text
+        words = text.split(' ')
+        while len(words) > 1:
+            words.pop()
+            candidate = ' '.join(words) + '...'
+            if font.getlength(candidate) <= max_width:
+                return candidate
+        word = words[0]
+        while len(word) > 1 and font.getlength(word + '...') > max_width:
+            word = word[:-1]
+        return word + '...'
 
 def _generate_lean_cli_cheat_sheet(location):
     """Generate a 1200x630 LEAN CLI API cheat sheet image."""
