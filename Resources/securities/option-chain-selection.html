@@ -1,0 +1,92 @@
+<h4>Select Contracts</h4>
+
+<p>
+  To get a single contract from the chain, call the <code class='csharp'>Select</code><code class='python'>select</code> method.
+  It returns the contract that best matches the criteria you provide, or <code class='csharp'>null</code><code class='python'>None</code> when the chain holds no match.
+</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>// Get the put contract at 85% of the underlying price, from the expiration closest to 30 days out.
+var contract = chain.Select(OptionRight.Put, targetDte: 30, moneyness: -0.15m);</pre>
+    <pre class='python'># Get the put contract at 85% of the underlying price, from the expiration closest to 30 days out.
+contract = chain.select(OptionRight.PUT, target_dte=30, moneyness=-0.15)</pre>
+</div>
+
+<p>
+  These methods take a <i>target</i> number of days to expiration and return the closest expiration within the optional <code class='csharp'>minDte</code><code class='python'>min_dte</code> and <code class='csharp'>maxDte</code><code class='python'>max_dte</code> window.
+  The Option strategy filters instead take a <i>minimum</i> number of days to expiration and return the first expiration at or after it.
+</p>
+
+<p>The following table describes the contract selection methods of the <code>OptionChain</code> class:</p>
+
+<table class="qc-table table vertical-table">
+    <tbody>
+            <tr>
+                <td>
+                    <code class="csharp">Select(OptionRight? right, int? targetDte, int? minDte, int? maxDte, decimal moneyness)</code><code class="python">select(right: OptionRight = None, target_dte: int = None, min_dte: int = None, max_dte: int = None, moneyness: float = 0)</code>
+                    <p class="property-description">Selects the contract with the strike closest to <code class="csharp">moneyness</code><code class="python">moneyness</code> as a signed fraction of the underlying price. For example, -0.15 targets 85% of the underlying price and 0 targets the at-the-money strike.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">Pick(OptionRight? right, int? targetDte, int? minDte, int? maxDte, decimal moneyness)</code><code class="python">pick(right: OptionRight = None, target_dte: int = None, min_dte: int = None, max_dte: int = None, moneyness: float = 0)</code>
+                    <p class="property-description">A synonym of the <code class="csharp">Select</code><code class="python">select</code> method.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">SelectByStrikeDistance(decimal strikeFromAtm, OptionRight? right, int? targetDte, int? minDte, int? maxDte)</code><code class="python">select_by_strike_distance(strike_from_atm: float, right: OptionRight = None, target_dte: int = None, min_dte: int = None, max_dte: int = None)</code>
+                    <p class="property-description">Selects the contract with the strike closest to a signed distance from the underlying price, in price units. This is how the Option strategy filters express their strikes.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">SelectByDelta(decimal targetDelta, OptionRight? right, int? targetDte, int? minDte, int? maxDte)</code><code class="python">select_by_delta(target_delta: float, right: OptionRight = None, target_dte: int = None, min_dte: int = None, max_dte: int = None)</code>
+                    <p class="property-description">Selects the contract with the absolute delta closest to the absolute target, so a 30 delta put is 0.3 or -0.3. Contracts without Greeks are ignored.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">AtTheMoney(OptionRight? right)</code><code class="python">at_the_money(right: OptionRight = None)</code>
+                    <p class="property-description">Selects the contract with the strike closest to the underlying price. Ties go to the lower strike, then to the nearest expiration.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">ClosestExpiry(int? targetDte, int? minDte, int? maxDte)</code><code class="python">closest_expiry(target_dte: int = None, min_dte: int = None, max_dte: int = None)</code>
+                    <p class="property-description">Returns the expiration date closest to the target number of days out, or <code class="csharp">null</code><code class="python">None</code> when no expiration falls in the window.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">At(DateTime expiry)</code><code class="python">at(expiry: datetime)</code>
+                    <p class="property-description">Returns a new chain with the contracts of the given expiration date. The time of day is ignored.</p>
+                </td>
+            </tr>
+    </tbody>
+</table>
+
+<p>
+  The expiration methods compose with the chain filters, so you can narrow a single expiration down further.
+</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>var expiry = chain.ClosestExpiry(targetDte: 45, minDte: 30, maxDte: 60);
+var contracts = chain.At(expiry.Value).PutsOnly().Strikes(-2, 0);</pre>
+    <pre class='python'>expiry = chain.closest_expiry(target_dte=45, min_dte=30, max_dte=60)
+contracts = chain.at(expiry).puts_only().strikes(-2, 0)</pre>
+</div>
+
+<p>
+  <code>OptionChain</code> objects also expose read-only views of their contracts: <code class='csharp'>Calls</code><code class='python'>calls</code> and <code class='csharp'>Puts</code><code class='python'>puts</code>, sorted by expiration and then strike; <code class='csharp'>Expiries</code><code class='python'>expiries</code>, the distinct expiration dates in ascending order; and <code class='csharp'>StrikePrices</code><code class='python'>strike_prices</code>, the distinct strikes in ascending order.
+</p>
+
+<p>
+  <code class='csharp'>StrikePrices</code><code class='python'>strike_prices</code> is a <code>StrikeList</code> object, which adds the <code class='csharp'>ClosestTo</code><code class='python'>closest_to</code>, <code class='csharp'>FirstAbove</code><code class='python'>first_above</code>, and <code class='csharp'>FirstBelow</code><code class='python'>first_below</code> methods.
+  Each one takes a reference price and returns <code class='csharp'>null</code><code class='python'>None</code> when no strike matches.
+</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>var strike = chain.StrikePrices.FirstAbove(chain.Underlying.Price);</pre>
+    <pre class='python'>strike = chain.strike_prices.first_above(chain.underlying.price)</pre>
+</div>

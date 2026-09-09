@@ -15,5 +15,12 @@
     }
 ?>
 
+<?
+    $optionUniverseUrl = $optionUniverseUrl ?? "/docs/v2/writing-algorithms/universes/equity-options";
+    include(DOCS_RESOURCES."/securities/option-chain-filters.php");
+    include(DOCS_RESOURCES."/securities/option-chain-selection.html");
+?>
+
+<h4>Properties</h4>
 <p><code>OptionChain</code> objects have the following properties:</p>
 <div data-tree='QuantConnect.Data.Market.OptionChain'></div>
