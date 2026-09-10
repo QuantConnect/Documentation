@@ -25,16 +25,20 @@
 
 <p>The scoped overload publishes <code class="csharp">IsComplete == false</code><code class="python">is_complete == False</code> even if the selected groups happen to contain every account. The parameterless overload can also be incomplete when the provider has a configured scope such as an IB group filter.</p>
 
-<p>For both methods, <code class="csharp">true</code><code class="python">True</code> means the provider accepted or coalesced the asynchronous request. It doesn't mean collection completed. Capture the current generation before the call, then poll for a <code>Ready</code> snapshot with a greater generation. A fast request can reach a terminal status before your next read, so don't require observing <code>Refreshing</code>. A failure or disconnect can publish <code>Failed</code> or <code>Stale</code> without advancing the generation. Your algorithm must enforce its own timeout.</p>
+<p>For both methods, <code class="csharp">true</code><code class="python">True</code> means the provider accepted or coalesced the asynchronous request. It doesn't mean collection completed. The provider exposes one snapshot publication stream rather than a result handle for each call. Equivalent requests can coalesce, differing queued scopes can merge, and a differing request can supersede active collection before it publishes. Coordinate refresh requests in one place and verify that the resulting snapshot contains every requested group and account.</p>
+
+<p>Capture the current generation before the call, then poll for a <code>Ready</code> snapshot with a greater generation and the required scope. A fast request can reach a terminal status before your next read, so don't require observing <code>Refreshing</code>. A failure or disconnect can publish <code>Failed</code> or <code>Stale</code> without advancing the generation. Your algorithm must enforce its own observation timeout. Reaching that deadline stops the algorithm's polling policy; it doesn't cancel accepted provider work.</p>
 
 <p>Invalid null scopes, blank or duplicate identifiers, and additional accounts without an explicit group throw synchronously. Handle those input errors separately from a <code class="csharp">false</code><code class="python">False</code> return, which means the request wasn't accepted for asynchronous processing.</p>
 
-<p>The following example schedules scoped discovery every minute and complete discovery every third tick. Both the scheduled callback and <code class="csharp">OnData</code><code class="python">on_data</code> poll the result, so processing continues when no market data arrives. The example sets a 30-second deadline and checks it whenever either callback runs.</p>
+<p>The following example schedules scoped discovery every minute and complete discovery every third tick. Both the scheduled callback and <code class="csharp">OnData</code><code class="python">on_data</code> poll the result, so processing continues when no market data arrives. It serializes their shared refresh state so only one callback processes a generation. The five-minute observation deadline is illustrative; tune it to the selected scope and deployment.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">private long _refreshGeneration = -1;
+    <pre class="csharp">private readonly object _refreshLock = new();
+private long _refreshGeneration = -1;
 private DateTime _refreshDeadlineUtc;
 private int _refreshTick;
+private bool _refreshExpectedComplete;
 
 public override void Initialize()
 {
@@ -47,25 +51,28 @@ public override void Initialize()
 private void RefreshSnapshot()
 {
     PollSnapshotRefresh();
-    if (_refreshGeneration &gt;= 0)
+    lock (_refreshLock)
     {
-        return;
-    }
+        if (_refreshGeneration &gt;= 0)
+        {
+            return;
+        }
 
-    var snapshot = BrokerageAccountSnapshot;
-    var generation = snapshot.Generation;
-    var complete = ++_refreshTick % 3 == 0;
-    var accepted = complete
-        ? RequestBrokerageAccountSnapshotRefresh()
-        : RequestBrokerageAccountSnapshotRefresh(new[] { "TestGroupEQ" });
-    if (accepted)
-    {
-        _refreshGeneration = generation;
-        _refreshDeadlineUtc = UtcTime.AddSeconds(30);
-    }
-    else
-    {
-        Debug("The FA snapshot refresh wasn't accepted.");
+        var snapshot = BrokerageAccountSnapshot;
+        var complete = ++_refreshTick % 3 == 0;
+        var accepted = complete
+            ? RequestBrokerageAccountSnapshotRefresh()
+            : RequestBrokerageAccountSnapshotRefresh(new[] { "TestGroupEQ" });
+        if (accepted)
+        {
+            _refreshGeneration = snapshot.Generation;
+            _refreshExpectedComplete = complete;
+            _refreshDeadlineUtc = UtcTime.AddMinutes(5);
+        }
+        else
+        {
+            Debug("The FA snapshot refresh wasn't accepted.");
+        }
     }
 }
 
@@ -76,33 +83,61 @@ public override void OnData(Slice slice)
 
 private void PollSnapshotRefresh()
 {
-    if (_refreshGeneration &lt; 0)
+    BrokerageAccountSnapshot snapshotToUse = null;
+    string errorMessage = null;
+    lock (_refreshLock)
     {
-        return;
+        if (_refreshGeneration &lt; 0)
+        {
+            return;
+        }
+
+        var snapshot = BrokerageAccountSnapshot;
+        if (snapshot.IsReady && snapshot.Generation &gt; _refreshGeneration)
+        {
+            _refreshGeneration = -1;
+            var hasRequestedScope = _refreshExpectedComplete
+                ? snapshot.IsComplete
+                : snapshot.Groups.ContainsKey("TestGroupEQ");
+            if (hasRequestedScope)
+            {
+                snapshotToUse = snapshot;
+            }
+            else
+            {
+                errorMessage = "The FA snapshot doesn't contain the requested scope.";
+            }
+        }
+        else if (snapshot.Status == BrokerageAccountSnapshotStatus.Failed ||
+            snapshot.Status == BrokerageAccountSnapshotStatus.Stale ||
+            snapshot.Status == BrokerageAccountSnapshotStatus.Unavailable)
+        {
+            _refreshGeneration = -1;
+            errorMessage = $"The FA snapshot refresh ended with status {snapshot.Status}.";
+        }
+        else if (UtcTime &gt;= _refreshDeadlineUtc)
+        {
+            _refreshGeneration = -1;
+            errorMessage = $"The FA snapshot refresh timed out with status {snapshot.Status}.";
+        }
     }
 
-    var snapshot = BrokerageAccountSnapshot;
-    if (snapshot.IsReady && snapshot.Generation &gt; _refreshGeneration)
+    if (snapshotToUse != null)
     {
-        _refreshGeneration = -1;
-        // Use the new snapshot.
+        // Use the new snapshot outside the refresh-state lock.
     }
-    else if (snapshot.Status == BrokerageAccountSnapshotStatus.Failed ||
-        snapshot.Status == BrokerageAccountSnapshotStatus.Stale ||
-        snapshot.Status == BrokerageAccountSnapshotStatus.Unavailable)
+    else if (errorMessage != null)
     {
-        _refreshGeneration = -1;
-        Error($"The FA snapshot refresh ended with status {snapshot.Status}.");
-    }
-    else if (UtcTime &gt;= _refreshDeadlineUtc)
-    {
-        _refreshGeneration = -1;
-        Error($"The FA snapshot refresh timed out with status {snapshot.Status}.");
+        Error(errorMessage);
     }
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
+    <pre class="python">from threading import Lock
+
+def initialize(self) -&gt; None:
+    self._refresh_lock = Lock()
     self._refresh_generation = None
     self._refresh_tick = 0
+    self._refresh_expected_complete = False
     self.schedule.on(
         self.date_rules.every_day(),
         self.time_rules.every(timedelta(minutes=1)),
@@ -110,44 +145,63 @@ private void PollSnapshotRefresh()
 
 def _refresh_snapshot(self) -&gt; None:
     self._poll_snapshot_refresh()
-    if self._refresh_generation is not None:
-        return
+    with self._refresh_lock:
+        if self._refresh_generation is not None:
+            return
 
-    snapshot = self.brokerage_account_snapshot
-    generation = snapshot.generation
-    self._refresh_tick += 1
-    complete = self._refresh_tick % 3 == 0
-    accepted = (
-        self.request_brokerage_account_snapshot_refresh()
-        if complete else
-        self.request_brokerage_account_snapshot_refresh(["TestGroupEQ"])
-    )
-    if accepted:
-        self._refresh_generation = generation
-        self._refresh_deadline_utc = self.utc_time + timedelta(seconds=30)
-    else:
-        self.debug("The FA snapshot refresh wasn't accepted.")
+        snapshot = self.brokerage_account_snapshot
+        self._refresh_tick += 1
+        complete = self._refresh_tick % 3 == 0
+        accepted = (
+            self.request_brokerage_account_snapshot_refresh()
+            if complete else
+            self.request_brokerage_account_snapshot_refresh(["TestGroupEQ"])
+        )
+        if accepted:
+            self._refresh_generation = snapshot.generation
+            self._refresh_expected_complete = complete
+            self._refresh_deadline_utc = self.utc_time + timedelta(minutes=5)
+        else:
+            self.debug("The FA snapshot refresh wasn't accepted.")
 
 def on_data(self, slice: Slice) -&gt; None:
     self._poll_snapshot_refresh()
 
 def _poll_snapshot_refresh(self) -&gt; None:
-    if self._refresh_generation is None:
-        return
+    snapshot_to_use = None
+    error_message = None
+    with self._refresh_lock:
+        if self._refresh_generation is None:
+            return
 
-    snapshot = self.brokerage_account_snapshot
-    if snapshot.is_ready and snapshot.generation &gt; self._refresh_generation:
-        self._refresh_generation = None
-        # Use the new snapshot.
-    elif snapshot.status in [
-            BrokerageAccountSnapshotStatus.FAILED,
-            BrokerageAccountSnapshotStatus.STALE,
-            BrokerageAccountSnapshotStatus.UNAVAILABLE]:
-        self._refresh_generation = None
-        self.error(f"The FA snapshot refresh ended with status {snapshot.status}.")
-    elif self.utc_time &gt;= self._refresh_deadline_utc:
-        self._refresh_generation = None
-        self.error(f"The FA snapshot refresh timed out with status {snapshot.status}.")</pre>
+        snapshot = self.brokerage_account_snapshot
+        if snapshot.is_ready and snapshot.generation &gt; self._refresh_generation:
+            self._refresh_generation = None
+            has_requested_scope = (
+                snapshot.is_complete
+                if self._refresh_expected_complete else
+                any(group.name.lower() == "testgroupeq"
+                    for group in list(snapshot.groups.values))
+            )
+            if has_requested_scope:
+                snapshot_to_use = snapshot
+            else:
+                error_message = "The FA snapshot doesn't contain the requested scope."
+        elif snapshot.status in [
+                BrokerageAccountSnapshotStatus.FAILED,
+                BrokerageAccountSnapshotStatus.STALE,
+                BrokerageAccountSnapshotStatus.UNAVAILABLE]:
+            self._refresh_generation = None
+            error_message = f"The FA snapshot refresh ended with status {snapshot.status}."
+        elif self.utc_time &gt;= self._refresh_deadline_utc:
+            self._refresh_generation = None
+            error_message = f"The FA snapshot refresh timed out with status {snapshot.status}."
+
+    if snapshot_to_use is not None:
+        # Use the new snapshot outside the refresh-state lock.
+        pass
+    elif error_message is not None:
+        self.error(error_message)</pre>
 </div>
 
 <h4>Snapshot status</h4>
@@ -228,7 +282,7 @@ def _poll_snapshot_refresh(self) -&gt; None:
         <tr><td><code class="csharp">ExcessLiquidity</code><code class="python">excess_liquidity</code></td><td>The excess liquidity, or null when IB omits it.</td></tr>
         <tr><td><code class="csharp">BuyingPower</code><code class="python">buying_power</code></td><td>The buying power, or null when IB omits it.</td></tr>
         <tr><td><code class="csharp">ValuationCurrency</code><code class="python">valuation_currency</code></td><td>The currency for the scalar account values, or an empty string.</td></tr>
-        <tr><td><code class="csharp">CashBalances</code><code class="python">cash_balances</code></td><td>The exact per-currency cash balances reported for the account.</td></tr>
+        <tr><td><code class="csharp">CashBalances</code><code class="python">cash_balances</code></td><td>The brokerage-reported cash balances by currency. See <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#08-Configuration-and-Limitations">Configuration and Limitations</a> for the named-group summary path's accepted zero-net non-base-currency limitation.</td></tr>
         <tr><td><code class="csharp">Positions</code><code class="python">positions</code></td><td>The positions mapped to LEAN symbols.</td></tr>
         <tr><td><code class="csharp">UnmappedPositions</code><code class="python">unmapped_positions</code></td><td>The brokerage positions LEAN couldn't safely map.</td></tr>
         <tr><td><code class="csharp">HasUnmappedPositions</code><code class="python">has_unmapped_positions</code></td><td>Whether the unmapped-position collection is nonempty.</td></tr>

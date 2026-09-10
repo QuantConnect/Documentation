@@ -2,7 +2,7 @@
 
 <h4>Example 1: Unified saved-method group order</h4>
 
-<p>This algorithm requests one group, waits for a newer <code>Ready</code> snapshot, verifies that the group is saved with <code>Equal</code>, and submits an aggregate parent order with an empty order-level method. Enable <code>ib-financial-advisors-unified-groups-enabled</code> in the deployment settings before IB Gateway starts. The request return value means accepted or coalesced, not completed, so the algorithm owns a 30-second timeout.</p>
+<p>This algorithm requests one group, waits for a newer <code>Ready</code> snapshot, verifies that the group is saved with <code>Equal</code>, and submits an aggregate parent order with an empty order-level method. Enable <code>ib-financial-advisors-unified-groups-enabled</code> in the deployment settings before IB Gateway starts. The request return value means accepted or coalesced, not completed. The example uses an illustrative five-minute observation deadline, which doesn't cancel accepted provider work; tune it to the selected scope and deployment.</p>
 
 <div class="section-example-container testable">
     <pre class="csharp">public class UnifiedFinancialAdvisorGroupAlgorithm : QCAlgorithm
@@ -11,7 +11,7 @@
     private Symbol _symbol;
     private long _refreshGeneration = -1;
     private DateTime _refreshDeadlineUtc;
-    private bool _submitted;
+    private int _submitted;
     private bool _stopped;
 
     public override void Initialize()
@@ -43,7 +43,8 @@
     private void RefreshOrPoll()
     {
         PollSnapshot();
-        if (!_submitted && !_stopped && _refreshGeneration &lt; 0)
+        if (System.Threading.Volatile.Read(ref _submitted) == 0 &amp;&amp;
+            !_stopped &amp;&amp; _refreshGeneration &lt; 0)
         {
             RequestSnapshot();
         }
@@ -55,7 +56,7 @@
         if (RequestBrokerageAccountSnapshotRefresh(new[] { GroupName }))
         {
             _refreshGeneration = snapshot.Generation;
-            _refreshDeadlineUtc = UtcTime.AddSeconds(30);
+            _refreshDeadlineUtc = UtcTime.AddMinutes(5);
         }
         else
         {
@@ -65,7 +66,8 @@
 
     private void PollSnapshot()
     {
-        if (_submitted || _stopped || _refreshGeneration &lt; 0)
+        if (System.Threading.Volatile.Read(ref _submitted) != 0 ||
+            _stopped || _refreshGeneration &lt; 0)
         {
             return;
         }
@@ -88,7 +90,11 @@
                 FaGroup = group.Name
                 // Leave FaMethod empty to use the saved method.
             };
-            _submitted = true;
+            if (System.Threading.Interlocked.CompareExchange(
+                    ref _submitted, 1, 0) != 0)
+            {
+                return;
+            }
             MarketOrder(_symbol, 10, orderProperties: properties);
         }
         else if (snapshot.Status == BrokerageAccountSnapshotStatus.Failed ||
@@ -104,7 +110,9 @@
         }
     }
 }</pre>
-    <pre class="python">class UnifiedFinancialAdvisorGroupAlgorithm(QCAlgorithm):
+    <pre class="python">from threading import Lock
+
+class UnifiedFinancialAdvisorGroupAlgorithm(QCAlgorithm):
     _group_name = "TestGroupEQ"
 
     def initialize(self) -&gt; None:
@@ -117,6 +125,7 @@
         self._refresh_generation = None
         self._submitted = False
         self._stopped = False
+        self._submission_lock = Lock()
 
         if not self.live_mode:
             return
@@ -140,7 +149,7 @@
         snapshot = self.brokerage_account_snapshot
         if self.request_brokerage_account_snapshot_refresh([self._group_name]):
             self._refresh_generation = snapshot.generation
-            self._refresh_deadline_utc = self.utc_time + timedelta(seconds=30)
+            self._refresh_deadline_utc = self.utc_time + timedelta(minutes=5)
         else:
             self.debug("The FA snapshot refresh wasn't accepted.")
 
@@ -163,7 +172,10 @@
             properties = InteractiveBrokersOrderProperties()
             properties.fa_group = group.name
             # Leave fa_method empty to use the saved method.
-            self._submitted = True
+            with self._submission_lock:
+                if self._submitted or self._stopped:
+                    return
+                self._submitted = True
             self.market_order(self._symbol, 10, order_properties=properties)
         elif snapshot.status in [
                 BrokerageAccountSnapshotStatus.FAILED,

@@ -48,7 +48,7 @@ private void RequestAllocationUpdate()
         _allocationGroupName = group.Name;
         _allocationMembershipHash = snapshot.MembershipHash;
         _allocationGroupConfigurationVersion = snapshot.GroupConfigurationVersion;
-        _allocationDeadlineUtc = UtcTime.AddSeconds(30);
+        _allocationDeadlineUtc = UtcTime.AddMinutes(5);
     }
     else
     {
@@ -84,7 +84,7 @@ def _request_allocation_update(self) -&gt; None:
         self._allocation_group_name = group.name
         self._allocation_membership_hash = snapshot.membership_hash
         self._allocation_group_configuration_version = snapshot.group_configuration_version
-        self._allocation_deadline_utc = self.utc_time + timedelta(seconds=30)
+        self._allocation_deadline_utc = self.utc_time + timedelta(minutes=5)
     else:
         self.debug("The FA allocation update wasn't accepted.")</pre>
 </div>
@@ -107,7 +107,7 @@ def _request_allocation_update(self) -&gt; None:
     <pre class="python"># Python uses the native dict overload shown above.</pre>
 </div>
 
-<p>Each overload returns <code class="csharp">true</code><code class="python">True</code> when the provider accepts the asynchronous request, not when IB confirms the update. Acceptance publishes a newer-generation <code>Pending</code> result, and the terminal result replaces it at the same mutation generation. Capture the current allocation-result generation before calling. Poll <code class="csharp">BrokerageAccountGroupAllocationUpdate</code><code class="python">brokerage_account_group_allocation_update</code> for a greater generation that matches the group and expected membership and configuration versions, then require <code>Succeeded</code> or <code>Failed</code>. A fast operation can publish a terminal result before your next read. Confirmation can stall or the account snapshot can become <code>Failed</code> or <code>Stale</code>, so enforce an algorithm-owned timeout.</p>
+<p>Each overload returns <code class="csharp">true</code><code class="python">True</code> when the provider accepts the asynchronous request, not when IB confirms the update. Acceptance publishes a newer-generation <code>Pending</code> result, and the terminal result replaces it at the same mutation generation. Capture the current allocation-result generation before calling. Poll <code class="csharp">BrokerageAccountGroupAllocationUpdate</code><code class="python">brokerage_account_group_allocation_update</code> for a greater generation that matches the group and expected membership and configuration versions, then require <code>Succeeded</code> or <code>Failed</code>. A fast operation can publish a terminal result before your next read. Confirmation can stall or the account snapshot can become <code>Failed</code> or <code>Stale</code>, so enforce an algorithm-owned observation timeout. Reaching that deadline doesn't cancel accepted provider work. The example above uses an illustrative five-minute deadline; tune it to the deployment.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private void PollAllocationUpdate()

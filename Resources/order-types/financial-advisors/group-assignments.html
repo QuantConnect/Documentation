@@ -6,7 +6,7 @@
 
 <p>The snapshot must be complete, or its selected <code class="csharp">Groups</code><code class="python">groups</code> scope must include the destination and every current source group that contains the account. Merely seeing a group in <code class="csharp">AllGroups</code><code class="python">all_groups</code> isn't sufficient. Refresh the complete mutation scope before requesting a cross-group move.</p>
 
-<p>The method returns <code class="csharp">true</code><code class="python">True</code> when the request is accepted for asynchronous processing, not when IB confirms it. Acceptance publishes a newer-generation <code>Pending</code> result, and the terminal result replaces it at the same mutation generation. Capture <code class="csharp">BrokerageAccountGroupAssignment.Generation</code><code class="python">brokerage_account_group_assignment.generation</code> before the call. Poll the property for a greater generation that matches the account and target group, then require <code>Succeeded</code> or <code>Failed</code>. Publication can move to the terminal result before your next read. Confirmation can stall or the account snapshot can become <code>Failed</code> or <code>Stale</code>, so your algorithm must enforce its own timeout.</p>
+<p>The method returns <code class="csharp">true</code><code class="python">True</code> when the request is accepted for asynchronous processing, not when IB confirms it. Acceptance publishes a newer-generation <code>Pending</code> result, and the terminal result replaces it at the same mutation generation. Capture <code class="csharp">BrokerageAccountGroupAssignment.Generation</code><code class="python">brokerage_account_group_assignment.generation</code> before the call. Poll the property for a greater generation that matches the account and target group, then require <code>Succeeded</code> or <code>Failed</code>. Publication can move to the terminal result before your next read. Confirmation can stall or the account snapshot can become <code>Failed</code> or <code>Stale</code>, so your algorithm must enforce its own observation timeout. Reaching that deadline doesn't cancel accepted provider work. The example below uses an illustrative five-minute deadline; tune it to the deployment.</p>
 
 <p>A null snapshot and invalid identifiers throw synchronously. A non-<code>Ready</code> snapshot, missing version tokens, unavailable manager, or inactive mutation lifecycle returns <code class="csharp">false</code><code class="python">False</code>. Provider validation of scope, topology, and allocation values can also reject or throw before asynchronous work is accepted.</p>
 
@@ -40,7 +40,7 @@ private void RequestAssignment(
         _assignmentGeneration = generation;
         _assignmentAccountId = accountId;
         _assignmentTargetGroupName = "TargetGroup";
-        _assignmentDeadlineUtc = UtcTime.AddSeconds(30);
+        _assignmentDeadlineUtc = UtcTime.AddMinutes(5);
     }
     else
     {
@@ -95,7 +95,7 @@ def _request_assignment(
     if accepted:
         self._assignment_generation = generation
         self._assignment_account_id = account_id
-        self._assignment_deadline_utc = self.utc_time + timedelta(seconds=30)
+        self._assignment_deadline_utc = self.utc_time + timedelta(minutes=5)
     else:
         self.debug("The FA group assignment wasn't accepted.")
 
@@ -160,7 +160,7 @@ def _poll_assignment(self) -&gt; None:
         <tr><td><code class="csharp">ErrorMessage</code><code class="python">error_message</code></td><td>A provider diagnostic or failure message.</td></tr>
         <tr><td><code class="csharp">IsPending</code><code class="python">is_pending</code></td><td>Whether the status is <code>Pending</code>.</td></tr>
         <tr><td><code class="csharp">IsCompleted</code><code class="python">is_completed</code></td><td>Whether the status isn't <code>Pending</code>. This value is also true for <code>Unavailable</code>, so require a matching newer generation before using it.</td></tr>
-        <tr><td><code>BrokerageAccountGroupAssignment(...)</code></td><td>The public constructor creates a provider result from the preceding operation fields, including the optional target allocation value. It validates the nonnegative generation, required account and target identifiers, and copied group-name collections.</td></tr>
+        <tr><td><code>BrokerageAccountGroupAssignment(...)</code></td><td>The public constructor creates a provider result from the preceding operation fields, including the optional target allocation value. It validates the nonnegative generation, required account identifier, any nonempty target identifier, and copied group-name collections.</td></tr>
     </tbody>
 </table>
 
