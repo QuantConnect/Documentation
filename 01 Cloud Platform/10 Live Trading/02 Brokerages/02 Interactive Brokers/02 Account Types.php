@@ -12,7 +12,7 @@
 <p>You need to activate IBKR Mobile Authentication (IB Key) to deploy live algorithms with your brokerage account. After you open your account, follow the <a rel="nofollow" target="_blank" href="https://ibkr.info/node/2260">installation and activation instructions</a> on the IB website.</p>
 
 <h4>Paper Trading</h4>
-<p>IB supports paper trading. Follow the <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/software/ptgstl/topics/papertrader.htm">Opening a Paper Trading Account</a> page in the IB documentation to set up your paper trading account.</p>
+<p>IB supports paper trading. Follow the <a rel="nofollow" target="_blank" href="https://www.ibkrguides.com/clientportal/papertradingaccount.htm">Paper Trading Account</a> page in the IB documentation to set up your paper trading account.</p>
 
 <? include(DOCS_RESOURCES."/data-feeds/ib-share-data-with-paper-trading.html"); ?>
 
