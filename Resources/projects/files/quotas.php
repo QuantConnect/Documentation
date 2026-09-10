@@ -37,6 +37,11 @@
    </tbody>
 </table>
 
+<?php
+$sharedLibrariesLink = "/docs/v2/cloud-platform/projects/shared-libraries";
+include(DOCS_RESOURCES."/projects/shared-libraries/best-practices.php");
+?>
+
 <style>
 #file-size-quota-table td:not(:first-child), 
 #file-size-quota-table th:not(:first-child) {

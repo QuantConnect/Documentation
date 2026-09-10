@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/projects/files/quotas.html"); ?>
+<?php include(DOCS_RESOURCES."/projects/files/quotas.php"); ?>
