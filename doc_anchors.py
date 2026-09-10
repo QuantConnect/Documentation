@@ -48,6 +48,7 @@ SECTION_REPLACEMENTS = [
     ("Multi Alpha",  "Multi-Alpha"),
     ("Self Managed", "Self-Managed"),
     ("Sub Assistant", "Sub-Assistant"),
+    ("Sub Agent",     "Sub-Agent"),
     ("Margin3F",     "Margin%3F"),
     ("Greeks3F",     "Greeks%3F"),
     ("Smile3F",      "Smile%3F"),

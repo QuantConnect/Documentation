@@ -48,4 +48,4 @@ $requiresSubscription = true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>
 
-<p>To connect LEAN to an IB Gateway instance that runs on your desktop instead of the instance inside the LEAN container, see <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#04-Connect-to-an-External-IB-Gateway">Connect to an External IB Gateway</a>.</p>
+<p>To connect LEAN to an IB Gateway instance that runs on your desktop instead of the instance inside the LEAN container, see <a href="/docs/v2/lean-cli/live-trading/brokerages/interactive-brokers#04-Deploy-with-External-IB-Gateway">Deploy with External IB Gateway</a>.</p>
