@@ -36,10 +36,23 @@
   The B-MICRO and B4-16-GPU nodes run at a lower clock speed, so they execute algorithm code more slowly.
 </p>
 
+<h4>Budget the Memory Before You Pick a Model</h4>
+
 <p>
-  Size the node on the <i>peak</i> memory your algorithm reaches, not the average.
-  LEAN stops an algorithm when its smoothed memory reading crosses the node's limit, as the <a href="/docs/v2/writing-algorithms/key-concepts/debugging-tools#07-Memory-Metrics">Memory Metrics</a> page describes.
-  Universe selection and Option chains are the usual sources of memory spikes, so avoid the smallest nodes for those strategies.
+  As a rule of thumb, each security subscription costs about 5MB of RAM, so the 512MB <a href="/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes">L-MICRO</a> node holds on the order of 100 subscriptions before the data feed alone exhausts it.
+  Everything else the algorithm keeps resident, such as indicators, history results, rolling windows, and machine learning models, comes out of the same budget.
+</p>
+
+<p>
+  Size the node so the algorithm averages below 80% of the model's RAM limit, which is 410MB on a 512MB node.
+  LEAN checks a smoothed average against the limit, which spans about a minute in backtests and about 10 minutes in live trading, and separately allows a single raw sample to reach twice the limit, so a brief spike does not stop the algorithm but a sustained level above the limit does.
+  The <a href="/docs/v2/writing-algorithms/key-concepts/debugging-tools#07-Memory-Metrics">Memory Metrics</a> page describes both checks and the log message LEAN writes when you cross 80%.
+</p>
+
+<p>
+  Universe selection, Option chains, and bulk history requests are the usual sources of memory spikes.
+  A single <span class="csharp"><code>History</code></span><span class="python"><code>history</code></span> call across a few hundred symbols builds one large table in memory, so it is often the peak an otherwise small algorithm has to be sized for.
+  Warming indicators from the universe's own data instead of from per-symbol history requests removes that peak rather than paying for it in a larger node.
 </p>
 
 <p>

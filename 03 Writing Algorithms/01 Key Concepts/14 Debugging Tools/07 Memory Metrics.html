@@ -66,19 +66,42 @@ for kvp in OS.get_server_statistics():
 </p>
 
 <p>
-  LEAN samples <code class="csharp">OS.TotalPhysicalMemoryUsed</code><code class="python">OS.TOTAL_PHYSICAL_MEMORY_USED</code> once per minute and feeds each sample into an exponential moving average.
-  The engine sets <code>emaPeriod = 60</code>, which gives you roughly a 1-hour rolling window.
+  LEAN samples <code class="csharp">OS.TotalPhysicalMemoryUsed</code><code class="python">OS.TOTAL_PHYSICAL_MEMORY_USED</code> once per second in backtests and once every 10 seconds in live trading, and feeds each sample into an exponential moving average.
+  The engine sets <code>emaPeriod = 60</code>, so the smoothed reading covers roughly the last minute of a backtest and the last 10 minutes of a live deployment.
 </p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Update the smoothed memory reading each minute.
+    <pre class="csharp">// Update the smoothed memory reading on each sample.
 sample = OS.TotalPhysicalMemoryUsed;
 memoryUsed = Convert.ToInt64((emaPeriod-1)/emaPeriod * memoryUsed + (1/emaPeriod)*sample);</pre>
-    <pre class="python"># Update the smoothed memory reading each minute.
+    <pre class="python"># Update the smoothed memory reading on each sample.
 sample = OS.TOTAL_PHYSICAL_MEMORY_USED
 memory_used = int((ema_period - 1) / ema_period * memory_used + (1 / ema_period) * sample)</pre>
 </div>
 
+<p>LEAN stops the algorithm when either of the following conditions is true:</p>
+
+<ul>
+  <li>The smoothed reading exceeds the node's memory limit.</li>
+  <li>A single raw sample exceeds twice the node's memory limit.</li>
+</ul>
+
 <p>
-  If the smoothed value exceeds the node's memory limit, LEAN terminates the algorithm with the runtime message <code>Execution Security Error: Memory Usage Maxed Out - {memoryCap}MB max, with last sample of {lastSample}MB.</code>, where <code>{memoryCap}</code> is the node's configured limit and <code>{lastSample}</code> is the most recent reading.
+  The second condition is what makes short-lived spikes survivable.
+  A universe selection pass, an Option chain, or a bulk history request can allocate well above the limit for a few samples without stopping the algorithm, as long as it releases the memory before it lifts the smoothed reading above the limit.
+  An algorithm on a 512MB node can therefore touch just under 1GB on a single sample, but it has to average below 512MB.
+</p>
+
+<p>
+  Once a minute, if the smoothed reading is above 80% of the limit, LEAN writes <code>Execution Security Error: Memory usage over 80% capacity. Sampled at {lastSample}</code> to the log.
+  Treat 80% of the limit as the level to design for, which is 410MB on a 512MB node.
+  An algorithm that sits above it has no room left for the spikes the allowance exists to cover.
+</p>
+
+<p>
+  When LEAN stops the algorithm, it reports the runtime message <code>Execution Security Error: Memory Usage Maxed Out - {memoryCap}MB max, with last sample of {lastSample}MB.</code>, where <code>{memoryCap}</code> is the node's configured limit and <code>{lastSample}</code> is the most recent reading.
+</p>
+
+<p>
+  For the memory cost of a subscription and how to pick a node model, see <a href="/docs/v2/writing-algorithms/key-concepts/algorithm-performance#07-Node-Sizing">Node Sizing</a>.
 </p>
