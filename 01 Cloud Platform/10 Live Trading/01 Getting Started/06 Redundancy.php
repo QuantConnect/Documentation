@@ -29,7 +29,7 @@
     </tbody>
 </table>
 
-<p>America (NY7) is the default region. To use a different one, select it in the <span class="page-section-name">Region</span> section of the Deploy Live page. The <span class="field-name">Node</span> field then only lists the <a href="/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes">live trading nodes</a> in your organization that are available in the region you select.</p>
+<p>America (NY7) is the default region, racked in <a rel="nofollow" target="_blank" href="https://www.equinix.com/data-centers/americas-colocation/united-states-colocation/new-york-data-centers/ny7">Equinix NY7</a>. To use a different one, select it in the <span class="page-section-name">Region</span> section of the Deploy Live page. The <span class="field-name">Node</span> field then only lists the <a href="/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes">live trading nodes</a> in your organization that are available in the region you select.</p>
 
 <p>This provides hot-warm redundancy. In the unlikely situation NY7 is unavailable, you deploy your strategy to TOR and it will continue operating as before. It is important to provision these servers ahead of time, as redundancy space is served on a first-come-first-served basis. Spinning up new servers in a region can take many days or weeks.</p>
 
