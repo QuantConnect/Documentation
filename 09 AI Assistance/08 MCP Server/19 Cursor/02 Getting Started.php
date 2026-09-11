@@ -27,12 +27,15 @@
   <p>It takes a few minutes to create a new organization workspace directory and populate it with the <a href='/docs/v2/local-platform/development-environment/organization-workspaces#07-Directory-Structure'>the initial file structure</a>. After the organization workspace is populated with the initial file structure, it pulls your cloud project files.</p>
   
   <!-- Configure the MCP Server -->
-  <li>In your <span class='public-file-name'>~ / .cursor / mcp.json</span> file, add the following configuration:</li>
+  <li>Press <span class='key-combinations'>Ctrl+Shift+P</span> to open the Command Palette, enter <span class='key-combinations'>Open Customize</span>, and then press <span class='key-combinations'>Enter</span>.</li>
+  <li>On the Customize page, click <span class='button-name'>MCPs > New MCP Server > User</span>.</li>
+
+  <li>In the <span class='public-file-name'>~ / .cursor / mcp.json</span> file that opens, add the following configuration:</li>
    <div class="section-example-container">
      <pre>{
   "mcpServers": {
     "qc-mcp": {
-      "url": "http://localhost:3001/",
+      "url": "https://www.quantconnect.com/api/v2/mcp",
       "transport": {
         "type": "Streamable HTTP"
       }
