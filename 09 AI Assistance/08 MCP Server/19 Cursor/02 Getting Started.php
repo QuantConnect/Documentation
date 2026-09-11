@@ -46,15 +46,13 @@
 
   <!-- Open a QC project -->
   <li>In Cursor, <a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>create a new project</a> or <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>open an existing one</a>.</li>
-  
-  <!-- Ensure the tools are discovered -->
-  <li>In the top navigation bar, click <span class='menu-name'>File > Preferences > Cursor Settings</span>.</li>
-  <li>On the Cursor Settings page, click <span class='menu-name'>Tools & MCP</span>.</li>
-  <li>If the QC MCP Server has an error, click the toggle switch twice to restart it.</li>
-  <img src='https://cdn.quantconnect.com/i/tu/cursor-mcp-error.png' alt='Cursor GUI showing the qc-mcp server has an error' class='docs-image'>
 
   <!-- Open the chat window -->
   <li>Press <span class='key-combinations'>Ctrl+Alt+b</span> to chat with the agent.</li>
+  <li>If the agent asks you to authenticate your QuantConnect account, click <span class='button-name'>Authenticate</span>.</li>
+  <img src='https://cdn.quantconnect.com/i/tu/cursor-authenticate-qc-mcp.png' class='docs-image' alt='Pop-up that asks you to authenticate your QC account'>
+  
+  
 </ol>
 
 <p>
