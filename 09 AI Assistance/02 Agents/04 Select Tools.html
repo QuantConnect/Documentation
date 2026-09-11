@@ -4,7 +4,14 @@
   Each tool you enable expands what the agent can do and what it can choose between when planning a step.
 </p>
 <p>
-  Be selective about which tools to enable for an agent.
+  You enable tools by granting permissions.
+  Each permission covers a group of related tools and has a read toggle and a write toggle.
+  The read toggle enables the tools in the group that only read information and the write toggle enables the tools that create, change, or delete something.
+  The Data permission has only a read toggle because all of its tools only read information.
+  The following sections describe the permissions and the tools they include.
+</p>
+<p>
+  Be selective about which permissions to grant an agent.
   The model considers every available tool at every step, so an agent with twenty tools is slower and more likely to misroute work than one with the four tools it actually needs.
   Withholding tools matters as much as enabling them.
 </p>
@@ -12,3 +19,91 @@
   When you write the system prompt, name the tools the agent should use at each step.
   This tells the model which capability you intended for which task and reduces the chance it picks a related-looking tool that isn't the right tool for the job.
 </p>
+
+<h4>Files And Projects</h4>
+<ul>
+  <li><code>read_open_project</code> - Read the current open project details and files.</li>
+  <li><code>read_project_nodes</code> - Read the available and selected nodes of a project.</li>
+  <li><code>update_project</code> - Update project name or description. Provide at least one.</li>
+  <li><code>initialize_project</code> - Initialize a project from a template.</li>
+  <li><code>read_project_templates</code> - Reads the best matching project templates based on a provided project description, returning the templates and their file contents.</li>
+  <li><code>create_compile</code> - Compile and check for syntax and runtime errors. Run after code changes.</li>
+  <li><code>read_file</code> - Read full file content or a 1-based line range from .py/.cs files.</li>
+  <li><code>create_file</code> - Create a new .py or .cs file and compile to check for syntax/compilation errors. Returns errors found. File content is limited to the organization plan file size limit; oversized writes are rejected, split the content into smaller files.</li>
+  <li><code>edit_file</code> - Replace a unique snippet of an existing file, then compile to check for syntax/compilation errors. oldString must match the exact text to replace; to write an entire file use create_file. Returns errors found. File content is limited to the organization plan file size limit; oversized writes are rejected, split the content into smaller files.</li>
+  <li><code>delete_file</code> - Delete a file under the project root.</li>
+  <li><code>search_file_content</code> - Search all project files case-insensitively and return matching lines. Results are paginated; use page to fetch subsequent pages.</li>
+</ul>
+
+<h4>Backtest</h4>
+<ul>
+  <li><code>create_backtest</code> - Submits an algorithm for backtesting against historical data. The code is compiled, then the backtest is queued to run asynchronously on a worker. Returns a backtest ID acknowledging the job was accepted. When the run finishes, the system will deliver the completed results to you as a new message. Once you create a backtest, in most cases go to sleep and another system will awake you when the backtest is done. Do not poll to check backtest status.</li>
+  <li><code>read_backtest</code> - Reads results and performance stats for previously-completed backtests — for example, ones the user references by ID from an earlier session, or ones whose results have already been delivered in this conversation and you need to re-examine or compare. Do NOT use this to check on a backtest you submitted earlier in this conversation but haven't yet received results for. Those arrive automatically as a new message when ready; calling this tool to fetch them early will return empty or stale data and only delays things.</li>
+  <li><code>list_backtests</code> - List recent backtests with name, date, and stats. Find specific IDs or review past runs.</li>
+  <li><code>update_backtest</code> - Rename a backtest or update its note. Provide at least name or note. Defaults to latest.</li>
+  <li><code>delete_backtest</code> - Permanently delete a backtest. Cannot be undone. Clean up old runs.</li>
+  <li><code>search_backtest_logs</code> - Search backtest logs to monitor performance and behavior during backtesting.</li>
+</ul>
+
+<h4>Optimization</h4>
+<ul>
+  <li><code>create_optimization</code> - Submits an optimization job that runs multiple backtests across parameter combinations to find the best settings. The code is compiled, then the optimization is queued to run asynchronously on workers. Returns an optimization ID acknowledging the job was accepted. When the run finishes, the system will deliver the completed results to you as a new message. Once you create an optimization, in most cases go to sleep and another system will awake you when it is done. Do not poll to check optimization status.</li>
+  <li><code>read_optimization</code> - Read the natural-language interpretation of a completed optimization. Do NOT use this to check on an optimization you submitted earlier in this conversation but haven't yet received results for. Those arrive automatically as a new message when ready; calling this tool to fetch them early will return empty or stale data and only delays things.</li>
+  <li><code>list_optimizations</code> - List optimizations with name, status, date. Find IDs or review past runs.</li>
+  <li><code>abort_optimization</code> - Abort an optimization.</li>
+  <li><code>delete_optimization</code> - Permanently delete an optimization and results. Cannot be undone.</li>
+</ul>
+
+<h4>Research</h4>
+<ul>
+  <li><code>jupyter_create_cell</code> - Insert a notebook cell in QuantConnect Research. Appends by default. The whole notebook (outputs excluded) is limited to the organization plan file size limit; oversized writes are rejected, keep cells small and move code into project files.</li>
+  <li><code>jupyter_read_cell</code> - Read one notebook cell by zero-based index.</li>
+  <li><code>jupyter_update_cell</code> - Replace cell source in QuantConnect Research. The whole notebook (outputs excluded) is limited to the organization plan file size limit; oversized writes are rejected, keep cells small and move code into project files.</li>
+  <li><code>jupyter_delete_cell</code> - Delete a notebook cell at the specified zero-based index.</li>
+  <li><code>jupyter_execute_cell</code> - Execute a cell in the QuantConnect Research environment and return outputs.</li>
+  <li><code>jupyter_create_notebook</code> - Replace the QuantConnect Research notebook with raw JSON. The whole notebook (outputs excluded) is limited to the organization plan file size limit; oversized writes are rejected, keep cells small and move code into project files.</li>
+  <li><code>jupyter_read_notebook</code> - Read the QuantConnect Research notebook as raw JSON.</li>
+  <li><code>jupyter_execute_notebook</code> - Execute all QuantConnect Research notebook cells and return combined outputs.</li>
+</ul>
+
+<h4>Live</h4>
+<ul>
+  <li><code>create_live_algorithm</code> - Deploy live to paper trading using QuantConnect brokerage. Compiles first.</li>
+  <li><code>read_live_algorithm</code> - Read the current live deployment status and results. Use this to monitor live trading performance.</li>
+  <li><code>stop_live_algorithm</code> - Stop live trading without liquidating. Positions stay open.</li>
+  <li><code>liquidate_live_algorithm</code> - Close positions at market prices and stop trading. Exit all trades.</li>
+  <li><code>search_live_logs</code> - Search logs from a live deployment. Defaults to the current deployment. Use this to monitor the performance and behavior.</li>
+</ul>
+
+<h4>Object Store</h4>
+<ul>
+  <li><code>object_store_get</code> - Read data from the Object Store.</li>
+  <li><code>object_store_set</code> - Writes content to a file, overwriting existing content.</li>
+</ul>
+
+<h4>Kanban</h4>
+<ul>
+  <li><code>create_kanban_card</code> - Create a new card on the Kanban board.</li>
+  <li><code>get_kanban_cards</code> - Get the cards on the Kanban board.</li>
+  <li><code>update_kanban_card</code> - Update a card on the Kanban board.</li>
+  <li><code>delete_kanban_card</code> - Delete a card from the Kanban board.</li>
+  <li><code>get_kanban_ideas</code> - Get the ideas on the Kanban board.</li>
+  <li><code>select_kanban_card</code> - Select a card on the Kanban board to work on.</li>
+  <li><code>deploy_kanban_card</code> - Deploy an agent on a Kanban card.</li>
+</ul>
+
+<h4>Notifications</h4>
+<ul>
+  <li><code>send_email_notification</code> - Send an email notification.</li>
+  <li><code>send_sms_notification</code> - Send an SMS notification.</li>
+  <li><code>send_telegram_notification</code> - Send a Telegram notification.</li>
+</ul>
+
+<h4>Data</h4>
+<ul>
+  <li><code>list_datasets</code> - List the names of available QuantConnect datasets. Use get_dataset_details for full information about a specific dataset.</li>
+  <li><code>get_dataset_details</code> - Get full details for a specific QuantConnect dataset, including description, history, reach, url, and code examples.</li>
+  <li><code>financial_data_blog_posts</code> - Fetch recent financial blog posts.</li>
+  <li><code>financial_data_news_articles</code> - Fetch recent financial news articles.</li>
+  <li><code>fetch_url</code> - Fetch the content of a web page given its URL.</li>
+</ul>
