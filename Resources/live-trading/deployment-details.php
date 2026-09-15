@@ -23,8 +23,7 @@
    </tbody>
 </table>
 
-<h4>Access Deployment Details</h4>
-<p>The <code class="csharp">DeploymentDetails</code><code class="python">deployment_details</code> property of your algorithm is a read-only dictionary of the details. LEAN populates it before it calls the <code class="csharp">Initialize</code><code class="python">initialize</code> method, so you can read it anywhere in your algorithm.</p>
+<p>The<code class="csharp">DeploymentDetails</code><code class="python">deployment_details</code> property of your algorithm is a read-only dictionary of the details. LEAN populates it before it calls the <code class="csharp">Initialize</code><code class="python">initialize</code> method, so you can read it anywhere in your algorithm.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var deploymentDetails = DeploymentDetails.Select(kvp => $"{kvp.Key}:{kvp.Value}");
