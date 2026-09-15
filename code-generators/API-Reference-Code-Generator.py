@@ -547,7 +547,7 @@ class APIReferenceGenerator:
         if "type" in add_prop:
             prop_type = self._normalize_type(add_prop["type"])
             if isinstance(prop_type, str):
-                return f'"{prop_type}"', f"{prop_type} object"
+                return f'{{\n{tab}    "key": "{prop_type}"\n{tab}  }}', f"{prop_type} object"
             # dict type with format (edge case)
             fmt = prop_type.get("format", "")
             type_label = f'{prop_type}$({fmt}) object'
