@@ -1,0 +1,240 @@
+<p>
+  The Agent Harness is the runtime that turns a language model into a working quant researcher.
+  It gives the model the tools, data, memory, permissions, and supervision it needs to do research unattended and then reports back on what it did.
+  Running your own agent loop is possible, but the harness handles the parts that are hard to get right: keeping the run alive for hours, coordinating several agents, enforcing what each one is allowed to touch, and recovering from provider failures without losing work.
+</p>
+
+<h4>Runs on QuantConnect Infrastructure</h4>
+<p>
+  Agents run server-side, next to the data, the <a href="/docs/v2/cloud-platform/object-store">Object Store</a>, and a dedicated research node, so tool calls stay local instead of crossing the network to a client machine.
+  A run keeps working for hours unattended, including while backtests and optimizations are in progress.
+  The harness saves the full conversation and agent state continuously, so a redeploy resumes exactly where the previous run left off.
+  When a backtest or optimization finishes, the agent wakes automatically rather than polling or waiting on a client to check in.
+  Every step streams live to the QuantConnect web IDE, and a REST API lets you prompt an agent, check its status, stop it, and answer its approval requests from your own tooling.
+</p>
+
+<h4>Multi-Agent Workflows</h4>
+<p>
+  One deployment can hold a chain of specialist agents or an orchestrator that delegates to a team of sub-agents.
+  Agents message each other through a built-in chat room, and you can run parallel instances of the same agent when the work splits cleanly.
+  Built-in guards prevent stalled handoffs and deadlocks between agents that are waiting on each other.
+  The harness integrates with the <a href="/docs/v2/cloud-platform/research-pipeline">Research Pipeline</a> Kanban board, so cards advance automatically as work completes and agents can deploy other agents to pick up the next stage.
+  Persistent <a href="/docs/v2/ai-assistance/agents#16-Custom-Memories">memory</a> and a <a href="/docs/v2/ai-assistance/agents#15-Custom-Skills">skills library</a> load into every run, and an agent can send email, SMS, or Telegram notifications from within a run.
+</p>
+
+<h4>Built-In Backtest Diagnostics That Feed the AI</h4>
+<p>
+  Every backtest runs through LEAN's results analyzer, and the findings are handed to the agent as structured feedback with concrete fixes.
+  The analyzer runs during the backtest and again at completion, so the agent can stop a bad run early.
+  Each finding carries the issue, a sample from the logs or orders, an occurrence count, and suggested solutions, including code snippets in the algorithm's own language, Python or C#.
+  Findings are ranked by severity, capped per run, and muted after three repeats so the agent is not spammed.
+  Benchmark comparisons are computed against SPY over the same period.
+</p>
+<table class='qc-table table'>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Check</th>
+            <th>What it tells the AI</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Fatal</td>
+            <td>Time loop timeout</td>
+            <td>Run was killed for a slow time step or overall runtime, with steps to reduce universe, resolution, or history requests</td>
+        </tr>
+        <tr>
+            <td>Fatal</td>
+            <td>Portfolio wiped out</td>
+            <td>Equity hit zero or below, with data, margin call, and bar gap causes to investigate</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Flat equity curve</td>
+            <td>Multi-day flat segments, with checks for entry conditions, warm-up gates, empty universe, and cash</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Underperforms benchmark</td>
+            <td>Sharpe ratio below SPY over the full period</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Not statistically significant</td>
+            <td>One-sample t-test on excess daily returns fails at the 5 percent level</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Crisis underperformance</td>
+            <td>Sharpe below benchmark across 17 named stress periods from the DotCom bubble to the AI boom</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Lucky equity curve</td>
+            <td>Block-bootstrap Monte Carlo places the return above the 90th percentile of simulated paths</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Overfitting risk</td>
+            <td>More than ten numeric parameters detected, with a table of what counts as a parameter</td>
+        </tr>
+        <tr>
+            <td>Strategy</td>
+            <td>Margin under-utilized</td>
+            <td>Days where the 3-day average margin usage falls below 50 percent</td>
+        </tr>
+        <tr>
+            <td>Execution</td>
+            <td>Margin calls</td>
+            <td>Margin call orders executed, with a warning handler pattern to reduce exposure first</td>
+        </tr>
+        <tr>
+            <td>Execution</td>
+            <td>Stale fills</td>
+            <td>Orders filled on price data an hour or more old, typically daily data traded intraday</td>
+        </tr>
+        <tr>
+            <td>Execution</td>
+            <td>Extended hours fills</td>
+            <td>Fills outside regular hours where slippage is high, with a market-open guard</td>
+        </tr>
+        <tr>
+            <td>Execution</td>
+            <td>Take-profit and stop-loss pairs</td>
+            <td>Both legs filled, or one leg left dangling after the other filled, with OCO handling</td>
+        </tr>
+        <tr>
+            <td>Execution</td>
+            <td>Insights for delisted assets</td>
+            <td>Insights emitted on securities that can no longer trade</td>
+        </tr>
+        <tr>
+            <td>Performance</td>
+            <td>Slow execution</td>
+            <td>Throughput under 40k data points per second, with profiling and optimization steps</td>
+        </tr>
+        <tr>
+            <td>Performance</td>
+            <td>Long projected runtime</td>
+            <td>More than an hour remaining at the recent pace, so the agent can stop and fix</td>
+        </tr>
+        <tr>
+            <td>Performance</td>
+            <td>Throughput degradation</td>
+            <td>Recent speed less than half the initial speed</td>
+        </tr>
+        <tr>
+            <td>Performance</td>
+            <td>History request load</td>
+            <td>Most recent data served by history requests instead of the feed</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Insufficient buying power</td>
+            <td>Order unaffordable under the margin model, with initial margin and cash buffer examples</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Ordering during warm-up</td>
+            <td>Orders placed before warm-up finished, with the correct lifecycle hook</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Brokerage refused to submit</td>
+            <td>27 broker-specific rules across Alpaca, Binance, Coinbase, Interactive Brokers, RBI, Tradier, Trading Technologies, Wolverine, and the default model</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Brokerage refused to update</td>
+            <td>Order updates the brokerage model does not support</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Exceeds shortable quantity</td>
+            <td>Not enough shares to borrow, with a shortable quantity check</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Non-tradable security</td>
+            <td>Orders on indices, canonical options, or continuous futures</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Zero order quantity</td>
+            <td>Portfolio weights too small to produce a share, with a quantity check</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Below lot size</td>
+            <td>Quantity under the security's lot size</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Security price is zero</td>
+            <td>Order placed before the first bar arrived, with price seeding enabled</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Forex or crypto conversion rate zero</td>
+            <td>Missing conversion data for the account currency</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Exchange not open</td>
+            <td>Option exercise or futures market-on-open order while closed</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Market-on-open during regular hours</td>
+            <td>Order type misuse, with the correct timing guard</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Market-on-close too early</td>
+            <td>Submitted outside the close buffer, with the buffer setting</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Order quota exceeded</td>
+            <td>Organization order limit reached, with ways to reduce order count</td>
+        </tr>
+        <tr>
+            <td>Order errors</td>
+            <td>Option exercise errors</td>
+            <td>Exercising European options early, more contracts than held, short positions, or during an underlying split</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Permissions and Human Oversight</h4>
+<p>
+  Each agent has per-domain read and write permissions across files, backtests, optimizations, research, live trading, storage, data, Kanban, and notifications.
+  Live trading requires an explicit write grant, so an agent can't deploy capital unless you decided it should.
+  In chat mode, file and notebook edits require human approval, with a diff preview before you approve.
+  An agent can pause and ask you a question, and the harness captures your answer even if the run is redeployed in between.
+  External MCP servers such as GitHub mount under the same permission model, with read-only or full access.
+</p>
+
+<h4>Model Layer</h4>
+<p>
+  The harness works with ten model providers and a gateway that routes across vetted providers with automatic failover.
+  <a href="/docs/v2/ai-assistance/bring-your-own-key">Bring your own API key</a>, or run on the platform key.
+  When an agent gets stuck, the harness temporarily escalates to a stronger model within a budget you control.
+  It manages context automatically by summarizing older history, trimming stale tool output, and keeping the run inside the model's context window.
+  It sanitizes the conversation history so a run survives switching between strict and lenient providers, and it repairs malformed tool calls and recovers from provider quirks without failing the run.
+</p>
+
+<h4>Reliability</h4>
+<p>
+  Dropped streams and transient tool failures retry from saved state with backoff.
+  When a provider cuts a response off at the output token limit, the run continues automatically.
+  The harness detects and ends wasteful polling loops, capping runaway token spend, and it caps output tokens per turn to bound runaway reasoning.
+</p>
+
+<h4>Observability</h4>
+<p>
+  Every run reports token usage, duration, model, permissions, retries, escalations, and errors.
+  Fleet-wide reporting tracks reliability, efficiency, and quality by model.
+  The harness is tested continuously against live providers, with fixes shipped daily from production telemetry.
+</p>
