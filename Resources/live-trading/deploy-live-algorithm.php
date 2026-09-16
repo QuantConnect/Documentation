@@ -40,4 +40,4 @@
 
 <p>The deployment process can take up to 5 minutes. When the algorithm deploys, the <a href="/docs/v2/cloud-platform/live-trading/results">live results page</a> displays. If you know your brokerage positions before you deployed, you can verify they have been loaded properly by checking your equity value in the runtime statistics, your cashbook holdings, and your position holdings.</p>
 
-<p>Restarts, including automatic restarts and redeployments, don't save the state of your algorithm. To learn what a restart recovers and how to persist the rest, see <a href="/docs/v2/cloud-platform/live-trading/deployment#11-State-Persistence">State Persistence</a>.</p>
+<p>Restarts, including automatic restarts and redeployments, don't save the state of your algorithm. To learn what a restart recovers and how to persist the rest, see <a href="/docs/v2/cloud-platform/live-trading/deployment#10-State-Persistence">State Persistence</a>.</p>
