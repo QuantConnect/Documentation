@@ -1,0 +1,32 @@
+<p>Restarts don't save the state of your algorithm. When you stop and redeploy an algorithm, <a href='/docs/v2/cloud-platform/live-trading/getting-started#06-Update-Live-Algorithms'>update it</a>, or an <a href='/docs/v2/cloud-platform/live-trading/deployment#07-Automatic-Restarts'>automatic restart</a> recovers it from a runtime error, LEAN starts a new instance of the algorithm and runs its <code class="csharp">Initialize</code><code class="python">initialize</code> method again. Class members, indicators, rolling windows, universe selections, and pending scheduled events all start empty.</p>
+
+<p>The following table shows the state that a restart recovers:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style="width: 25%">State</th>
+            <th style="width: 75%">Source</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Cash</td>
+            <td>Your brokerage account. QuantConnect Paper Trading has no brokerage account, so the platform saves the last known cash and uses it to pre-fill the <span class="page-section-name">Algorithm Cash State</span> section of the deployment wizard when you redeploy.</td>
+        </tr>
+        <tr>
+            <td>Holdings</td>
+            <td>Your brokerage account. For QuantConnect Paper Trading, the platform saves the last known holdings and uses them to pre-fill the <span class="page-section-name">Algorithm Holdings State</span> section of the deployment wizard when you redeploy.</td>
+        </tr>
+        <tr>
+            <td>Open orders</td>
+            <td>Your brokerage account, if the brokerage integration can fetch open orders. Otherwise, the algorithm restarts without them. QuantConnect Paper Trading doesn't restore open orders.</td>
+        </tr>
+        <tr>
+            <td>Everything else</td>
+            <td>Nothing. The algorithm rebuilds it.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>To rebuild indicators and other data-driven state, <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up</a> the algorithm. To recover state that history can't rebuild, like entry prices, trade counters, or the current step of a multi-step strategy, save it in the <a href='/docs/v2/writing-algorithms/object-store'>Object Store</a> while the algorithm runs and load it back in <code class="csharp">Initialize</code><code class="python">initialize</code>. To check that the algorithm recovers, <a href='/docs/v2/cloud-platform/live-trading/getting-started#03-Restart-Live-Algorithms'>restart it</a> while paper trading.</p>
