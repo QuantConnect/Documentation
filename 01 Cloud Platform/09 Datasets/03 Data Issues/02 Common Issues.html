@@ -6,3 +6,23 @@
     <li>Listings and delistings</li>
     <li>Ticker changes</li>
 </ul>
+
+<p>Some data that looks wrong is correct. Before you report an issue, rule out the following causes. A quick search for news about the asset on the dates in question usually explains them.</p>
+
+<h4>Missing Intraday Data</h4>
+<p>Illiquid assets can go minutes or hours without a trade, so there is no trade bar to deliver. Enable <a href="/docs/v2/writing-algorithms/securities/requesting-data#05-Fill-Forward">fill-forward</a> or check the quote bars for the same period. Some contracts, like out-of-the-money Option strikes and back-month Futures contracts, rarely trade at all.</p>
+
+<h4>Missing Dates</h4>
+<p>Trading halts, temporary suspensions, and delistings stop the data. Data also doesn't exist before an asset's IPO date or on exchange holidays. Early closes shorten the trading day, so check the <a href="/docs/v2/writing-algorithms/securities/market-hours">market hours</a> of the asset before you report a missing afternoon.</p>
+
+<h4>Price Jumps</h4>
+<p>Splits, reverse splits, and dividends create discontinuities in the raw price series. If you compare adjusted prices with raw prices from another source, the values differ by the adjustment factor. Adjusted prices also change retroactively every time a new corporate action occurs. For more information, see <a href="/docs/v2/cloud-platform/datasets/misconceptions#05-Data-Normalization">Data Normalization</a> and <a href="/docs/v2/cloud-platform/datasets/misconceptions#06-Adjusted-Prices">Adjusted Prices</a>.</p>
+
+<h4>Ticker Changes</h4>
+<p>When a company changes its ticker, the historical data stays under the ticker the asset traded under at the time. If a security looks like it has no history, check for a <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#04-Symbol-Changes">symbol change</a>.</p>
+
+<h4>Differences From Other Platforms</h4>
+<p>Prices, volumes, and timestamps can legitimately differ from other platforms because of the tape coverage, the time zone, and the time the bar is stamped. For more information, see <a href="/docs/v2/cloud-platform/datasets/misconceptions#02-Cross-Platform-Discrepancies">Cross-Platform Discrepancies</a>, <a href="/docs/v2/cloud-platform/datasets/misconceptions#03-Timezone-Differences">Timezone Differences</a>, and <a href="/docs/v2/cloud-platform/datasets/misconceptions#04-Misaligned-Timestamps">Misaligned Timestamps</a>.</p>
+
+<h4>Outliers in Tick and Second Data</h4>
+<p>Single trades far from the prevailing price are often real. Odd-lot prints, flash crashes, and <a href="/docs/v2/cloud-platform/datasets/misconceptions#07-Opening-and-Closing-Auctions">opening and closing auctions</a> can all produce them.</p>
