@@ -1,6 +1,6 @@
 <p>
 	Live trading nodes enable you to deploy live algorithms to our professionally-managed, co-located servers. 
-	The data center depends on the <a href='/docs/v2/cloud-platform/live-trading/getting-started#06-Redundancy'>region</a> you deploy to. 
+	The data center depends on the <a href='/docs/v2/cloud-platform/live-trading/getting-started#07-Redundancy'>region</a> you deploy to. 
 	You need a live trading node for each algorithm that you deploy to our co-located servers. 
 	Several models of live trading nodes are available. 
 	More powerful live trading nodes allow you to run algorithms with larger universes and give you <a href='/docs/v2/cloud-platform/organizations/resources#08-Training-Quotas'>more time for machine learning training</a>.

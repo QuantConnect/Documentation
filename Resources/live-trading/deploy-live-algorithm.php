@@ -8,7 +8,7 @@
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Lightning icon"> <span class="icon-name">Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name"><?=$brokerageName?></span> from the drop-down menu.</li>
     <?=$authentication?>
-    <li>In the <span class="page-section-name">Region</span> section, click the <a href="/docs/v2/cloud-platform/live-trading/getting-started#06-Redundancy">region</a> where you want to run the algorithm.</li>
+    <li>In the <span class="page-section-name">Region</span> section, click the <a href="/docs/v2/cloud-platform/live-trading/getting-started#07-Redundancy">region</a> where you want to run the algorithm.</li>
     <?=isset($regionNote) ? $regionNote : "";?>
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
     <? if (!isset($omitTemplateDataProviderText)) { ?>
@@ -39,3 +39,5 @@
 </ol>
 
 <p>The deployment process can take up to 5 minutes. When the algorithm deploys, the <a href="/docs/v2/cloud-platform/live-trading/results">live results page</a> displays. If you know your brokerage positions before you deployed, you can verify they have been loaded properly by checking your equity value in the runtime statistics, your cashbook holdings, and your position holdings.</p>
+
+<p>Restarts, including automatic restarts and redeployments, don't save the state of your algorithm. To learn what a restart recovers and how to persist the rest, see <a href="/docs/v2/cloud-platform/live-trading/deployment#11-State-Persistence">State Persistence</a>.</p>

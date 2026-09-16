@@ -25,7 +25,7 @@ if ($cloudPlatform) {
     ?>
 
     <? if ($cloudPlatform) { ?>
-    <li>In the <span class="page-section-name">Region</span> section, click the <a href="/docs/v2/cloud-platform/live-trading/getting-started#06-Redundancy">region</a> where you want to run the algorithm.</li>
+    <li>In the <span class="page-section-name">Region</span> section, click the <a href="/docs/v2/cloud-platform/live-trading/getting-started#07-Redundancy">region</a> where you want to run the algorithm.</li>
     <? } ?>
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
     <li><span class='qualifier'>(Optional)</span> In the <span class='page-section-name'>Data Provider</span> section, click <span class='button-name'>Show</span> and change the data provider or add additional providers.</li>    
@@ -57,3 +57,5 @@ if ($cloudPlatform) {
 </ol>
 
 <p>The deployment process can take up to 5 minutes. When the algorithm deploys, the <?=$liveTradingResultsPage?> displays. If you know your brokerage positions before you deployed, you can verify they have been loaded properly by checking your equity value in the runtime statistics, your cashbook holdings, and your position holdings.</p>
+
+<p>Restarts, including automatic restarts and redeployments, don't save the state of your algorithm. To learn what a restart recovers and how to persist the rest, see <a href="/docs/v2/cloud-platform/live-trading/deployment#11-State-Persistence">State Persistence</a>.</p>
