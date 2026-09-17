@@ -36,6 +36,24 @@ if result['success']:
     print("Backtest Statistics:")
     print(result)
 
+### Read Backtest Logs
+# Prepare data payload to read the first 200 log lines
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id,  # ID of the backtest to read
+    "start": 0,  # Start line (inclusive)
+    "end": 200,  # End line (exclusive), at most 200 lines per request
+    "query": None  # Keyword to filter the lines, or None to read all of them
+}
+# Send a POST request to the /backtests/read/log endpoint to get the logs
+response = post(f'{BASE_URL}/backtests/read/log', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the logs
+if result['success']:
+    print("Backtest Logs:")
+    print(result)
+
 ### Update Backtest
 # Send a POST request to the /backtests/update endpoint to update backtest details
 response = post(f'{BASE_URL}/backtests/update', headers=get_headers(), json={

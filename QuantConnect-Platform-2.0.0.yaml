@@ -691,6 +691,33 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readBacktestInsights
+  /backtests/read/log:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 06 Logs
+      summary: Read out the logs of a backtest.
+      description: "Per our <a href='/terms'>Terms and Conditions</a>, you may not use this endpoint to export market data or any other dataset information. For more information about the logs you can produce, see <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>Log Quotas</a>."
+      requestBody:
+        description: Fetch the logs of a backtest for the project Id, backtest Id and lines provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestLogsRequest'
+        required: true
+      responses:
+        "200":
+          description: Logs of the backtest within range.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadBacktestLogsResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readBacktestLogs
   /backtests/update:
     post:
       tags:
@@ -7081,6 +7108,61 @@ components:
             - 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to read the insights.
       description: Request to read insights from a backtest.
+    ReadBacktestLogsRequest:
+      required:
+        - projectId
+        - backtestId
+        - start
+        - end
+        - query
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project from which to read the backtest.
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to read the logs.
+        start:
+          type: integer
+          examples:
+            - 0
+          description: Start line (inclusive) of logs to read. The lines numbers start at 0.
+        end:
+          type: integer
+          examples:
+            - 200
+          description: End line (exclusive) of logs to read, where end - start <= 200.
+        query:
+          type: string
+          examples:
+            - error
+          description: Case-insensitive keyword to filter the log lines. The start and end lines index the lines that contain the keyword. To read all the lines, set it to null or an empty string.
+      description: Request to read logs from a backtest.
+    ReadBacktestLogsResponse:
+      type: object
+      properties:
+        logs:
+          type: array
+          description: List of logs from the backtest.
+          items:
+            type: string
+        length:
+          type: integer
+          description: Total number of log lines in the backtest that match the query.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Logs from a backtest.
     ReadLiveChartRequest:
       type: object
       required:
