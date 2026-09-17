@@ -107,8 +107,11 @@ def get_dataset_listings() -> List[dict]:
     what the dataset generators use:
 
         {"name": ..., "vendorName": ..., "url": "/datasets/<slug>",
+         "shortDescription": ..., "history": ..., "reach": ...,
          "about": [{"title": ..., "content": ...}, ...], "documentation": [...],
          "examples": [...]}
+
+    Records keep the order of the API's list, which is the order of the /datasets page.
 
     Drift between the two sources is reported, not applied -- either direction needs a
     person to decide.
@@ -127,7 +130,9 @@ def get_dataset_listings() -> List[dict]:
         sections = api_post('/market/sections/read',
                             {'id': master['id'], 'organizationId': organization_id})['sections']
         listing = {'name': master.get('name'), 'vendorName': master.get('vendorName'),
-                   'url': f'/datasets/{master.get("url")}'}
+                   'url': f'/datasets/{master.get("url")}',
+                   'shortDescription': master.get('shortDescription'),
+                   'history': master.get('history'), 'reach': master.get('reach')}
         for group in SECTION_GROUPS:
             # Sort by position: the generators index into `about` for the vendor landing
             # page, so reading order is load-bearing, not cosmetic.

@@ -1,8 +1,10 @@
 import os
 import re
+from json import dumps, loads
 from pathlib import Path
 from itertools import groupby
 from shutil import move, rmtree
+from textwrap import dedent, indent
 from bs4 import BeautifulSoup
 
 from _code_generation_helpers import generate_landing_page, get_dataset_listings
@@ -39,6 +41,89 @@ CLI_DOWNLOAD_PAGES = {
     ("QuantConnect", "US ETF Constituents"):        ("us-etf-constituents", "US ETF Constituents"),
     ("QuantConnect", "US Equity Coarse Universe"):  ("us-equity-coarse-fundamental", "US Equity Coarse Fundamental"),
 }
+
+# The dataset catalogues the project templates are built from, one per language. The
+# listing owns which datasets appear, their order, and their summary fields. The
+# `examples` are hand-written, so they carry over from the existing file.
+PROJECT_TEMPLATE_DATASETS = "project-templates/{language}/datasets.json"
+
+def _snippets(dataset, title, language):
+    content = next((s["content"] for s in dataset["documentation"]
+                    if (s["title"] or "").strip() == title), None)
+    soup = BeautifulSoup(content or "", 'html.parser')
+    code_class = {"python": "language-python", "csharp": "language-cs"}[language]
+    return [x.get_text().replace("\r\n", "\n") for x in soup.select(f"code.{code_class}")]
+
+def _first_line(snippets, *texts):
+    lines = [line.strip() for snippet in snippets for line in snippet.split("\n")]
+    return next((x for x in lines if any(t in x for t in texts) and not x.startswith(("#", "//"))), None)
+
+def _first_block(snippets, pattern):
+    # `pattern` runs from a captured indent to the end of the block; the indent is removed.
+    for snippet in snippets:
+        match = re.search(pattern, snippet, re.M | re.S)
+        if match:
+            indent = len(match.group(1))
+            return "\n".join(x[indent:] for x in match.group(0).rstrip().split("\n"))
+
+def _seed_python_examples(dataset):
+    to_research = lambda x: re.sub(r"self\._?", "", x.replace("self.history", "qb.history"))
+    method = r"^([ \t]*)def {}\(.*?(?=^\1(?:def|class) |\Z)"
+    universe = _snippets(dataset, "Universe Selection", "python")
+    universe_init = _first_line(universe, "add_universe(")
+    selector = re.search(r"self\.(\w+)\s*\)", universe_init or "")
+    history = _first_line(_snippets(dataset, "Historical Data", "python"), "self.history")
+    return {
+        "init": _first_line(_snippets(dataset, "Requesting Data", "python"), ".add_data("),
+        "history": history,
+        "universe-init": universe_init,
+        "universe-history": universe_init and "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+        "universe-filter": selector and _first_block(universe, method.format(selector.group(1))),
+        "research-history": history and to_research(history),
+        "research-universe-history": universe_init and "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+        "usage": _first_block(_snippets(dataset, "Accessing Data", "python"), method.format("on_data")),
+    }
+
+def _seed_csharp_examples(dataset):
+    to_research = lambda x: re.sub(r"\b_(\w)", r"\1", re.sub(r"\bHistory\b", "qb.History", x))
+    # The listings select with a lambda; the templates use a named method.
+    universe = "\n".join(_snippets(dataset, "Universe Selection", "csharp"))
+    selector = re.search(r"AddUniverse<(\w+)>\((\w+)\s*=>\s*\{\n(.*?)\n[ \t]*\}\);", universe, re.S)
+    if selector:
+        universe_type, parameter, body = selector.groups()
+        body = indent(dedent(body), "    ")
+        universe_filter = f"private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> {parameter})\n{{\n{body}\n}}"
+    history = _first_line(_snippets(dataset, "Historical Data", "csharp"), "History<", "History(")
+    return {
+        "init": _first_line(_snippets(dataset, "Requesting Data", "csharp"), "AddData<"),
+        "history": history,
+        "universe-init": selector and f"_universe = AddUniverse<{universe_type}>(SelectAssets);",
+        "universe-history": selector and "var history = History(_universe, 30, Resolution.Daily);",
+        "universe-filter": selector and universe_filter,
+        "research-history": history and to_research(history),
+        "research-universe-history": selector and "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+        "usage": _first_block(_snippets(dataset, "Accessing Data", "csharp"),
+                              r"^([ \t]*)public override void OnData\(.*?^\1\}"),
+    }
+
+def _write_project_template_datasets(docs, language):
+    # Examples for a dataset the file doesn't have yet are a starting point lifted from the
+    # snippets on its listing. It only fits datasets you request with AddData, which new ones are.
+    seed = {"python": _seed_python_examples, "csharp": _seed_csharp_examples}[language]
+    path = Path(PROJECT_TEMPLATE_DATASETS.format(language=language))
+    examples = {x["url"]: x["examples"] for x in loads(path.read_text(encoding="utf-8"))["list"]}
+    datasets = []
+    for dataset in docs:
+        slug = dataset["url"].rsplit("/", 1)[-1]
+        if slug not in examples:
+            examples[slug] = {k: v for k, v in seed(dataset).items() if v}
+            print(f'note: {slug} is new to {path.as_posix()}. Its examples are seeded from '
+                  f'the listing; review them.')
+        datasets.append({**{k: (dataset[k] or "").strip() for k in ("name", "shortDescription", "history", "reach")},
+                         "url": slug, "examples": examples[slug]})
+    # newline is fixed so the file doesn't flip line endings between Windows and Actions.
+    with open(path, "w", encoding="utf-8", newline="\r\n") as json_file:
+        json_file.write(dumps({"list": datasets}, indent=4))
 
 def _directory_content(path):
     def append_path(v):
@@ -114,6 +199,8 @@ def _parse_content(content):
 
 if __name__ == '__main__':
     docs = get_dataset_listings()
+    for language in ("python", "csharp"):
+        _write_project_template_datasets(docs, language)
     for d in docs:
         if d["vendorName"].strip() == "CoinAPI":
             d["vendorName"] = "QuantConnect"

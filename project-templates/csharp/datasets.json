@@ -14,6 +14,45 @@
             }
         },
         {
+            "name": "Fama French",
+            "shortDescription": "Daily returns of the market, size, value, profitability, investment, and momentum factors for US equities",
+            "history": "January 1998",
+            "reach": "6 US Equity Market Factors",
+            "url": "quantconnect-fama-french",
+            "examples": {
+                "init": "_famaFrench = AddData<FamaFrench>(\"FF\", Resolution.Daily).Symbol;",
+                "history": "var history = History<FamaFrench>(_famaFrench, 100, Resolution.Daily);",
+                "research-history": "var history = qb.History<FamaFrench>(famaFrench, 100, Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_famaFrench))\n    {\n        var dataPoint = slice[_famaFrench];\n        Log($\"{_famaFrench} momentum at {slice.Time}: {dataPoint.Momentum}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "Surveys",
+            "shortDescription": "Monthly confidence surveys of households, industry, construction, retail and services across 35 European economies, published by Eurostat",
+            "history": "January 1980",
+            "reach": "35 European Economies",
+            "url": "eurostat-surveys",
+            "examples": {
+                "init": "_consumer = AddData<EurostatConsumerSurvey>(Eurostat.Economies.Germany, Resolution.Daily).Symbol;",
+                "history": "var history = History<EurostatConsumerSurvey>(_consumer, TimeSpan.FromDays(5*365), Resolution.Daily);",
+                "research-history": "var history = qb.History<EurostatConsumerSurvey>(consumer, TimeSpan.FromDays(5*365), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_consumer))\n    {\n        var dataPoint = slice.Get<EurostatConsumerSurvey>(_consumer);\n        if (dataPoint.ConsumerConfidence.HasValue)\n        {\n            Log($\"{_consumer} consumer confidence at {slice.Time}: {dataPoint.ConsumerConfidence}\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "name": "Macro Indicators",
+            "shortDescription": "Consumer prices, industrial production, producer prices, retail trade, unemployment and GDP across 51 economies, published by Eurostat",
+            "history": "January 1975",
+            "reach": "51 Economies",
+            "url": "eurostat-macro-indicators",
+            "examples": {
+                "init": "_prices = AddData<EurostatConsumerPrices>(Eurostat.Economies.Germany, Resolution.Daily).Symbol;",
+                "history": "var history = History<EurostatConsumerPrices>(_prices, TimeSpan.FromDays(5*365), Resolution.Daily);",
+                "research-history": "var history = qb.History<EurostatConsumerPrices>(prices, TimeSpan.FromDays(5*365), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_prices))\n    {\n        var dataPoint = slice.Get<EurostatConsumerPrices>(_prices);\n        if (dataPoint.AllItems.HasValue)\n        {\n            Log($\"{_prices} HICP at {slice.Time}: {dataPoint.AllItems}\");\n        }\n    }\n}"
+            }
+        },
+        {
             "name": "US Futures Security Master",
             "shortDescription": "Rolling reference data for popular CME Futures contracts.",
             "history": "May 2009",
@@ -24,6 +63,23 @@
                 "history": "var history = History<SymbolChangedEvent>(future.Symbol, TimeSpan.FromDays(365));",
                 "research-history": "var history = qb.History<SymbolChangedEvent>(future.Symbol, new DateTime(2023, 1, 1), new DateTime(2025, 1, 1));",
                 "usage": "public override void OnData(Slice slice)\n{\n    if (slice.SymbolChangedEvents.TryGetValue(future.Symbol, out var changedEvent))\n    {\n        var oldSymbol = changedEvent.OldSymbol;\n        var newSymbol = AddFutureContract(changedEvent.NewSymbol).Symbol;\n        Log($\"Rollover at {Time}: {oldSymbol} -> {newSymbol}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "Spectral Tick Flow Signal",
+            "shortDescription": "Daily signals of fourier-transformed intraday trade-flow patterns",
+            "history": "Jun 2009",
+            "reach": "500 US Equities",
+            "url": "spectral-tick-flow-signal",
+            "examples": {
+                "init": "var spectralSymbol = AddData<SpectralTickFlowSignal>(_equity.Symbol).Symbol;",
+                "history": "var history = History<SpectralTickFlowSignal>(spectralSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<SpectralTickFlowSignalUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return altCoarse.OfType<SpectralTickFlowSignalUniverse>()\n        .Where(d => d.SignatureCount > 0)\n        .OrderBy(d => d.ExecutionScore)\n        .TakeLast(10)\n        .Select(d => d.Symbol);\n}",
+                "research-history": "var history = qb.History<SpectralTickFlowSignal>(spectralSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(spectralSymbol))\n    {\n        var dataPoint = slice[spectralSymbol];\n        Log($\"{spectralSymbol} execution score at {slice.Time}: {dataPoint.ExecutionScore}\");\n    }\n}"
             }
         },
         {
@@ -58,7 +114,7 @@
             "name": "International Future Universe",
             "shortDescription": "FESX, HSI, and NKD Futures universe for fast future contract selection with prices, expiration dates and open interests",
             "history": "July 1998",
-            "reach": "4 contracts",
+            "reach": "5 Contracts",
             "url": "quantconnect-international-future-universe",
             "examples": {
                 "universe-init": "_future = AddFuture(Futures.Indices.HangSeng);",
@@ -84,7 +140,7 @@
         },
         {
             "name": "US Future Universe",
-            "shortDescription": " Futures universe for fast future contract selection with prices, expiration dates and open interests",
+            "shortDescription": "Futures universe for fast future contract selection with prices, expiration dates and open interests",
             "history": "May 2009",
             "reach": "157 Most Liquid Futures",
             "url": "quantconnect-us-future-universe",
@@ -184,7 +240,7 @@
             "name": "US Futures",
             "shortDescription": "Trade and quote data for the most liquid US Futures across the CME, CBOT, NYMEX, and COMEX markets.",
             "history": "May 2009",
-            "reach": "157 Most Liquid Futures",
+            "reach": "157 Liquid Futures",
             "url": "algoseek-us-futures",
             "examples": {
                 "init": "var futureContract = AddFutureContract(contract.Symbol);",
@@ -235,7 +291,7 @@
             "name": "International Futures",
             "shortDescription": "Trade and quote data for FESX, HSI, and NKD Future Contracts.",
             "history": "July 1998",
-            "reach": "4 Contracts",
+            "reach": "5 Contracts",
             "url": "tickdata-international-futures",
             "examples": {
                 "init": "var futureContract = AddFutureContract(contract.Symbol);",
@@ -374,7 +430,7 @@
         },
         {
             "name": "US Regulatory Alerts - Financial Sector",
-            "shortDescription": "RegAlytics is the leading provider of daily regulatory updates. They source data from over 5,000 regulators. ",
+            "shortDescription": "RegAlytics is the leading provider of daily regulatory updates. They source data from over 5,000 regulators.",
             "history": "January 2020",
             "reach": "400,000 Alerts",
             "url": "regalytics-us-regulatory-alerts",
@@ -464,9 +520,9 @@
         },
         {
             "name": "Tactical",
-            "shortDescription": "Likelihood score of short-term price movements driven by technical indicators. ",
+            "shortDescription": "Likelihood score of short-term price movements driven by technical indicators.",
             "history": "January 2000",
-            "reach": "Over 5,000 US Equities",
+            "reach": "5,000 US Equities",
             "url": "extractalpha-tactical",
             "examples": {
                 "init": "var tacticalSymbol = AddData<ExtractAlphaTacticalModel>(_equity.Symbol).Symbol;",
@@ -479,7 +535,7 @@
             "name": "Cross Asset Model",
             "shortDescription": "Scoring algorithm based on put-call spread of Equity Options, volatility skewness, and volume.",
             "history": "July 2005",
-            "reach": "Over 3,000 US Equities",
+            "reach": "3,000 US Equities",
             "url": "extractalpha-cross-asset-model",
             "examples": {
                 "init": "var crossAssetModel = AddData<ExtractAlphaCrossAssetModel>(_equity.Symbol).Symbol;",
@@ -612,7 +668,7 @@
             "name": "Data Link",
             "shortDescription": "Nasdaq Data Link, previously known as Quandl, is a premier marketplace for financial, economic, and alternative data sets.",
             "history": "Various",
-            "reach": "More than 20 million datasets",
+            "reach": "20 Million Datasets",
             "url": "nasdaq-data-link",
             "examples": {
                 "init": "_bitcoinChainSymbol = AddData<NasdaqDataLink>(\"QDL/BCHAIN\", Resolution.Daily).Symbol;",
@@ -681,7 +737,7 @@
             "name": "FOREX Data",
             "shortDescription": "Quote data for Forex pairs.",
             "history": "January 2007",
-            "reach": "71 Currency Pairs",
+            "reach": "72 Currency Pairs",
             "url": "quantconnect-forex",
             "examples": {
                 "init": "_forex = AddForex(\"EURUSD\", Resolution.Minute);",
@@ -741,7 +797,7 @@
             "name": "Binance Crypto Price Data",
             "shortDescription": "Trade and quote data for the Binance Crypto exchange, collected by CoinAPI.",
             "history": "July 2017",
-            "reach": "3,320 Currency Pairs",
+            "reach": "3,651 Currency Pairs",
             "url": "binance-crypto-price-data",
             "examples": {
                 "init": "_crypto = AddCrypto(\"BTCBUSD\", Resolution.Minute, Market.Binance);",
@@ -775,7 +831,7 @@
             "name": "Binance US Crypto Price Data",
             "shortDescription": "Trade and quote data for the Binance US Crypto exchange, collected by CoinAPI.",
             "history": "October 2019",
-            "reach": "604 Cryptocurrency pairs",
+            "reach": "627 Cryptocurrency pairs",
             "url": "binance-us-crypto-price-data",
             "examples": {
                 "init": "_crypto = AddCrypto(\"BTCUSD\", Resolution.Minute, Market.BinanceUS);",
@@ -792,7 +848,7 @@
             "name": "Binance Crypto Future Price Data",
             "shortDescription": "Trade and quote data for the Binance Crypto Future exchanges, collected by CoinAPI.",
             "history": "August 2020",
-            "reach": "718 Crypto Future Pairs",
+            "reach": "806 Crypto Future Pairs",
             "url": "binance-cryptofuture-price-data",
             "examples": {
                 "init": "_cryptoFuture = AddCryptoFuture(\"BTCBUSD\", Resolution.Minute);",
@@ -805,7 +861,7 @@
             "name": "Binance Crypto Future Margin Rate Data",
             "shortDescription": "Margin interest rate data for the Binance Crypto Future exchanges, collected by QuantConnect.",
             "history": "August 2020",
-            "reach": "718 Crypto Future Pairs",
+            "reach": "806 Crypto Future Pairs",
             "url": "binance-cryptofuture-margin-rate-data",
             "examples": {
                 "init": "_cryptoFuture = AddCryptoFuture(\"BTCBUSD\", Resolution.Minute);",
@@ -857,6 +913,135 @@
             }
         },
         {
+            "name": "Commitments of Traders",
+            "shortDescription": "Weekly positions of commercial hedgers, large speculators, and small traders across US futures markets, published by the CFTC",
+            "history": "January 1998",
+            "reach": "942 Futures Markets",
+            "url": "cftc-cot",
+            "examples": {
+                "init": "_legacy = AddData<CFTCLegacy>(CFTC.Markets.EMiniSP500, Resolution.Daily).Symbol;",
+                "history": "var history = History<CFTCLegacy>(_legacy, 100, Resolution.Daily);",
+                "research-history": "var history = qb.History<CFTCLegacy>(legacy, 100, Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_legacy))\n    {\n        var dataPoint = slice.Get<CFTCLegacy>(_legacy);\n        if (dataPoint.NonCommercialNet.HasValue)\n        {\n            Log($\"{_legacy} non-commercial net at {slice.Time}: {dataPoint.NonCommercialNet}\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "name": "Regulation SHO",
+            "shortDescription": "Daily off-exchange short sale volume for US Equities, reported to FINRA under Regulation SHO.",
+            "history": "August 2018",
+            "reach": "22,073 US Equities",
+            "url": "finra-reg-sho",
+            "examples": {
+                "init": "var shortVolumeSymbol = AddData<FINRAShortSaleVolume>(_equity.Symbol).Symbol;",
+                "history": "var history = History<FINRAShortSaleVolume>(shortVolumeSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<FINRAShortSaleVolumeUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<FINRAShortSaleVolumeUniverse>()\n           where d.ShortVolumeRatio > 0.5m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<FINRAShortSaleVolume>(shortVolumeSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(shortVolumeSymbol))\n    {\n        var dataPoint = slice[shortVolumeSymbol];\n        Log($\"{shortVolumeSymbol} short volume at {slice.Time}: {dataPoint.ShortVolume}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "OTC Transparency",
+            "shortDescription": "Off-exchange trading volume and short interest for US Equities, reported to FINRA.",
+            "history": "January 2017",
+            "reach": "59,712 US Equities",
+            "url": "finra-otc-transparency",
+            "examples": {
+                "init": "var shortInterestSymbol = AddData<FINRAShortInterest>(_equity.Symbol).Symbol;",
+                "history": "var history = History<FINRAShortInterest>(shortInterestSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<FINRAShortInterestUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return from d in altCoarse.OfType<FINRAShortInterestUniverse>()\n           where d.DaysToCover > 5m\n           select d.Symbol;\n}",
+                "research-history": "var history = qb.History<FINRAShortInterest>(shortInterestSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(shortInterestSymbol))\n    {\n        var dataPoint = slice[shortInterestSymbol];\n        Log($\"{shortInterestSymbol} days to cover at {slice.Time}: {dataPoint.DaysToCover}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "GDP by Industry",
+            "shortDescription": "Quarterly breakdown of US GDP by industry, published by the Bureau of Economic Analysis.",
+            "history": "January 2005",
+            "reach": "100 US Industries",
+            "url": "bea-gdp-by-industry",
+            "examples": {
+                "init": "_manufacturing = AddData<BEAGDPByIndustry>(BEA.Industries.Manufacturing, Resolution.Daily).Symbol;",
+                "history": "var history = History<BEAGDPByIndustry>(_manufacturing, 100, Resolution.Daily);",
+                "research-history": "var history = qb.History<BEAGDPByIndustry>(manufacturing, 100, Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_manufacturing))\n    {\n        var dataPoint = slice[_manufacturing];\n        Log($\"{_manufacturing} value added at {slice.Time}: {dataPoint.ValueAdded}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "US Electricity",
+            "shortDescription": "Demand and generation information for the US power grid.",
+            "history": "January 2019",
+            "reach": "81 Balancing Authorities",
+            "url": "eia-us-electricity",
+            "examples": {
+                "init": "_pjm = AddData<EIAElectricity>(EIA.BalancingAuthorities.PJM, Resolution.Daily).Symbol;",
+                "history": "var history = History<EIAElectricity>(_pjm, 100, Resolution.Daily);",
+                "research-history": "var history = qb.History<EIAElectricity>(pjm, 100, Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_pjm))\n    {\n        var dataPoint = slice.Get<EIAElectricity>(_pjm);\n        if (dataPoint.Demand.HasValue)\n        {\n            Log($\"{_pjm} demand at {slice.Time}: {dataPoint.Demand}\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "name": "Euro Yield Curve",
+            "shortDescription": "Spot, par and forward euro area government bond yield curves at ten maturities, published daily by the European Central Bank",
+            "history": "September 2004",
+            "reach": "6 Yield Curves",
+            "url": "ecb-euro-yield-curve",
+            "examples": {
+                "init": "_curve = AddData<ECBYieldCurve>(ECB.YieldCurves.AaaSpot, Resolution.Daily).Symbol;",
+                "history": "var history = History<ECBYieldCurve>(_curve, TimeSpan.FromDays(365), Resolution.Daily);",
+                "research-history": "var history = qb.History<ECBYieldCurve>(curve, TimeSpan.FromDays(365), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_curve))\n    {\n        var dataPoint = slice.Get<ECBYieldCurve>(_curve);\n        if (dataPoint.TenYear.HasValue)\n        {\n            Log($\"{_curve} 10Y at {slice.Time}: {dataPoint.TenYear}\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "name": "Policy Rates",
+            "shortDescription": "Daily ECB policy rates and the euro short-term rate for the euro area, published by the European Central Bank",
+            "history": "January 1999",
+            "reach": "1 Euro Area Series",
+            "url": "ecb-policy-rates",
+            "examples": {
+                "init": "_rates = AddData<ECBPolicyRates>(ECB.PolicyRates.EuroArea).Symbol;",
+                "history": "var history = History<ECBPolicyRates>(_rates, TimeSpan.FromDays(365), Resolution.Daily);",
+                "research-history": "var history = qb.History<ECBPolicyRates>(rates, TimeSpan.FromDays(365), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_rates))\n    {\n        var dataPoint = slice[_rates];\n        Log($\"{_rates} deposit facility rate at {slice.Time}: {dataPoint.DepositFacilityRate}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "Systemic Stress",
+            "shortDescription": "Composite indicator of systemic stress across 14 economies, published weekly by the European Central Bank",
+            "history": "January 1980",
+            "reach": "14 Economies",
+            "url": "ecb-systemic-stress",
+            "examples": {
+                "init": "_euroArea = AddData<ECBSystemicStress>(ECB.StressAreas.EuroArea).Symbol;",
+                "history": "var history = History<ECBSystemicStress>(_euroArea, TimeSpan.FromDays(365), Resolution.Daily);",
+                "research-history": "var history = qb.History<ECBSystemicStress>(euroArea, TimeSpan.FromDays(365), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_euroArea))\n    {\n        var dataPoint = slice[_euroArea];\n        Log($\"{_euroArea} composite stress at {slice.Time}: {dataPoint.Composite}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "Patent Maintenance",
+            "shortDescription": "Patent renewals and abandonments for listed companies, recorded by the US Patent and Trademark Office and published weekly",
+            "history": "April 1985",
+            "reach": "2,896 US Equities",
+            "url": "uspto-patent-maintenance",
+            "examples": {
+                "init": "var patentsSymbol = AddData<USPTOPatentMaintenance>(_equity.Symbol).Symbol;",
+                "history": "var history = History<USPTOPatentMaintenance>(patentsSymbol, 100, Resolution.Daily);",
+                "universe-init": "_universe = AddUniverse<USPTOPatentMaintenanceUniverse>(SelectAssets);",
+                "universe-history": "var history = History(_universe, 30, Resolution.Daily);",
+                "universe-filter": "private IEnumerable<Symbol> SelectAssets(IEnumerable<BaseData> altCoarse)\n{\n    return altCoarse.OfType<USPTOPatentMaintenanceUniverse>()\n        .Where(d => d.NetMaintenanceChange > 0)\n        .OrderByDescending(d => d.NetMaintenanceChange)\n        .Take(10)\n        .Select(d => d.Symbol);\n}",
+                "research-history": "var history = qb.History<USPTOPatentMaintenance>(patentsSymbol, 100, Resolution.Daily);",
+                "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(patentsSymbol))\n    {\n        var dataPoint = slice[patentsSymbol];\n        Log($\"{patentsSymbol} patents expired at {slice.Time}: {dataPoint.PatentsExpired}\");\n    }\n}"
+            }
+        },
+        {
             "name": "US Energy Information Administration (EIA)",
             "shortDescription": "Supply and demand information for US Crude Products.",
             "history": "January 1991",
@@ -899,7 +1084,7 @@
             "name": "Cash Indices",
             "shortDescription": "Price data for 125 US Cash indices and 2 international indices (HSI and SX5E). This data provides the underlying price for Index Options of NDX, SPX, RUT, and VIX.",
             "history": "January 1998",
-            "reach": "125 US indices and 3 International indices",
+            "reach": "125 US and 3 International Indices",
             "url": "quantconnect-cash-indices",
             "examples": {
                 "init": "_index = AddIndex(\"VIX\");",
@@ -912,7 +1097,7 @@
             "name": "Bitcoin Metadata",
             "shortDescription": "Bitcoin processing fundamental data such as hash rate, miner revenue, and number of transactions.",
             "history": "Jan 2009",
-            "reach": "Bitcoin blockchain",
+            "reach": "Bitcoin Blockchain",
             "url": "bitcoin-metadata",
             "examples": {
                 "init": "var bitcoinMetadata = AddData<BitcoinMetadata>(_btcusd.Symbol).Symbol;",
@@ -925,7 +1110,7 @@
             "name": "Crypto Market Cap",
             "shortDescription": "Cryptocurrencies market cap data is provided by CoinGecko and cached by QuantConnect.",
             "history": "28 April 2013",
-            "reach": "620 cryptocurrencies",
+            "reach": "620 Cryptocurrencies",
             "url": "coingecko-crypto-marketcap",
             "examples": {
                 "init": "_coinGecko = AddData<CoinGecko>(\"BTC\").Symbol;",
@@ -955,7 +1140,7 @@
             "name": "US Bureau of Labor Statistics (BLS)",
             "shortDescription": "Statistical results of many surveys conducted and released by the US government.",
             "history": "2000",
-            "reach": "4 surveys; 50 series in total",
+            "reach": "4 Surveys, 50 Series",
             "url": "us-bureau-of-labor-statistics",
             "examples": {
                 "init": "_cpi = AddData<BLSEconomicSurveysCpi>(\"CPI\").Symbol;",
