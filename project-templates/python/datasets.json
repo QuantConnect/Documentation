@@ -14,6 +14,45 @@
             }
         },
         {
+            "name": "Fama French",
+            "shortDescription": "Daily returns of the market, size, value, profitability, investment, and momentum factors for US equities",
+            "history": "January 1998",
+            "reach": "6 US Equity Market Factors",
+            "url": "quantconnect-fama-french",
+            "examples": {
+                "init": "self._fama_french = self.add_data(FamaFrench, 'FF', Resolution.DAILY).symbol",
+                "history": "history = self.history(self._fama_french, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(fama_french, 100, Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._fama_french):\n        data_point = slice[self._fama_french]\n        self.log(f'{self._fama_french} momentum at {slice.time}: {data_point.momentum}')"
+            }
+        },
+        {
+            "name": "Surveys",
+            "shortDescription": "Monthly confidence surveys of households, industry, construction, retail and services across 35 European economies, published by Eurostat",
+            "history": "January 1980",
+            "reach": "35 European Economies",
+            "url": "eurostat-surveys",
+            "examples": {
+                "init": "self._consumer = self.add_data(EurostatConsumerSurvey, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol",
+                "history": "history = self.history(self._consumer, timedelta(5*365), Resolution.DAILY)",
+                "research-history": "history = qb.history(consumer, timedelta(5*365), Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._consumer):\n        data_point = slice[self._consumer]\n        if data_point.consumer_confidence is not None:\n            self.log(f'{self._consumer} consumer confidence at {slice.time}: {data_point.consumer_confidence}')"
+            }
+        },
+        {
+            "name": "Macro Indicators",
+            "shortDescription": "Consumer prices, industrial production, producer prices, retail trade, unemployment and GDP across 51 economies, published by Eurostat",
+            "history": "January 1975",
+            "reach": "51 Economies",
+            "url": "eurostat-macro-indicators",
+            "examples": {
+                "init": "self._prices = self.add_data(EurostatConsumerPrices, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol",
+                "history": "history = self.history(self._prices, timedelta(5*365), Resolution.DAILY)",
+                "research-history": "history = qb.history(prices, timedelta(5*365), Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._prices):\n        data_point = slice[self._prices]\n        if data_point.all_items is not None:\n            self.log(f'{self._prices} HICP at {slice.time}: {data_point.all_items}')"
+            }
+        },
+        {
             "name": "US Futures Security Master",
             "shortDescription": "Rolling reference data for popular CME Futures contracts.",
             "history": "May 2009",
@@ -24,6 +63,23 @@
                 "history": "history = self.history[SymbolChangedEvent](future.symbol, timedelta(365))",
                 "research-history": "history = qb.history(SymbolChangedEvent, future.symbol, datetime(2023, 1, 1), datetime(2025, 1, 1))",
                 "usage": "def on_data(self, slice: Slice) -> None:\n    changed_event = slice.symbol_changed_events.get(future.symbol)\n    if changed_event:\n        old_symbol = changed_event.old_symbol\n        new_symbol = self.add_future_contract(changed_event.new_symbol).symbol\n        self.log(f'Rollover at {self.time}: {old_symbol} -> {new_symbol}')"
+            }
+        },
+        {
+            "name": "Spectral Tick Flow Signal",
+            "shortDescription": "Daily signals of fourier-transformed intraday trade-flow patterns",
+            "history": "Jun 2009",
+            "reach": "500 US Equities",
+            "url": "spectral-tick-flow-signal",
+            "examples": {
+                "init": "equity.spectral_symbol = self.add_data(SpectralTickFlowSignal, equity.symbol).symbol",
+                "history": "history = self.history(equity.spectral_symbol, 100, Resolution.DAILY)",
+                "universe-init": "self._universe = self.add_universe(SpectralTickFlowSignalUniverse, self._select_assets)",
+                "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[SpectralTickFlowSignalUniverse]) -> List[Symbol]:\n    confirmed = [d for d in alt_coarse if d.signature_count > 0]\n    return [d.symbol for d in sorted(confirmed, key=lambda d: d.execution_score)[-10:]]",
+                "research-history": "history = qb.history(equity.spectral_symbol, 100, Resolution.DAILY)",
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.spectral_symbol):\n        data_point = slice[equity.spectral_symbol]\n        self.log(f'{equity.spectral_symbol} execution score at {slice.time}: {data_point.execution_score}')"
             }
         },
         {
@@ -58,7 +114,7 @@
             "name": "International Future Universe",
             "shortDescription": "FESX, HSI, and NKD Futures universe for fast future contract selection with prices, expiration dates and open interests",
             "history": "July 1998",
-            "reach": "4 contracts",
+            "reach": "5 Contracts",
             "url": "quantconnect-international-future-universe",
             "examples": {
                 "universe-init": "self._future = self.add_future(Futures.Indices.HANG_SENG)",
@@ -84,7 +140,7 @@
         },
         {
             "name": "US Future Universe",
-            "shortDescription": " Futures universe for fast future contract selection with prices, expiration dates and open interests",
+            "shortDescription": "Futures universe for fast future contract selection with prices, expiration dates and open interests",
             "history": "May 2009",
             "reach": "157 Most Liquid Futures",
             "url": "quantconnect-us-future-universe",
@@ -184,7 +240,7 @@
             "name": "US Futures",
             "shortDescription": "Trade and quote data for the most liquid US Futures across the CME, CBOT, NYMEX, and COMEX markets.",
             "history": "May 2009",
-            "reach": "157 Most Liquid Futures",
+            "reach": "157 Liquid Futures",
             "url": "algoseek-us-futures",
             "examples": {
                 "init": "future_contract = self.add_future_contract(contract.symbol)",
@@ -235,7 +291,7 @@
             "name": "International Futures",
             "shortDescription": "Trade and quote data for FESX, HSI, and NKD Future Contracts.",
             "history": "July 1998",
-            "reach": "4 Contracts",
+            "reach": "5 Contracts",
             "url": "tickdata-international-futures",
             "examples": {
                 "init": "future_contract = self.add_future_contract(contract.symbol)",
@@ -374,7 +430,7 @@
         },
         {
             "name": "US Regulatory Alerts - Financial Sector",
-            "shortDescription": "RegAlytics is the leading provider of daily regulatory updates. They source data from over 5,000 regulators. ",
+            "shortDescription": "RegAlytics is the leading provider of daily regulatory updates. They source data from over 5,000 regulators.",
             "history": "January 2020",
             "reach": "400,000 Alerts",
             "url": "regalytics-us-regulatory-alerts",
@@ -464,9 +520,9 @@
         },
         {
             "name": "Tactical",
-            "shortDescription": "Likelihood score of short-term price movements driven by technical indicators. ",
+            "shortDescription": "Likelihood score of short-term price movements driven by technical indicators.",
             "history": "January 2000",
-            "reach": "Over 5,000 US Equities",
+            "reach": "5,000 US Equities",
             "url": "extractalpha-tactical",
             "examples": {
                 "init": "equity.tactical_symbol = self.add_data(ExtractAlphaTacticalModel, equity.symbol).symbol",
@@ -479,7 +535,7 @@
             "name": "Cross Asset Model",
             "shortDescription": "Scoring algorithm based on put-call spread of Equity Options, volatility skewness, and volume.",
             "history": "July 2005",
-            "reach": "Over 3,000 US Equities",
+            "reach": "3,000 US Equities",
             "url": "extractalpha-cross-asset-model",
             "examples": {
                 "init": "equity.cross_asset_model = self.add_data(ExtractAlphaCrossAssetModel, equity.symbol).symbol",
@@ -612,7 +668,7 @@
             "name": "Data Link",
             "shortDescription": "Nasdaq Data Link, previously known as Quandl, is a premier marketplace for financial, economic, and alternative data sets.",
             "history": "Various",
-            "reach": "More than 20 million datasets",
+            "reach": "20 Million Datasets",
             "url": "nasdaq-data-link",
             "examples": {
                 "init": "self._bitcoin_chain_symbol = self.add_data(NasdaqDataLink, 'QDL/BCHAIN', Resolution.DAILY).symbol",
@@ -681,7 +737,7 @@
             "name": "FOREX Data",
             "shortDescription": "Quote data for Forex pairs.",
             "history": "January 2007",
-            "reach": "71 Currency Pairs",
+            "reach": "72 Currency Pairs",
             "url": "quantconnect-forex",
             "examples": {
                 "init": "self._forex = self.add_forex('EURUSD', Resolution.MINUTE)",
@@ -741,7 +797,7 @@
             "name": "Binance Crypto Price Data",
             "shortDescription": "Trade and quote data for the Binance Crypto exchange, collected by CoinAPI.",
             "history": "July 2017",
-            "reach": "3,320 Currency Pairs",
+            "reach": "3,651 Currency Pairs",
             "url": "binance-crypto-price-data",
             "examples": {
                 "init": "self._crypto = self.add_crypto('BTCBUSD', Resolution.MINUTE, Market.BINANCE)",
@@ -775,7 +831,7 @@
             "name": "Binance US Crypto Price Data",
             "shortDescription": "Trade and quote data for the Binance US Crypto exchange, collected by CoinAPI.",
             "history": "October 2019",
-            "reach": "604 Cryptocurrency pairs",
+            "reach": "627 Cryptocurrency pairs",
             "url": "binance-us-crypto-price-data",
             "examples": {
                 "init": "self._crypto = self.add_crypto('BTCUSD', Resolution.MINUTE, Market.BINANCE_US)",
@@ -792,7 +848,7 @@
             "name": "Binance Crypto Future Price Data",
             "shortDescription": "Trade and quote data for the Binance Crypto Future exchanges, collected by CoinAPI.",
             "history": "August 2020",
-            "reach": "718 Crypto Future Pairs",
+            "reach": "806 Crypto Future Pairs",
             "url": "binance-cryptofuture-price-data",
             "examples": {
                 "init": "self._crypto_future = self.add_crypto_future('BTCBUSD', Resolution.MINUTE)",
@@ -805,7 +861,7 @@
             "name": "Binance Crypto Future Margin Rate Data",
             "shortDescription": "Margin interest rate data for the Binance Crypto Future exchanges, collected by QuantConnect.",
             "history": "August 2020",
-            "reach": "718 Crypto Future Pairs",
+            "reach": "806 Crypto Future Pairs",
             "url": "binance-cryptofuture-margin-rate-data",
             "examples": {
                 "init": "self._crypto_future = self.add_crypto_future('BTCBUSD', Resolution.MINUTE)",
@@ -857,6 +913,135 @@
             }
         },
         {
+            "name": "Commitments of Traders",
+            "shortDescription": "Weekly positions of commercial hedgers, large speculators, and small traders across US futures markets, published by the CFTC",
+            "history": "January 1998",
+            "reach": "942 Futures Markets",
+            "url": "cftc-cot",
+            "examples": {
+                "init": "self._legacy = self.add_data(CFTCLegacy, CFTC.Markets.E_MINI_SP_500, Resolution.DAILY).symbol",
+                "history": "history = self.history(self._legacy, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(legacy, 100, Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._legacy):\n        data_point = slice[self._legacy]\n        if data_point.non_commercial_net is not None:\n            self.log(f'{self._legacy} non-commercial net at {slice.time}: {data_point.non_commercial_net}')"
+            }
+        },
+        {
+            "name": "Regulation SHO",
+            "shortDescription": "Daily off-exchange short sale volume for US Equities, reported to FINRA under Regulation SHO.",
+            "history": "August 2018",
+            "reach": "22,073 US Equities",
+            "url": "finra-reg-sho",
+            "examples": {
+                "init": "equity.short_volume_symbol = self.add_data(FINRAShortSaleVolume, equity.symbol).symbol",
+                "history": "history = self.history(equity.short_volume_symbol, 100, Resolution.DAILY)",
+                "universe-init": "self._universe = self.add_universe(FINRAShortSaleVolumeUniverse, self._select_assets)",
+                "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[FINRAShortSaleVolumeUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.short_volume_ratio is not None and d.short_volume_ratio > 0.5]",
+                "research-history": "history = qb.history(equity.short_volume_symbol, 100, Resolution.DAILY)",
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.short_volume_symbol):\n        data_point = slice[equity.short_volume_symbol]\n        self.log(f'{equity.short_volume_symbol} short volume at {slice.time}: {data_point.short_volume}')"
+            }
+        },
+        {
+            "name": "OTC Transparency",
+            "shortDescription": "Off-exchange trading volume and short interest for US Equities, reported to FINRA.",
+            "history": "January 2017",
+            "reach": "59,712 US Equities",
+            "url": "finra-otc-transparency",
+            "examples": {
+                "init": "equity.short_interest_symbol = self.add_data(FINRAShortInterest, equity.symbol).symbol",
+                "history": "history = self.history(equity.short_interest_symbol, 100, Resolution.DAILY)",
+                "universe-init": "self._universe = self.add_universe(FINRAShortInterestUniverse, self._select_assets)",
+                "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[FINRAShortInterestUniverse]) -> List[Symbol]:\n    return [d.symbol for d in alt_coarse\n            if d.days_to_cover is not None and d.days_to_cover > 5]",
+                "research-history": "history = qb.history(equity.short_interest_symbol, 100, Resolution.DAILY)",
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.short_interest_symbol):\n        data_point = slice[equity.short_interest_symbol]\n        self.log(f'{equity.short_interest_symbol} days to cover at {slice.time}: {data_point.days_to_cover}')"
+            }
+        },
+        {
+            "name": "GDP by Industry",
+            "shortDescription": "Quarterly breakdown of US GDP by industry, published by the Bureau of Economic Analysis.",
+            "history": "January 2005",
+            "reach": "100 US Industries",
+            "url": "bea-gdp-by-industry",
+            "examples": {
+                "init": "self._manufacturing = self.add_data(BEAGDPByIndustry, BEA.Industries.MANUFACTURING, Resolution.DAILY).symbol",
+                "history": "history = self.history(self._manufacturing, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(manufacturing, 100, Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._manufacturing):\n        data_point = slice[self._manufacturing]\n        self.log(f'{self._manufacturing} value added at {slice.time}: {data_point.value_added}')"
+            }
+        },
+        {
+            "name": "US Electricity",
+            "shortDescription": "Demand and generation information for the US power grid.",
+            "history": "January 2019",
+            "reach": "81 Balancing Authorities",
+            "url": "eia-us-electricity",
+            "examples": {
+                "init": "self._pjm = self.add_data(EIAElectricity, EIA.BalancingAuthorities.PJM, Resolution.DAILY).symbol",
+                "history": "history = self.history(self._pjm, 100, Resolution.DAILY)",
+                "research-history": "history = qb.history(pjm, 100, Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._pjm):\n        data_point = slice[self._pjm]\n        if data_point.demand is not None:\n            self.log(f'{self._pjm} demand at {slice.time}: {data_point.demand}')"
+            }
+        },
+        {
+            "name": "Euro Yield Curve",
+            "shortDescription": "Spot, par and forward euro area government bond yield curves at ten maturities, published daily by the European Central Bank",
+            "history": "September 2004",
+            "reach": "6 Yield Curves",
+            "url": "ecb-euro-yield-curve",
+            "examples": {
+                "init": "self._curve = self.add_data(ECBYieldCurve, ECB.YieldCurves.AAA_SPOT, Resolution.DAILY).symbol",
+                "history": "history = self.history(self._curve, timedelta(365), Resolution.DAILY)",
+                "research-history": "history = qb.history(curve, timedelta(365), Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._curve):\n        data_point = slice[self._curve]\n        if data_point.ten_year is not None:\n            self.log(f'{self._curve} 10Y at {slice.time}: {data_point.ten_year}')"
+            }
+        },
+        {
+            "name": "Policy Rates",
+            "shortDescription": "Daily ECB policy rates and the euro short-term rate for the euro area, published by the European Central Bank",
+            "history": "January 1999",
+            "reach": "1 Euro Area Series",
+            "url": "ecb-policy-rates",
+            "examples": {
+                "init": "self._rates = self.add_data(ECBPolicyRates, ECB.PolicyRates.EURO_AREA).symbol",
+                "history": "history = self.history(self._rates, timedelta(365), Resolution.DAILY)",
+                "research-history": "history = qb.history(rates, timedelta(365), Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._rates):\n        data_point = slice[self._rates]\n        self.log(f'{self._rates} deposit facility rate at {slice.time}: {data_point.deposit_facility_rate}')"
+            }
+        },
+        {
+            "name": "Systemic Stress",
+            "shortDescription": "Composite indicator of systemic stress across 14 economies, published weekly by the European Central Bank",
+            "history": "January 1980",
+            "reach": "14 Economies",
+            "url": "ecb-systemic-stress",
+            "examples": {
+                "init": "self._euro_area = self.add_data(ECBSystemicStress, ECB.StressAreas.EURO_AREA).symbol",
+                "history": "history = self.history(self._euro_area, timedelta(365), Resolution.DAILY)",
+                "research-history": "history = qb.history(euro_area, timedelta(365), Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._euro_area):\n        data_point = slice[self._euro_area]\n        self.log(f'{self._euro_area} composite stress at {slice.time}: {data_point.composite}')"
+            }
+        },
+        {
+            "name": "Patent Maintenance",
+            "shortDescription": "Patent renewals and abandonments for listed companies, recorded by the US Patent and Trademark Office and published weekly",
+            "history": "April 1985",
+            "reach": "2,896 US Equities",
+            "url": "uspto-patent-maintenance",
+            "examples": {
+                "init": "equity.patents_symbol = self.add_data(USPTOPatentMaintenance, equity.symbol).symbol",
+                "history": "history = self.history(equity.patents_symbol, 100, Resolution.DAILY)",
+                "universe-init": "self._universe = self.add_universe(USPTOPatentMaintenanceUniverse, self._select_assets)",
+                "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+                "universe-filter": "def _select_assets(self, alt_coarse: List[USPTOPatentMaintenanceUniverse]) -> List[Symbol]:\n    renewing = [d for d in alt_coarse if d.net_maintenance_change is not None and d.net_maintenance_change > 0]\n    return [d.symbol for d in sorted(renewing, key=lambda d: d.net_maintenance_change)[-10:]]",
+                "research-history": "history = qb.history(equity.patents_symbol, 100, Resolution.DAILY)",
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(equity.patents_symbol):\n        data_point = slice[equity.patents_symbol]\n        self.log(f'{equity.patents_symbol} patents expired at {slice.time}: {data_point.patents_expired}')"
+            }
+        },
+        {
             "name": "US Energy Information Administration (EIA)",
             "shortDescription": "Supply and demand information for US Crude Products.",
             "history": "January 1991",
@@ -899,7 +1084,7 @@
             "name": "Cash Indices",
             "shortDescription": "Price data for 125 US Cash indices and 2 international indices (HSI and SX5E). This data provides the underlying price for Index Options of NDX, SPX, RUT, and VIX.",
             "history": "January 1998",
-            "reach": "125 US indices and 3 International indices",
+            "reach": "125 US and 3 International Indices",
             "url": "quantconnect-cash-indices",
             "examples": {
                 "init": "self._index = self.add_index('VIX')",
@@ -912,7 +1097,7 @@
             "name": "Bitcoin Metadata",
             "shortDescription": "Bitcoin processing fundamental data such as hash rate, miner revenue, and number of transactions.",
             "history": "Jan 2009",
-            "reach": "Bitcoin blockchain",
+            "reach": "Bitcoin Blockchain",
             "url": "bitcoin-metadata",
             "examples": {
                 "init": "self._btcusd.metadata = self.add_data(BitcoinMetadata, self._btcusd.symbol).symbol",
@@ -925,7 +1110,7 @@
             "name": "Crypto Market Cap",
             "shortDescription": "Cryptocurrencies market cap data is provided by CoinGecko and cached by QuantConnect.",
             "history": "28 April 2013",
-            "reach": "620 cryptocurrencies",
+            "reach": "620 Cryptocurrencies",
             "url": "coingecko-crypto-marketcap",
             "examples": {
                 "init": "self._coin_gecko = self.add_data(CoinGecko, 'BTC').symbol",
@@ -955,7 +1140,7 @@
             "name": "US Bureau of Labor Statistics (BLS)",
             "shortDescription": "Statistical results of many surveys conducted and released by the US government.",
             "history": "2000",
-            "reach": "4 surveys; 50 series in total",
+            "reach": "4 Surveys, 50 Series",
             "url": "us-bureau-of-labor-statistics",
             "examples": {
                 "init": "self._cpi = self.add_data(BLSEconomicSurveysCpi, 'CPI').symbol",
