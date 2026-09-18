@@ -8,7 +8,8 @@ $liveDeployment = $cloudPlatform
     If you use multiple data providers, the order you select them in defines their order of precedence in Lean.
 <? if ($cloudPlatform) { ?>
     For example, if you set QuantConnect as the first provider and Polygon as the second provider, Lean only uses the Polygon data provider for securities that aren't available from the QuantConnect data provider.
-    This configuration makes it possible to trade Index Options on QuantConnect data and get the underlying Index data (for example, SPX, VIX, and NDX), which the QuantConnect data provider doesn't supply, from Polygon.
+    This configuration makes it possible to trade Index Options on QuantConnect data and get the underlying Index data that the QuantConnect data provider doesn't supply (for example, NDX) from Polygon.
+    The QuantConnect data provider supplies <a href='/docs/v2/cloud-platform/datasets/quantconnect/us-indices'>SPX and VIX Index data</a>.
 <?} else {?>
     For example, if you set Polygon as the first provider and IB as the second provider, Lean only uses the IB data provider for securities that aren't available from the Polygon data provider.
     This configuration makes it possible to use Polygon data provider for Equity and use IB for Futures.
