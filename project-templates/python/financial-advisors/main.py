@@ -17,7 +17,6 @@ class FinancialAdvisorAlgorithmAlgorithm(QCAlgorithm):
         self.default_order_properties = InteractiveBrokersOrderProperties()
         self.default_order_properties.fa_group = "TestGroupEQ"
         self.default_order_properties.fa_method = "Equal"
-        self.default_order_properties.account = "DU123456"
 
         # Request SPY data to trade.
         self.add_equity("SPY")

@@ -76,8 +76,7 @@ public class FinancialAdvisorAlgorithm : QCAlgorithm
         DefaultOrderProperties = new InteractiveBrokersOrderProperties()
         {
             FaGroup = "TestGroupEQ",
-            FaMethod = "Equal",
-            Account = "DU123456"
+            FaMethod = "Equal"
         };
 
         // Request SPY data to trade.
