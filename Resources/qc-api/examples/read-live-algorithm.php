@@ -95,7 +95,8 @@ payload = {
     "algorithmId": deploy_id,  # ID of the deployed algorithm (same as deploy_id)
     "format": "json",  # Format of the logs (JSON in this case)
     "startLine": 0,  # Starting line for logs
-    "endLine": 100  # Ending line for logs
+    "endLine": 100,  # Ending line for logs
+    "query": None  # Keyword to filter the lines, or None to read all of them
 }
 # Send a POST request to the /live/logs/read endpoint to get logs
 response = post(f'{BASE_URL}/live/logs/read', headers=get_headers(), json=payload)

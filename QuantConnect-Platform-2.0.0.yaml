@@ -6765,6 +6765,11 @@ components:
         deploymentLogs:
           type: boolean
           description: Indicates if only the given deployment logs should be included in the response.
+        query:
+          type: string
+          examples:
+            - error
+          description: Case-insensitive keyword to filter the log lines. The startLine and endLine index the lines that contain the keyword. To read all the lines, omit it or set it to null or an empty string.
       description: Request to read the logs of a specific algorithm.
     ReadLiveLogsResponse:
       type: object
@@ -6776,10 +6781,10 @@ components:
             type: string
         length:
           type: integer
-          description: Total amount of rows in the logs across all live deployments for this project.
+          description: Total amount of rows in the logs across all live deployments for this project that match the query.
         deploymentOffset:
           type: integer
-          description: Number of log rows before the given deployment (the `algorithmId` in the request).
+          description: Number of log rows before the given deployment (the `algorithmId` in the request). It counts all the rows, even if you provide a query.
         success:
           type: boolean
           description: Indicate if the API request was successful.
