@@ -44,3 +44,5 @@ public void OnData(FuturesChains futuresChains)
     for continuous_contract_symbol, chain in slice.futures_chains.items():
         pass</pre>
 </div>
+
+<? include(DOCS_RESOURCES."/securities/future-chain-filters.html"); ?>
