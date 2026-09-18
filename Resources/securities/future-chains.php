@@ -52,5 +52,8 @@ public void OnData(FuturesChains futuresChains)
         contracts = chain.contracts</pre>
 </div>
 
+<? include(DOCS_RESOURCES."/securities/future-chain-filters.html"); ?>
+
+<h4>Properties</h4>
 <p><code>FuturesChain</code> objects have the following properties:</p>
 <div data-tree='QuantConnect.Data.Market.FuturesChain'></div>    

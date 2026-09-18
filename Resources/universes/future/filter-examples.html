@@ -7,6 +7,13 @@ _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.StandardsOnly(
 self._future.set_filter(lambda future_filter_universe: future_filter_universe.standards_only().front_month())</pre>
 </div>
 
+<div class="section-example-container">
+    <pre class="csharp">// Select the quarterly contracts with at least 10,000 contracts of open interest
+_future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.ContractMonths(FutureExpirationCycles.March).OpenInterest(10000, long.MaxValue));</pre>
+    <pre class="python"># Select the quarterly contracts with at least 10,000 contracts of open interest
+self._future.set_filter(lambda future_filter_universe: future_filter_universe.contract_months(FutureExpirationCycles.MARCH).open_interest(10000, sys.maxsize))</pre>
+</div>
+
 <p>You can also define an isolated filter method.</p>
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
@@ -23,3 +30,5 @@ def _contract_selector(self,
     future_filter_universe: Callable[[FutureFilterUniverse], FutureFilterUniverse]) -&gt; FutureFilterUniverse:
     return future_filter_universe.standards_only().front_month()</pre>
 </div>
+
+<p>The same filter methods are available on <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains"><code>FuturesChain</code></a> objects, so you can reuse them to narrow down a chain you receive during the algorithm.</p>

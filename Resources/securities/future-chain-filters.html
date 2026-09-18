@@ -1,0 +1,32 @@
+<h4>Filter Chains</h4>
+
+<p>
+  <code>FuturesChain</code> objects provide the same filter methods as <a href="/docs/v2/writing-algorithms/universes/futures#13-Filter-Contracts">Futures universe selection</a>, with the same names and the same behavior.
+  Each method returns a new <code>FuturesChain</code> and leaves the source chain unchanged, so you can chain the calls together.
+</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>// Select the front contract that expires at least 90 days out.
+var contract = chain.ExpiringAfter(Time.AddDays(90)).FrontMonth().FirstOrDefault();
+
+// Select the quarterly contracts.
+var quarterlies = chain.ContractMonths(FutureExpirationCycles.March);</pre>
+    <pre class='python'># Select the front contract that expires at least 90 days out.
+contract = next(iter(chain.expiring_after(self.time + timedelta(days=90)).front_month()), None)
+
+# Select the quarterly contracts.
+quarterlies = chain.contract_months(FutureExpirationCycles.MARCH)</pre>
+</div>
+
+<p class='csharp'>To filter the chain with your own predicate, use LINQ's <code>Where</code> method.</p>
+<p class='python'>To filter the chain with your own predicate, call the <code>where</code> method.</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>var liquidContracts = chain.OpenInterest(100000, long.MaxValue).Where(contract => contract.Volume > 0);</pre>
+    <pre class='python'>liquid_contracts = chain.open_interest(100000, sys.maxsize).where(lambda contract: contract.volume > 0)</pre>
+</div>
+
+<p>
+  The <code class='csharp'>StandardsOnly</code><code class='python'>standards_only</code> and <code class='csharp'>WeeklysOnly</code><code class='python'>weeklys_only</code> methods of a chain apply to the contracts the chain already holds, so you can combine them with the expiration filters in any order.
+  In universe selection, these two filters always run last.
+</p>
