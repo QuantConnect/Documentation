@@ -153,12 +153,8 @@ issue who is out of tickets gets more on request.
 Paid organizations get 50 MB and 1,000 files free and can subscribe to more
 capacity. Capacity never enables downloading: downloading files from the
 Object Store is only for permissioned Institution organizations that signed
-the derived data agreement, and only derived data; see
-[datasets.md](datasets.md).
-
-The Object Store price table in the docs (`storage-sizes`: $10, $20, $50,
-$100) is lower than what the Pricing page charges (see `plan-prices.md`).
-Quote the Pricing page.
+the derived data agreement, and only derived data; see the data-export
+skill. Prices are in `plan-prices.md`.
 
 ## Discounts, trials and services
 

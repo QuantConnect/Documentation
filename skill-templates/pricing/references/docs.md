@@ -27,8 +27,3 @@ detail than the answer; an answer that is complete needs no link.
 Dead link still quoted in older notes: `lean-cli/datasets/quantconnect/download-by-ticker/costs`
 (now the per-dataset pages above). The CLI data agreement
 (`quantconnect.com/terms/data/`) needs a login; name it rather than link it.
-
-The sources in this repository are `01 Cloud Platform/04 Organizations/` (tiers, resources,
-billing, credit, support, Object Store), `01 Cloud Platform/09 Datasets/05
-Licensing/` with `Resources/datasets/licensing/`, and `05 Lean CLI/05
-Datasets/05 QuantConnect/`.
