@@ -1,7 +1,7 @@
 # Datasets: what is free, what is bought, and how to estimate a download
 
-Numbers come from [price-book.md](price-book.md) (every dataset, Quant
-Researcher list prices, per-file QCC) and [plan-prices.md](plan-prices.md)
+Numbers come from [price-book.md](price-book.md) (every dataset, priced for
+every tier, per-file QCC) and [plan-prices.md](plan-prices.md)
 (the packages sold through the plan checkout, priced for every tier). Rules
 come from the Dataset Licensing and LEAN CLI dataset docs listed in
 [docs.md](docs.md), read 2026-09-22.

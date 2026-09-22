@@ -23,7 +23,7 @@ Usage:
 
 from pathlib import Path
 
-from qc_dataset_prices import datasets, file_rules, list_price_org, price_rows
+from qc_dataset_prices import datasets, file_rules, price_rows, quote_org
 from qc_plan_prices import TIER_LABELS, TIERS, catalog
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -284,7 +284,7 @@ def storage_table(data: dict) -> str:
 
 def main() -> None:
     data = catalog()
-    org_id = list_price_org()
+    org_id = quote_org()
     rows = price_rows(datasets(None), org_id, 4)
     prices = Prices(data, rows, file_rules(org_id))
 

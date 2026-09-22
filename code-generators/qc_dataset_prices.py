@@ -7,12 +7,10 @@ Writes skill-templates/pricing/references/price-book.md from three API routes:
     /data/prices           -> the per-file rules `lean data download` charges by:
                               a path regex, QCC per file and the SKU it bills.
 
-The quote depends on the calling organization's TIER: a Trading Firm org is
-quoted $31,200 for US Equity minute history, a Quant Researcher org $11,760, and
-a Free org gets the Quant Researcher price on every SKU. The script quotes for
-the first Free or Quant Researcher organization of the credentials, so the book
-holds Quant Researcher list prices; plan-prices.md has the other tiers' prices
-for the packages sold through the plan checkout.
+Prices are per organization tier, and `sections/read` quotes only the calling
+organization's tier, so the per-tier prices come from the Pricing page catalog
+(`qc_plan_prices.catalog`), which carries all four. The handful of SKUs the
+catalog doesn't list keep the quoted price and are named under their table.
 
 Filter on `purchasable`, never on cloud/cli: the on-premise history bundles are
 neither cloud nor cli products and are the most expensive SKUs.
@@ -33,6 +31,7 @@ from pathlib import Path
 from urllib.error import URLError
 
 from _code_generation_helpers import api_post
+from qc_plan_prices import TIERS, TIER_LABELS, catalog
 
 OUTPUT = Path(__file__).resolve().parents[1] / "skill-templates/pricing/references/price-book.md"
 DATASET_URL = "https://www.quantconnect.com/datasets/{}/pricing"
@@ -40,13 +39,15 @@ DATASET_URL = "https://www.quantconnect.com/datasets/{}/pricing"
 DEPRECATED_KINDS = {"Hourly and Daily History", "Hourly and Daily Updates"}
 
 
-def list_price_org() -> str:
-    """The first Free or Quant Researcher org, whose quote is the list price."""
-    for org in api_post("/organizations/list").get("organizations", []):
-        if org.get("type") in ("Free", "Researcher"):
-            return org["id"]
-    sys.exit("ERROR: no Free or Quant Researcher organization on these credentials; "
-             "pass --organization-id.")
+def quote_org() -> str:
+    """The organization `sections/read` quotes for. Its tier only sets the price of
+    the SKUs missing from the Pricing page catalog, so any organization works; a Free
+    or Quant Researcher one keeps those few at list price."""
+    organizations = api_post("/organizations/list").get("organizations", [])
+    if not organizations:
+        sys.exit("ERROR: no organization on these credentials.")
+    return next((o["id"] for o in organizations if o.get("type") in ("Free", "Researcher")),
+                organizations[0]["id"])
 
 
 def datasets(only: list[int] | None) -> list[dict]:
@@ -132,18 +133,32 @@ def file_rules_markdown(rules: list[dict], rows: list[dict]) -> list[str]:
     return lines + [""]
 
 
+def tier_cells(row: dict, tiers: dict) -> tuple[list[str], bool]:
+    """One price per tier, and whether it fell back to the quoted organization's."""
+    market = (tiers.get(cell(row["sku"])) or {}).get("marketPrice") or {}
+    prices = [((market.get(t) or {}).get("monthly"), (market.get(t) or {}).get("yearly"))
+              for t in TIERS]
+    fallback = not all(yearly for _, yearly in prices)
+    if fallback:
+        prices = [(row["monthly"], row["yearly"])] * len(TIERS)
+    # Bulk is billed annually; the API's monthly figure is never charged.
+    bulk = str(row["skuKind"]).startswith("Bulk")
+    return ([money(y) if bulk or not m else f"{money(m)}/mo, {money(y)}/yr"
+             for m, y in prices], fallback)
+
+
 def render(rows: list[dict], rules: list[dict]) -> str:
     lines = [
         "# Dataset Market price book",
         "",
         f"Generated {date.today().isoformat()} by `code-generators/qc_dataset_prices.py`. "
-        "These are the Quant Researcher list prices; higher tiers pay more for many SKUs "
-        "(see `plan-prices.md`). Regenerate rather than edit. `Price` is the storefront "
-        "label; `Monthly` and `Yearly` are the numbers behind it; a per-file SKU is priced "
-        "in QCC per file (1 QCC = $0.01), listed in the last section. Only rows a customer "
-        "can buy or use are listed.",
+        "Regenerate rather than edit. `Price` is the storefront label as the generating "
+        "organization sees it; the tier columns hold what each tier pays. A per-file SKU "
+        "is priced in QCC per file (1 QCC = $0.01), listed in the last section. Only rows "
+        "a customer can buy or use are listed.",
         "",
     ]
+    tiers = {cell(it["name"]): it for it in catalog().get("dataProducts") or []}
     by_dataset: dict[int, list[dict]] = {}
     for row in rows:
         by_dataset.setdefault(row["datasetId"], []).append(row)
@@ -156,16 +171,23 @@ def render(rows: list[dict], rules: list[dict]) -> str:
         lines += [f"## {cell(head['dataset'])} ({cell(head['vendor'])})", "",
                   f"Page: {DATASET_URL.format(head['slug'])} · listed as "
                   f"\"{cell(head['listCTA'])}\"", "",
-                  "| SKU | Kind | Price | Monthly | Yearly | Cloud | CLI | Buyable |",
-                  "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+                  "| SKU | Kind | Price | " + " | ".join(TIER_LABELS)
+                  + " | Cloud | CLI | Buyable |",
+                  "| --- | --- | --- | " + " | ".join("---" for _ in TIERS)
+                  + " | --- | --- | --- |"]
+        quoted = []
         for r in shown:
             flags = ["yes" if r[k] else "" for k in ("cloud", "cli", "purchasable")]
-            # Bulk is billed annually; the API's monthly figure is never charged.
-            monthly = "" if str(r["skuKind"]).startswith("Bulk") else money(r["monthly"])
+            prices, fallback = tier_cells(r, tiers)
+            if fallback and (r["monthly"] or r["yearly"]):
+                quoted.append(cell(r["sku"]))
             lines.append(f"| {cell(r['sku'])} | {cell(r['skuKind'])} | {cell(r['priceCTA'])} | "
-                         f"{monthly} | {money(r['yearly'])} | "
-                         + " | ".join(flags) + " |")
+                         + " | ".join(prices) + " | " + " | ".join(flags) + " |")
         lines.append("")
+        if quoted:
+            lines += ["The Pricing page catalog carries no per-tier price for "
+                      + ", ".join(quoted) + "; every tier column shows the price quoted to "
+                      "the generating organization.", ""]
     return "\n".join(lines + file_rules_markdown(rules, rows))
 
 
@@ -182,7 +204,7 @@ def main() -> None:
     parser.add_argument("--workers", type=int, default=4)
     args = parser.parse_args()
 
-    org_id = args.organization_id or list_price_org()
+    org_id = args.organization_id or quote_org()
     meta = datasets(args.dataset_id)
     rows = price_rows(meta, org_id, args.workers)
     print(f"{len(meta)} datasets, {len(rows)} SKUs, "

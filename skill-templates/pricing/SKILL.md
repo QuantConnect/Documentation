@@ -23,7 +23,7 @@ makes the number make sense.
 | File | Holds |
 | --- | --- |
 | [references/plan-prices.md](references/plan-prices.md) | Every seat, pack, node, support seat, storage plan and module; data packages sold at checkout, priced for all four tiers. Generated from quantconnect.com/pricing. |
-| [references/price-book.md](references/price-book.md) | Every dataset's SKUs (Cloud Access, bulk packages) and the per-file QCC prices `lean data download` charges, at Quant Researcher prices. Generated from the API. |
+| [references/price-book.md](references/price-book.md) | Every dataset's SKUs (Cloud Access, bulk packages) and the per-file QCC prices `lean data download` charges, priced for all four tiers. Generated from the API. |
 | [references/plans.md](references/plans.md) | How a bill is built, what each tier includes, nodes, QCC, support seats, Object Store, discounts. |
 | [references/datasets.md](references/datasets.md) | Free vs Cloud Access vs Download, prerequisites, what one file covers, how to estimate a download, bulk totals. |
 | [references/docs.md](references/docs.md) | Pages to link. |
