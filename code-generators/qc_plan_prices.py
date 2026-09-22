@@ -51,8 +51,15 @@ SECTIONS = [
 
 def catalog() -> dict:
     req = urllib.request.Request(PRICING_URL, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=60) as resp:
-        page = resp.read().decode("utf-8", "replace")
+    for attempt in range(3):
+        # The page answers the odd request with a 502.
+        try:
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                page = resp.read().decode("utf-8", "replace")
+            break
+        except urllib.error.HTTPError:
+            if attempt == 2:
+                raise
     for body in re.findall(r"<script[^>]*>\s*(\{.*?)</script>", page, re.S):
         try:
             data = json.loads(body)
