@@ -49,6 +49,7 @@ SECTION_REPLACEMENTS = [
     ("Self Managed", "Self-Managed"),
     ("Sub Assistant", "Sub-Assistant"),
     ("Sub Agent",     "Sub-Agent"),
+    ("Cross Platform", "Cross-Platform"),
     ("Margin3F",     "Margin%3F"),
     ("Greeks3F",     "Greeks%3F"),
     ("Smile3F",      "Smile%3F"),

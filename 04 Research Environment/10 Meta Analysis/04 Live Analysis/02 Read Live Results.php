@@ -33,7 +33,7 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
         <tr>
             <td>Local Platform</td>
             <td><a href='/docs/v2/local-platform/projects/getting-started#14-Get-Project-Id'>Get Project Id</a></td>
-            <td><a href='/docs/v2/local-platform/live-trading/getting-started#11-Get-Deployment-Id'>Get Deployment Id</a></td>
+            <td><a href='/docs/v2/local-platform/live-trading/getting-started#10-Get-Deployment-Id'>Get Deployment Id</a></td>
         </tr>
         <tr>
             <td>CLI</td>
