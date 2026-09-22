@@ -14,6 +14,12 @@ language markers — add at least one of:
   - <!-- python-only -->...<!-- /python-only --> prose blocks
     (or <!-- csharp-only -->...),
   - both ```python and ```csharp fenced code blocks.
+A skill with no code (pricing, for example) sets `language-neutral: true` in
+its frontmatter instead; the flag is removed from the built SKILL.md.
+
+A skill may keep supporting files in a `references/` folder next to its
+SKILL.md. They are built (Markdown split per language like SKILL.md, other
+files copied) into both language trees and installed with the skill.
 
 For each SKILL.md found:
   1. Validate YAML frontmatter (name + description required) and confirm the
@@ -51,6 +57,8 @@ import yaml
 
 
 REQUIRED_KEYS = {"name", "description"}
+LANGUAGE_NEUTRAL = re.compile(r"^language-neutral:.*\n", re.MULTILINE)
+REFERENCES = "references"
 DESCRIPTION_MIN = 30
 DESCRIPTION_MAX = 1024
 LANGS = ("python", "csharp")
@@ -87,7 +95,7 @@ class FrontmatterError(ValueError):
 class Skill:
     rel: Path        # source path relative to templates root
     rel_dir: Path    # source parent relative to templates root
-    content: str     # raw source content (utf-8)
+    content: str     # source content (utf-8), minus the language-neutral flag
     name: str        # frontmatter `name`
 
 
@@ -126,14 +134,19 @@ def is_dual_language(content: str) -> bool:
 
 def load_skill(skill_file: Path, templates_root: Path) -> Skill:
     content = skill_file.read_text(encoding="utf-8")
-    name = parse_frontmatter(content)["name"]
-    if not is_dual_language(content):
+    frontmatter = parse_frontmatter(content)
+    name = frontmatter["name"]
+    neutral = frontmatter.get("language-neutral") is True
+    if neutral:
+        content = LANGUAGE_NEUTRAL.sub("", content, count=1)
+    elif not is_dual_language(content):
         raise FrontmatterError(
             "skill is not dual-language. Add at least one of:\n"
             "  - py`X`cs`Y` inline markers (or cs-first cs`Y`py`X`),\n"
             "  - <!-- python-only -->...<!-- /python-only --> prose blocks\n"
             "    (or <!-- csharp-only -->...),\n"
-            "  - both ```python and ```csharp fenced code blocks."
+            "  - both ```python and ```csharp fenced code blocks.\n"
+            "A skill with no code sets `language-neutral: true` instead."
         )
     return Skill(
         rel=skill_file.relative_to(templates_root),
@@ -335,6 +348,22 @@ def install(src: Path, dst: Path, *, dry_run: bool) -> None:
     copy2(src, dst)
 
 
+def build_references(src_dir: Path, dst_dir: Path, lang: str, *, dry_run: bool) -> None:
+    """Build the skill's `references/` folder into one language tree."""
+    refs = src_dir / REFERENCES
+    if not refs.is_dir():
+        return
+    for src in sorted(refs.rglob("*")):
+        if not src.is_file():
+            continue
+        dst = dst_dir / src.relative_to(src_dir)
+        if src.suffix == ".md":
+            write_file(dst, split_for_language(src.read_text(encoding="utf-8"), lang),
+                       dry_run=dry_run)
+        else:
+            install(src, dst, dry_run=dry_run)
+
+
 def remove_tree(path: Path, *, dry_run: bool) -> bool:
     """Remove `path` if it exists. Returns True iff something was (or would be) removed."""
     if not path.exists():
@@ -429,15 +458,19 @@ def main() -> int:
                 content,
                 dry_run=args.dry_run,
             )
+            build_references(templates_root / skill.rel_dir, skills_root / lang / skill.rel_dir,
+                             lang, dry_run=args.dry_run)
         print(f"Built '{skill.name}' from {skill.rel}")
 
     if args.install_lang:
         for skill in skills:
-            install(
-                skills_root / args.install_lang / skill.rel_dir / "SKILL.md",
-                install_root / skill.name / "SKILL.md",
-                dry_run=args.dry_run,
-            )
+            built = skills_root / args.install_lang / skill.rel_dir
+            install(built / "SKILL.md", install_root / skill.name / "SKILL.md",
+                    dry_run=args.dry_run)
+            for ref in sorted((built / REFERENCES).rglob("*")) if (built / REFERENCES).is_dir() else []:
+                if ref.is_file():
+                    install(ref, install_root / skill.name / ref.relative_to(built),
+                            dry_run=args.dry_run)
 
     print()
     print(f"Done. Built {len(skills)} skill(s).")
