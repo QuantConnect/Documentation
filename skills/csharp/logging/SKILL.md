@@ -159,7 +159,7 @@ public override void OnEndOfAlgorithm()
 }
 ```
 
-Read back in Research with `qb.ObjectStore.Read(key)`. Use a stable, unique key like `{project_id}-{algorithm_id}.txt` so runs don't clobber each other. Backtests only — in live, the 100K-line log file is the right place for diagnostics.
+Read back in Research with `qb.ObjectStore.Read(key)`. Use a stable, unique key like `{project_id}-{algorithm_id}.txt` so runs don't clobber each other. Save only rows the algorithm derives, such as fills and signals; request price, quote and alternative data again with a history call (see the data-export skill). Backtests only — in live, the 100K-line log file is the right place for diagnostics.
 
 ## Silent footgun: duplicate-message suppression
 
