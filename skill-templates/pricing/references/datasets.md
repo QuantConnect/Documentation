@@ -32,15 +32,9 @@ data.
 - **Per-file downloads are QCC:** 1 QCC = $0.01, the same on every tier. The
   CLI prints the file count and QCC cost and asks for confirmation before it
   charges; it skips files already on disk.
-- **Download licence terms:** for the licensed organization's internal LEAN use
-  only, not redistributed or converted into another format; charts may be
-  shared if the data cannot be reconstructed from them. Terms beyond that are
-  the CLI data agreement: point to it, do not interpret it.
-- **Downloading a dataset is not exporting from the cloud.** Buying a Download
-  licence is how data legitimately reaches a local machine. Getting cloud data
-  or anything derived from it out of QuantConnect (Object Store download,
-  logs, results as an export channel) is a different question with a flat
-  answer: it is not possible, and there is no exception.
+- **Download licence terms, and getting cloud data out of QuantConnect,** are
+  in the data-export skill. Buying a Download licence is how data reaches a
+  local machine.
 - **Not every dataset is downloadable.** Only SKUs listed as downloads in the
   price book are for sale. Morningstar US Fundamentals and most free-in-cloud
   datasets (crypto price data, FRED, EODHD, CoinGecko, ...) have Cloud Access
