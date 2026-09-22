@@ -129,3 +129,16 @@
         return custom
 </pre>
 </div>
+
+<p class='csharp'>If your custom data type derives from <code>TradeBar</code> instead of <code>BaseData</code>, set its <code>DataType</code> to <code>MarketDataType.Base</code> in the constructor. Otherwise, LEAN treats the data points as regular trade bars, so <code>History&lt;T&gt;</code>, <code>Slice.Get&lt;T&gt;</code>, and <code>Securities[symbol].Cache.GetData&lt;T&gt;</code> return no data for your custom type.</p>
+
+<div class="csharp section-example-container">
+<pre class="csharp">public class MyCustomTradeBar : TradeBar
+{
+    public MyCustomTradeBar()
+    {
+        DataType = MarketDataType.Base;
+    }
+}
+</pre>
+</div>
