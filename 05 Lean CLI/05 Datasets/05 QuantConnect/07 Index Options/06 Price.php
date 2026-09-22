@@ -1,155 +1,19 @@
 <h4>Download in Bulk</h4>
 <p>To download the US Index Options dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-index-option-universe">US Index Option Universe</a> subscription. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
 
-<table class="qc-table table" id='us-index-options-bulk-download-price'>
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>Quant Researcher</th>
-            <th>Team</th>
-            <th>Trading Firm</th>
-            <th>Institution</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>30,000</td>
-            <td>33,600</td>
-            <td>40,800</td>
-            <td>64,800</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>14,400</td>
-            <td>21,000</td>
-            <td>26,400</td>
-            <td>34,800</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>12,000</td>
-            <td>15,600</td>
-            <td>18,000</td>
-            <td>21,000</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-index-options-bulk-download.html"); ?>
 
 <p>After the first bulk subscription ends, subscribe to the updates to keep your local data current. The following table shows the price ($/year) of the updates of each resolution for each organization tier:</p>
 
-<table class="qc-table table" id='us-index-options-bulk-update-price'>
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>Quant Researcher</th>
-            <th>Team</th>
-            <th>Trading Firm</th>
-            <th>Institution</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>1,200</td>
-            <td>1,680</td>
-            <td>2,160</td>
-            <td>2,880</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>1,440</td>
-            <td>1,440</td>
-            <td>1,920</td>
-            <td>2,640</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>720</td>
-            <td>960</td>
-            <td>1,440</td>
-            <td>1,920</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-index-options-bulk-updates.html"); ?>
 
 <p>The following table shows the annual price ($/year) of the US Index Option Universe historical and updates subscriptions for each organization tier:</p>
 
-<table class="qc-table table" id='us-index-option-universe-bulk-price'>
-    <thead>
-        <tr>
-            <th>Tier</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Quant Researcher</td>
-            <td>1,200</td>
-            <td>960</td>
-        </tr>
-        <tr>
-            <td>Team</td>
-            <td>1,920</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Trading Firm</td>
-            <td>2,880</td>
-            <td>1,440</td>
-        </tr>
-        <tr>
-            <td>Institution</td>
-            <td>3,960</td>
-            <td>1,680</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#us-index-options-bulk-download-price td:not(:first-child),
-#us-index-options-bulk-download-price th:not(:first-child),
-#us-index-options-bulk-update-price td:not(:first-child),
-#us-index-options-bulk-update-price th:not(:first-child),
-#us-index-option-universe-bulk-price td:not(:first-child),
-#us-index-option-universe-bulk-price th:not(:first-child) {
-    text-align: right;
-}
-</style>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-index-options-universe.html"); ?>
 
 <p>The following table shows the total cost of downloading the required datasets in bulk at minute resolution on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Dataset</th>
-            <th>Package</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>US Index Option Universe</td>
-            <td>Subscription</td>
-            <td>$1,200</td>
-            <td>$960/year</td>
-        </tr>
-        <tr>
-            <td>US Index Options</td>
-            <td>Minute</td>
-            <td>$30,000</td>
-            <td>$1,200/year</td>
-        </tr>
-        <tr>
-            <td>Total</td>
-            <td></td>
-            <td>$31,200</td>
-            <td>$2,160/year</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-index-options-bulk-total.html"); ?>
 
 <h4>Download by Ticker</h4>
 <p>
@@ -159,32 +23,7 @@
     The following table describes the file format and costs of each resolution:
 </p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>15 QCC = $0.15 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>900 QCC = $9 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
-            <td>300 QCC = $3 USD</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-index-options-per-file.html"); ?>
 
 <p>For example, the following algorithm subscribes to minute resolution data for a universe of SPXW Index Option contracts:</p>
 

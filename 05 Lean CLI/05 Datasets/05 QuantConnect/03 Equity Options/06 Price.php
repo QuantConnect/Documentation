@@ -3,199 +3,26 @@
 <h4>Download in Bulk</h4>
 <p>To download the US Equity Options dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The price depends on your organization tier and the resolution you need. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a>, <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe">US Equity Option Universe</a>, and underlying <a href="/docs/v2/lean-cli/datasets/quantconnect/us-equity#06-Price">US Equities</a> subscriptions. The following table shows the price ($/year) to download the historical data of each resolution for each organization tier:</p>
 
-<table class="qc-table table" id='us-equity-options-bulk-download-price'>
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>Quant Researcher</th>
-            <th>Team</th>
-            <th>Trading Firm</th>
-            <th>Institution</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>30,000</td>
-            <td>33,600</td>
-            <td>40,800</td>
-            <td>64,800</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>14,400</td>
-            <td>21,000</td>
-            <td>26,400</td>
-            <td>34,800</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>12,000</td>
-            <td>15,600</td>
-            <td>18,000</td>
-            <td>21,000</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-options-bulk-download.html"); ?>
 
 <p>After the first bulk subscription ends, subscribe to the updates to keep your local data current. The following table shows the price ($/year) of the updates of each resolution for each organization tier:</p>
 
-<table class="qc-table table" id='us-equity-options-bulk-update-price'>
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>Quant Researcher</th>
-            <th>Team</th>
-            <th>Trading Firm</th>
-            <th>Institution</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>1,200</td>
-            <td>1,680</td>
-            <td>2,160</td>
-            <td>2,880</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>1,440</td>
-            <td>1,440</td>
-            <td>1,920</td>
-            <td>2,640</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>720</td>
-            <td>960</td>
-            <td>1,440</td>
-            <td>1,920</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-options-bulk-updates.html"); ?>
 
 <p>The following table shows the annual price ($/year) of the US Equity Option Universe historical and updates subscriptions for each organization tier:</p>
 
-<table class="qc-table table" id='us-equity-option-universe-bulk-price'>
-    <thead>
-        <tr>
-            <th>Tier</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Quant Researcher</td>
-            <td>3,960</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Team</td>
-            <td>5,040</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Trading Firm</td>
-            <td>7,500</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Institution</td>
-            <td>12,000</td>
-            <td>1,200</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#us-equity-options-bulk-download-price td:not(:first-child),
-#us-equity-options-bulk-download-price th:not(:first-child),
-#us-equity-options-bulk-update-price td:not(:first-child),
-#us-equity-options-bulk-update-price th:not(:first-child),
-#us-equity-option-universe-bulk-price td:not(:first-child),
-#us-equity-option-universe-bulk-price th:not(:first-child) {
-    text-align: right;
-}
-</style>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-options-universe.html"); ?>
 
 <p>The following table shows the total cost of downloading the required datasets in bulk at minute resolution on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates, shown in the preceding tables.</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Dataset</th>
-            <th>Package</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>US Equity Security Master</td>
-            <td>Subscription</td>
-            <td>$600</td>
-            <td>$600/year</td>
-        </tr>
-        <tr>
-            <td>US Equity Option Universe</td>
-            <td>Subscription</td>
-            <td>$3,960</td>
-            <td>$1,200/year</td>
-        </tr>
-        <tr>
-            <td>US Equities</td>
-            <td>Minute</td>
-            <td>$11,760</td>
-            <td>$600/year</td>
-        </tr>
-        <tr>
-            <td>US Equity Options</td>
-            <td>Minute</td>
-            <td>$30,000</td>
-            <td>$1,200/year</td>
-        </tr>
-        <tr>
-            <td>Total</td>
-            <td></td>
-            <td>$46,320</td>
-            <td>$3,600/year</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-options-bulk-total.html"); ?>
 
 <h4>Download by Ticker</h4>
 <p>The file format of the US Equity Option Universe data is one file per underlying Equity and each file costs 200 QCC = $2 USD.</p>
 
 <p>The US Equity Options dataset is available is several resolutions. The resolution you need depends on the US Equity Option subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Minute</td>
-            <td>One file per Option per trading day per data format. Quote, trade, and open interest data are separate files.</td>
-            <td>15 QCC = $0.15 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per Option per year per data format. Trade and open interest data are separate files.</td>
-            <td>900 QCC = $9 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per Option per year. Trade and open interest data are separate files.</td>
-            <td>300 QCC = $3 USD</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-options-per-file.html"); ?>
 
 <p>For example, the following algorithm subscribes to minute resolution data for an Equity Option and its underlying asset:<br></p>
 

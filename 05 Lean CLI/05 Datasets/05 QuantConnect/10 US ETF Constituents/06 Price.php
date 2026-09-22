@@ -3,83 +3,11 @@
 <h4>Download in Bulk</h4>
 <p>To download the US ETF Constituents dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a> subscription. The first bulk subscription downloads the full historical dataset for one year. After that subscription ends, renew with the cheaper updates subscription to keep your data current. The following table shows the annual price ($/year) of each subscription for every organization tier:</p>
 
-<table class="qc-table table" id='us-etf-constituents-bulk-price'>
-    <thead>
-        <tr>
-            <th>Tier</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Quant Researcher</td>
-            <td>3,600</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Team</td>
-            <td>3,960</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Trading Firm</td>
-            <td>3,960</td>
-            <td>1,200</td>
-        </tr>
-        <tr>
-            <td>Institution</td>
-            <td>3,960</td>
-            <td>1,200</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#us-etf-constituents-bulk-price td:not(:first-child),
-#us-etf-constituents-bulk-price th:not(:first-child) {
-    text-align: right;
-}
-</style>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-etf-constituents-universe.html"); ?>
 
 <p>The following table shows the total cost of downloading the required datasets, including minute US Equities data for the selected constituents, in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates.</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Dataset</th>
-            <th>Package</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>US Equity Security Master</td>
-            <td>Subscription</td>
-            <td>$600</td>
-            <td>$600/year</td>
-        </tr>
-        <tr>
-            <td>US ETF Constituents</td>
-            <td>Subscription</td>
-            <td>$3,600</td>
-            <td>$1,200/year</td>
-        </tr>
-        <tr>
-            <td>US Equities</td>
-            <td>Minute</td>
-            <td>$11,760</td>
-            <td>$600/year</td>
-        </tr>
-        <tr>
-            <td>Total</td>
-            <td></td>
-            <td>$15,960</td>
-            <td>$2,400/year</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-etf-constituents-bulk-total.html"); ?>
 
 <h4>Download by Date</h4>
 <p>When you download by date, the US ETF Constituents data is one file per ETF per day and each file costs 50 QCC = $0.50 USD. The following table shows the cost of downloading one year of data for one ETF by date on the <b>Quant Researcher</b> tier, assuming you download minute US Equities data for all 500 constituents of an ETF such as SPY:</p>

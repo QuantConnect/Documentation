@@ -3,83 +3,11 @@
 <h4>Download in Bulk</h4>
 <p>To download the US Equity Coarse Universe dataset in bulk, subscribe to it on the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization. The bulk download also requires the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/pricing">US Equity Security Master</a> subscription. The first bulk subscription downloads the full historical dataset for one year. After that subscription ends, renew with the cheaper updates subscription to keep your data current. The following table shows the annual price ($/year) of each subscription for every organization tier:</p>
 
-<table class="qc-table table" id='us-equity-coarse-bulk-price'>
-    <thead>
-        <tr>
-            <th>Tier</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Quant Researcher</td>
-            <td>600</td>
-            <td>240</td>
-        </tr>
-        <tr>
-            <td>Team</td>
-            <td>900</td>
-            <td>360</td>
-        </tr>
-        <tr>
-            <td>Trading Firm</td>
-            <td>1,200</td>
-            <td>600</td>
-        </tr>
-        <tr>
-            <td>Institution</td>
-            <td>1,800</td>
-            <td>960</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#us-equity-coarse-bulk-price td:not(:first-child),
-#us-equity-coarse-bulk-price th:not(:first-child) {
-    text-align: right;
-}
-</style>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-coarse-universe.html"); ?>
 
 <p>The following table shows the total cost of downloading the required datasets, including minute US Equities data for the selected securities, in bulk on the <b>Quant Researcher</b> tier. Other organization tiers apply their own rates.</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Dataset</th>
-            <th>Package</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>US Equity Security Master</td>
-            <td>Subscription</td>
-            <td>$600</td>
-            <td>$600/year</td>
-        </tr>
-        <tr>
-            <td>US Equity Coarse Universe</td>
-            <td>Subscription</td>
-            <td>$600</td>
-            <td>$240/year</td>
-        </tr>
-        <tr>
-            <td>US Equities</td>
-            <td>Minute</td>
-            <td>$11,760</td>
-            <td>$600/year</td>
-        </tr>
-        <tr>
-            <td>Total</td>
-            <td></td>
-            <td>$12,960</td>
-            <td>$1,440/year</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/us-equity-coarse-bulk-total.html"); ?>
 
 <h4>Download by Date</h4>
 <p>When you download by date, the US Equity Coarse Universe data is one file per day and each file costs 5 QCC = $0.05 USD. The following table shows the cost of downloading one year of data by date on the <b>Quant Researcher</b> tier, assuming the universe selects 50 tickers and you download minute US Equities data for them:</p>

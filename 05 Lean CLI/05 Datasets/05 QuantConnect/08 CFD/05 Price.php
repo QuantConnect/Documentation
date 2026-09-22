@@ -3,59 +3,12 @@
 
 <p>The following table shows the total cost of downloading the CFD dataset in bulk. The price is the same for all organization tiers.</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Dataset</th>
-            <th>Package</th>
-            <th>Historical</th>
-            <th>Updates</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>CFD Data</td>
-            <td>Subscription</td>
-            <td>$800</td>
-            <td>$200/year</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/cfd-bulk-total.html"); ?>
 
 <h4>Download by Ticker</h4>
 <p>The CFD dataset is available is several resolutions. The resolution you need depends on the CFD subscriptions you create in your algorithm and the resolution of data you get in <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Resolution</th>
-            <th>File Format</th>
-            <th>Cost per file</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Second</td>
-            <td>One file per contract per trading day.</td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-        <tr>
-            <td>Minute</td>
-            <td>One file per contract&nbsp;per trading day.<br></td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-        <tr>
-            <td>Hour</td>
-            <td>One file per contract.<br></td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-        <tr>
-            <td>Daily</td>
-            <td>One file per contract.<br></td>
-            <td>3 QCC = $0.03 USD</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/datasets/lean-cli-prices/cfd-per-file.html"); ?>
 
 <p>For example, the following algorithm subscribes to minute resolution data for one CFD contract:</p>
 
