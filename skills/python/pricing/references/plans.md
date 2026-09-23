@@ -33,11 +33,10 @@ listed in [docs.md](docs.md), read 2026-09-22.
   seat per month** (**$400 per seat per year** on annual billing), the Bronze
   Support seat is free. Below that, Bronze is charged at its list price. This
   is why the Researcher and Team packs list Bronze at no extra cost.
-- **Monthly or annual.** Annual billing takes two months off most items
-  (10 x monthly). Agent nodes carry no annual discount (12 x monthly), and a
-  few items round differently, so quote the `Yearly` column of
-  `plan-prices.md`. Some data packages, bulk downloads included, are sold
-  yearly only.
+- **Monthly or annual.** Annual billing is 10 x monthly for every plan line
+  and pack (two months off); the `Yearly` column of `plan-prices.md` is
+  computed that way, not read from the catalog. Some data packages, bulk
+  downloads included, are sold yearly only.
 - **Coupons** are entered at checkout (+ Add Coupon). There is no public coupon
   list; never promise one.
 - **Payment** is by credit card through Stripe; QuantConnect never stores the
