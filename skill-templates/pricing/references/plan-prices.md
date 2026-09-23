@@ -1,6 +1,6 @@
 # Plan price list
 
-Generated 2026-09-22 by `code-generators/qc_plan_prices.py` from the public catalog embedded in https://www.quantconnect.com/pricing. Regenerate rather than edit. Prices are USD list prices before any coupon, proration or tax. `Yearly` is the price when billed annually. Where a price depends on the organization tier, every tier is shown.
+Generated 2026-09-23 by `code-generators/qc_plan_prices.py` from the public catalog embedded in https://www.quantconnect.com/pricing. Regenerate rather than edit. Prices are USD list prices before any coupon, proration or tax. `Yearly` is the price when billed annually: 10 x monthly for plan lines and packs, the catalog's figure for data packages. Where a price depends on the organization tier, every tier is shown.
 
 ## Recommended packs
 
@@ -8,10 +8,10 @@ The plan cards on the Pricing page. A pack is a suggested setup, not a fixed pla
 
 | Pack | Contents | Monthly | Yearly | Seats | Seat limit note |
 | --- | --- | --- | --- | --- | --- |
-| Researcher Pack | 1 x Researcher Seat, 1 x R1-4, 1 x B2-8, 1 x L-MICRO, 1 x A1-1, 1 x Bronze Support (free) | $84 | $888 | 1-1 | The research tier is limited to 1-seat as it does not include project collaboration. |
-| Team Pack | 2 x Team Seat, 1 x R2-8, 1 x B4-12, 1 x L1-1, 1 x A1-1, 2 x Bronze Support (free) | $192 | $1,968 | 2-10 | The Team tier is limited to 10-seats. Check out the Trading Firm plan if you need more |
-| Trading Firm Pack | 2 x Trading Firm Seat, 1 x R4-12, 2 x B4-12, 1 x L1-1, 1 x A4-12, 1 x Silver Support, 1 x Bronze Support (free) | $528 | $5,472 | 2-no limit |  |
-| Institution Pack | 5 x Institution Seat, 3 x R8-16, 4 x B4-12, 4 x L1-2, 1 x A4-12, 1 x Gold Support, 4 x Bronze Support (free) | $1,656 | $16,752 | 5-no limit |  |
+| Researcher Pack | 1 x Researcher Seat, 1 x R1-4, 1 x B2-8, 1 x L-MICRO, 1 x A1-1, 1 x Bronze Support (free) | $84 | $840 | 1-1 | The research tier is limited to 1-seat as it does not include project collaboration. |
+| Team Pack | 2 x Team Seat, 1 x R2-8, 1 x B4-12, 1 x L1-1, 1 x A1-1, 2 x Bronze Support (free) | $192 | $1,920 | 2-10 | The Team tier is limited to 10-seats. Check out the Trading Firm plan if you need more |
+| Trading Firm Pack | 2 x Trading Firm Seat, 1 x R4-12, 2 x B4-12, 1 x L1-1, 1 x A4-12, 1 x Silver Support, 1 x Bronze Support (free) | $528 | $5,280 | 2-no limit |  |
+| Institution Pack | 5 x Institution Seat, 3 x R8-16, 4 x B4-12, 4 x L1-2, 1 x A4-12, 1 x Gold Support, 4 x Bronze Support (free) | $1,656 | $16,560 | 5-no limit |  |
 
 ## Seats
 
@@ -19,7 +19,7 @@ One seat per member. The seat type sets the organization tier.
 
 | Item | CPU / RAM / storage | Monthly | Yearly | Billed | Min-max | Note |
 | --- | --- | --- | --- | --- | --- | --- |
-| Researcher Seat | - | $10 | $96 | monthly & yearly | 1-1 | Unleash your algorithm development with Prime. |
+| Researcher Seat | - | $10 | $100 | monthly & yearly | 1-1 | Unleash your algorithm development with Prime. |
 | Team Seat | - | $24 | $240 | monthly & yearly | 2-10 | Unleash your algorithm development with Prime. |
 | Trading Firm Seat | - | $48 | $480 | monthly & yearly | 2-no limit | Unrestricted access and power for the professional user. |
 | Institution Seat | - | $96 | $960 | monthly & yearly | 5-no limit |  |
@@ -28,7 +28,7 @@ One seat per member. The seat type sets the organization tier.
 
 | Item | CPU / RAM / storage | Monthly | Yearly | Billed | Min-max | Note |
 | --- | --- | --- | --- | --- | --- | --- |
-| B2-8 | 2 CPU / 8 GB | $14 | $144 | monthly & yearly | 1-20 |  |
+| B2-8 | 2 CPU / 8 GB | $14 | $140 | monthly & yearly | 1-20 |  |
 | B4-12 | 4 CPU / 12 GB | $48 | $480 | monthly & yearly | 1-no limit |  |
 | B8-16 | 8 CPU / 16 GB | $96 | $960 | monthly & yearly | 1-no limit |  |
 | B4-16-GPU | 4 CPU / 16 GB | $400 | $4,000 | monthly & yearly | 1-2 | Cloud Backtesting Compute 4C-16GB with Shared GPU |
@@ -69,9 +69,9 @@ A `-WAW`, `-TOR` or `-NY7` suffix is the host region.
 
 | Item | CPU / RAM / storage | Monthly | Yearly | Billed | Min-max | Note |
 | --- | --- | --- | --- | --- | --- | --- |
-| A1-1 | 1 CPU / 12 GB | $24 | $288 | monthly & yearly | 1-no limit | Agentic host for automated research, backtesting, and live trading. |
-| A4-12 | 4 CPU / 12 GB | $96 | $1,152 | monthly & yearly | 1-no limit | Agentic host for automated research, backtesting, and live trading. |
-| A16-32 | 16 CPU / 32 GB | $384 | $4,608 | monthly & yearly | 1-no limit | Agentic host for automated research, backtesting, and live trading. |
+| A1-1 | 1 CPU / 12 GB | $24 | $240 | monthly & yearly | 1-no limit | Agentic host for automated research, backtesting, and live trading. |
+| A4-12 | 4 CPU / 12 GB | $96 | $960 | monthly & yearly | 1-no limit | Agentic host for automated research, backtesting, and live trading. |
+| A16-32 | 16 CPU / 32 GB | $384 | $3,840 | monthly & yearly | 1-no limit | Agentic host for automated research, backtesting, and live trading. |
 
 ## Support seats
 

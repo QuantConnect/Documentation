@@ -94,6 +94,18 @@ def tier_prices(item: dict) -> list[tuple] | None:
     return None if len(set(rows)) == 1 else rows
 
 
+def plan_yearly(item: dict):
+    """Annual price of a plan line: 10 x monthly, two months off.
+
+    The catalog's `yearly` is wrong for some lines (the Researcher Seat reads $96,
+    B2-8 $144, agent nodes 12 x monthly), so it is used only for yearly-only items.
+    """
+    price = item.get("price") or {}
+    if item.get("billingInterval") in ("once", "yearly") or not price.get("monthly"):
+        return price.get("yearly")
+    return 10 * price["monthly"]
+
+
 def pack_price(pack: dict, index: dict) -> tuple[str, int, int]:
     """Contents, monthly and yearly price of a pack at its minimum seat count.
 
@@ -109,16 +121,19 @@ def pack_price(pack: dict, index: dict) -> tuple[str, int, int]:
     support = pack["support"]
     bronze = index["Bronze Support"]
     premium = support["name"] != bronze["name"]
-    total = {f: sum(q * it["price"][f] for q, it in lines) for f in ("monthly", "yearly")}
+    def cost(it: dict) -> dict:
+        return {"monthly": it["price"]["monthly"], "yearly": plan_yearly(it)}
+
+    total = {f: sum(q * cost(it)[f] for q, it in lines) for f in ("monthly", "yearly")}
     free = {"monthly": total["monthly"] > 40 * seats, "yearly": total["yearly"] > 400 * seats}
     if premium:
         lines.append((support["quantity"], index[support["name"]]))
         for f in total:
-            total[f] += support["quantity"] * index[support["name"]]["price"][f]
+            total[f] += support["quantity"] * cost(index[support["name"]])[f]
     n_bronze = seats - (support["quantity"] if premium else 0)
     for f in total:
         if not free[f]:
-            total[f] += n_bronze * bronze["price"][f]
+            total[f] += n_bronze * cost(bronze)[f]
     parts = [f"{q} x {it['name']}" for q, it in lines]
     if n_bronze > 0:
         parts.append(f"{n_bronze} x Bronze Support" + (" (free)" if free["monthly"] else ""))
@@ -141,7 +156,7 @@ def item_table(items: list[dict], describe: bool = True) -> list[str]:
             it.get("storageHuman") or "") if x) or "-"
         price = it.get("price") or {}
         lines.append(f"| {cell(it.get('name'))} | {spec} | {money(price.get('monthly'))} | "
-                     f"{money(price.get('yearly'))} | {billed(it)} | "
+                     f"{money(plan_yearly(it))} | {billed(it)} | "
                      f"{it.get('min')}-{limit(None if it.get('name') in NO_SEAT_CAP else it.get('max'))} | "
                      f"{cell(it.get('shortDescription')) if describe else ''} |")
     return lines
@@ -171,7 +186,7 @@ def render(data: dict) -> str:
         f"Generated {date.today().isoformat()} by `code-generators/qc_plan_prices.py` from the public "
         f"catalog embedded in {PRICING_URL}. Regenerate rather than edit. Prices are USD list "
         "prices before any coupon, proration or tax. `Yearly` is the price when billed "
-        "annually. Where a price depends on the organization tier, every tier is shown.",
+        "annually: 10 x monthly for plan lines and packs, the catalog's figure for data packages. Where a price depends on the organization tier, every tier is shown.",
         "",
         "## Recommended packs",
         "",
