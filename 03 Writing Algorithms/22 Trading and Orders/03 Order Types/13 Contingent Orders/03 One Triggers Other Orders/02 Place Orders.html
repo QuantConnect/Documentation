@@ -1,0 +1,34 @@
+<p>To place a set of OTO orders, create the parent and child order requests with the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-factory'>order factory</a> and pass them to the <code class="csharp">OneTriggersOtherOrder</code><code class="python">one_triggers_other_order</code> method. The brokerage holds the child orders until the parent order completely fills. If the parent order is canceled or invalid, LEAN cancels the child orders, even if the parent partially filled. The method returns a list with the order ticket of each order, starting with the parent.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Buy IBM and BAC after the SPY entry fills.
+var parent = OrderFactory.LimitOrder(_spy, 100, limitPrice);
+var tickets = OneTriggersOtherOrder(parent, new List&lt;SubmitOrderRequest&gt;
+{
+    OrderFactory.MarketOrder(_ibm, 10),
+    OrderFactory.MarketOrder(_bac, 20)
+});</pre>
+<pre class="python"># Buy IBM and BAC after the SPY entry fills.
+parent = self.order_factory.limit_order(self._spy, 100, limit_price)
+tickets = self.one_triggers_other_order(parent, [
+    self.order_factory.market_order(self._ibm, 10),
+    self.order_factory.market_order(self._bac, 20)
+])</pre>
+</div>
+
+<p>The child orders are independent of each other and can be for different securities. To relate the child orders, pass them through the <code class="csharp">OrderFactory.OneCancelsOther</code><code class="python">order_factory.one_cancels_other</code> or <code class="csharp">OrderFactory.OneUpdatesOther</code><code class="python">order_factory.one_updates_other</code> method first, as described in <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/custom-contingent-orders'>Custom Contingent Orders</a>. A child order can trigger other orders in turn. To create a chain, call the <code class="csharp">Triggers</code><code class="python">triggers</code> method on the child order request.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// The IBM order triggers the BAC order once it fills.
+var child = OrderFactory.MarketOrder(_ibm, 10).Triggers(OrderFactory.MarketOrder(_bac, 20));
+var tickets = OneTriggersOtherOrder(parent, new List&lt;SubmitOrderRequest&gt; { child });</pre>
+<pre class="python"># The IBM order triggers the BAC order once it fills.
+child = self.order_factory.market_order(self._ibm, 10).triggers(self.order_factory.market_order(self._bac, 20))
+tickets = self.one_triggers_other_order(parent, [child])</pre>
+</div>
+
+<p>The following images show the two outcomes of an OTO set. In the first image, the parent order fills and triggers the child order, which fills later:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/oto-child-filled.webp" alt="An OTO set has a parent buy limit order at 45,000 and a child sell limit order at 58,000. The brokerage holds the child order until the price falls to 45,000 and the parent fills. The price then rises to 58,000 and the child order fills.">
+
+<p>In the second image, you cancel the parent order before it fills, so LEAN cancels the child order:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/oto-parent-canceled.webp" alt="An OTO set has a parent buy limit order at 45,000 and a child sell limit order at 58,000. The price stays above 45,000, you cancel the parent order, and LEAN cancels the held child order.">

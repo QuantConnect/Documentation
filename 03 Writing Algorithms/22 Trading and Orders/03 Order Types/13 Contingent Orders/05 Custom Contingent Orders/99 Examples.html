@@ -1,0 +1,62 @@
+<p>The following examples demonstrate common practices for using custom contingent orders.</p>
+
+<h4>Example 1: Inside Day Breakout</h4>
+<p>The following algorithm trades a breakout after an inside day, which is a day with a range inside the range of the day before. It places a buy stop order at the high and a sell stop order at the low. The two entry orders cancel each other. Each entry triggers its own bracket order. The take profit is one range away and the stop loss is at the opposite side of the range.</p>
+<div class="section-example-container">
+<pre class="csharp">public class CustomContingentOrdersExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private RollingWindow&lt;TradeBar&gt; _bars = new(2);
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (!slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            return;
+        }
+        _bars.Add(bar);
+        if (!_bars.IsReady || Portfolio.Invested || Transactions.GetOpenOrders(_spy).Count &gt; 0)
+        {
+            return;
+        }
+        var (today, yesterday) = (_bars[0], _bars[1]);
+        if (today.High &gt;= yesterday.High || today.Low &lt;= yesterday.Low)
+        {
+            return;
+        }
+        var range = today.High - today.Low;
+        var breakoutUp = OrderFactory.StopMarketOrder(_spy, 100, today.High).Bracket(today.High + range, today.Low);
+        var breakoutDown = OrderFactory.StopMarketOrder(_spy, -100, today.Low).Bracket(today.Low - range, today.High);
+        Order(OrderFactory.OneCancelsOther(breakoutUp, breakoutDown));
+    }
+}</pre>
+<pre class="python">class CustomContingentOrdersExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._bars = RollingWindow[TradeBar](2)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._spy)
+        if not bar:
+            return
+        self._bars.add(bar)
+        if not self._bars.is_ready or self.portfolio.invested or self.transactions.get_open_orders(self._spy):
+            return
+        today, yesterday = self._bars[0], self._bars[1]
+        if today.high &gt;= yesterday.high or today.low &lt;= yesterday.low:
+            return
+        range_ = today.high - today.low
+        breakout_up = self.order_factory.stop_market_order(self._spy, 100, today.high).bracket(today.high + range_, today.low)
+        breakout_down = self.order_factory.stop_market_order(self._spy, -100, today.low).bracket(today.low - range_, today.high)
+        self.order(self.order_factory.one_cancels_other(breakout_up, breakout_down))</pre>
+</div>

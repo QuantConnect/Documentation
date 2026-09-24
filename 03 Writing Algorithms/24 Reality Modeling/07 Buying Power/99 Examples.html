@@ -1,11 +1,11 @@
 <p>
- The following examples demonstrate some common practices for implementing a custom buying power model.
+ The following examples demonstrate some common practices for implementing custom buying power models and checking buying power.
 </p>
 <h4>
  Example 1: Always Sufficient Buying Power
 </h4>
 <p>
- The following algorithm trades protective call strategy. Sometimes, the brokerage's margin requirement differs from the algorithm's default. To avoid errors on order submission at the algorithm level, we can use the
+ The following algorithm trades a protective put strategy. Sometimes, the brokerage's margin requirement differs from the algorithm's default. To avoid errors on order submission at the algorithm level, we can use the
  <code class="csharp">
   SecurityPositionGroupModel.Null
  </code>
@@ -30,7 +30,7 @@ public class BuyingPowerModelAlgorithm : QCAlgorithm
         SetStartDate(2024, 9, 1);
         SetEndDate(2024, 12, 31);
         Settings.SeedInitialPrices = true;
-        AddSecurityInitializer(security =ggt;
+        AddSecurityInitializer(security =&gt;
         {    
             // Do not allow buying power for options; only a hedging strategy with 0 margin is allowed.
             security.SetBuyingPowerModel(new NullBuyingPowerModel());
@@ -173,7 +173,7 @@ class MyBuyingPowerModel : BuyingPowerModel
 
     public override decimal GetLeverage(Security security)
     {
-    return base.GetLeverage(security);
+        return base.GetLeverage(security);
     }
 
     public override void SetLeverage(Security security, decimal leverage)
@@ -304,6 +304,91 @@ class MyBuyingPowerModel(BuyingPowerModel):
 </div>
 
 
+<h4>
+ Example 3: Size Option Spreads to Buying Power
+</h4>
+<p>
+ The following algorithm sells a weekly SPY bull put spread. Before it places the spread, it checks the buying power for quantities from 20 down to 1. It places the largest quantity that the portfolio can afford.
+</p>
+<div class="section-example-container">
+ <pre class="csharp">public class SizeOptionSpreadAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private Symbol _option;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 9, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(10000);
+        _spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+        var option = AddOption("SPY");
+        option.SetFilter(universe =&gt; universe.IncludeWeeklys().PutsOnly().Strikes(-10, 0).Expiration(0, 7));
+        _option = option.Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Sell the shares of an assignment.
+        if (Portfolio[_spy].Invested)
+        {
+            Liquidate(_spy);
+            return;
+        }
+        if (Portfolio.Invested || !slice.OptionChains.TryGetValue(_option, out var chain))
+        {
+            return;
+        }
+        var expiry = chain.Max(x =&gt; x.Expiry);
+        var strikes = chain.Where(x =&gt; x.Expiry == expiry).Select(x =&gt; x.Strike).Distinct().OrderByDescending(x =&gt; x).ToList();
+        if (strikes.Count &lt; 6)
+        {
+            return;
+        }
+        var strategy = OptionStrategies.BullPutSpread(_option, strikes[0], strikes[5], expiry);
+        for (var quantity = 20; quantity &gt; 0; quantity--)
+        {
+            var requests = OrderFactory.OptionStrategyOrder(strategy, quantity);
+            var orders = requests.Select(request =&gt; QuantConnect.Orders.Order.CreateOrder(request)).ToList();
+            if (Portfolio.HasSufficientBuyingPowerForOrder(orders).IsSufficient)
+            {
+                Order(requests);
+                return;
+            }
+        }
+    }
+}</pre>
+ <pre class="python">class SizeOptionSpreadAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 9, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(10000)
+        self._spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
+        option = self.add_option("SPY")
+        option.set_filter(lambda universe: universe.include_weeklys().puts_only().strikes(-10, 0).expiration(0, 7))
+        self._option = option.symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Sell the shares of an assignment.
+        if self.portfolio[self._spy].invested:
+            self.liquidate(self._spy)
+            return
+        chain = slice.option_chains.get(self._option)
+        if self.portfolio.invested or not chain:
+            return
+        expiry = max(x.expiry for x in chain)
+        strikes = sorted({x.strike for x in chain if x.expiry == expiry}, reverse=True)
+        if len(strikes) &lt; 6:
+            return
+        strategy = OptionStrategies.bull_put_spread(self._option, strikes[0], strikes[5], expiry)
+        for quantity in range(20, 0, -1):
+            requests = self.order_factory.option_strategy_order(strategy, quantity)
+            orders = [Order.create_order(request) for request in requests]
+            if self.portfolio.has_sufficient_buying_power_for_order(orders).is_sufficient:
+                self.order(requests)
+                return</pre>
+</div>
 <h4>
  Other Examples
 </h4>

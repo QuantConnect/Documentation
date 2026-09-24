@@ -1,0 +1,79 @@
+<p>To create an order request, call one of the methods of the <code class="csharp">OrderFactory</code><code class="python">order_factory</code> member. Each method returns a <code>SubmitOrderRequest</code> object.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var request = OrderFactory.LimitOrder(_symbol, 100, limitPrice, tag: "Entry");</pre>
+<pre class="python">request = self.order_factory.limit_order(self._symbol, 100, limit_price, tag="Entry")</pre>
+</div>
+
+<p>The order factory has a method for each order type. The following table shows the required arguments of each method:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Order Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">MarketOrder(symbol, quantity)</code><code class="python">market_order(symbol, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>Market</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">LimitOrder(symbol, quantity, limitPrice)</code><code class="python">limit_order(symbol, quantity, limit_price)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">LimitIfTouchedOrder(symbol, quantity, triggerPrice, limitPrice)</code><code class="python">limit_if_touched_order(symbol, quantity, trigger_price, limit_price)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>Limit if touched</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">StopMarketOrder(symbol, quantity, stopPrice)</code><code class="python">stop_market_order(symbol, quantity, stop_price)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">StopLimitOrder(symbol, quantity, stopPrice, limitPrice)</code><code class="python">stop_limit_order(symbol, quantity, stop_price, limit_price)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">TrailingStopOrder(symbol, quantity, trailingAmount, trailingAsPercentage)</code><code class="python">trailing_stop_order(symbol, quantity, trailing_amount, trailing_as_percentage)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>Trailing stop</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">TrailingStopOrder(symbol, quantity, stopPrice, trailingAmount, trailingAsPercentage)</code><code class="python">trailing_stop_order(symbol, quantity, stop_price, trailing_amount, trailing_as_percentage)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>Trailing stop with an initial stop price</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">MarketOnOpenOrder(symbol, quantity)</code><code class="python">market_on_open_order(symbol, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market on open</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">MarketOnCloseOrder(symbol, quantity)</code><code class="python">market_on_close_order(symbol, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>Market on close</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">ComboMarketOrder(legs, quantity)</code><code class="python">combo_market_order(legs, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>Combo market</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">ComboLimitOrder(legs, quantity, limitPrice)</code><code class="python">combo_limit_order(legs, quantity, limit_price)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>Combo limit</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">ComboLegLimitOrder(legs, quantity)</code><code class="python">combo_leg_limit_order(legs, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders'>Combo leg limit</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">OptionStrategyOrder(strategy, quantity)</code><code class="python">option_strategy_order(strategy, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies'>Option strategy</a></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">ExerciseOption(optionSymbol, quantity)</code><code class="python">exercise_option(option_symbol, quantity)</code></td>
+            <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>Option exercise</a></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Every method also accepts the optional <code>asynchronous</code>, <code>tag</code>, and <code class="csharp">orderProperties</code><code class="python">order_properties</code> arguments.</p>
+
+<p>The combo and Option strategy methods return a list with one order request for each leg. The order request stores the current time and a copy of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>default order properties</a>, unless you pass order properties. If the ticker of the security changed, the order request uses the current <code>Symbol</code>.</p>

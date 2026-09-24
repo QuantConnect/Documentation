@@ -1,0 +1,48 @@
+<p>The following examples demonstrate common practices for using one cancels other orders.</p>
+
+<h4>Example 1: Exit Each Trade at a Price Range</h4>
+<p>The following algorithm buys SPY each day at 10 AM Eastern Time when it has no position. After the market order fills, the algorithm places OCO exit orders. The take-profit order is 1% above the fill price and the stop-loss order is 1% below it. The first exit order that fills closes the position and cancels the other one.</p>
+<div class="section-example-container">
+<pre class="csharp">public class OneCancelsOtherExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 3, 31);
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.At(10, 0), Enter);
+    }
+
+    private void Enter()
+    {
+        if (Portfolio.Invested || Transactions.GetOpenOrders(_spy).Count &gt; 0)
+        {
+            return;
+        }
+        var fillPrice = MarketOrder(_spy, 100).AverageFillPrice;
+        OneCancelsOtherOrder(new List&lt;SubmitOrderRequest&gt;
+        {
+            OrderFactory.LimitOrder(_spy, -100, Math.Round(fillPrice * 1.01m, 2), tag: "Take profit"),
+            OrderFactory.StopMarketOrder(_spy, -100, Math.Round(fillPrice * 0.99m, 2), tag: "Stop loss")
+        });
+    }
+}</pre>
+<pre class="python">class OneCancelsOtherExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 3, 31)
+        self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+        self.schedule.on(self.date_rules.every_day(self._spy), self.time_rules.at(10, 0), self._enter)
+
+    def _enter(self) -&gt; None:
+        if self.portfolio.invested or self.transactions.get_open_orders(self._spy):
+            return
+        fill_price = self.market_order(self._spy, 100).average_fill_price
+        self.one_cancels_other_order([
+            self.order_factory.limit_order(self._spy, -100, round(fill_price * 1.01, 2), tag="Take profit"),
+            self.order_factory.stop_market_order(self._spy, -100, round(fill_price * 0.99, 2), tag="Stop loss")
+        ])</pre>
+</div>

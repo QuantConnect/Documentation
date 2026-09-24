@@ -1,5 +1,5 @@
 <p>
- The following examples demonstrate common practices for implementing a custom fee model.
+ The following examples demonstrate common practices for implementing custom fee models and estimating fees.
 </p>
 <h4>
  Example 1: Fixed Fees
@@ -59,6 +59,77 @@ class MyFeeModel(FeeModel):
 </div>
 
 
+<h4>
+ Example 2: Buy When Fees Are Low
+</h4>
+<p>
+ The following algorithm saves $100 each week to buy SPY. Interactive Brokers charges at least $1 for each order, so small orders are expensive. Each week, the algorithm estimates the fee of an order with its savings. It places the order only when the fee is 0.1% of the order value or less.
+</p>
+<div class="section-example-container">
+ <pre class="csharp">public class EstimateFeesAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private int _weeks;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        SetCash(5000);
+        SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        Schedule.On(DateRules.WeekStart(_spy), TimeRules.AfterMarketOpen(_spy, 30), Buy);
+    }
+
+    private void Buy()
+    {
+        _weeks++;
+        var security = Securities[_spy];
+        if (security.Price == 0)
+        {
+            return;
+        }
+        var quantity = Math.Floor(_weeks * 100m / security.Price);
+        if (quantity == 0)
+        {
+            return;
+        }
+        var request = OrderFactory.MarketOrder(_spy, quantity);
+        // Estimate the fee without submitting the order.
+        var fee = security.FeeModel.GetOrderFee(new OrderFeeParameters(security, QuantConnect.Orders.Order.CreateOrder(request))).Value.Amount;
+        if (fee &lt;= 0.001m * quantity * security.Price)
+        {
+            Order(request);
+            _weeks = 0;
+        }
+    }
+}</pre>
+ <pre class="python">class EstimateFeesAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_cash(5000)
+        self.set_brokerage_model(BrokerageName.INTERACTIVE_BROKERS_BROKERAGE, AccountType.MARGIN)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._weeks = 0
+        self.schedule.on(self.date_rules.week_start(self._spy), self.time_rules.after_market_open(self._spy, 30), self._buy)
+
+    def _buy(self) -&gt; None:
+        self._weeks += 1
+        security = self.securities[self._spy]
+        if not security.price:
+            return
+        quantity = int(self._weeks * 100 / security.price)
+        if not quantity:
+            return
+        request = self.order_factory.market_order(self._spy, quantity)
+        # Estimate the fee without submitting the order.
+        fee = security.fee_model.get_order_fee(OrderFeeParameters(security, Order.create_order(request))).value.amount
+        if fee &lt;= 0.001 * quantity * security.price:
+            self.order(request)
+            self._weeks = 0</pre>
+</div>
 <h4>
  Other Examples
 </h4>
