@@ -14,7 +14,7 @@ tickets = self.bracket_order(self._symbol, 100, take_profit_price=price * 1.02, 
 <pre class="python">self.bracket_order(self._symbol, 100, take_profit_price, stop_loss_price, limit_price=limit_price, tag=tag, order_properties=order_properties)</pre>
 </div>
 
-<p>To bracket other entry order types, create the entry order request with the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders#06-Compose-Contingent-Orders'>order factory</a>. Call its <code class="csharp">Bracket</code><code class="python">bracket</code> method and pass the request to the <code class="csharp">Order</code><code class="python">order</code> method. The <code class="csharp">Bracket</code><code class="python">bracket</code> method accepts a <code class="csharp">stopLossLimitPrice</code><code class="python">stop_loss_limit_price</code> argument to use a stop limit order for the stop loss. To reduce the stop-loss quantity when the take-profit order partially fills, pass <code class="csharp">ContingencyType.OneUpdatesOther</code><code class="python">ContingencyType.ONE_UPDATES_OTHER</code> as the <code class="csharp">contingencyType</code><code class="python">contingency_type</code> argument.</p>
+<p>To bracket other entry order types, create the entry order request with the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-factory'>order factory</a>. Call its <code class="csharp">Bracket</code><code class="python">bracket</code> method and pass the request to the <code class="csharp">Order</code><code class="python">order</code> method. The <code class="csharp">Bracket</code><code class="python">bracket</code> method accepts a <code class="csharp">stopLossLimitPrice</code><code class="python">stop_loss_limit_price</code> argument to use a stop limit order for the stop loss. To reduce the stop-loss quantity when the take-profit order partially fills, pass <code class="csharp">ContingencyType.OneUpdatesOther</code><code class="python">ContingencyType.ONE_UPDATES_OTHER</code> as the <code class="csharp">contingencyType</code><code class="python">contingency_type</code> argument.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var entry = OrderFactory.StopMarketOrder(_symbol, 100, price * 1.01m)
@@ -24,3 +24,9 @@ var tickets = Order(entry);</pre>
     price * 1.03, price * 0.99, stop_loss_limit_price=price * 0.985, contingency_type=ContingencyType.ONE_UPDATES_OTHER)
 tickets = self.order(entry)</pre>
 </div>
+
+<p>The following images show the two outcomes of a bracket order. In the first image, the entry order fills and triggers the exit orders. Then the price rises to the take-profit price, so the take-profit order fills and LEAN cancels the stop-loss order:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bracket-take-profit-filled.webp" alt="A bracket order has a buy limit entry at 47,000, a take-profit sell limit at 60,000, and a stop-loss sell stop at 40,000. The price falls to 47,000, the entry fills, and the exit orders start working. The price rises to 60,000, the take-profit order fills, and LEAN cancels the stop-loss order.">
+
+<p>In the second image, the entry order fills and then the price falls to the stop price. The stop-loss order fills and LEAN cancels the take-profit order:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bracket-stop-loss-filled.webp" alt="A bracket order has a buy limit entry at 47,000, a take-profit sell limit at 60,000, and a stop-loss sell stop at 40,000. The price falls to 47,000, the entry fills, and the exit orders start working. The price falls to 40,000, the stop-loss order fills, and LEAN cancels the take-profit order.">

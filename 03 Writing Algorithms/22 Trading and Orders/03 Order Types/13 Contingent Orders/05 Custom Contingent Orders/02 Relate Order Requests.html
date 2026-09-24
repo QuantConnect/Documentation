@@ -1,4 +1,4 @@
-<p>The order factory creates <code>SubmitOrderRequest</code> objects without submitting them, so you can relate them before you place them. The order factory has a method for each <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order type</a>, with the same arguments as the method that places the order. For example, <code class="csharp">OrderFactory.LimitOrder</code><code class="python">order_factory.limit_order</code> accepts the same arguments as <code class="csharp">LimitOrder</code><code class="python">limit_order</code>. To relate the order requests, use the following methods:</p>
+<p>To relate the order requests, use the following methods:</p>
 
 <table class="table qc-table">
     <thead>
@@ -27,7 +27,7 @@
     </tbody>
 </table>
 
-<p>The <code class="csharp">Triggers</code><code class="python">triggers</code> and <code class="csharp">Bracket</code><code class="python">bracket</code> methods return the same request. The <code class="csharp">OneCancelsOther</code><code class="python">one_cancels_other</code> and <code class="csharp">OneUpdatesOther</code><code class="python">one_updates_other</code> methods return the list of requests. You can pass the result of one method to another to build any composition. To place the orders, pass any request of the set to the <code class="csharp">Order</code><code class="python">order</code> method. The method places every order in the set and returns their order tickets, with each parent before the orders it triggers.</p>
+<p>The <code class="csharp">Triggers</code><code class="python">triggers</code> and <code class="csharp">Bracket</code><code class="python">bracket</code> methods return the same request. The <code class="csharp">OneCancelsOther</code><code class="python">one_cancels_other</code> and <code class="csharp">OneUpdatesOther</code><code class="python">one_updates_other</code> methods return the list of requests. You can pass the result of one method to another to build any composition. To place the orders, pass any request of the set to the <code class="csharp">Order</code><code class="python">order</code> method. The method places every order in the set and returns their order tickets, with each parent before the orders it triggers. You can add each order request to one OCO or OUO set.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// A limit entry that triggers a take profit and a stop loss that cancel each other.
@@ -42,11 +42,4 @@ take_profit = self.order_factory.limit_order(self._symbol, -100, price * 1.02)
 stop_loss = self.order_factory.stop_market_order(self._symbol, -100, price * 0.99)
 entry.triggers(self.order_factory.one_cancels_other(take_profit, stop_loss))
 tickets = self.order(entry)</pre>
-</div>
-
-<p>You can submit each order request once. After you submit the request, its <code class="csharp">OrderId</code><code class="python">order_id</code> property holds the order Id. To get the order ticket of a request, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager#02-Get-a-Single-Order-Ticket'>get it from the transaction manager</a>.</p>
-
-<div class="section-example-container">
-<pre class="csharp">var stopLossTicket = Transactions.GetOrderTicket(stopLoss.OrderId);</pre>
-<pre class="python">stop_loss_ticket = self.transactions.get_order_ticket(stop_loss.order_id)</pre>
 </div>

@@ -1,0 +1,45 @@
+<p>The following examples demonstrate common practices for using one triggers other orders.</p>
+
+<h4>Example 1: Trail the Exit After a Limit Entry</h4>
+<p>The following algorithm places a limit order to buy SPY 1% below the close price when it has no position. The limit order triggers a trailing stop order that sells the position. The trailing stop order starts to trail when the entry fills, so its initial stop price is 3% below the price at that time.</p>
+<div class="section-example-container">
+<pre class="csharp">public class OneTriggersOtherExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Portfolio.Invested || Transactions.GetOpenOrders(_spy).Count &gt; 0 || !slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            return;
+        }
+        var entry = OrderFactory.LimitOrder(_spy, 100, Math.Round(bar.Close * 0.99m, 2));
+        OneTriggersOtherOrder(entry, new List&lt;SubmitOrderRequest&gt;
+        {
+            OrderFactory.TrailingStopOrder(_spy, -100, 0.03m, true)
+        });
+    }
+}</pre>
+<pre class="python">class OneTriggersOtherExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._spy)
+        if self.portfolio.invested or self.transactions.get_open_orders(self._spy) or not bar:
+            return
+        entry = self.order_factory.limit_order(self._spy, 100, round(bar.close * 0.99, 2))
+        self.one_triggers_other_order(entry, [
+            self.order_factory.trailing_stop_order(self._spy, -100, 0.03, True)
+        ])</pre>
+</div>

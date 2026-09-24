@@ -1,0 +1,24 @@
+<p>To submit order requests, pass a single request or a list of requests to the <code class="csharp">Order</code><code class="python">order</code> method. The method returns a list with the order ticket of each order. For a combo order, include all the legs.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var tickets = Order(new List&lt;SubmitOrderRequest&gt;
+{
+    OrderFactory.MarketOrder(_spy, 10),
+    OrderFactory.LimitOrder(_aapl, -20, aaplLimitPrice)
+});</pre>
+<pre class="python">tickets = self.order([
+    self.order_factory.market_order(self._spy, 10),
+    self.order_factory.limit_order(self._aapl, -20, aapl_limit_price)
+])</pre>
+</div>
+
+<p>LEAN runs the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-errors'>pre-order checks</a> on every request before it submits any of them. If a request fails the checks, LEAN submits none of the orders and the method returns a list with a single invalid order ticket. LEAN checks the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power</a> of each order after you submit it.</p>
+
+<p>LEAN applies the usual order adjustments when you submit the request. For example, LEAN converts a market order into a market on open order if the market is closed. LEAN also sets the initial stop price of a trailing stop order from the market price at that time.</p>
+
+<p>You can submit each order request once. After you submit a request, its <code class="csharp">OrderId</code><code class="python">order_id</code> property holds the order Id. To get the order ticket of a request, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager#02-Get-a-Single-Order-Ticket'>get it from the transaction manager</a>.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var ticket = Transactions.GetOrderTicket(request.OrderId);</pre>
+<pre class="python">ticket = self.transactions.get_order_ticket(request.order_id)</pre>
+</div>

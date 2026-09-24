@@ -1,0 +1,62 @@
+<p>The following examples demonstrate common practices for using the order factory.</p>
+
+<h4>Example 1: Skip Expensive Rebalance Orders</h4>
+<p>The following algorithm rebalances an equal-weight portfolio every month. For each security, it creates a market order request for the difference between the target and current quantities and estimates the fee. The algorithm drops the orders whose fee exceeds 0.1% of the order value and submits the rest together, with the sell orders first.</p>
+<div class="section-example-container">
+<pre class="csharp">public class OrderFactoryExampleAlgorithm : QCAlgorithm
+{
+    private List&lt;Symbol&gt; _symbols;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
+        _symbols = new[] { "SPY", "TLT", "GLD" }.Select(ticker =&gt; AddEquity(ticker, Resolution.Daily).Symbol).ToList();
+        Schedule.On(DateRules.MonthStart(_symbols[0]), TimeRules.AfterMarketOpen(_symbols[0], 30), Rebalance);
+    }
+
+    private void Rebalance()
+    {
+        var requests = new List&lt;SubmitOrderRequest&gt;();
+        foreach (var symbol in _symbols)
+        {
+            var quantity = CalculateOrderQuantity(symbol, 1m / _symbols.Count);
+            if (quantity == 0) continue;
+            var security = Securities[symbol];
+            var request = OrderFactory.MarketOrder(symbol, quantity);
+            // Estimate the fee without submitting the order.
+            var fee = security.FeeModel.GetOrderFee(new OrderFeeParameters(security, QuantConnect.Orders.Order.CreateOrder(request))).Value.Amount;
+            if (fee &lt;= 0.001m * Math.Abs(quantity) * security.Price)
+            {
+                requests.Add(request);
+            }
+        }
+        // Place the sell orders first to free up buying power.
+        Order(requests.OrderBy(request =&gt; request.Quantity));
+    }
+}</pre>
+<pre class="python">class OrderFactoryExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self.set_brokerage_model(BrokerageName.INTERACTIVE_BROKERS_BROKERAGE, AccountType.MARGIN)
+        self._symbols = [self.add_equity(ticker, Resolution.DAILY).symbol for ticker in ["SPY", "TLT", "GLD"]]
+        self.schedule.on(self.date_rules.month_start(self._symbols[0]), self.time_rules.after_market_open(self._symbols[0], 30), self._rebalance)
+
+    def _rebalance(self) -&gt; None:
+        requests = []
+        for symbol in self._symbols:
+            quantity = self.calculate_order_quantity(symbol, 1 / len(self._symbols))
+            if not quantity:
+                continue
+            security = self.securities[symbol]
+            request = self.order_factory.market_order(symbol, quantity)
+            # Estimate the fee without submitting the order.
+            fee = security.fee_model.get_order_fee(OrderFeeParameters(security, Order.create_order(request))).value.amount
+            if fee &lt;= 0.001 * abs(quantity) * security.price:
+                requests.append(request)
+        # Place the sell orders first to free up buying power.
+        self.order(sorted(requests, key=lambda request: request.quantity))</pre>
+</div>
