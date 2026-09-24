@@ -1,0 +1,16 @@
+<p>To cancel a contingent order, call the <code class="csharp">Cancel</code><code class="python">cancel</code> method on the <code>OrderTicket</code>. LEAN also cancels the orders that depend on it. If you cancel a parent order, LEAN cancels the orders it triggers and the orders they trigger in turn. If you cancel a member of an OCO or OUO set, LEAN cancels the rest of the set. This rule applies to working orders and to orders that wait for their parent to fill. The parent of the set keeps working.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Cancel the entry of a bracket order, which also cancels the take profit and the stop loss.
+var response = tickets[0].Cancel("Cancel bracket");
+if (response.IsSuccess)
+{
+    Debug("Bracket order successfully cancelled");
+}</pre>
+<pre class="python"># Cancel the entry of a bracket order, which also cancels the take profit and the stop loss.
+response = tickets[0].cancel("Cancel bracket")
+if response.is_success:
+    self.debug("Bracket order successfully cancelled")</pre>
+</div>
+
+<p>The message of the cancel <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> of each dependent order names the order that caused the cancellation.</p>

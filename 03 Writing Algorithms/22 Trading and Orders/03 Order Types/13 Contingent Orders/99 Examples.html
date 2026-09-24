@@ -1,0 +1,51 @@
+<p>The following examples demonstrate common practices for using contingent orders.</p>
+
+<h4>Example 1: Bracket Orders on New Highs</h4>
+<p>The following algorithm buys SPY when its price closes above the highest high of the previous 20 days. A bracket order places the take profit 2% above the close price and the stop loss 1% below the close price. The brokerage manages the exit orders, so the algorithm only places a new bracket order after the previous one closes the position.</p>
+<div class="section-example-container">
+<pre class="csharp">public class ContingentOrdersExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+    private Maximum _max;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+        _max = MAX(_spy, 20, Resolution.Daily, Field.High);
+        WarmUpIndicator(_spy, _max, Resolution.Daily);
+    }
+
+    public override void OnData(Slice slice)
+    {
+        // Wait until the previous bracket order closes the position.
+        if (Portfolio.Invested || Transactions.GetOpenOrders(_spy).Count &gt; 0 || !slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            return;
+        }
+        if (bar.Close &gt; _max.Previous.Value)
+        {
+            var quantity = CalculateOrderQuantity(_spy, 0.5m);
+            BracketOrder(_spy, quantity, takeProfitPrice: Math.Round(bar.Close * 1.02m, 2), stopLossPrice: Math.Round(bar.Close * 0.99m, 2));
+        }
+    }
+}</pre>
+<pre class="python">class ContingentOrdersExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+        self._max = self.max(self._spy, 20, Resolution.DAILY, Field.HIGH)
+        self.warm_up_indicator(self._spy, self._max, Resolution.DAILY)
+
+    def on_data(self, slice: Slice) -&gt; None:
+        # Wait until the previous bracket order closes the position.
+        bar = slice.bars.get(self._spy)
+        if self.portfolio.invested or self.transactions.get_open_orders(self._spy) or not bar:
+            return
+        if bar.close &gt; self._max.previous.value:
+            quantity = self.calculate_order_quantity(self._spy, 0.5)
+            self.bracket_order(self._spy, quantity, take_profit_price=round(bar.close * 1.02, 2), stop_loss_price=round(bar.close * 0.99, 2))</pre>
+</div>

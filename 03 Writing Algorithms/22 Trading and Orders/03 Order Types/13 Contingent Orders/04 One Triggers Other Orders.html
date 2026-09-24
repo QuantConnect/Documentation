@@ -1,0 +1,28 @@
+<p>To place a set of OTO orders, create the parent and child order requests with the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders#06-Compose-Contingent-Orders'>order factory</a> and pass them to the <code class="csharp">OneTriggersOtherOrder</code><code class="python">one_triggers_other_order</code> method. The brokerage holds the child orders until the parent order completely fills. If the parent order is canceled or invalid, LEAN cancels the child orders, even if the parent partially filled. The method returns a list with the order ticket of each order, starting with the parent.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Buy IBM and BAC after the SPY entry fills.
+var parent = OrderFactory.LimitOrder(_spy, 100, limitPrice);
+var tickets = OneTriggersOtherOrder(parent, new List&lt;SubmitOrderRequest&gt;
+{
+    OrderFactory.MarketOrder(_ibm, 10),
+    OrderFactory.MarketOrder(_bac, 20)
+});</pre>
+<pre class="python"># Buy IBM and BAC after the SPY entry fills.
+parent = self.order_factory.limit_order(self._spy, 100, limit_price)
+tickets = self.one_triggers_other_order(parent, [
+    self.order_factory.market_order(self._ibm, 10),
+    self.order_factory.market_order(self._bac, 20)
+])</pre>
+</div>
+
+<p>The child orders are independent of each other and can be for different securities. To relate the child orders, pass them through the <code class="csharp">OrderFactory.OneCancelsOther</code><code class="python">order_factory.one_cancels_other</code> or <code class="csharp">OrderFactory.OneUpdatesOther</code><code class="python">order_factory.one_updates_other</code> method first. A child order can trigger other orders in turn. To create a chain, call the <code class="csharp">Triggers</code><code class="python">triggers</code> method on the child order request.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// The IBM order triggers the BAC order once it fills.
+var child = OrderFactory.MarketOrder(_ibm, 10).Triggers(OrderFactory.MarketOrder(_bac, 20));
+var tickets = OneTriggersOtherOrder(parent, new List&lt;SubmitOrderRequest&gt; { child });</pre>
+<pre class="python"># The IBM order triggers the BAC order once it fills.
+child = self.order_factory.market_order(self._ibm, 10).triggers(self.order_factory.market_order(self._bac, 20))
+tickets = self.one_triggers_other_order(parent, [child])</pre>
+</div>
