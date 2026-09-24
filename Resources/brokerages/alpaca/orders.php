@@ -5,9 +5,10 @@
 <table class="qc-table table" id='order-types-table'>
    <thead>
       <tr>
-        <th style='width: 40%'>Order Type</th>
+        <th style='width: 20%'>Order Type</th>
         <th style='width: 20%'>Equity</th>
         <th style='width: 20%'>Equity Options</th>
+        <th style='width: 20%'>Index Options</th>
         <th style='width: 20%'>Crypto</th>
       </tr>
    </thead>
@@ -17,9 +18,11 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>Limit</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -27,18 +30,28 @@
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>Stop market</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
-        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
-        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>Stop limit</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+        <td></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>Trailing stop</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>Market on Open</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
         <td></td>
         <td></td>
       </tr>
@@ -47,16 +60,19 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td></td>
         <td></td>
+        <td></td>
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>Combo market</a></td>
         <td></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td></td>
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>Combo limit</a></td>
         <td></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td></td>
       </tr>
@@ -92,15 +108,15 @@
                 <ul>
                     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
                     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
-                    <li><code class="csharp">GoodTilDate</code><code class="python">good_til_date</code></li>
                 </ul>
+                Option orders always use <code class="csharp">Day</code><code class="python">DAY</code>.
             </td>
             <td><code class='csharp'>TimeInForce.GoodTilCanceled</code><code class='python'>TimeInForce.GOOD_TIL_CANCELED</code></td>
         </tr>
         <tr>
             <td><code class="csharp">OutsideRegularTradingHours</code><code class="python">outside_regular_trading_hours</code></td>
             <td><code>bool</code></td>
-            <td>A flag to signal that the order may be triggered and filled outside of regular trading hours.</td>
+            <td>A flag to signal that the order may be triggered and filled outside of regular trading hours. Only limit orders with the <code class="csharp">Day</code><code class="python">DAY</code> time in force support it.</td>
             <td><code class='csharp'>false</code><code class='python'>False</code></td>
         </tr>
     </tbody>
@@ -132,7 +148,7 @@ public override void OnData(Slice slice)
                orderProperties: new AlpacaOrderProperties
                { 
                    OutsideRegularTradingHours = true,
-                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day))
+                   TimeInForce = TimeInForce.Day
                });
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
@@ -150,7 +166,6 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.time_in_force = TimeInForce.DAY
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     order_properties.outside_regular_trading_hours = True
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
