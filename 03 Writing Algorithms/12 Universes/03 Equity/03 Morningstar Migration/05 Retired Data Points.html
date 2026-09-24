@@ -1,0 +1,10 @@
+<p>Morningstar no longer provides some data points, or some period windows of them. LEAN keeps the corresponding members so your algorithms still compile, but the members are obsolete and throw a <code>NotSupportedException</code> when you read them. The exception message names the alternative, if one exists:</p>
+
+<div class="section-example-container">
+    <pre>DividendCoverageRatio.ThreeMonths was retired by Morningstar in 2026; use DividendCoverageRatio.TwelveMonths.
+NormalizedDilutedEPSGrowth was retired by Morningstar in 2026 for all periods; no replacement is available.</pre>
+</div>
+
+<p>Retired members don't break code that loops over the available data. The <code class="csharp">GetPeriodValues</code><code class="python">get_period_values</code> method and the <code class="csharp">HasValue</code><code class="python">has_value</code> property skip retired members, so a loop over the available periods doesn't throw an exception. If the default period window of a property is retired, the property uses a remaining window as its default. As a result, if you read the property without a period, you get the closest available value.</p>
+
+<p>To find the retired members that your algorithm uses, compile your project and run a backtest over a short period. The exception message names the member to replace and its replacement. If a member has no replacement, you must rewrite the logic that uses it.</p>
