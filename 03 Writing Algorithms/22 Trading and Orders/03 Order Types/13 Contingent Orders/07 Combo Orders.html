@@ -1,0 +1,23 @@
+<p>The combo methods of the order factory return a list with one order request for each leg. LEAN treats the legs of a combo order as a single member of the set. Pass all the legs whenever you relate or submit a combo order. When a combo order is the parent of an OTO set, LEAN triggers the child orders when all the legs completely fill. To use a combo order as the parent, pass the list of legs to the <code class="csharp">OneTriggersOtherOrder</code><code class="python">one_triggers_other_order</code> method. The <code class="csharp">Bracket</code><code class="python">bracket</code> method doesn't support combo orders.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Buy a butterfly spread and sell it when its net price reaches the take-profit level.
+var legs = new List&lt;Leg&gt;
+{
+    Leg.Create(calls[0].Symbol, 1),
+    Leg.Create(calls[1].Symbol, -2),
+    Leg.Create(calls[2].Symbol, 1)
+};
+var entry = OrderFactory.ComboMarketOrder(legs, 2);
+var takeProfit = OrderFactory.ComboLimitOrder(legs, -2, takeProfitPrice);
+var tickets = OneTriggersOtherOrder(entry, takeProfit);</pre>
+<pre class="python"># Buy a butterfly spread and sell it when its net price reaches the take-profit level.
+legs = [
+    Leg.create(calls[0].symbol, 1),
+    Leg.create(calls[1].symbol, -2),
+    Leg.create(calls[2].symbol, 1)
+]
+entry = self.order_factory.combo_market_order(legs, 2)
+take_profit = self.order_factory.combo_limit_order(legs, -2, take_profit_price)
+tickets = self.one_triggers_other_order(entry, take_profit)</pre>
+</div>
