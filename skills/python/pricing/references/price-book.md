@@ -1,6 +1,6 @@
 # Dataset Market price book
 
-Generated 2026-09-22 by `code-generators/qc_dataset_prices.py`. Regenerate rather than edit. `Price` is the storefront label as the generating organization sees it; the tier columns hold what each tier pays. A per-file SKU is priced in QCC per file (1 QCC = $0.01), listed in the last section. Only rows a customer can buy or use are listed.
+Generated 2026-09-25 by `code-generators/qc_dataset_prices.py`. Regenerate rather than edit. `Price` is the storefront label as the generating organization sees it; the tier columns hold what each tier pays. A per-file SKU is priced in QCC per file (1 QCC = $0.01), listed in the last section. Only rows a customer can buy or use are listed.
 
 ## Benzinga News Feed (Benzinga)
 
@@ -67,9 +67,9 @@ Page: https://www.quantconnect.com/datasets/brain-language-metrics-company-filin
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Company Filings Analysis by Brain Co | Cloud Access | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| Company Filings Analysis by Brain Co | Cloud Access | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | Company Filings Analysis Download by Brain Co | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| Company Filings Analysis Universe by Brain Co | Cloud Access Universe | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| Company Filings Analysis Universe by Brain Co | Cloud Access Universe | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | Company Filings Analysis Universe Download by Brain Co | On Premise Universe Download | 100 QCC/file |  |  |  |  |  | yes | yes |
 
 ## Brain ML Stock Ranking (Brain)
@@ -78,9 +78,9 @@ Page: https://www.quantconnect.com/datasets/brain-ml-stock-ranking/pricing · li
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ML Ranking by Brain Co | Cloud Access | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| ML Ranking by Brain Co | Cloud Access | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | ML Ranking Download by Brain Co | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| ML Ranking Universe by Brain Co | Cloud Access Universe | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| ML Ranking Universe by Brain Co | Cloud Access Universe | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | ML Ranking Universe Download by Brain Co | On Premise Universe Download | 100 QCC/file |  |  |  |  |  | yes | yes |
 
 ## Brain Sentiment Indicator (Brain)
@@ -89,9 +89,9 @@ Page: https://www.quantconnect.com/datasets/brain-sentiment-indicator/pricing ·
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Social Sentiment by Brain Co | Cloud Access | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| Social Sentiment by Brain Co | Cloud Access | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | Social Sentiment Download by Brain Co | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| Social Sentiment Universe by Brain Co | Cloud Access Universe | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| Social Sentiment Universe by Brain Co | Cloud Access Universe | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | Social Sentiment Universe Download by Brain Co | On Premise Universe Download | 100 QCC/file |  |  |  |  |  | yes | yes |
 
 ## Brain Wikipedia Page Views (Brain)
@@ -100,7 +100,7 @@ Page: https://www.quantconnect.com/datasets/brain-wikipedia-page-views/pricing �
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Wikipedia Page Views Analysis by Brain Co | On Premise Download | $28/mo | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
+| Wikipedia Page Views Analysis by Brain Co | On Premise Download | $384/mo / 4 Users at $96 Each | $28/mo, $308/yr | $48/mo, $528/yr | $96/mo, $1,056/yr | $374/mo, $4,114/yr | yes |  | yes |
 | Wikipedia Page Views Analysis Download by Brain Co | Cloud Access | 100 QCC/file |  |  |  |  |  | yes | yes |
 
 ## Bybit Crypto Future Margin Rate Data (QuantConnect)
@@ -165,7 +165,7 @@ Page: https://www.quantconnect.com/datasets/quiver-quantitative-cnbc-trading/pri
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| CNBC Trading by Quiver Quantitative | Cloud Access | $5/mo | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
+| CNBC Trading by Quiver Quantitative | Cloud Access | $20/mo / 4 Users at $5 Each | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
 | CNBC Trading Downloads by Quiver Quantitative | On Premise Download | 10 QCC/file |  |  |  |  |  | yes | yes |
 | CNBC Trading Universe by Quiver Quantitative | Short Description | $0/mo |  |  |  |  | yes |  | yes |
 | CNBC Trading Universe Downloads by Quiver Quantitative | Short Description | 10 QCC/file |  |  |  |  |  | yes | yes |
@@ -201,10 +201,10 @@ Page: https://www.quantconnect.com/datasets/smart-insider-corporate-buybacks/pri
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Buyback Intentions Cloud Access by Smart Insider | Intentions Cloud Access | $10/mo | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
-| Buybacks Transactions Cloud Access by Smart Insider | Transactions Cloud Access | $10/mo | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
-| Buyback Intentions Universe Cloud Access by Smart Insider | Intentions Universe Cloud Access | $10/mo | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
-| Buybacks Transactions Universe Cloud Access by Smart Insider | Transactions Universe Cloud Access | $10/mo | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
+| Buyback Intentions Cloud Access by Smart Insider | Intentions Cloud Access | $40/mo / 4 Users at $10 Each | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
+| Buybacks Transactions Cloud Access by Smart Insider | Transactions Cloud Access | $40/mo / 4 Users at $10 Each | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
+| Buyback Intentions Universe Cloud Access by Smart Insider | Intentions Universe Cloud Access | $40/mo / 4 Users at $10 Each | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
+| Buybacks Transactions Universe Cloud Access by Smart Insider | Transactions Universe Cloud Access | $40/mo / 4 Users at $10 Each | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | $10/mo, $120/yr | yes |  | yes |
 
 The Pricing page catalog carries no per-tier price for Buyback Intentions Universe Cloud Access by Smart Insider, Buybacks Transactions Universe Cloud Access by Smart Insider; every tier column shows the price quoted to the generating organization.
 
@@ -214,7 +214,7 @@ Page: https://www.quantconnect.com/datasets/quiver-quantitative-corporate-lobbyi
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Corporate Lobbying by Quiver Quantitative | Cloud Access | $5/mo | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
+| Corporate Lobbying by Quiver Quantitative | Cloud Access | $20/mo / 4 Users at $5 Each | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
 | Corporate Lobbying Downloads by Quiver Quantitative | On Premise Download | 10 QCC/file |  |  |  |  |  | yes | yes |
 | Corporate Lobbying Universe by Quiver Quantitative | Short Description | $0/mo |  |  |  |  | yes |  | yes |
 | Corporate Lobbying Universe Downloads by Quiver Quantitative | Short Description | 10 QCC/file |  |  |  |  |  | yes | yes |
@@ -225,7 +225,7 @@ Page: https://www.quantconnect.com/datasets/extractalpha-cross-asset-model/prici
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Cross Asset Model by Extract Alpha | Cloud Access | $75/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
+| Cross Asset Model by Extract Alpha | Cloud Access | $200/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
 | Cross Asset Model by Extract Alpha | Download On Premise | 10 QCC/file | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr |  | yes | yes |
 
 ## Crypto Market Cap (CoinGecko)
@@ -258,7 +258,7 @@ Page: https://www.quantconnect.com/datasets/extractalpha-estimize/pricing · lis
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Estimize by Extract Alpha | Cloud Access | $75/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
+| Estimize by Extract Alpha | Cloud Access | $200/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
 
 ## Euro Yield Curve (European Central Bank)
 
@@ -339,8 +339,8 @@ Page: https://www.quantconnect.com/datasets/quantconnect-international-future-un
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | International Future Universe - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | International Future Universe - On Premise Download | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| International Future Universe History by QuantConnect | Bulk Downloads | $1,200 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
-| International Future Universe Updates by QuantConnect | Bulk Updates | $960/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
+| International Future Universe History by QuantConnect | Bulk Downloads | $2,880 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
+| International Future Universe Updates by QuantConnect | Bulk Updates | $1,440/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
 
 ## International Futures (TickData)
 
@@ -445,7 +445,7 @@ Page: https://www.quantconnect.com/datasets/extractalpha-tactical/pricing · lis
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Tactical by Extract Alpha | Cloud Access | $75/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
+| Tactical by Extract Alpha | Cloud Access | $200/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
 | Tactical by Extract Alpha | Download On Premise | 10 QCC/file | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr |  | yes | yes |
 
 ## Tiingo News Feed (Tiingo)
@@ -463,7 +463,7 @@ Page: https://www.quantconnect.com/datasets/extractalpha-true-beats/pricing · l
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| True Beats by Extract Alpha | Cloud Access | $75/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
+| True Beats by Extract Alpha | Cloud Access | $200/mo | $75/mo, $825/yr | $100/mo, $1,100/yr | $200/mo, $2,200/yr | $450/mo, $4,950/yr | yes |  | yes |
 
 ## Upcoming Dividends (EOD Historical Data)
 
@@ -512,9 +512,9 @@ Page: https://www.quantconnect.com/datasets/quiver-quantitative-congress-trading
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Congress Trading by Quiver Quantitative | Cloud Access | $5/mo | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
+| Congress Trading by Quiver Quantitative | Cloud Access | $20/mo / 4 Users at $5 Each | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
 | Congress Trading Download by Quiver Quantitative | Download On Premise | 5 QCC/file |  |  |  |  |  | yes | yes |
-| Congress Trading Universe by Quiver Quantitative | Cloud Access Universe | $5/mo | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
+| Congress Trading Universe by Quiver Quantitative | Cloud Access Universe | $20/mo / 4 Users at $5 Each | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
 | Congress Trading Universe Download by Quiver Quantitative | Download Universe On Premise | 5 QCC/file |  |  |  |  |  | yes | yes |
 
 The Pricing page catalog carries no per-tier price for Congress Trading Universe by Quiver Quantitative; every tier column shows the price quoted to the generating organization.
@@ -549,16 +549,16 @@ Page: https://www.quantconnect.com/datasets/algoseek-us-equities/pricing · list
 | US Equity Minute Download by AlgoSeek | Minute Download | 5 QCC/file |  |  |  |  |  | yes | yes |
 | US Equity Hour Download by AlgoSeek | Hour Download | 300 QCC/file |  |  |  |  |  | yes | yes |
 | US Equity Daily Download by AlgoSeek | Daily Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| US Equity Minute History by AlgoSeek | Bulk Minute Download | $11,760 | $11,760 | $16,800 | $31,200 | $43,200 |  |  | yes |
-| US Equity Second History by AlgoSeek | Bulk Second Download | $15,360 | $15,360 | $28,800 | $33,600 | $48,000 |  |  | yes |
-| US Equity Tick History by AlgoSeek | Bulk Tick Download | $16,800 | $16,800 | $28,800 | $33,600 | $52,800 |  |  | yes |
-| US Equity Minute Updates by AlgoSeek | Bulk Minute Updates | $600/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
-| US Equity Second Updates by AlgoSeek | Bulk Second Updates | $600/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
-| US Equity Tick Updates by AlgoSeek | Bulk Tick Updates | $600/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
-| US Equity Hour History by AlgoSeek | Bulk Hour Download | $2,136 | $2,136 | $3,480 | $3,480 | $3,480 |  |  | yes |
-| US Equity Hour Updates by AlgoSeek | Bulk Hour Updates | $600/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
-| US Equity Daily History by AlgoSeek | Bulk Daily Download | $2,136 | $2,136 | $3,480 | $3,480 | $3,480 |  |  | yes |
-| US Equity Daily Updates by AlgoSeek | Bulk Daily Updates | $600/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
+| US Equity Minute History by AlgoSeek | Bulk Minute Download | $31,200 | $11,760 | $16,800 | $31,200 | $43,200 |  |  | yes |
+| US Equity Second History by AlgoSeek | Bulk Second Download | $33,600 | $15,360 | $28,800 | $33,600 | $48,000 |  |  | yes |
+| US Equity Tick History by AlgoSeek | Bulk Tick Download | $33,600 | $16,800 | $28,800 | $33,600 | $52,800 |  |  | yes |
+| US Equity Minute Updates by AlgoSeek | Bulk Minute Updates | $1,440/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
+| US Equity Second Updates by AlgoSeek | Bulk Second Updates | $1,440/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
+| US Equity Tick Updates by AlgoSeek | Bulk Tick Updates | $1,440/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
+| US Equity Hour History by AlgoSeek | Bulk Hour Download | $3,480 | $2,136 | $3,480 | $3,480 | $3,480 |  |  | yes |
+| US Equity Hour Updates by AlgoSeek | Bulk Hour Updates | $1,440/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
+| US Equity Daily History by AlgoSeek | Bulk Daily Download | $3,480 | $2,136 | $3,480 | $3,480 | $3,480 |  |  | yes |
+| US Equity Daily Updates by AlgoSeek | Bulk Daily Updates | $1,440/yr | $600 | $840 | $1,440 | $2,640 |  | yes | yes |
 
 ## US Equities Short Availability (QuantConnect)
 
@@ -576,8 +576,8 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-cons
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US Equity Coarse Universe Constituents - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | US Equity Coarse Universe Constituents - On Premise Download | On Premise Download | 5 QCC/file |  |  |  |  |  | yes | yes |
-| US Equity Coarse Universe History by QuantConnect | Bulk Download | $600 | $600 | $900 | $1,200 | $1,800 |  |  | yes |
-| US Equity Coarse Universe Updates by QuantConnect | Bulk Updates | $240/yr | $240 | $360 | $600 | $960 |  | yes | yes |
+| US Equity Coarse Universe History by QuantConnect | Bulk Download | $1,200 | $600 | $900 | $1,200 | $1,800 |  |  | yes |
+| US Equity Coarse Universe Updates by QuantConnect | Bulk Updates | $600/yr | $240 | $360 | $600 | $960 |  | yes | yes |
 
 ## US Equity Option Universe (QuantConnect)
 
@@ -587,7 +587,7 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-equity-option-univer
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US Equity Option Universe - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | US Equity Option Universe - On Premise Download | On Premise Download | 200 QCC/file |  |  |  |  |  | yes | yes |
-| US Equity Option Universe History by QuantConnect | Bulk Download | $3,960 | $3,960 | $5,040 | $7,500 | $12,000 |  |  | yes |
+| US Equity Option Universe History by QuantConnect | Bulk Download | $7,500 | $3,960 | $5,040 | $7,500 | $12,000 |  |  | yes |
 | US Equity Option Universe Updates by QuantConnect | Bulk Updates | $1,200/yr | $1,200 | $1,200 | $1,200 | $1,200 |  | yes | yes |
 
 ## US Equity Options (AlgoSeek)
@@ -600,12 +600,12 @@ Page: https://www.quantconnect.com/datasets/algoseek-us-equity-options/pricing �
 | AlgoSeek Options - Minute Download | Minute Download | 15 QCC/file |  |  |  |  |  | yes | yes |
 | AlgoSeek Options - Hour Download | Hour Download | 900 QCC/file |  |  |  |  |  | yes | yes |
 | AlgoSeek Options - Daily Download | Daily Download | 300 QCC/file |  |  |  |  |  | yes | yes |
-| US Equity Options Minute History by AlgoSeek | Bulk Minute Download | $30,000 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
-| US Equity Options Hour History by AlgoSeek | Bulk Hour Download | $14,400 | $14,400 | $21,000 | $26,400 | $34,800 |  |  | yes |
-| US Equity Options Daily History by AlgoSeek | Bulk Daily Download | $12,000 | $12,000 | $15,600 | $18,000 | $21,000 |  |  | yes |
-| US Equity Options Minute Updates by AlgoSeek | Bulk Minute Updates | $1,200/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
-| US Equity Options Hour Updates by AlgoSeek | Bulk Hour Updates | $1,440/yr | $1,440 | $1,440 | $1,920 | $2,640 |  | yes | yes |
-| US Equity Options Daily Updates by AlgoSeek | Bulk Daily Updates | $720/yr | $720 | $960 | $1,440 | $1,920 |  | yes | yes |
+| US Equity Options Minute History by AlgoSeek | Bulk Minute Download | $40,800 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
+| US Equity Options Hour History by AlgoSeek | Bulk Hour Download | $26,400 | $14,400 | $21,000 | $26,400 | $34,800 |  |  | yes |
+| US Equity Options Daily History by AlgoSeek | Bulk Daily Download | $18,000 | $12,000 | $15,600 | $18,000 | $21,000 |  |  | yes |
+| US Equity Options Minute Updates by AlgoSeek | Bulk Minute Updates | $2,160/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
+| US Equity Options Hour Updates by AlgoSeek | Bulk Hour Updates | $1,920/yr | $1,440 | $1,440 | $1,920 | $2,640 |  | yes | yes |
+| US Equity Options Daily Updates by AlgoSeek | Bulk Daily Updates | $1,440/yr | $720 | $960 | $1,440 | $1,920 |  | yes | yes |
 
 ## US Equity Security Master (QuantConnect)
 
@@ -613,7 +613,7 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-equity-security-mast
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| US Equity Security Master by QuantConnect | Download On Premise | $600/yr | $600 | $900 | $1,200 | $1,800 |  |  | yes |
+| US Equity Security Master by QuantConnect | Download On Premise | $1,200/yr | $600 | $900 | $1,200 | $1,800 |  |  | yes |
 | US Equity Security Master by QuantConnect | Cloud Access | Free | $600 | $900 | $1,200 | $1,800 | yes |  |  |
 
 ## US ETF Constituents (QuantConnect)
@@ -624,7 +624,7 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents/pri
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US ETF Constituents - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | US ETF Constituents - On Premise Download | On Premise Download | 50 QCC/file |  |  |  |  |  | yes | yes |
-| US ETF Constituents History by QuantConnect | Bulk Downloads | $3,600 | $3,600 | $3,960 | $3,960 | $3,960 |  |  | yes |
+| US ETF Constituents History by QuantConnect | Bulk Downloads | $3,960 | $3,600 | $3,960 | $3,960 | $3,960 |  |  | yes |
 | US ETF Constituents Updates by QuantConnect | Bulk Updates | $1,200/yr | $1,200 | $1,200 | $1,200 | $1,200 |  | yes | yes |
 
 ## US Federal Reserve (FRED) (FRED)
@@ -651,8 +651,8 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-future-option-univer
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US Future Option Universe - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | US Future Option Universe - On Premise Download | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| US Future Option Universe History by QuantConnect | Bulk Download | $1,200 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
-| US Future Option Universe Updates by QuantConnect | Bulk Updates | $960/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
+| US Future Option Universe History by QuantConnect | Bulk Download | $2,880 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
+| US Future Option Universe Updates by QuantConnect | Bulk Updates | $1,440/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
 
 ## US Future Options (AlgoSeek)
 
@@ -661,9 +661,9 @@ Page: https://www.quantconnect.com/datasets/algoseek-us-future-options/pricing �
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US Future Options - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
-| US Future Options Minute Updates by AlgoSeek | Bulk Minute Updates | $1,200/yr | $1,200 | $1,200 | $1,200 | $1,200 |  | yes | yes |
-| US Future Options Hour Updates by AlgoSeek | Bulk Hour Updates | $1,440/yr | $1,440 | $1,440 | $1,440 | $1,440 |  | yes | yes |
-| US Future Options Daily Updates by AlgoSeek | Bulk Daily Updates | $720/yr | $720 | $720 | $720 | $720 |  | yes | yes |
+| US Future Options Minute Updates by AlgoSeek | Bulk Minute Updates | $2,160/yr | $2,160 | $2,160 | $2,160 | $2,160 |  | yes | yes |
+| US Future Options Hour Updates by AlgoSeek | Bulk Hour Updates | $1,920/yr | $1,920 | $1,920 | $1,920 | $1,920 |  | yes | yes |
+| US Future Options Daily Updates by AlgoSeek | Bulk Daily Updates | $1,440/yr | $1,440 | $1,440 | $1,440 | $1,440 |  | yes | yes |
 | US Future Options Minute Download by AlgoSeek | Short Description | 50 QCC/file |  |  |  |  |  | yes | yes |
 | US Future Options Hour Download by AlgoSeek | Short Description | 1,500 QCC/file |  |  |  |  |  | yes | yes |
 | US Future Options Daily Download by AlgoSeek | Short Description | 1,500 QCC/file |  |  |  |  |  | yes | yes |
@@ -678,8 +678,8 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-future-universe/pric
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US Future Universe - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | US Future Universe - On Premise Download | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| US Future Universe History by QuantConnect | Bulk Download | $1,200 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
-| US Future Universe Updates by QuantConnect | Bulk Updates | $960/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
+| US Future Universe History by QuantConnect | Bulk Download | $2,880 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
+| US Future Universe Updates by QuantConnect | Bulk Updates | $1,440/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
 
 ## US Futures (AlgoSeek)
 
@@ -693,16 +693,16 @@ Page: https://www.quantconnect.com/datasets/algoseek-us-futures/pricing · liste
 | US Futures Minute Download by AlgoSeek | Minute Download | 50 QCC/file |  |  |  |  |  | yes | yes |
 | US Futures Hour Download by AlgoSeek | Hour Download | 1,500 QCC/file |  |  |  |  |  | yes | yes |
 | US Futures Daily Download by AlgoSeek | Daily Download | 1,500 QCC/file |  |  |  |  |  | yes | yes |
-| US Futures Tick History by AlgoSeek | Bulk Tick Download | $30,000 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
-| US Futures Tick Updates by AlgoSeek | Bulk Tick Updates | $1,200/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
-| US Futures Second History by AlgoSeek | Bulk Second Download | $30,000 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
-| US Futures Second Updates by AlgoSeek | Bulk Second Updates | $1,200/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
-| US Futures Minute History by AlgoSeek | Bulk Minute Download | $30,000 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
-| US Futures Minute Updates by AlgoSeek | Bulk Minute Updates | $1,200/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
-| US Futures Hour History by AlgoSeek | Bulk Hour Download | $14,400 | $14,400 | $21,000 | $26,400 | $34,800 |  |  | yes |
-| US Futures Hour Updates by AlgoSeek | Bulk Hour Updates | $1,440/yr | $1,440 | $1,440 | $1,920 | $2,640 |  | yes | yes |
-| US Futures Daily History by AlgoSeek | Bulk Daily Download | $12,000 | $12,000 | $15,600 | $18,000 | $21,000 |  |  | yes |
-| US Futures Daily Updates by AlgoSeek | Bulk Daily Updates | $720/yr | $720 | $960 | $1,440 | $1,920 |  | yes | yes |
+| US Futures Tick History by AlgoSeek | Bulk Tick Download | $40,800 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
+| US Futures Tick Updates by AlgoSeek | Bulk Tick Updates | $2,160/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
+| US Futures Second History by AlgoSeek | Bulk Second Download | $40,800 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
+| US Futures Second Updates by AlgoSeek | Bulk Second Updates | $2,160/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
+| US Futures Minute History by AlgoSeek | Bulk Minute Download | $40,800 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
+| US Futures Minute Updates by AlgoSeek | Bulk Minute Updates | $2,160/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
+| US Futures Hour History by AlgoSeek | Bulk Hour Download | $26,400 | $14,400 | $21,000 | $26,400 | $34,800 |  |  | yes |
+| US Futures Hour Updates by AlgoSeek | Bulk Hour Updates | $1,920/yr | $1,440 | $1,440 | $1,920 | $2,640 |  | yes | yes |
+| US Futures Daily History by AlgoSeek | Bulk Daily Download | $18,000 | $12,000 | $15,600 | $18,000 | $21,000 |  |  | yes |
+| US Futures Daily Updates by AlgoSeek | Bulk Daily Updates | $1,440/yr | $720 | $960 | $1,440 | $1,920 |  | yes | yes |
 
 ## US Futures Security Master (QuantConnect)
 
@@ -710,7 +710,7 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-futures-security-mas
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| US Futures Security Master by QuantConnect | Download On Premise | $600/yr | $600 | $900 | $1,200 | $1,800 |  |  | yes |
+| US Futures Security Master by QuantConnect | Download On Premise | $1,200/yr | $600 | $900 | $1,200 | $1,800 |  |  | yes |
 | US Futures Security Master by QuantConnect (Delete) | Cloud Access | Free |  |  |  |  | yes |  |  |
 
 ## US Government Contracts (Quiver Quantitative)
@@ -719,7 +719,7 @@ Page: https://www.quantconnect.com/datasets/quiver-quantitative-us-government-co
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| US Government Contracts by Quiver Quantitative | Cloud Access | $5/mo | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
+| US Government Contracts by Quiver Quantitative | Cloud Access | $20/mo / 4 Users at $5 Each | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | $5/mo, $55/yr | yes |  | yes |
 | US Government Contracts Downloads by Quiver Quantitative | On Premise Download | 10 QCC/file |  |  |  |  |  | yes | yes |
 | US Government Contracts Download by Quiver Quantitative | Short Description | $0/mo |  |  |  |  | yes |  | yes |
 | US Government Contracts Universe Downloads by Quiver Quantitative | Short Description | 10 QCC/file |  |  |  |  |  | yes | yes |
@@ -732,8 +732,8 @@ Page: https://www.quantconnect.com/datasets/quantconnect-us-index-option-univers
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | US Index Option Universe - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | US Index Option Universe - On Premise Download | On Premise Download | 100 QCC/file |  |  |  |  |  | yes | yes |
-| US Index Option Universe History by QuantConnect | Bulk Download | $1,200 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
-| US Index Option Universe Updates by QuantConnect | Bulk Updates | $960/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
+| US Index Option Universe History by QuantConnect | Bulk Download | $2,880 | $1,200 | $1,920 | $2,880 | $3,960 | yes |  | yes |
+| US Index Option Universe Updates by QuantConnect | Bulk Updates | $1,440/yr | $960 | $1,200 | $1,440 | $1,680 | yes |  | yes |
 
 ## US Index Options (AlgoSeek)
 
@@ -745,12 +745,12 @@ Page: https://www.quantconnect.com/datasets/algoseek-us-index-options/pricing ·
 | US Index Options Minute Download by AlgoSeek | Minute Download | 15 QCC/file |  |  |  |  |  | yes | yes |
 | US Index Options Hour Download by AlgoSeek | Hour Download | 900 QCC/file |  |  |  |  |  | yes | yes |
 | US Index Options Daily Download by AlgoSeek | Daily Download | 300 QCC/file |  |  |  |  |  | yes | yes |
-| US Index Options Minute History by AlgoSeek | Bulk Minute Download | $30,000 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
-| US Index Options Minute Updates by AlgoSeek | Bulk Minute Updates | $1,200/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
-| US Index Options Hour History by AlgoSeek | Bulk Hour Download | $14,400 | $14,400 | $21,000 | $26,400 | $34,800 |  |  | yes |
-| US Index Options Hour Updates by AlgoSeek | Bulk Hour Updates | $1,440/yr | $1,440 | $1,440 | $1,920 | $2,640 |  | yes | yes |
-| US Index Options Daily History by AlgoSeek | Bulk Daily Download | $12,000 | $12,000 | $15,600 | $18,000 | $21,000 |  |  | yes |
-| US Index Options Daily Updates by AlgoSeek | Bulk Daily Updates | $720/yr | $720 | $960 | $1,440 | $1,920 |  | yes | yes |
+| US Index Options Minute History by AlgoSeek | Bulk Minute Download | $40,800 | $30,000 | $33,600 | $40,800 | $64,800 |  |  | yes |
+| US Index Options Minute Updates by AlgoSeek | Bulk Minute Updates | $2,160/yr | $1,200 | $1,680 | $2,160 | $2,880 |  | yes | yes |
+| US Index Options Hour History by AlgoSeek | Bulk Hour Download | $26,400 | $14,400 | $21,000 | $26,400 | $34,800 |  |  | yes |
+| US Index Options Hour Updates by AlgoSeek | Bulk Hour Updates | $1,920/yr | $1,440 | $1,440 | $1,920 | $2,640 |  | yes | yes |
+| US Index Options Daily History by AlgoSeek | Bulk Daily Download | $18,000 | $12,000 | $15,600 | $18,000 | $21,000 |  |  | yes |
+| US Index Options Daily Updates by AlgoSeek | Bulk Daily Updates | $1,440/yr | $720 | $960 | $1,440 | $1,920 |  | yes | yes |
 
 ## US Interest Rate (Federal Reserve Bank of St Louis)
 
@@ -767,7 +767,7 @@ Page: https://www.quantconnect.com/datasets/regalytics-us-regulatory-alerts/pric
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| US Regulatory Alerts Feed by RegAnalytics | Cloud Access US Regulatory Alerts | $10/mo | $10/mo, $110/yr | $15/mo, $165/yr | $20/mo, $220/yr | $60/mo, $660/yr | yes |  | yes |
+| US Regulatory Alerts Feed by RegAnalytics | Cloud Access US Regulatory Alerts | $80/mo / 4 Users at $20 Each | $10/mo, $110/yr | $15/mo, $165/yr | $20/mo, $220/yr | $60/mo, $660/yr | yes |  | yes |
 | US Regulatory Alerts Download by RegAnalytics | On Premise Download | 200 QCC/file |  |  |  |  |  | yes | yes |
 
 ## US SEC 13F Whales (Securities and Exchange Commission)
