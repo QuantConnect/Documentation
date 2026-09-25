@@ -119,6 +119,21 @@
             <td></td>
         </tr>
         <tr>
+            <td><code class="csharp">AutomaticPositionSides</code><code class="python">automatic_position_sides</code></td>
+            <td><code class='csharp'>bool</code><code class='python'>bool</code></td>
+            <td>A flag that determines whether to set the position side of the order (buy-to-open, sell-to-close, etc.) from your current holdings. If you disable it, the order is a plain buy or sell without FIX tag 77.</td>
+            <td><code class='csharp'>true</code><code class='python'>True</code></td>
+        </tr>
+        <tr>
+            <td><code class="csharp">PositionSide</code><code class="python">position_side</code></td>
+            <td><code class='csharp'>OrderPosition?</code><code class='python'>OrderPosition/NoneType</code></td>
+            <td>
+               An <code>OrderPosition</code> object that specifies the position side of the order (buy-to-open, sell-to-close, etc.) instead of your current holdings.
+               This member has precedence over <code class="csharp">AutomaticPositionSides</code><code class="python">automatic_position_sides</code>.
+            </td>
+            <td></td>
+        </tr>
+        <tr>
             <td><code class="csharp">AdditionalProperties</code><code class="python">additional_properties</code></td>
             <td><code class='csharp'>BaseExtendedDictionary&lt;string, string&gt;</code><code class='python'>BaseExtendedDictionary[str, str]</code></td>
             <td>The custom FIX tags to send with the order. The key is the FIX tag number and the value is the tag value.</td>
@@ -157,6 +172,54 @@
     self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
     self.default_order_properties.locate_broker = "BMTB"
     self.default_order_properties.locate_reqd = "Y"</pre>
+</div>
+<? } ?>
+
+<p>The position side of an order sets the FIX Side tag 54 and the OpenClose tag 77. The following table shows the tag values for each position side:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+         <th>Position Side</th>
+         <th>Tag 54</th>
+         <th>Tag 77</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="csharp">OrderPosition.BuyToOpen</code><code class="python">OrderPosition.BUY_TO_OPEN</code></td>
+            <td><code>1</code> (buy)</td>
+            <td><code>O</code> (open)</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">OrderPosition.BuyToClose</code><code class="python">OrderPosition.BUY_TO_CLOSE</code></td>
+            <td><code>1</code> (buy)</td>
+            <td><code>C</code> (close)</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">OrderPosition.SellToOpen</code><code class="python">OrderPosition.SELL_TO_OPEN</code></td>
+            <td><code>5</code> (sell short)</td>
+            <td><code>O</code> (open)</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">OrderPosition.SellToClose</code><code class="python">OrderPosition.SELL_TO_CLOSE</code></td>
+            <td><code>2</code> (sell)</td>
+            <td><code>C</code> (close)</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Tag 77 separates a buy that covers a short position from a buy that opens a long position, since both orders carry 54=1. Order updates and cancellations send the same tag values as the original order. To set the position side yourself instead of using your current holdings, set the <code class="csharp">PositionSide</code><code class="python">position_side</code> property:</p>
+
+<? if ($writingAlgorithms) { ?>
+<div class="section-example-container">
+    <pre class="csharp">// Mark the buy as a buy to cover (tag 77 = C)
+var orderProperties = new BloombergFixOrderProperties { PositionSide = OrderPosition.BuyToClose };
+MarketOrder("SPY", 100, orderProperties: orderProperties);</pre>
+    <pre class="python"># Mark the buy as a buy to cover (tag 77 = C)
+order_properties = BloombergFixOrderProperties()
+order_properties.position_side = OrderPosition.BUY_TO_CLOSE
+self.market_order("SPY", 100, order_properties=order_properties)</pre>
 </div>
 <? } ?>
 
