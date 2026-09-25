@@ -1,90 +1,112 @@
-<p>LEAN supports several allocation methods for FA group orders. If you intend to use the same group allocation method for every order, set the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> of your algorithm, which sets the order properties for all of your orders.</p>
+<p>An Allocation Group stores an allocation method in TWS. When unified groups are enabled, set <code class="csharp">FaGroup</code><code class="python">fa_group</code> and leave <code class="csharp">FaMethod</code><code class="python">fa_method</code> empty to use that saved method. Before you submit an implicit-method order, request a snapshot and wait for a <code>Ready</code> result that contains the group.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void Initialize()
-{
-    // Set the default order properties
-    DefaultOrderProperties = new InteractiveBrokersOrderProperties()
-    {
-        FaGroup = "TestGroupEQ",
-        FaMethod = "Equal",
-        Account = "DU123456"
-    };
-}
+    <pre class="csharp">private bool _ordered;
 
 public override void OnData(Slice slice)
 {
-    // Use default order order properties
-    LimitOrder(_symbol, quantity, limitPrice);  
+    var snapshot = BrokerageAccountSnapshot;
+    if (_ordered || !snapshot.IsReady ||
+        !snapshot.AllGroups.TryGetValue("TestGroupEQ", out var group) ||
+        !group.AllocationMethod.Equals("Equal", StringComparison.OrdinalIgnoreCase))
+    {
+        return;
+    }
+
+    var properties = new InteractiveBrokersOrderProperties
+    {
+        FaGroup = group.Name
+    };
+    MarketOrder(_symbol, 100, orderProperties: properties);
+    _ordered = true;
 }</pre>
-    <pre class="python">def initialize(self) -&gt; None:
-    # Set the default order properties
-    self.default_order_properties = InteractiveBrokersOrderProperties()
-    self.default_order_properties.fa_group = "TestGroupEQ"
-    self.default_order_properties.fa_method = "Equal"
-    self.default_order_properties.account = "DU123456"
+    <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    snapshot = self.brokerage_account_snapshot
+    group = next(
+        (group for group in list(snapshot.all_groups.values)
+         if group.name.lower() == "testgroupeq"),
+        None)
+    if (self._ordered or not snapshot.is_ready or group is None
+            or group.allocation_method.lower() != "equal"):
+        return
 
-def on_data(self, slice: Slice) -&gt; None:
-    # Use default order order properties
-    LimitOrder(_symbol, quantity, limitPrice);</pre>
+    properties = InteractiveBrokersOrderProperties()
+    properties.fa_group = group.name
+    self.market_order(self._symbol, 100, order_properties=properties)
+    self._ordered = True</pre>
 </div>
 
-<p>
-    To adjust the order properties of an order, change the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. 
-    The following sections explain the FA group allocation methods.
-</p>
+<p>Initialize <code class="csharp">_ordered</code><code class="python">self._ordered</code> to false and request the group snapshot before this handler runs. See <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#05-Account-Snapshots">Account Snapshots</a> for the complete asynchronous request pattern.</p>
 
-<h4>Equal</h4>
-<p>This group allocation method distributes shares equally between all accounts in the group. When you use this method, you need to specify an order quantity.</p>
+<h4>Supported unified allocation methods</h4>
 
-<p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Saved method</th>
+            <th>Allocation</th>
+            <th>Order requirement</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Equal</code></td>
+            <td>IB divides the parent quantity as evenly as possible among group members.</td>
+            <td>Submit a nonzero parent quantity.</td>
+        </tr>
+        <tr>
+            <td><code>NetLiq</code></td>
+            <td>IB weights members by their net liquidation values.</td>
+            <td>Submit a nonzero parent quantity.</td>
+        </tr>
+        <tr>
+            <td><code>AvailableEquity</code></td>
+            <td>IB weights members by their available equity.</td>
+            <td>Submit a nonzero parent quantity.</td>
+        </tr>
+        <tr>
+            <td><code>Ratio</code></td>
+            <td>IB weights members by the group's saved positive ratios.</td>
+            <td>Submit a nonzero parent quantity and leave the order-level method empty.</td>
+        </tr>
+        <tr>
+            <td><code>Percent</code></td>
+            <td>IB weights members by saved positive percentages that total 100.</td>
+            <td>Submit a nonzero parent quantity and leave the order-level method empty. This method differs from <code>PctChange</code>.</td>
+        </tr>
+        <tr>
+            <td><code>ContractsOrShares</code></td>
+            <td>IB uses the group's saved quantity for each member.</td>
+            <td>Leave the order-level method empty. Saved values must be nonnegative with a positive total. The absolute parent quantity must equal that total and satisfy the security's lot size. Saved values can be fractional when the total is lot-aligned.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>LEAN normalizes the legacy <code>EqualQuantity</code> spelling to <code>Equal</code>. Unified-group routing doesn't support <code>MonetaryAmount</code> or an unknown saved method.</p>
+
+<h4>Order-level method</h4>
+
+<p>Leaving <code class="csharp">FaMethod</code><code class="python">fa_method</code> empty is the recommended unified route and is required for <code>ContractsOrShares</code>, <code>Ratio</code>, and <code>Percent</code>. For <code>Equal</code>, <code>NetLiq</code>, or <code>AvailableEquity</code>, you can explicitly set the same method that the group has saved. When a <code>Ready</code> snapshot is available, LEAN rejects an explicit method that differs from the saved method.</p>
+
+<p>An implicit method always requires a <code>Ready</code> snapshot that contains the group. An explicit supported computed method on an explicitly named group can pass admission while the snapshot isn't ready, but LEAN can't perform saved-method, membership, or saved-vector checks in that state. A previously detected malformed or unsupported topology continues to block new group-order placements until a successful refresh clears it. Route exclusivity, group-filter checks, and the active-mutation gate still apply. Order updates repeat the applicable route and current-state checks, so a group that drifts after placement can cause an update to be rejected.</p>
+
+<h4>Legacy percentage change</h4>
+
+<p><code>PctChange</code> changes existing positions by a signed integer percentage supplied through <code class="csharp">FaPercentage</code><code class="python">fa_percentage</code>; a negative value reduces them. LEAN retains this pre-existing route only when unified groups are disabled. It forwards the percentage through IB's FA percentage field and sends a zero IB parent quantity. Unified-group routing rejects both an explicit <code>PctChange</code> order and a group whose saved method is <code>PctChange</code> because IB determines the aggregate quantity after submission and LEAN can't safely account for split fills in its parent-order model.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">LimitOrder(
-    _symbol, quantity, limitPrice, 
-    orderProperties: new InteractiveBrokersOrderProperties
-    { 
-        FaMethod = "Equal" 
-    }
-);</pre>
-    <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.fa_method = "Equal"
-self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
+    <pre class="csharp">var properties = new InteractiveBrokersOrderProperties
+{
+    FaGroup = "LegacyGroup",
+    FaMethod = "PctChange",
+    FaPercentage = 5
+};
+MarketOrder(_symbol, 1, orderProperties: properties);</pre>
+    <pre class="python">properties = InteractiveBrokersOrderProperties()
+properties.fa_group = "LegacyGroup"
+properties.fa_method = "PctChange"
+properties.fa_percentage = 5
+self.market_order(self._symbol, 1, order_properties=properties)</pre>
 </div>
 
-<h4>Net Liquidation Value</h4>
-<p>This group allocation method distributes shares based on the net liquidation value of each account. The system calculates ratios based on the net liquidation value in each account and allocates shares based on these ratios. When you use this method, you need to specify an order quantity.</p>
-
-<p>For example, say your account group includes three accounts, A, B and C with Net Liquidation values of $25,000, $50,000 and $100,000, respectively. In this case, the system calculates a ratio of 1:2:4. If you place an order for 700 shares of a stock, it allocates 100 shares to Client A, 200 shares to Client B, and 400 shares to Client C. </p>
-
-<div class="section-example-container">
-    <pre class="csharp">LimitOrder(_symbol, quantity, limitPrice, 
-    orderProperties: new InteractiveBrokersOrderProperties
-    { 
-        FaMethod = "NetLiq" 
-    }
-);</pre>
-    <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.fa_method = "NetLiq"
-self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
-</div>
-
-<h4>Available Equity</h4>
-<p>This group allocation method distributes shares based on the amount of available equity in each account. The system calculates ratios based on the available equity in each account and allocates shares based on these ratios. When you use this method, you need to specify an order quantity.</p>
-
-<p>For example, say your account group includes three accounts, A, B and C with available equity of $25,000, $50,000 and $100,000, respectively. In this case, the system calculates a ratio of 1:2:4. If you place an order for 700 shares of a stock, it allocates 100 shares to Client A, 200 shares to Client B, and 400 shares to Client C.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">LimitOrder(_symbol, quantity, limitPrice, 
-    orderProperties: new InteractiveBrokersOrderProperties
-    { 
-        FaMethod = "AvailableEquity" 
-    }
-);</pre>
-    <pre class="python">order_properties = InteractiveBrokersOrderProperties()
-order_properties.fa_method = "AvailableEquity"
-self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
-</div>
-
-
-
+<p>The nonzero LEAN quantity creates the parent order for the legacy path. Don't use this example when <code>ib-financial-advisors-unified-groups-enabled</code> is <code>true</code>. To use unified groups, change the saved group method in TWS to one of the supported methods and follow the saved-method example above.</p>
