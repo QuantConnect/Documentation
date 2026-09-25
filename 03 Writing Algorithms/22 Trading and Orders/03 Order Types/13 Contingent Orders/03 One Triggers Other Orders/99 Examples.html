@@ -43,3 +43,57 @@
             self.order_factory.trailing_stop_order(self._spy, -100, 0.03, True)
         ])</pre>
 </div>
+
+<h4>Example 2: Enter, Take Profit, and Re-Enter</h4>
+<p>The following algorithm trades SPY in a price range with a chain of three orders. The parent buys SPY 1% below the close price. When the parent fills, its child sells the position 1% above the close price. When the child fills, the grandchild buys SPY again at the entry price. While the algorithm holds the position of the grandchild, it places a new take-profit order.</p>
+<div class="section-example-container">
+<pre class="csharp">public class OneTriggersOtherChainExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Transactions.GetOpenOrders(_spy).Count &gt; 0 || !slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            return;
+        }
+        var entryPrice = Math.Round(bar.Close * 0.99m, 2);
+        var exitPrice = Math.Round(bar.Close * 1.01m, 2);
+        if (Portfolio[_spy].Invested)
+        {
+            LimitOrder(_spy, -Portfolio[_spy].Quantity, exitPrice);
+            return;
+        }
+        // The take profit triggers the re-entry, which is a grandchild of the entry.
+        var takeProfit = OrderFactory.LimitOrder(_spy, -100, exitPrice).Triggers(OrderFactory.LimitOrder(_spy, 100, entryPrice));
+        OneTriggersOtherOrder(OrderFactory.LimitOrder(_spy, 100, entryPrice), new List&lt;SubmitOrderRequest&gt; { takeProfit });
+    }
+}</pre>
+<pre class="python">class OneTriggersOtherChainExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._spy)
+        if self.transactions.get_open_orders(self._spy) or not bar:
+            return
+        entry_price = round(bar.close * 0.99, 2)
+        exit_price = round(bar.close * 1.01, 2)
+        if self.portfolio[self._spy].invested:
+            self.limit_order(self._spy, -self.portfolio[self._spy].quantity, exit_price)
+            return
+        # The take profit triggers the re-entry, which is a grandchild of the entry.
+        take_profit = self.order_factory.limit_order(self._spy, -100, exit_price).triggers(
+            self.order_factory.limit_order(self._spy, 100, entry_price))
+        self.one_triggers_other_order(self.order_factory.limit_order(self._spy, 100, entry_price), [take_profit])</pre>
+</div>
