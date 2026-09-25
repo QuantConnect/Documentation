@@ -21,7 +21,10 @@
     </tbody>
 </table>
 
-<p>The quote has one of the following <code>QuoteConditionFlags</code>:</p>
-<? echo file_get_contents(DOCS_RESOURCES."/data-feeds/quote-condition-flags-table.html"); ?>
+<p>Quote bars use quotes that have at least one of the following <code>QuoteConditionFlags</code>:</p>
+<? echo file_get_contents(DOCS_RESOURCES."/data-feeds/quote-condition-flags-included-table.html"); ?>
+
+<p>Quote bars exclude quotes that have any of the following <code>QuoteConditionFlags</code>:</p>
+<? echo file_get_contents(DOCS_RESOURCES."/data-feeds/quote-condition-flags-excluded-table.html"); ?>
 
 <p>See more information in the <a rel="nofollow" target="_blank" href="https://us-equity-market-data-docs.s3.amazonaws.com/algoseek.US.Equity.TAQ.pdf">AlgoSeek whitepaper</a>.</p>
