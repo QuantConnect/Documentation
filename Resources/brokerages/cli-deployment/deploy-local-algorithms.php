@@ -5,6 +5,39 @@
 <ol>
     <li><a href='/docs/v2/lean-cli/initialization/authentication#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>        
     <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
+    <li>If your algorithm trades US Equities, Options, or Futures, <a href='/docs/v2/lean-cli/datasets/quantconnect'>purchase and download</a> the QuantConnect datasets that LEAN uses for the asset class. Crypto, Forex, and CFD algorithms can skip this step. The following table shows the datasets for each asset class:
+    <table class='qc-table table'>
+        <thead>
+            <tr>
+                <th>Asset Class</th>
+                <th>Datasets</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>US Equity</td>
+                <td><a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli'>US Equity Security Master</a>, to get adjusted prices. Without it, your algorithm uses raw prices.</td>
+            </tr>
+            <tr>
+                <td>US Equity Options</td>
+                <td><a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli'>US Equity Security Master</a> and <a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-option-universe'>US Equity Option Universe</a></td>
+            </tr>
+            <tr>
+                <td>US Index Options</td>
+                <td><a href='https://www.quantconnect.com/datasets/quantconnect-us-index-option-universe'>US Index Option Universe</a></td>
+            </tr>
+            <tr>
+                <td>US Futures</td>
+                <td><a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/cli'>US Futures Security Master</a> and <a href='https://www.quantconnect.com/datasets/quantconnect-us-future-universe'>US Future Universe</a></td>
+            </tr>
+            <tr>
+                <td>US Future Options</td>
+                <td><a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/cli'>US Futures Security Master</a>, <a href='https://www.quantconnect.com/datasets/quantconnect-us-future-universe'>US Future Universe</a>, and <a href='https://www.quantconnect.com/datasets/quantconnect-us-future-option-universe'>US Future Option Universe</a>. To get access, <a href='https://www.quantconnect.com/contact'>contact us</a>.</td>
+            </tr>
+        </tbody>
+    </table>
+    If your algorithm uses <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/universes/key-concepts'>universe selection</a>, also download the universe dataset, such as the <a href='/docs/v2/lean-cli/datasets/quantconnect/us-equity-coarse-fundamental'>US Equity Coarse Universe</a> or <a href='/docs/v2/lean-cli/datasets/quantconnect/us-etf-constituents'>US ETF Constituents</a>.
+    </li>
 
 <?
 if ($isBrokerage) {
@@ -245,10 +278,10 @@ To enter multiple options, separate them with comma:</pre>
     <li>
         View the result in the <span class='public-directory-name'>&lt;projectName&gt; / live / &lt;timestamp&gt;</span> directory.
         Results are stored in real-time in JSON format.
-        You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 2.
+        You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 4.
     </li>
 </ol>
 <p>
-    If you already have a live environment configured in your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>, you can skip the interactive wizard by providing the <code>--environment &lt;value&gt;</code> option in step 2.
+    If you already have a live environment configured in your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>, you can skip the interactive wizard by providing the <code>--environment &lt;value&gt;</code> option in step 4.
     The value of this option must be the name of an environment which has <code>live-mode</code> set to <code>true</code>.
 </p>

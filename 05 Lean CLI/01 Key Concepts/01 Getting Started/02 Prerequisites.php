@@ -8,3 +8,6 @@
     The commands which run the LEAN engine locally also depend on <a href="https://www.docker.com/" target="_blank" rel='nofollow'>Docker</a> being installed and running. See <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">Install Docker</a> to learn how to install Docker on your operating system.
 </p>
 
+<p>To run backtests, optimizations, or research locally, you must have the data your algorithm uses on your machine. To get local data, use one of the following sources:</p>
+<? include(DOCS_RESOURCES."/cli/local-data-sources.html"); ?>
+

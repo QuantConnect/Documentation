@@ -19,7 +19,9 @@
 </p>
 
 <ol>
-    <li><a href="/docs/v2/lean-cli/datasets/quantconnect">Set up your local data</a> for all the data required by your project.</li>
+    <li>Get the data your project needs from one of the following sources:
+<? include(DOCS_RESOURCES."/cli/local-data-sources.html"); ?>
+    </li>
     <li>Open a terminal in the <a href="/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> that contains the project you want to backtest.</li>
     <li>Run <code>lean backtest "&lt;projectName&gt;"</code> to run a local backtest for the project in <span class="public-directory-name">. / &lt;projectName&gt;</span>.
 <div class="cli section-example-container">
@@ -48,7 +50,9 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
 </p>
 
 <ol>
-    <li><a href="/docs/v2/lean-cli/datasets/quantconnect">Set up your local data</a> for all the data required by your project.</li>
+    <li>Get the data your project needs from one of the following sources:
+<? include(DOCS_RESOURCES."/cli/local-data-sources.html"); ?>
+    </li>
     <li>View the available versions on the <a href="https://hub.docker.com/r/quantconnect/lean/tags" target="_blank">quantconnect/lean Docker Hub tags page</a>.</li>
     <li>Copy the name of the tag that you want to run.</li>
     <li>Run <code>lean backtest "&lt;projectName&gt; --image quantconnect/lean:&lt;tagFromStep2&gt;"</code> to run a local backtest for the project in <span class="public-directory-name">. / &lt;projectName&gt;</span>.
