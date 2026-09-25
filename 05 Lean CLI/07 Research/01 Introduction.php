@@ -6,3 +6,6 @@
 
 
 <p>To use the CLI, you must be a member in an <a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features'>organization</a> on a paid tier.</p>
+
+<p>To use data in local research notebooks, you must have the data on your machine. To get local data, use one of the following sources:</p>
+<? include(DOCS_RESOURCES."/cli/local-data-sources.html"); ?>

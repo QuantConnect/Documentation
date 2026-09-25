@@ -3,7 +3,9 @@
 </p>
 
 <ol>
-    <li><a href="/docs/v2/lean-cli/datasets/quantconnect">Set up your local data</a> for all the data required by your project.</li>
+    <li>Get the data your project needs from one of the following sources:
+<? include(DOCS_RESOURCES."/cli/local-data-sources.html"); ?>
+    </li>
     <li><a href="/docs/v2/lean-cli/optimization/parameters">Convert your project to use project parameters</a> instead of constants for all values that must be optimized.</li>
     <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
     <li>Run <code>lean optimize "&lt;projectName&gt;"</code> to start optimizing the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span>. This command starts an interactive wizard which lets you configure the optimizer.
