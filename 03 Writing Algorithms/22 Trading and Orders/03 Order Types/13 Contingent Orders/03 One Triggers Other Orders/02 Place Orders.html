@@ -16,7 +16,7 @@ tickets = self.one_triggers_other_order(parent, [
 ])</pre>
 </div>
 
-<p>The child orders are independent of each other and can be for different securities. To relate the child orders, pass them through the <code class="csharp">OrderFactory.OneCancelsOther</code><code class="python">order_factory.one_cancels_other</code> or <code class="csharp">OrderFactory.OneUpdatesOther</code><code class="python">order_factory.one_updates_other</code> method first, as described in <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/custom-contingent-orders'>Custom Contingent Orders</a>. A child order can trigger other orders in turn. To create a chain, call the <code class="csharp">Triggers</code><code class="python">triggers</code> method on the child order request.</p>
+<p>The child orders are independent of each other and can be for different securities. To relate the child orders, pass them through the <code class="csharp">OrderFactory.OneCancelsOther</code><code class="python">order_factory.one_cancels_other</code> or <code class="csharp">OrderFactory.OneUpdatesOther</code><code class="python">order_factory.one_updates_other</code> method first, as described in <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/custom-contingent-orders'>Custom Contingent Orders</a>. A child order can trigger its own child orders, which are grandchild orders of the parent. To create a chain, call the <code class="csharp">Triggers</code><code class="python">triggers</code> method on the child order request.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// The IBM order triggers the BAC order once it fills.
@@ -26,6 +26,8 @@ var tickets = OneTriggersOtherOrder(parent, new List&lt;SubmitOrderRequest&gt; {
 child = self.order_factory.market_order(self._ibm, 10).triggers(self.order_factory.market_order(self._bac, 20))
 tickets = self.one_triggers_other_order(parent, [child])</pre>
 </div>
+
+<p>The brokerage holds the grandchild order until the child order completely fills. The method returns the order tickets in the order parent, child, and grandchild, with each parent before the orders it triggers. If you cancel the parent, LEAN cancels the child and the grandchild.</p>
 
 <p>The following images show the two outcomes of an OTO set. In the first image, the parent order fills and triggers the child order, which fills later:</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/oto-child-filled.webp" alt="An OTO set has a parent buy limit order at 45,000 and a child sell limit order at 58,000. The brokerage holds the child order until the price falls to 45,000 and the parent fills. The price then rises to 58,000 and the child order fills.">
