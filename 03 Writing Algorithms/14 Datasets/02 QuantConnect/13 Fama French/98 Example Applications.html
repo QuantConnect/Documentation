@@ -1,13 +1,12 @@
-<p>The Fama-French Factors dataset lets you measure and time your exposure to the classic equity style premiums. Examples include:</p>
+<p>The Fama-French Factors dataset enables you to measure and time factor exposure in your strategies. Examples include the following strategies:</p>
 
 <ul>
-<li>Regressing a strategy's daily returns on the factors to split its performance into alpha and factor bets.</li>
-<li>Timing a broad equity position with the momentum factor, holding the risk only while the regime stays positive.</li>
-<li>Rotating between a value and a growth tilt on the recent trend in HML.</li>
-<li>Using the market excess return and the risk-free rate to compute Sharpe ratios and CAPM betas against your own equity curve.</li>
+    <li>Regressing strategy returns on the factors to separate alpha from factor exposure</li>
+    <li>Rotating between value and growth tilts based on recent value factor returns</li>
+    <li>Holding equity risk only when the momentum factor is trending up</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm holds the market while the Fama-French momentum factor is positive and stays in cash otherwise:</p>
+<p>The following example algorithm buys SPY when the Fama-French momentum factor is positive. Otherwise, it holds cash.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -83,7 +82,7 @@ class FamaFrenchFactorsAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm uses the Algorithm Framework to trade a manually selected universe from Fama-French Factors data. An alpha model subscribes to the factors and emits insights from the sign of the momentum factor, holding the universe while the momentum regime is positive:</p>
+<p>The following example algorithm emits an up insight for SPY when the Fama-French momentum factor is positive. Otherwise, it emits a flat insight.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -111,7 +110,7 @@ class FamaFrenchAlphaModel(AlphaModel):
     def __init__(self, algorithm: QCAlgorithm) -&gt; None:
         self._tradable_symbols = []
 
-        # One subscription carries every factor, keyed by a fixed identifier
+        # Add the Fama-French factors data.
         self._fama_french = algorithm.add_data(FamaFrench, "FF", Resolution.DAILY).symbol
 
         history = algorithm.history[FamaFrench](self._fama_french, 60, Resolution.DAILY)
@@ -125,7 +124,7 @@ class FamaFrenchAlphaModel(AlphaModel):
         if momentum is None:
             return []
 
-        # A positive momentum factor is a risk-on regime, so hold the universe and step aside otherwise
+        # Emit an up insight when momentum is positive, otherwise a flat insight.
         direction = InsightDirection.UP if momentum &gt; 0 else InsightDirection.FLAT
         return [Insight.price(symbol, timedelta(days=7), direction) for symbol in self._tradable_symbols]
 
@@ -164,7 +163,7 @@ public class FamaFrenchAlphaModel : AlphaModel
 
     public FamaFrenchAlphaModel(QCAlgorithm algorithm)
     {
-        // One subscription carries every factor, keyed by a fixed identifier
+        // Add the Fama-French factors data.
         _famaFrench = algorithm.AddData&lt;FamaFrench&gt;("FF", Resolution.Daily).Symbol;
 
         var history = algorithm.History&lt;FamaFrench&gt;(_famaFrench, 60, Resolution.Daily);
@@ -184,7 +183,7 @@ public class FamaFrenchAlphaModel : AlphaModel
             return Enumerable.Empty&lt;Insight&gt;();
         }
 
-        // A positive momentum factor is a risk-on regime, so hold the universe and step aside otherwise
+        // Emit an up insight when momentum is positive, otherwise a flat insight.
         var direction = momentum &gt; 0 ? InsightDirection.Up : InsightDirection.Flat;
         return _tradableSymbols.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(7), direction));
     }

@@ -1,13 +1,12 @@
-<p>The FINRA OTC Transparency dataset lets you see the short positioning and off-exchange order flow behind a stock. Examples include:</p>
+<p>The OTC Transparency dataset enables you to monitor short interest and the trading that happens away from the exchanges. Examples include the following strategies:</p>
 
 <ul>
-<li>Hunting for short squeeze candidates by ranking the universe on days-to-cover, the short interest divided by average daily volume.</li>
-<li>Following or fading a stock as its open short interest builds up or unwinds from one reporting period to the next.</li>
-<li>Reading institutional accumulation or distribution from a shift in how much of a stock's volume prints on dark pools, using the weekly ATS shares.</li>
-<li>Combining the weekly ATS and monthly non-ATS volume into a total off-exchange participation measure and trading the names where it breaks from their norm.</li>
+    <li>Finding short squeeze candidates by comparing short interest to average daily volume</li>
+    <li>Trading stocks when their short interest rises or falls sharply between reports</li>
+    <li>Spotting institutional buying or selling from changes in dark pool volume</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm subscribes to the three FINRA OTC Transparency report types for a US Equity and trades it on the change in open short interest:</p>
+<p>The following example algorithm short sells AAPL when its open short interest increases. Otherwise, it buys AAPL.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -27,7 +26,7 @@ class FINRAOtcTransparencyDataAlgorithm(QCAlgorithm):
         self.debug(f"We got {len(history)} items from our history request")
 
     def on_data(self, slice):
-        # Off-exchange volume prints as an activity signal
+        # Log the monthly non-ATS share volume.
         for symbol, point in slice.get(FINRAMonthlySummary).items():
             self.debug(f"{symbol} non-ATS monthly shares at {slice.time}: {point.share_quantity}")
 
@@ -61,7 +60,7 @@ class FINRAOtcTransparencyDataAlgorithm(QCAlgorithm):
 
     public override void OnData(Slice slice)
     {
-        // Off-exchange volume prints as an activity signal
+        // Log the monthly non-ATS share volume.
         foreach (var kvp in slice.Get&lt;FINRAMonthlySummary&gt;())
         {
             Debug($"{kvp.Key} non-ATS monthly shares at {slice.Time}: {kvp.Value.ShareQuantity}");
@@ -89,7 +88,7 @@ class FINRAOtcTransparencyDataAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm uses the Algorithm Framework to trade a manually selected universe from FINRA OTC Transparency data. An alpha model subscribes each security to the consolidated short interest feed and emits insights from the change in open short interest:</p>
+<p>The following example algorithm emits a down insight for AAPL when its open short interest increases. Otherwise, it emits an up insight.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -125,7 +124,7 @@ class FINRAShortInterestAlphaModel(AlphaModel):
             change = data[short_interest_symbol].change
             if change is None:
                 continue
-            # Building short interest is bearish, unwinding short interest is bullish.
+            # Emit a down insight when short interest increases, otherwise an up insight.
             direction = InsightDirection.DOWN if change &gt; 0 else InsightDirection.UP
             insights.append(Insight.price(security_symbol, timedelta(days=14), direction))
         return insights
@@ -180,7 +179,7 @@ public class FINRAShortInterestAlphaModel : AlphaModel
             {
                 continue;
             }
-            // Building short interest is bearish, unwinding short interest is bullish.
+            // Emit a down insight when short interest increases, otherwise an up insight.
             var direction = change &gt; 0 ? InsightDirection.Down : InsightDirection.Up;
             yield return Insight.Price(securitySymbol, TimeSpan.FromDays(14), direction);
         }

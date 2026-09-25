@@ -1,14 +1,12 @@
-<p>The CFTC dataset lets you reach into the positioning behind the price. Examples include:</p>
+<p>The Commitments of Traders dataset enables you to follow how different types of traders are positioned in the futures markets. Examples include the following strategies:</p>
 
 <ul>
-    <li>Trading with the large speculators when the non-commercial net position turns positive, and against them when it turns negative.</li>
-    <li>Fading crowded positioning by shorting a market once managed money net length reaches a multi-year extreme.</li>
-    <li>Confirming a breakout by requiring commercial hedgers to be adding to the same side as the move.</li>
-    <li>Rotating across commodities by ranking markets on the change in managed money net position from one report to the next.</li>
-    <li>Building a leveraged-funds sentiment index across equity index and rate futures from the TFF report.</li>
+    <li>Trading with large speculators when their net position turns from short to long</li>
+    <li>Fading a market when speculator positioning reaches a multi-year extreme</li>
+    <li>Ranking commodities by the weekly change in speculator positions</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm reads the Legacy report for the E-mini S&amp;P 500 and trades SPY with the large speculators. When the non-commercial net position is long, the algorithm goes long SPY. When it turns short, the algorithm goes short. The COT is a signal, not a tradeable instrument, so the orders go to a separate security.</p>
+<p>The following example algorithm buys SPY when the non-commercial traders are net long the E-mini S&amp;P 500 in the Legacy report. When they are net short, it short sells SPY.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -124,12 +122,12 @@ class CFTCAlphaModel(AlphaModel):
         algorithm.debug(f"We got {len(history)} items from our history request")
 
     def update(self, algorithm: QCAlgorithm, slice: Slice) -&gt; List[Insight]:
-        # The COT is published weekly, so most days carry no new report
+        # Skip the slices that carry no new report
         points = slice.get(CFTCLegacy)
         if self.cftc_symbol not in points:
             return []
 
-        # Non-commercial traders are the large speculators, the "smart money" of the report
+        # Read the net position of the non-commercial traders
         net = points[self.cftc_symbol].non_commercial_net
         if net is None:
             return []
@@ -137,7 +135,7 @@ class CFTCAlphaModel(AlphaModel):
         insights = []
 
         for symbol in self.tradable_symbols:
-            # Buy when the large speculators are net long, following the positioning of the funds
+            # Buy when the large speculators are net long
             if net &gt; 0:
                 insights += [Insight.price(symbol, timedelta(days=7), InsightDirection.UP)]
 
@@ -189,14 +187,14 @@ public class CFTCAlphaModel : AlphaModel
     {
         var insights = new List&lt;Insight&gt;();
 
-        // The COT is published weekly, so most days carry no new report
+        // Skip the slices that carry no new report
         var points = slice.Get&lt;CFTCLegacy&gt;();
         if (!points.ContainsKey(CFTCSymbol))
         {
             return insights;
         }
 
-        // Non-commercial traders are the large speculators, the "smart money" of the report
+        // Read the net position of the non-commercial traders
         var net = points[CFTCSymbol].NonCommercialNet;
         if (net == null)
         {
@@ -205,7 +203,7 @@ public class CFTCAlphaModel : AlphaModel
 
         foreach (var symbol in tradableSymbols)
         {
-            // Buy when the large speculators are net long, following the positioning of the funds
+            // Buy when the large speculators are net long
             if (net &gt; 0)
             {
                 insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Up));

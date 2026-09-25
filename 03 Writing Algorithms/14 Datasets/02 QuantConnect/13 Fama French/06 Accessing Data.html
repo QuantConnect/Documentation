@@ -15,4 +15,19 @@
 }</pre>
 </div>
 
-<p>Every factor is nullable, because the source marks a missing observation with a sentinel that the processor writes as an empty cell, so check for a missing value before you act on it. The <code>Value</code> property carries the value factor (HML), and the <code>IsEstimate</code> property tells you whether the row was published by the Ken French Data Library or reconstructed by QuantConnect.</p>
+<p>To iterate through all of the dataset objects in the current <code>Slice</code>, call the <code class="csharp">Get</code><code class="python">get</code> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(FamaFrench).items():
+        self.log(f"{dataset_symbol} momentum at {slice.time}: {data_point.momentum}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;FamaFrench&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} momentum at {slice.Time}: {dataPoint.Momentum}");
+    }
+}</pre>
+</div>
