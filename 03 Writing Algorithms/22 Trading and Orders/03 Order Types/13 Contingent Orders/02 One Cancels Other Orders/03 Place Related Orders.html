@@ -1,0 +1,14 @@
+<p>Each order in an OCO set can trigger other orders. To trigger orders after an OCO order fills, call the <code class="csharp">Triggers</code><code class="python">triggers</code> or <code class="csharp">Bracket</code><code class="python">bracket</code> method on its order request. Call the method before you relate the request with the other orders. The brokerage holds the triggered orders until their parent completely fills. If another order in the set fills first, LEAN cancels the parent and the orders it triggers.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Two breakout entries that cancel each other, each with its own exit orders.
+var breakoutUp = OrderFactory.StopMarketOrder(_symbol, 100, high).Bracket(high + range, low);
+var breakoutDown = OrderFactory.StopMarketOrder(_symbol, -100, low).Bracket(low - range, high);
+var tickets = OneCancelsOtherOrder(new List&lt;SubmitOrderRequest&gt; { breakoutUp, breakoutDown });</pre>
+<pre class="python"># Two breakout entries that cancel each other, each with its own exit orders.
+breakout_up = self.order_factory.stop_market_order(self._symbol, 100, high).bracket(high + range_, low)
+breakout_down = self.order_factory.stop_market_order(self._symbol, -100, low).bracket(low - range_, high)
+tickets = self.one_cancels_other_order([breakout_up, breakout_down])</pre>
+</div>
+
+<p>The method returns the order ticket of each OCO order followed by the order tickets of the orders it triggers. For a complete example, see <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/custom-contingent-orders#99-Examples'>Custom Contingent Orders</a>.</p>

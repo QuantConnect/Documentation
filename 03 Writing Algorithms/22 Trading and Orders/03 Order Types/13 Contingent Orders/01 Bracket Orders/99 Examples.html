@@ -49,3 +49,70 @@
             quantity = self.calculate_order_quantity(self._spy, 0.5)
             self.bracket_order(self._spy, quantity, take_profit_price=round(bar.close * 1.02, 2), stop_loss_price=round(bar.close * 0.99, 2))</pre>
 </div>
+
+<h4>Example 2: Re-Enter After the Take Profit</h4>
+<p>The following algorithm buys SPY with a bracket order when it has no position. The entry is 1% below the close price. The take profit is 2% above the close price, and the stop loss is 2% below it. When the take profit fills, it triggers a new entry at the entry price. When the new entry fills, the algorithm places new exit orders as one cancels other orders.</p>
+<div class="section-example-container">
+<pre class="csharp">public class BracketReEntryExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 12, 31);
+        _spy = AddEquity("SPY", Resolution.Daily).Symbol;
+    }
+
+    public override void OnData(Slice slice)
+    {
+        if (Transactions.GetOpenOrders(_spy).Count &gt; 0 || !slice.Bars.TryGetValue(_spy, out var bar))
+        {
+            return;
+        }
+        var entryPrice = Math.Round(bar.Close * 0.99m, 2);
+        var takeProfitPrice = Math.Round(bar.Close * 1.02m, 2);
+        var stopLossPrice = Math.Round(bar.Close * 0.98m, 2);
+        if (Portfolio[_spy].Invested)
+        {
+            // Exit the position of the new entry.
+            OneCancelsOtherOrder(new List&lt;SubmitOrderRequest&gt;
+            {
+                OrderFactory.LimitOrder(_spy, -100, takeProfitPrice),
+                OrderFactory.StopMarketOrder(_spy, -100, stopLossPrice)
+            });
+            return;
+        }
+        var takeProfit = OrderFactory.LimitOrder(_spy, -100, takeProfitPrice)
+            .Triggers(OrderFactory.LimitOrder(_spy, 100, entryPrice));
+        var stopLoss = OrderFactory.StopMarketOrder(_spy, -100, stopLossPrice);
+        Order(OrderFactory.LimitOrder(_spy, 100, entryPrice).Triggers(OrderFactory.OneCancelsOther(takeProfit, stopLoss)));
+    }
+}</pre>
+<pre class="python">class BracketReEntryExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 12, 31)
+        self._spy = self.add_equity("SPY", Resolution.DAILY).symbol
+
+    def on_data(self, slice: Slice) -&gt; None:
+        bar = slice.bars.get(self._spy)
+        if self.transactions.get_open_orders(self._spy) or not bar:
+            return
+        entry_price = round(bar.close * 0.99, 2)
+        take_profit_price = round(bar.close * 1.02, 2)
+        stop_loss_price = round(bar.close * 0.98, 2)
+        if self.portfolio[self._spy].invested:
+            # Exit the position of the new entry.
+            self.one_cancels_other_order([
+                self.order_factory.limit_order(self._spy, -100, take_profit_price),
+                self.order_factory.stop_market_order(self._spy, -100, stop_loss_price)
+            ])
+            return
+        take_profit = self.order_factory.limit_order(self._spy, -100, take_profit_price).triggers(
+            self.order_factory.limit_order(self._spy, 100, entry_price))
+        stop_loss = self.order_factory.stop_market_order(self._spy, -100, stop_loss_price)
+        self.order(self.order_factory.limit_order(self._spy, 100, entry_price).triggers(
+            self.order_factory.one_cancels_other(take_profit, stop_loss)))</pre>
+</div>
