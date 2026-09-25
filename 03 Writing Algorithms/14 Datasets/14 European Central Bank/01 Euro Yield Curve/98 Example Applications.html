@@ -1,14 +1,12 @@
-<p>The Euro Area Yield Curve dataset lets you read European rate expectations directly rather than inferring them from prices. Examples include the following strategies:</p>
+<p>The Euro Area Yield Curve dataset enables you to monitor euro area bond yields across maturities in your strategies. Examples include the following strategies:</p>
 
-<ul><li>Reading the slope of the curve, the ten year rate against the two year, as a regime signal for European equity exposure.</li>
-<li>Trading the spread between the all issuers and triple A curves as a gauge of sovereign stress.</li>
-<li>Anticipating European Central Bank decisions from the instantaneous forward curve, which prices what the market expects rates to be at a future moment.</li>
-<li>Timing rate sensitive sectors from moves at the short end, where policy expectations show up first.</li>
-<li>Comparing the euro area term structure against the US Treasury curve for cross market positioning.</li>
-<li>Building a European risk free curve for discounting or for pricing options on euro denominated assets.</li>
+<ul>
+    <li>Reducing European equity exposure when the yield curve inverts</li>
+    <li>Trading the spread between the AAA and all issuers curves as a sovereign stress signal</li>
+    <li>Comparing the euro area and US yield curves for cross-market positioning</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm reads the credit spread the market charges the weaker euro area sovereigns, which is the all issuers curve minus the triple A curve at ten years. It holds SPY while the spread is tight and steps aside while it is wide, so the European sovereign market drives the risk decision.</p>
+<p>The following example algorithm buys SPY when the 10-year rate of the all issuers spot curve is at most 60 basis points above the 10-year rate of the triple A spot curve. Otherwise, it holds cash.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -34,7 +32,7 @@ class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
     def on_data(self, slice):
         curves = slice.get(ECBYieldCurve)
 
-        # The two curves need not arrive in the same slice, so the latest reading of each is kept.
+        # Keep the latest 10-year rate of each curve.
         if self.triple_a in curves:
             self.triple_a_ten_year = curves[self.triple_a].ten_year
         if self.all_issuers in curves:
@@ -43,7 +41,7 @@ class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
         if self.triple_a_ten_year is None or self.all_issuers_ten_year is None:
             return
 
-        # The curve lands hours before the US session, so wait for the bar before trading.
+        # Wait for the SPY bar before trading.
         if self.equity not in slice.bars:
             return
 
@@ -78,7 +76,7 @@ class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
     {
         var curves = slice.Get&lt;ECBYieldCurve&gt;();
 
-        // The two curves need not arrive in the same slice, so the latest reading of each is kept.
+        // Keep the latest 10-year rate of each curve.
         if (curves.ContainsKey(_tripleA))
         {
             _tripleATenYear = curves[_tripleA].TenYear;
@@ -93,7 +91,7 @@ class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
             return;
         }
 
-        // The curve lands hours before the US session, so wait for the bar before trading.
+        // Wait for the SPY bar before trading.
         if (!slice.Bars.ContainsKey(_equity))
         {
             return;
@@ -116,7 +114,7 @@ class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm trades a manually selected universe from the shape of the curve. An alpha model subscribes to the triple A spot curve and reads its slope, the ten year rate minus the two year, emitting an up insight while the curve is upward sloping and a flat one once it inverts, which is the classic recession signal read on the European curve instead of the US one.</p>
+<p>The following example algorithm emits up insights for SPY when the 10-year rate of the triple A spot curve is above its 2-year rate. Otherwise, it emits flat insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -161,10 +159,10 @@ class ECBCurveSlopeAlphaModel(AlphaModel):
         if self._slope is None:
             return []
 
-        # An upward sloping curve is the expansion read; an inversion steps aside.
+        # Go long while the curve slopes upward, and step aside once it inverts.
         direction = InsightDirection.UP if self._slope &gt; 0 else InsightDirection.FLAT
 
-        # The curve lands hours before the US session, so an insight waits for the bar.
+        # Emit insights only for the securities that have a bar in this slice.
         return [Insight.price(symbol, timedelta(days=30), direction)
                 for symbol in self._symbols if symbol in data.bars]
 
@@ -227,10 +225,10 @@ public class ECBCurveSlopeAlphaModel : AlphaModel
             return new List&lt;Insight&gt;();
         }
 
-        // An upward sloping curve is the expansion read; an inversion steps aside.
+        // Go long while the curve slopes upward, and step aside once it inverts.
         var direction = _slope &gt; 0m ? InsightDirection.Up : InsightDirection.Flat;
 
-        // The curve lands hours before the US session, so an insight waits for the bar.
+        // Emit insights only for the securities that have a bar in this slice.
         return _symbols
             .Where(symbol =&gt; data.Bars.ContainsKey(symbol))
             .Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), direction))

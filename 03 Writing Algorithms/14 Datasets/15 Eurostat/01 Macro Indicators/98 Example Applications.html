@@ -1,13 +1,12 @@
-<p>The Macroeconomic Indicators dataset lets you read the European economy as it is measured. Examples include the following strategies:</p>
+<p>The Macroeconomic Indicators dataset enables you to follow the European economy in your strategies. Examples include the following strategies:</p>
 
-<ul><li>Anticipating European Central Bank decisions from the HICP release, whose euro area flash lands the same day the period closes.</li>
-<li>Separating energy from core inflation to tell an external price shock apart from broad inflation.</li>
-<li>Comparing the industrial cycle across economies, for example German production against Spanish, to rotate country exposure.</li>
-<li>Combining producer prices with consumer prices to watch cost pressure move down the chain into inflation.</li>
-<li>Using the unemployment rate and the GDP components as a regime filter that scales risk up or down.</li>
+<ul>
+    <li>Trading euro area rates or the euro around consumer price releases</li>
+    <li>Rotating country exposure based on industrial production across economies</li>
+    <li>Scaling risk up or down with unemployment and GDP growth</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm reads German industrial production as a growth signal and holds SPY while output is rising, stepping aside when it contracts. It also logs the HICP, so the position can be read against what inflation was doing at the time.</p>
+<p>The following example algorithm buys SPY when German industrial production rises. Otherwise, it liquidates the position.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -40,7 +39,7 @@ class EurostatIndicatorsExampleAlgorithm(QCAlgorithm):
         if total_industry is None:
             return
 
-        # Rising output is the risk-on read; a contracting month steps aside.
+        # Buy SPY when output rises. Otherwise, liquidate.
         if self.previous_production is not None:
             if total_industry &gt; self.previous_production:
                 self.set_holdings(self.equity, 1)
@@ -86,7 +85,7 @@ class EurostatIndicatorsExampleAlgorithm(QCAlgorithm):
             return;
         }
 
-        // Rising output is the risk-on read; a contracting month steps aside.
+        // Buy SPY when output rises. Otherwise, liquidate.
         if (_previousProduction.HasValue)
         {
             if (totalIndustry &gt; _previousProduction)
@@ -104,7 +103,7 @@ class EurostatIndicatorsExampleAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm trades a manually selected universe from the macro cycle. An alpha model subscribes to German industrial production and the unemployment rate, then emits an up insight only when output is rising and unemployment is not, which is a two-sided reading of the same expansion.</p>
+<p>The following example algorithm emits up insights for SPY when German industrial production rises and unemployment does not. Otherwise, it emits flat insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -152,8 +151,7 @@ class EurostatMacroCycleAlphaModel(AlphaModel):
         if total_industry is None:
             return insights
 
-        # The labour market publishes on its own schedule, so the last reading is read from the
-        # cache rather than from this slice.
+        # Read the latest unemployment rate from the security cache.
         labour_point = algorithm.securities[self._labour].cache.get_data(EurostatLabourMarket)
         unemployment = labour_point.unemployment_rate if labour_point else None
 
@@ -232,8 +230,7 @@ public class EurostatMacroCycleAlphaModel : AlphaModel
             return insights;
         }
 
-        // The labour market publishes on its own schedule, so the last reading is read from the
-        // cache rather than from this slice.
+        // Read the latest unemployment rate from the security cache.
         var labourPoint = algorithm.Securities[_labour].Cache.GetData&lt;EurostatLabourMarket&gt;();
         var unemployment = labourPoint?.UnemploymentRate;
 

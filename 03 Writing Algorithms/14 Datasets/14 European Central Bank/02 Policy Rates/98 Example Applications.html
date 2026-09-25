@@ -1,12 +1,12 @@
-<p>The Euro Area Policy Rates dataset lets you read the ECB's stance directly rather than inferring it from prices. Examples include the following strategies:</p>
+<p>The Euro Area Policy Rates dataset enables you to follow ECB monetary policy in your strategies. Examples include the following strategies:</p>
 
-<ul><li>Tracking the gap between the overnight rate and the deposit facility as a funding stress signal.</li>
-<li>Trading the run-up to Governing Council decisions from where the corridor sits.</li>
-<li>Building a euro funding cost into carry and financing calculations.</li>
-<li>Comparing the ECB's stance against the Federal Reserve's for cross-currency positioning.</li>
+<ul>
+    <li>Trading the gap between the euro short-term rate and the deposit facility rate</li>
+    <li>Using the euro funding cost in carry and financing calculations</li>
+    <li>Comparing ECB and Federal Reserve rates for currency positioning</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>Trades on where the market's overnight rate sits against the floor of the ECB's corridor. The euro short-term rate trades below the deposit facility, because non-banks cannot park cash at the ECB, and that gap widens when liquidity is abundant. When it closes back toward the floor, funding is tightening ahead of any policy move, which is the moment to step out of risk.</p>
+<p>The following example algorithm buys SPY when the euro short-term rate is at least five basis points below the deposit facility rate. Otherwise, it holds cash.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -34,18 +34,13 @@ class ECBPolicyRatesAlgorithm(QCAlgorithm):
                          f"main {point.main_refinancing_rate}, lending {point.marginal_lending_rate}, "
                          f"overnight {point.euro_short_term_rate}")
 
-                # How far the overnight rate trades below the deposit facility, which is the floor
-                # of the corridor and the rate that steers euro money markets. The gap is negative
-                # because non-banks cannot park cash at the ECB, so a wide one is abundant
-                # liquidity and a gap closing back toward the floor is funding tightening.
+                # Measure how far the overnight rate trades below the deposit facility rate.
                 self.spread = point.euro_short_term_rate - point.deposit_facility_rate
 
         if self.spread is None:
             return
 
-        # The rates land at 08:00 in Frankfurt, hours before the US session opens, so the latest
-        # reading is kept and acted on once the bar arrives. Ordering in the slice that carried the
-        # rates would order against a security that has no price yet.
+        # Wait for the SPY bar before trading.
         if self.equity not in slice.bars:
             return
 
@@ -84,11 +79,7 @@ class ECBPolicyRatesAlgorithm(QCAlgorithm):
                     + $"main {point.MainRefinancingRate}, lending {point.MarginalLendingRate}, "
                     + $"overnight {point.EuroShortTermRate}");
 
-                // How far the overnight rate trades below the deposit facility, which is the
-                // floor of the corridor and the rate that steers euro money markets. The gap
-                // is negative because non-banks cannot park cash at the ECB, so a wide one is
-                // abundant liquidity and a gap closing back toward the floor is funding
-                // tightening.
+                // Measure how far the overnight rate trades below the deposit facility rate.
                 _spread = point.EuroShortTermRate.Value - point.DepositFacilityRate.Value;
             }
         }
@@ -98,9 +89,7 @@ class ECBPolicyRatesAlgorithm(QCAlgorithm):
             return;
         }
 
-        // The rates land at 08:00 in Frankfurt, hours before the US session opens, so the
-        // latest reading is kept and acted on once the bar arrives. Ordering in the slice that
-        // carried the rates would order against a security that has no price yet.
+        // Wait for the SPY bar before trading.
         if (!slice.Bars.ContainsKey(_equity))
         {
             return;
@@ -121,7 +110,7 @@ class ECBPolicyRatesAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm trades a manually selected universe from where the market's overnight rate sits against the floor of the ECB's corridor. An alpha model subscribes to the euro area rates and measures how far the euro short-term rate trades below the deposit facility, emitting an up insight while that gap is wide and a flat one once it closes back toward the floor.</p>
+<p>The following example algorithm emits up insights for SPY when the euro short-term rate is at least five basis points below the deposit facility rate. Otherwise, it emits flat insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -161,18 +150,16 @@ class ECBCorridorAlphaModel(AlphaModel):
         if self._rates in rates:
             data_point = rates[self._rates]
             if data_point.euro_short_term_rate is not None and data_point.deposit_facility_rate is not None:
-                # How far the overnight rate trades below the deposit facility, the floor of the
-                # corridor. The gap is negative, and it widens when liquidity is abundant.
+                # Measure how far the overnight rate trades below the deposit facility rate.
                 self._spread = data_point.euro_short_term_rate - data_point.deposit_facility_rate
 
         if self._spread is None:
             return []
 
-        # A gap closing back toward the floor is funding tightening ahead of any policy move.
+        # Go long while the gap is wide, and step aside once it closes.
         direction = InsightDirection.UP if self._spread &lt;= -0.05 else InsightDirection.FLAT
 
-        # The rates land at 08:00 in Frankfurt, hours before the US session, so an insight waits
-        # for the bar rather than returning early and never reaching the slice that carries it.
+        # Emit insights only for the securities that have a bar in this slice.
         return [Insight.price(symbol, timedelta(days=30), direction)
                 for symbol in self._symbols if symbol in data.bars]
 
@@ -226,8 +213,7 @@ public class ECBCorridorAlphaModel : AlphaModel
             var dataPoint = rates[_rates];
             if (dataPoint.EuroShortTermRate.HasValue &amp;&amp; dataPoint.DepositFacilityRate.HasValue)
             {
-                // How far the overnight rate trades below the deposit facility, the floor of the
-                // corridor. The gap is negative, and it widens when liquidity is abundant.
+                // Measure how far the overnight rate trades below the deposit facility rate.
                 _spread = dataPoint.EuroShortTermRate.Value - dataPoint.DepositFacilityRate.Value;
             }
         }
@@ -237,11 +223,10 @@ public class ECBCorridorAlphaModel : AlphaModel
             return Enumerable.Empty&lt;Insight&gt;();
         }
 
-        // A gap closing back toward the floor is funding tightening ahead of any policy move.
+        // Go long while the gap is wide, and step aside once it closes.
         var direction = _spread &lt;= -0.05m ? InsightDirection.Up : InsightDirection.Flat;
 
-        // The rates land at 08:00 in Frankfurt, hours before the US session, so an insight waits
-        // for the bar rather than returning early and never reaching the slice that carries it.
+        // Emit insights only for the securities that have a bar in this slice.
         return _symbols.Where(symbol =&gt; data.Bars.ContainsKey(symbol))
             .Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(30), direction));
     }

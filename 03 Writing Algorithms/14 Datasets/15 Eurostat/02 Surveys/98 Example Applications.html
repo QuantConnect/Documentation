@@ -1,13 +1,12 @@
-<p>The Business and Consumer Surveys dataset lets you read the European economy before it shows up in any measured statistic. Examples include the following strategies:</p>
+<p>The Business and Consumer Surveys dataset enables you to read business and consumer sentiment across Europe. Examples include the following strategies:</p>
 
-<ul><li>Timing exposure to European equities or the euro on the direction of consumer confidence, the earliest reading of the five.</li>
-<li>Reading price expectations across industry, construction, retail and services as an inflation signal that leads both producer and consumer prices.</li>
-<li>Watching industrial order books, and export order books in particular, as a lead on industrial production and on external demand.</li>
-<li>Comparing confidence across economies, for example German industry against Spanish, to rotate country exposure.</li>
-<li>Combining the five surveys into a breadth measure of how much of the economy is improving at once, rather than reading any single sector.</li>
+<ul>
+    <li>Timing European equity or euro exposure on the direction of consumer confidence</li>
+    <li>Reading price expectations across sectors as an early inflation signal</li>
+    <li>Comparing business confidence across economies to rotate country exposure</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm reads German consumer confidence as a risk-on signal and holds SPY while households are turning less pessimistic, stepping aside when they are not. It also logs what manufacturers expect to charge, which is pipeline inflation months before a price index measures it.</p>
+<p>The following example algorithm buys SPY when German consumer confidence rises. Otherwise, it liquidates the position.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -40,7 +39,7 @@ class EurostatSurveysExampleAlgorithm(QCAlgorithm):
         if confidence is None:
             return
 
-        # Households turning less pessimistic is the risk-on read.
+        # Buy SPY when consumer confidence rises. Otherwise, liquidate.
         if self.previous_confidence is not None:
             if confidence &gt; self.previous_confidence:
                 self.set_holdings(self.equity, 1)
@@ -86,7 +85,7 @@ class EurostatSurveysExampleAlgorithm(QCAlgorithm):
             return;
         }
 
-        // Households turning less pessimistic is the risk-on read.
+        // Buy SPY when consumer confidence rises. Otherwise, liquidate.
         if (_previousConfidence.HasValue)
         {
             if (confidence &gt; _previousConfidence)
@@ -104,7 +103,7 @@ class EurostatSurveysExampleAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm trades a manually selected universe from the confidence surveys. An alpha model subscribes to the German consumer and industry surveys, then emits an up insight only when households and manufacturers are turning more confident in the same round, which is a breadth reading rather than a single sector one.</p>
+<p>The following example algorithm emits up insights for SPY when German consumer and industrial confidence both rise. Otherwise, it emits flat insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -152,8 +151,7 @@ class EurostatConfidenceAlphaModel(AlphaModel):
         if confidence is None:
             return insights
 
-        # The industry survey shares its release date with the consumer one, so the confirmation
-        # is read from the same round.
+        # Read the latest industrial confidence from the security cache.
         industry_point = algorithm.securities[self._industry].cache.get_data(EurostatIndustrySurvey)
         industrial = industry_point.industrial_confidence if industry_point else None
 
@@ -232,8 +230,7 @@ public class EurostatConfidenceAlphaModel : AlphaModel
             return insights;
         }
 
-        // The industry survey shares its release date with the consumer one, so the confirmation
-        // is read from the same round.
+        // Read the latest industrial confidence from the security cache.
         var industryPoint = algorithm.Securities[_industry].Cache.GetData&lt;EurostatIndustrySurvey&gt;();
         var industrial = industryPoint?.IndustrialConfidence;
 

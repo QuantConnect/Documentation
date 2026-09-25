@@ -1,13 +1,12 @@
-<p>
-The GDP by Industry dataset lets you trade on the composition of growth instead of just its headline. Examples include the following strategies:
-</p>
+<p>The GDP by Industry dataset enables you to see which parts of the US economy are growing. Examples include the following strategies:</p>
 
-<ul><li>Rotating into cyclical exposure when an industry's real value added turns up quarter over quarter, and out when it turns down.</li>
-<li>Ranking industries by the change in real gross output to tilt a sector portfolio toward the fastest-growing parts of the economy.</li>
-<li>Reading an industry's price index as an industry-level inflation gauge to time rate-sensitive positions.</li>
+<ul>
+    <li>Rotating into sectors when their industry output starts to grow again</li>
+    <li>Tilting a sector portfolio toward the fastest-growing industries</li>
+    <li>Using industry price indexes to gauge inflation in each sector</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm uses BEA GDP by Industry as a macro signal. It reads Manufacturing real value added each quarter and buys SPY when it rises quarter over quarter, then moves to cash when it falls.</p>
+<p>The following example algorithm buys SPY when Manufacturing real value added rises quarter over quarter. Otherwise, it liquidates the position.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -26,7 +25,7 @@ class BEAGDPByIndustryDataAlgorithm(QCAlgorithm):
         if not slice.contains_key(self._manufacturing):
             return
 
-        # Real value added rising quarter over quarter is expansionary: go long, otherwise flat.
+        # Buy SPY when real value added rises quarter over quarter. Otherwise, liquidate.
         real = slice[self._manufacturing].real_value_added
         if self._previous_real_value_added is not None and real is not None:
             if real &gt; self._previous_real_value_added:
@@ -56,7 +55,7 @@ class BEAGDPByIndustryDataAlgorithm(QCAlgorithm):
             return;
         }
 
-        // Real value added rising quarter over quarter is expansionary: go long, otherwise flat.
+        // Buy SPY when real value added rises quarter over quarter. Otherwise, liquidate.
         var real = slice.Get&lt;BEAGDPByIndustry&gt;(_manufacturing).RealValueAdded;
         if (_previousRealValueAdded.HasValue &amp;&amp; real.HasValue)
         {
@@ -74,7 +73,7 @@ class BEAGDPByIndustryDataAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm implements the same Manufacturing signal in the algorithm framework. It uses a manual universe of SPY, an alpha model that emits insights from BEA GDP by Industry, and equal-weighting portfolio construction.</p>
+<p>The following example algorithm emits up insights for SPY when Manufacturing real value added rises quarter over quarter. Otherwise, it emits down insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *

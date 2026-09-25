@@ -1,6 +1,6 @@
 # Plan price list
 
-Generated 2026-09-23 by `code-generators/qc_plan_prices.py` from the public catalog embedded in https://www.quantconnect.com/pricing. Regenerate rather than edit. Prices are USD list prices before any coupon, proration or tax. `Yearly` is the price when billed annually: 10 x monthly for plan lines and packs, the catalog's figure for data packages. Where a price depends on the organization tier, every tier is shown.
+Generated 2026-09-25 by `code-generators/qc_plan_prices.py` from the public catalog embedded in https://www.quantconnect.com/pricing. Regenerate rather than edit. Prices are USD list prices before any coupon, proration or tax. `Yearly` is the price when billed annually: 10 x monthly for plan lines and packs, the catalog's figure for data packages. Where a price depends on the organization tier, every tier is shown.
 
 ## Recommended packs
 

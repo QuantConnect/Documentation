@@ -1,12 +1,12 @@
-<p>The Systemic Stress dataset lets you read financial stress as the ECB measures it rather than building a proxy from volatility. Examples include the following strategies:</p>
+<p>The Systemic Stress dataset enables you to measure financial stress in Europe and other major economies. Examples include the following strategies:</p>
 
-<ul><li>Scaling risk exposure down as the composite indicator rises.</li>
-<li>Reading the euro area against the United States to tell a regional upset from a global one.</li>
-<li>Watching the financial intermediaries contribution, the segment whose stress reaches the real economy fastest.</li>
-<li>Using sovereign stress to time peripheral versus core European exposure.</li>
+<ul>
+    <li>Reducing risk exposure as the stress indicator rises</li>
+    <li>Comparing euro area and US stress to tell a regional shock from a global one</li>
+    <li>Using sovereign stress to time peripheral versus core European exposure</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>Steps out of risk when systemic stress is elevated on both sides of the Atlantic. Reading the euro area and the United States together is what separates a local upset from a systemic one, which is the distinction the indicator is built to make.</p>
+<p>The following example algorithm liquidates SPY when the composite stress indicator is above 0.1 in both the euro area and the United States. Otherwise, it holds SPY.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -30,9 +30,7 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
     def on_data(self, slice: Slice) -&gt; None:
         readings = slice.get(ECBSystemicStress)
 
-        # The two economies need not arrive in the same slice, so the latest reading of each is
-        # kept. A reading with an empty composite must not clear it: the Reader writes None for an
-        # empty cell, and assigning it would silently stop the algorithm until a filled one arrives.
+        # Keep the latest composite reading of each economy.
         if self.euro_area in readings and readings[self.euro_area].composite is not None:
             self.euro_area_stress = readings[self.euro_area].composite
 
@@ -45,12 +43,11 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
         if self.euro_area_stress is None or self.united_states_stress is None:
             return
 
-        # The readings land in the European morning, hours before the US session opens, so wait for
-        # the bar rather than ordering against a security that has no price yet.
+        # Wait for the SPY bar before trading.
         if self.equity not in slice.bars:
             return
 
-        # Stress on both sides at once is the systemic case worth stepping aside for.
+        # Step aside when stress is elevated in both economies.
         stressed = self.euro_area_stress &gt; 0.1 and self.united_states_stress &gt; 0.1
 
         if stressed:
@@ -83,11 +80,7 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
     {
         var readings = slice.Get&lt;ECBSystemicStress&gt;();
 
-        // The two economies need not arrive in the same slice, so the latest reading of each
-        // is kept.
-        // A reading with an empty composite must not clear the one being carried: the
-        // Reader writes null for an empty cell, and assigning it would silently stop the
-        // algorithm until a filled reading arrives.
+        // Keep the latest composite reading of each economy.
         if (readings.ContainsKey(_euroArea) &amp;&amp; readings[_euroArea].Composite.HasValue)
         {
             _euroAreaStress = readings[_euroArea].Composite;
@@ -106,14 +99,13 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
             return;
         }
 
-        // The readings land in the European morning, hours before the US session opens, so
-        // wait for the bar rather than ordering against a security that has no price yet.
+        // Wait for the SPY bar before trading.
         if (!slice.Bars.ContainsKey(_equity))
         {
             return;
         }
 
-        // Stress on both sides at once is the systemic case worth stepping aside for.
+        // Step aside when stress is elevated in both economies.
         var stressed = _euroAreaStress &gt; 0.1m &amp;&amp; _unitedStatesStress &gt; 0.1m;
 
         if (stressed)
@@ -131,7 +123,7 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm trades a manually selected universe from systemic stress on both sides of the Atlantic. An alpha model subscribes to the euro area and the United States, and emits a flat insight while both readings are elevated and an up insight once either falls back.</p>
+<p>The following example algorithm emits flat insights for SPY when the composite stress indicator is above 0.1 in both the euro area and the United States. Otherwise, it emits up insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -171,8 +163,7 @@ class ECBSystemicStressAlphaModel(AlphaModel):
     def update(self, algorithm, data):
         readings = data.get(ECBSystemicStress)
 
-        # A reading with an empty composite must not clear the one being carried: the Reader
-        # writes None for an empty cell, and assigning it would silently stop the model.
+        # Keep the latest composite reading of each economy.
         if self._euro_area in readings and readings[self._euro_area].composite is not None:
             self._euro_area_stress = readings[self._euro_area].composite
 
@@ -182,15 +173,11 @@ class ECBSystemicStressAlphaModel(AlphaModel):
         if self._euro_area_stress is None or self._united_states_stress is None:
             return []
 
-        # Stress on both sides at once is the systemic case worth stepping aside for.
+        # Step aside when stress is elevated in both economies.
         stressed = self._euro_area_stress &gt; 0.1 and self._united_states_stress &gt; 0.1
         direction = InsightDirection.FLAT if stressed else InsightDirection.UP
 
-        # The ECB releases a whole week of readings at once, so a reading reaches the algorithm
-        # once a week. The insight outlives two of those releases, which keeps it alive across a
-        # batch that a TARGET holiday pushes back rather than lapsing between readings.
-        # The readings land in the European morning, hours before the US session, so an insight
-        # waits for the bar rather than being emitted against a security that has no price yet.
+        # Emit insights only for the securities that have a bar in this slice.
         return [Insight.price(symbol, timedelta(days=14), direction)
                 for symbol in self._symbols if symbol in data.bars]
 
@@ -243,8 +230,7 @@ public class ECBSystemicStressAlphaModel : AlphaModel
     {
         var readings = data.Get&lt;ECBSystemicStress&gt;();
 
-        // A reading with an empty composite must not clear the one being carried: the Reader
-        // writes null for an empty cell, and assigning it would silently stop the model.
+        // Keep the latest composite reading of each economy.
         if (readings.ContainsKey(_euroArea) &amp;&amp; readings[_euroArea].Composite.HasValue)
         {
             _euroAreaStress = readings[_euroArea].Composite;
@@ -260,15 +246,11 @@ public class ECBSystemicStressAlphaModel : AlphaModel
             return Enumerable.Empty&lt;Insight&gt;();
         }
 
-        // Stress on both sides at once is the systemic case worth stepping aside for.
+        // Step aside when stress is elevated in both economies.
         var stressed = _euroAreaStress &gt; 0.1m &amp;&amp; _unitedStatesStress &gt; 0.1m;
         var direction = stressed ? InsightDirection.Flat : InsightDirection.Up;
 
-        // The ECB releases a whole week of readings at once, so a reading reaches the algorithm
-        // once a week. The insight outlives two of those releases, which keeps it alive across a
-        // batch that a TARGET holiday pushes back rather than lapsing between readings.
-        // The readings land in the European morning, hours before the US session, so an insight
-        // waits for the bar rather than being emitted against a security that has no price yet.
+        // Emit insights only for the securities that have a bar in this slice.
         return _symbols.Where(symbol =&gt; data.Bars.ContainsKey(symbol))
             .Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(14), direction));
     }
