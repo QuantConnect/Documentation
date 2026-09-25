@@ -46,3 +46,58 @@
             self.order_factory.stop_market_order(self._spy, -100, round(fill_price * 0.99, 2), tag="Stop loss")
         ])</pre>
 </div>
+
+<h4>Example 2: Buy Back After the Take Profit</h4>
+<p>The following algorithm buys SPY each day at 10 AM Eastern Time when it has no position, and then places OCO exit orders. The take-profit order triggers a limit order that buys SPY back at the entry price. The buy-back order is a bracket order, so its exit orders are grandchildren of the take-profit order. If the stop loss fills first, LEAN cancels the take profit, the buy-back order, and its exit orders.</p>
+<div class="section-example-container">
+<pre class="csharp">public class OneCancelsOtherGrandchildExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _spy;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 3, 31);
+        _spy = AddEquity("SPY", Resolution.Minute).Symbol;
+        Schedule.On(DateRules.EveryDay(_spy), TimeRules.At(10, 0), Enter);
+    }
+
+    private void Enter()
+    {
+        if (Portfolio.Invested || Transactions.GetOpenOrders(_spy).Count &gt; 0)
+        {
+            return;
+        }
+        var fillPrice = MarketOrder(_spy, 100).AverageFillPrice;
+        var takeProfitPrice = Math.Round(fillPrice * 1.01m, 2);
+        var stopLossPrice = Math.Round(fillPrice * 0.99m, 2);
+        // The buy-back order and its exit orders wait for the take profit to fill.
+        var buyBack = OrderFactory.LimitOrder(_spy, 100, Math.Round(fillPrice, 2)).Bracket(takeProfitPrice, stopLossPrice);
+        OneCancelsOtherOrder(new List&lt;SubmitOrderRequest&gt;
+        {
+            OrderFactory.LimitOrder(_spy, -100, takeProfitPrice).Triggers(buyBack),
+            OrderFactory.StopMarketOrder(_spy, -100, stopLossPrice)
+        });
+    }
+}</pre>
+<pre class="python">class OneCancelsOtherGrandchildExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 3, 31)
+        self._spy = self.add_equity("SPY", Resolution.MINUTE).symbol
+        self.schedule.on(self.date_rules.every_day(self._spy), self.time_rules.at(10, 0), self._enter)
+
+    def _enter(self) -&gt; None:
+        if self.portfolio.invested or self.transactions.get_open_orders(self._spy):
+            return
+        fill_price = self.market_order(self._spy, 100).average_fill_price
+        take_profit_price = round(fill_price * 1.01, 2)
+        stop_loss_price = round(fill_price * 0.99, 2)
+        # The buy-back order and its exit orders wait for the take profit to fill.
+        buy_back = self.order_factory.limit_order(self._spy, 100, round(fill_price, 2)).bracket(take_profit_price, stop_loss_price)
+        self.one_cancels_other_order([
+            self.order_factory.limit_order(self._spy, -100, take_profit_price).triggers(buy_back),
+            self.order_factory.stop_market_order(self._spy, -100, stop_loss_price)
+        ])</pre>
+</div>

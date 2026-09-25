@@ -46,3 +46,56 @@
             self.order_factory.stop_market_order(self._iwm, -500, round(fill_price * 0.99, 2), tag="Stop loss")
         ])</pre>
 </div>
+
+<h4>Example 2: Reverse the Position on the Stop Loss</h4>
+<p>The following algorithm buys IWM each day at 10 AM Eastern Time when it has no position, and then places OUO exit orders. The stop-loss order triggers a market order that sells 500 more shares to open a short position. The short entry is a bracket order, so its exit orders are grandchildren of the stop-loss order. If the take profit completely fills first, LEAN cancels the stop loss, the short entry, and its exit orders.</p>
+<div class="section-example-container">
+<pre class="csharp">public class OneUpdatesOtherGrandchildExampleAlgorithm : QCAlgorithm
+{
+    private Symbol _iwm;
+
+    public override void Initialize()
+    {
+        SetStartDate(2024, 1, 1);
+        SetEndDate(2024, 3, 31);
+        _iwm = AddEquity("IWM", Resolution.Minute).Symbol;
+        Schedule.On(DateRules.EveryDay(_iwm), TimeRules.At(10, 0), Enter);
+    }
+
+    private void Enter()
+    {
+        if (Portfolio.Invested || Transactions.GetOpenOrders(_iwm).Count &gt; 0)
+        {
+            return;
+        }
+        var fillPrice = MarketOrder(_iwm, 500).AverageFillPrice;
+        var stopLossPrice = Math.Round(fillPrice * 0.99m, 2);
+        // The short entry and its exit orders wait for the stop loss to fill.
+        var shortEntry = OrderFactory.MarketOrder(_iwm, -500).Bracket(Math.Round(stopLossPrice * 0.98m, 2), Math.Round(fillPrice, 2));
+        OneUpdatesOtherOrder(new List&lt;SubmitOrderRequest&gt;
+        {
+            OrderFactory.LimitOrder(_iwm, -500, Math.Round(fillPrice * 1.01m, 2)),
+            OrderFactory.StopMarketOrder(_iwm, -500, stopLossPrice).Triggers(shortEntry)
+        });
+    }
+}</pre>
+<pre class="python">class OneUpdatesOtherGrandchildExampleAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 1, 1)
+        self.set_end_date(2024, 3, 31)
+        self._iwm = self.add_equity("IWM", Resolution.MINUTE).symbol
+        self.schedule.on(self.date_rules.every_day(self._iwm), self.time_rules.at(10, 0), self._enter)
+
+    def _enter(self) -&gt; None:
+        if self.portfolio.invested or self.transactions.get_open_orders(self._iwm):
+            return
+        fill_price = self.market_order(self._iwm, 500).average_fill_price
+        stop_loss_price = round(fill_price * 0.99, 2)
+        # The short entry and its exit orders wait for the stop loss to fill.
+        short_entry = self.order_factory.market_order(self._iwm, -500).bracket(round(stop_loss_price * 0.98, 2), round(fill_price, 2))
+        self.one_updates_other_order([
+            self.order_factory.limit_order(self._iwm, -500, round(fill_price * 1.01, 2)),
+            self.order_factory.stop_market_order(self._iwm, -500, stop_loss_price).triggers(short_entry)
+        ])</pre>
+</div>
