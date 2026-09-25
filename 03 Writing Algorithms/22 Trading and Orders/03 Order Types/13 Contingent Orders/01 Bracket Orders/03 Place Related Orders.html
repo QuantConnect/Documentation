@@ -1,0 +1,27 @@
+<p>The exit orders that the <code class="csharp">BracketOrder</code><code class="python">bracket_order</code> and <code class="csharp">Bracket</code><code class="python">bracket</code> methods create can't trigger other orders. To make an exit trigger another order, build the bracket from its parts with the order factory. For more information, see <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/custom-contingent-orders'>Custom Contingent Orders</a>.</p>
+
+<ol>
+    <li>Call the <code class="csharp">Triggers</code><code class="python">triggers</code> method on the exit order request with the order to trigger.</li>
+    <li>Relate the exit order requests with the <code class="csharp">OrderFactory.OneCancelsOther</code><code class="python">order_factory.one_cancels_other</code> method.</li>
+    <li>Pass the exit order requests to the <code class="csharp">Triggers</code><code class="python">triggers</code> method of the entry order request.</li>
+    <li>Pass the entry order request to the <code class="csharp">Order</code><code class="python">order</code> method.</li>
+</ol>
+
+<div class="section-example-container">
+<pre class="csharp">// The take profit triggers a new entry at the entry price.
+var takeProfit = OrderFactory.LimitOrder(_symbol, -100, price * 1.02m)
+    .Triggers(OrderFactory.LimitOrder(_symbol, 100, price * 0.999m));
+var stopLoss = OrderFactory.StopMarketOrder(_symbol, -100, price * 0.99m);
+var entry = OrderFactory.LimitOrder(_symbol, 100, price * 0.999m)
+    .Triggers(OrderFactory.OneCancelsOther(takeProfit, stopLoss));
+var tickets = Order(entry);</pre>
+<pre class="python"># The take profit triggers a new entry at the entry price.
+take_profit = self.order_factory.limit_order(self._symbol, -100, price * 1.02).triggers(
+    self.order_factory.limit_order(self._symbol, 100, price * 0.999))
+stop_loss = self.order_factory.stop_market_order(self._symbol, -100, price * 0.99)
+entry = self.order_factory.limit_order(self._symbol, 100, price * 0.999).triggers(
+    self.order_factory.one_cancels_other(take_profit, stop_loss))
+tickets = self.order(entry)</pre>
+</div>
+
+<p>The order that the exit triggers is a grandchild of the entry. The brokerage holds it until the exit completely fills. If the other exit fills first, LEAN cancels the exit and its grandchild. The <code class="csharp">Order</code><code class="python">order</code> method returns the order tickets of the entry, the take profit, the order it triggers, and the stop loss, in that order.</p>

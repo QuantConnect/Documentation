@@ -1,0 +1,20 @@
+<p>Each order in an OUO set can trigger other orders. To trigger orders after an OUO order fills, call the <code class="csharp">Triggers</code><code class="python">triggers</code> method on its order request before you relate it with the other orders. The brokerage holds the triggered orders until their parent completely fills. If another order in the set completely fills, LEAN cancels the parent and the orders it triggers. This rule applies even if the parent partially filled.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Reverse the long position when the stop loss fills.
+var stopLoss = OrderFactory.StopMarketOrder(_symbol, -100, price * 0.99m).Triggers(OrderFactory.MarketOrder(_symbol, -100));
+var tickets = OneUpdatesOtherOrder(new List&lt;SubmitOrderRequest&gt;
+{
+    OrderFactory.LimitOrder(_symbol, -100, price * 1.02m),
+    stopLoss
+});</pre>
+<pre class="python"># Reverse the long position when the stop loss fills.
+stop_loss = self.order_factory.stop_market_order(self._symbol, -100, price * 0.99).triggers(
+    self.order_factory.market_order(self._symbol, -100))
+tickets = self.one_updates_other_order([
+    self.order_factory.limit_order(self._symbol, -100, price * 1.02),
+    stop_loss
+])</pre>
+</div>
+
+<p>The quantity of a triggered order doesn't change when LEAN reduces the quantity of its parent.</p>
