@@ -38,16 +38,37 @@ The snapshot's own attributes and the filing/timing fields under `f.financial_st
 | `f.value` | Gets the raw price |
 | `f.end_time` | The end time of this data. |
 | `f.market_cap` | Price * Total SharesOutstanding. The most current market cap for example, would be the most recent closing price x the most recent reported shares outstanding. For ADR share classes, market cap is price * (ordinary shares outstanding / adr ratio). |
-| `f.financial_statements.period_ending_date.[value 1M 2M 3M 6M 9M 12M]` | The exact date that is given in the financial statements for each quarter's end. |
+| `f.financial_statements.period_ending_date.[value 1M 2M 3M 6M 9M 12M]` | The period ending date of the financial statements, dated by the filing the balance sheet, income statement and cash flow statement were reported in. Each statement also carries its own date: BalanceSheet.PeriodEndingDate, IncomeStatement.PeriodEndingDate and CashFlowStatement.PeriodEndingDate. |
 | `f.financial_statements.file_date.[value 1M 2M 3M 6M 9M 12M]` | Specific date on which a company released its filing to the public. |
 | `f.financial_statements.accession_number.[value 1M 2M 3M 6M 9M 12M]` | The accession number is a unique number that EDGAR assigns to each submission as the submission is received. |
 | `f.financial_statements.form_type.[value 1M 2M 3M 6M 9M 12M]` | The type of filing of the report: for instance, 10-K (annual report) or 10-Q (quarterly report). |
-| `f.financial_statements.period_auditor.[value 1M 2M 3M 6M 9M 12M]` | The name of the auditor that performed the financial statement audit for the given period. |
 | `f.financial_statements.auditor_report_status.[value 1M 2M 3M 6M 9M 12M]` | Auditor opinion code will be one of the following for each annual period: Code Meaning UQ Unqualified Opinion UE Unqualified Opinion with Explanation QM Qualified - Due to change in accounting method QL Qualified - Due to litigation OT Qualified Opinion - Other AO Adverse Opinion DS Disclaim an opinion UA Unaudited |
-| `f.financial_statements.inventory_valuation_method.[value 1M 2M 3M 6M 9M 12M]` | Which method of inventory valuation was used - LIFO, FIFO, Average, Standard costs, Net realizable value, Others, LIFO and FIFO, FIFO and Average, FIFO and other, LIFO and Average, LIFO and other, Average and other, 3 or more methods, None |
-| `f.financial_statements.number_of_share_holders.[value 1M 2M 3M 6M 9M 12M]` | The number of shareholders on record |
 | `f.financial_statements.period_type.[value 1M 2M 3M 6M 9M 12M]` | The nature of the period covered by an individual set of financial results. The output can be: Quarter, Semi-annual or Annual. Assuming a 12-month fiscal year, quarter typically covers a three-month period, semi-annual a six-month period, and annual a twelve-month period. Annual could cover results collected either from preliminary results or an annual report |
-| `f.financial_statements.total_risk_based_capital.[value 1M 2M 3M 6M 9M 12M]` | The sum of Tier 1 and Tier 2 Capital. Tier 1 capital consists of common shareholders equity, perpetual preferred shareholders equity with non-cumulative dividends, retained earnings, and minority interests in the equity accounts of consolidated subsidiaries. Tier 2 capital consists of subordinated debt, intermediate-term preferred stock, cumulative and long-term preferred stock, and a portion of a bank's allowance for loan and lease losses. |
+| `f.financial_statements.total_risk_based_capital.[value 1M 2M 3M 6M 9M 12M]` | The total capital ratio: total regulatory capital, Tier 1 plus Tier 2, divided by risk weighted assets. |
+| `f.financial_statements.common_equity_tier_1_capital_ratio.[value 1M 2M 3M 6M 9M 12M]` | Common equity tier 1 capital divided by risk weighted assets |
+| `f.financial_statements.common_equity_tier_1_capital.[value 1M 2M 3M 6M 9M 12M]` | Common equity tier 1 capital, the highest quality regulatory capital |
+| `f.financial_statements.liquidity_coverage_ratio.[value 1M 2M 3M 6M 9M 12M]` | High quality liquid assets divided by projected net cash outflows over thirty days |
+| `f.financial_statements.net_interest_margin.[value 1M 2M 3M 6M 9M 12M]` | Net interest income divided by average earning assets |
+| `f.financial_statements.net_interest_spread.[value 1M 2M 3M 6M 9M 12M]` | The difference between the yield on earning assets and the rate paid on funding |
+| `f.financial_statements.non_performing_assets_loans.[value 1M 2M 3M 6M 9M 12M]` | Loans on which the borrower is not making interest or principal payments as scheduled |
+| `f.financial_statements.risk_weighted_asset.[value 1M 2M 3M 6M 9M 12M]` | Assets weighted by credit risk, the denominator of the regulatory capital ratios |
+| `f.financial_statements.tier_1_capital_ratio.[value 1M 2M 3M 6M 9M 12M]` | Tier 1 capital divided by risk weighted assets |
+| `f.financial_statements.tier_1_capital.[value 1M 2M 3M 6M 9M 12M]` | Tier 1 capital: common equity, qualifying preferred equity and retained earnings |
+| `f.financial_statements.tier_1_leverage_ratio.[value 1M 2M 3M 6M 9M 12M]` | Tier 1 capital divided by average total consolidated assets |
+| `f.financial_statements.tier_2_capital_ratio.[value 1M 2M 3M 6M 9M 12M]` | Tier 2 capital divided by risk weighted assets |
+| `f.financial_statements.tier_2_capital.[value 1M 2M 3M 6M 9M 12M]` | Tier 2 capital: subordinated debt, cumulative preferred stock and loan loss allowances |
+| `f.financial_statements.total_capital.[value 1M 2M 3M 6M 9M 12M]` | The sum of tier 1 and tier 2 capital, in currency rather than as a ratio |
+| `f.financial_statements.adjusted_basic_net_asset_value.[value 1M 2M 3M 6M 9M 12M]` | Net asset value adjusted per the reporting standard, on a basic share basis |
+| `f.financial_statements.adjusted_diluted_net_asset_value.[value 1M 2M 3M 6M 9M 12M]` | Net asset value adjusted per the reporting standard, on a diluted share basis |
+| `f.financial_statements.reported_basic_adjusted_fund_from_operations.[value 1M 2M 3M 6M 9M 12M]` | Adjusted funds from operations as reported, on a basic share basis |
+| `f.financial_statements.reported_diluted_adjusted_fund_from_operations.[value 1M 2M 3M 6M 9M 12M]` | Adjusted funds from operations as reported, on a diluted share basis |
+| `f.financial_statements.reported_diluted_fund_from_operations.[value 1M 2M 3M 6M 9M 12M]` | Funds from operations as reported, on a diluted share basis |
+| `f.financial_statements.adjusted_basic_net_asset_value_per_share.[value 1M 2M 3M 6M 9M 12M]` | Adjusted net asset value per basic share |
+| `f.financial_statements.adjusted_diluted_net_asset_value_per_share.[value 1M 2M 3M 6M 9M 12M]` | Adjusted net asset value per diluted share |
+| `f.financial_statements.reported_basic_adjusted_fund_from_operations_per_share.[value 1M 2M 3M 6M 9M 12M]` | Adjusted funds from operations per basic share, as reported |
+| `f.financial_statements.reported_basic_fund_from_operations_per_share.[value 1M 2M 3M 6M 9M 12M]` | Funds from operations per basic share, as reported |
+| `f.financial_statements.reported_diluted_adjusted_fund_from_operations_per_share.[value 1M 2M 3M 6M 9M 12M]` | Adjusted funds from operations per diluted share, as reported |
+| `f.financial_statements.reported_diluted_fund_from_operations_per_share.[value 1M 2M 3M 6M 9M 12M]` | Funds from operations per diluted share, as reported |
 | `f.market` | Gets the market for this symbol |
 | `f.price_scale_factor` | Gets the combined factor used to create adjusted prices from raw prices |
 | `f.adjusted_price` | Gets the split and dividend adjusted price |
