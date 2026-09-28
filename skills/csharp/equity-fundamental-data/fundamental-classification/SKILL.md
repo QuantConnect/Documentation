@@ -34,6 +34,8 @@ Full path from the snapshot `f` with the field's description — copy the path r
 | `f.AssetClassification.ValueScore` | A high value score indicates that a stock's price is relatively low, given the anticipated per-sharing earnings, book value, revenues, cash flow, and dividends that the stock provides to investors. A high price relative to these measures indicates that a stock's value orientation is weak, but it does not necessarily mean that the stock is growth-oriented. |
 | `f.AssetClassification.NACE` | NACE is a European standard classification of economic activities maintained by Eurostat. |
 | `f.AssetClassification.CANNAICS` | Similar to NAICS (data point 3010, above), this is specifically for Canadian classifications. An acronym for North American Industry Classification System, it is a 6 digit numerical classification assigned to individual companies. Developed jointly by the U.S., Canada, and Mexico to provide new comparability in statistics about business activity across North America. It is intended to replace the U.S. Standard Industrial Classification (SIC) system. See separate reference document for a list of NAICS Codes/Mappings. The initial SIC and NAICS listed is the Primary based on revenue generation; followed by Secondary SIC and NAICS when applicable. Both SIC and NAICS are manually collected and assigned. |
+| `f.AssetClassification.DistanceToDefault` | Structural credit risk: standard deviations between current asset value and the default point |
+| `f.AssetClassification.ProbabilityOfDefault` | The probability the company defaults within one year, derived from distance to default |
 
 ### Classification code constants
 
