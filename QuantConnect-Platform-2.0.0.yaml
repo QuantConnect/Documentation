@@ -2067,6 +2067,58 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readAgentConversation
+  /community/data-library/issues/create:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 15 Data Issues
+        - 01 Create Data Issue
+      summary: Report an issue with a dataset on the Data Issues page.
+      description: Every report must include a reproducible case, so our Data Team can reproduce the issue. Attach the project of a backtest or notebook that shows the issue with the <code>select-project</code> property and the backtest with the <code>select-backtest</code> property, or include a code snippet in the <code>content</code> property. Follow the <a href="/docs/v2/cloud-platform/datasets/data-issues#05-Best-Practices">best practices</a> when you write the report. Before you report an issue, use the <code>/community/data-library/issues/list</code> endpoint to check if an open issue already covers the same ticker and resolution.
+      requestBody:
+        description: The dataset, time window, and description of the issue.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDataIssueRequest'
+        required: true
+      responses:
+        "200":
+          description: The Id of the new data issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDataIssueResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createDataIssue
+  /community/data-library/issues/list:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 15 Data Issues
+        - 02 List Data Issues
+      summary: List the issues reported on the Data Issues page.
+      description: The results are paginated. Use the <code>start</code> and <code>end</code> properties to select a range of issues and the <code>resultsFound</code> property of the response to get the total number of issues that match the filters. To get all the issues in one request, set <code>end</code> to a value greater than or equal to <code>resultsFound</code>.
+      requestBody:
+        description: Filters and range of the data issues to list.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListDataIssuesRequest'
+        required: true
+      responses:
+        "200":
+          description: The data issues that match the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataIssueListResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listDataIssues
 
 
 components:
@@ -8892,6 +8944,260 @@ components:
             conversation:
               $ref: '#/components/schemas/AgentConversation'
       description: Response wrapping the conversation transcript of an agent deployment.
+    CreateDataIssueRequest:
+      type: object
+      required:
+        - ticker
+        - security
+        - market
+        - resolution
+        - from-date
+        - to-date
+        - content
+      properties:
+        ticker:
+          type: string
+          description: Ticker of the security with the issue.
+          example: SPY
+        security:
+          type: string
+          description: Asset class of the dataset.
+          enum:
+            - Equity
+            - Equity Option
+            - Index
+            - Index Option
+            - Future
+            - Future Option
+            - Forex
+            - CFD
+            - Crypto
+            - Crypto Future
+        market:
+          type: string
+          description: Market of the dataset. The valid markets depend on the asset class, as shown in the market dropdown on the Data Issues page.
+          example: USA
+        resolution:
+          type: string
+          description: Resolution of the dataset. The valid resolutions depend on the asset class and market.
+          enum:
+            - Tick
+            - Second
+            - Minute
+            - Hour
+            - Daily
+            - Coarse Fundamental
+            - Fine Fundamental
+            - Margin
+        from-date:
+          type: string
+          description: First date of the issue, in YYYY-MM-DD format.
+          example: "2024-08-01"
+        to-date:
+          type: string
+          description: Last date of the issue, in YYYY-MM-DD format. The end of the time window must be after the start.
+          example: "2024-08-02"
+        from-time:
+          type: string
+          description: Time of day the issue starts, in HH:MM format. Required for Second and Minute resolution when the time window is shorter than 7 days.
+          example: "09:30"
+        to-time:
+          type: string
+          description: Time of day the issue ends, in HH:MM format. Required for Second and Minute resolution when the time window is shorter than 7 days.
+          example: "16:00"
+        corrupted-files:
+          type: string
+          description: Include to report files that can't be read. Include at least one issue type.
+          enum:
+            - Corrupted Files
+        missing-points:
+          type: string
+          description: Include to report missing data points.
+          enum:
+            - Missing Points
+        missing-files:
+          type: string
+          description: Include to report missing files.
+          enum:
+            - Missing Files
+        wrong-values:
+          type: string
+          description: Include to report wrong values.
+          enum:
+            - Wrong Values
+        listing-error:
+          type: string
+          description: Include to report a listing error.
+          enum:
+            - Listing Error
+        split-error:
+          type: string
+          description: Include to report a split error.
+          enum:
+            - Split Error
+        dividend-error:
+          type: string
+          description: Include to report a dividend error.
+          enum:
+            - Dividend Error
+        name-mapping-error:
+          type: string
+          description: Include to report a ticker mapping error.
+          enum:
+            - Name Mapping Error
+        content:
+          type: string
+          description: HTML description of the issue.
+          example: SPY data is missing on 2024-08-01.
+        select-project:
+          type: integer
+          description: Id of one of your projects to attach to the issue, so the Data team can see the code that shows the issue. To get your project Ids, use the <code>/projects/read</code> endpoint.
+        select-backtest:
+          type: string
+          description: Id of a backtest of the attached project to attach to the issue. Requires <code>select-project</code>. To get the backtest Ids of a project, use the <code>/backtests/list</code> endpoint.
+      description: Request body to report a data issue.
+    CreateDataIssueResponse:
+      type: object
+      properties:
+        discussionId:
+          type: integer
+          description: Id of the new data issue. The issue page is https://www.quantconnect.com/datasets/issue/{discussionId}.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from reporting a data issue.
+    ListDataIssuesRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Status group of the issues to list. Open issues are In queue, In progress, Waiting Review, or Waiting for Data Vendor. Closed issues are Resolved, Closed, or Cannot Be Resolved. The default value is open.
+          enum:
+            - open
+            - closed
+        start:
+          type: integer
+          description: Index of the first issue to return. The default value is 0.
+        end:
+          type: integer
+          description: Index after the last issue to return. The default value is 20.
+          example: 20
+        search:
+          type: string
+          description: Ticker to filter the issues by. The ticker must match exactly, but the match isn't case-sensitive.
+          example: SPY
+        subscribed:
+          type: boolean
+          description: If true, list only the issues you're subscribed to.
+      description: Request body to list data issues.
+    DataIssueListResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          description: Data issues in the requested range.
+          items:
+            $ref: '#/components/schemas/DataIssue'
+        resultsFound:
+          type: integer
+          description: Number of issues that match the filters.
+        openIssuesCount:
+          type: integer
+          description: Number of open issues on the Data Issues page.
+        closedIssuesCount:
+          type: integer
+          description: Number of closed issues on the Data Issues page.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from listing data issues.
+    DataIssue:
+      type: object
+      properties:
+        discussionId:
+          type: integer
+          description: Id of the data issue. The issue page is https://www.quantconnect.com/datasets/issue/{discussionId}.
+        ticker:
+          type: string
+          description: Ticker of the security with the issue.
+        security:
+          type: string
+          description: Asset class of the dataset.
+        market:
+          type: string
+          description: Market of the dataset.
+        resolution:
+          type: string
+          description: Resolution of the dataset.
+        from:
+          type: string
+          description: Start of the issue, in YYYY-MM-DD HH:MM:SS format.
+          example: "2024-08-01 00:00:00"
+        to:
+          type: string
+          description: End of the issue, in YYYY-MM-DD HH:MM:SS format.
+          example: "2024-08-02 00:00:00"
+        status:
+          type: string
+          description: Status of the issue.
+          enum:
+            - In queue
+            - In progress
+            - Waiting Review
+            - Waiting for Data Vendor
+            - Resolved
+            - Closed
+            - Cannot Be Resolved
+        corruptedFile:
+          type: integer
+          description: 1 if the issue reports corrupted files, otherwise 0.
+        missingPoints:
+          type: integer
+          description: 1 if the issue reports missing data points, otherwise 0.
+        missingFile:
+          type: integer
+          description: 1 if the issue reports missing files, otherwise 0.
+        wrongValues:
+          type: integer
+          description: 1 if the issue reports wrong values, otherwise 0.
+        listingError:
+          type: integer
+          description: 1 if the issue reports a listing error, otherwise 0.
+        splitError:
+          type: integer
+          description: 1 if the issue reports a split error, otherwise 0.
+        dividendError:
+          type: integer
+          description: 1 if the issue reports a dividend error, otherwise 0.
+        mappingError:
+          type: integer
+          description: 1 if the issue reports a ticker mapping error, otherwise 0.
+        reported:
+          type: integer
+          description: Unix timestamp of when the issue was reported.
+        subscribed:
+          type: boolean
+          description: True if you're subscribed to the issue.
+        userName:
+          type: string
+          description: Name of the member who reported the issue.
+        userPublicId:
+          type: string
+          description: Public Id of the member who reported the issue.
+        userProfile:
+          type: string
+          description: URL of the profile image of the member who reported the issue.
+      description: An issue reported on the Data Issues page.
   responses:
     BacktestResponse:
       description: Backtest read response packet.
