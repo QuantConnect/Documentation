@@ -1,5 +1,5 @@
 <?php 
-$dataFormat = "Tick";
+$dataFormat = "TradeBar";
 $securityName = "Index";
 include(DOCS_RESOURCES."/securities/handling-data-intro.php"); 
 ?>
