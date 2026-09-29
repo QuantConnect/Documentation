@@ -171,7 +171,7 @@
         <tr>
             <td><code class='csharp'>LocalFile</code><code class='python'>LOCAL_FILE</code></td>
             <td>The data comes from disk</td>
-            <td><a href='https://github.com/QuantConnect/Lean.DataSource.CBOE/blob/master/CBOE.cs#L60'>Lean.DataSource.CBOE</a></td>
+            <td><a href='https://github.com/QuantConnect/Lean.DataSource.BrainSentiment/blob/master/BrainSentimentIndicatorBase.cs#L64'>Lean.DataSource.BrainSentiment</a></td>
         </tr>
         <tr>
             <td><code class='csharp'>RemoteFile</code><code class='python'>REMOTE_FILE</code></td>
