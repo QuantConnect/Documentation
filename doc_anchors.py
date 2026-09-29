@@ -55,6 +55,7 @@ SECTION_REPLACEMENTS = [
     ("Smile3F",      "Smile%3F"),
     ("Smoothing3F",  "Smoothing%3F"),
     ("Volatility3F", "Volatility%3F"),
+    ("Groups3F",     "Groups%3F"),
 ]
 
 # URLs whose anchors the path-matching heuristic mis-flags; treated as valid.
