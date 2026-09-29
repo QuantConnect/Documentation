@@ -25,7 +25,8 @@ $authentication = "<li>Click on the <span class='field-name'>Environment</span> 
     </tbody>
 </table>
 <li>Check the <span class=\"box-name\">Authorization</span> check box and then click <span class=\"button-name\">Authenticate</span>.</li>
-<li>On the Alpaca website, click <span class=\"button-name\">Allow</span> to grant QuantConnect access to your account information and authorization.</li>";
+<li>On the Alpaca website, select both your live and paper accounts and then click <span class=\"button-name\">Allow</span> to grant QuantConnect access to your account information and authorization.</li>
+<p>If you select only one account, the authorization fails. The algorithm trades on the environment you select in the wizard, regardless of the accounts you authorize.</p>";
 $dataProviderDetails = "<p>In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/alpaca'>Alpaca data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean.</p><p>If you add the Alpaca data provider, enter your API key and secret. To get your API key and secret, see <a href='/docs/v2/cloud-platform/live-trading/brokerages/alpaca#02-Account-Types'>Account Types</a>. Your account details are not saved on QuantConnect.</p>";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
