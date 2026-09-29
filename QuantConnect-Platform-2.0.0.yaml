@@ -2119,6 +2119,84 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: listDataIssues
+  /organizations/support/tickets/create:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 16 Support
+        - 01 Create Support Ticket
+      summary: Open a new support ticket or comment on an existing ticket.
+      description: To open a new ticket, provide the <code>subject</code> and <code>message</code> properties. Each new ticket uses one ticket from the <a href="/docs/v2/cloud-platform/organizations/support#10-Ticket-Quotas">quota</a> of your support seat. To update an existing ticket with a comment, provide the <code>hash</code> of the ticket and the <code>message</code>. A comment on a closed ticket opens the ticket again, unless you set <code>close</code> to true. You can attach a project, backtest, live deployment, or AI conversation only when you open a new ticket. When you attach any of them, you give the QuantConnect Support Staff permission to view your project and all its libraries. When you comment on a ticket, the endpoint ignores these properties. You must have a <a href="/docs/v2/cloud-platform/organizations/support#04-Add-Seats">support seat</a> in the organization to use this endpoint.
+      requestBody:
+        description: The organization, the ticket to comment on or the subject of a new ticket, and the message.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSupportTicketRequest'
+        required: true
+      responses:
+        "200":
+          description: The Id of the ticket.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateSupportTicketResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: createSupportTicket
+  /organizations/support/tickets/list:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 16 Support
+        - 02 List Support Tickets
+      summary: List the support tickets of an organization.
+      description: The response contains all the open tickets and one page of 10 closed tickets. Use the <code>closedPage</code> property to select the page of closed tickets and the <code>totalClosed</code> property of the response to get the number of closed tickets.
+      requestBody:
+        description: The organization and the page of closed tickets to list.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListSupportTicketsRequest'
+        required: true
+      responses:
+        "200":
+          description: The support tickets of the organization and the ticket quota.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketListResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: listSupportTickets
+  /organizations/support/tickets/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 16 Support
+        - 03 Read Support Ticket
+      summary: Read the messages of a support ticket.
+      description: To get the <code>hash</code> of your tickets, use the <code>/organizations/support/tickets/list</code> endpoint.
+      requestBody:
+        description: The organization and the ticket to read.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadSupportTicketRequest'
+        required: true
+      responses:
+        "200":
+          description: The messages of the support ticket.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportTicketMessagesResponse'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: readSupportTicket
 
 
 components:
@@ -9198,6 +9276,237 @@ components:
           type: string
           description: URL of the profile image of the member who reported the issue.
       description: An issue reported on the Data Issues page.
+    CreateSupportTicketRequest:
+      type: object
+      required:
+        - organizationId
+        - message
+      properties:
+        organizationId:
+          type: string
+          description: Id of the organization.
+          examples:
+            - 5cad178b20a1d52567b534553413b691
+        subject:
+          type: string
+          description: Subject of the new ticket. Required to open a new ticket.
+          example: Live algorithm stopped after a brokerage disconnection
+        message:
+          type: string
+          description: HTML body of the message.
+          example: My live algorithm stopped at 10:32 ET after the brokerage disconnected.
+        hash:
+          type: string
+          description: Id of the ticket to comment on. To open a new ticket, omit this property.
+        close:
+          type: boolean
+          description: If true, close the ticket after you add the comment. Requires <code>hash</code>.
+        projectId:
+          type: integer
+          description: Optional. Id of one of your projects to attach to the new ticket. To get your project Ids, use the <code>/projects/read</code> endpoint.
+        backtestId:
+          type: string
+          description: Optional. Id of a backtest of the attached project to attach to the new ticket. Requires <code>projectId</code>. To get the backtest Ids of a project, use the <code>/backtests/list</code> endpoint.
+        deployId:
+          type: string
+          description: Optional. Id of a stopped live deployment of the attached project to attach to the new ticket. Requires <code>projectId</code>. To get the deployment Ids of a project, use the <code>/live/list</code> endpoint.
+        agentDeploymentId:
+          type: string
+          description: Optional. Id of an AI conversation of the attached project to attach to the new ticket. Requires <code>projectId</code>. To get the conversation Ids of a project, use the <code>/agents/deployments/list</code> endpoint.
+      description: Request body to open a support ticket or comment on a ticket.
+    CreateSupportTicketResponse:
+      type: object
+      properties:
+        hash:
+          type: string
+          description: Id of the ticket.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from opening a support ticket or commenting on a ticket.
+    ListSupportTicketsRequest:
+      type: object
+      required:
+        - organizationId
+      properties:
+        organizationId:
+          type: string
+          description: Id of the organization.
+          examples:
+            - 5cad178b20a1d52567b534553413b691
+        closedPage:
+          type: integer
+          description: Index of the page of closed tickets to return, starting at 0. Each page contains 10 tickets. The default value is 0.
+          example: 0
+      description: Request body to list the support tickets of an organization.
+    SupportTicketListResponse:
+      type: object
+      properties:
+        open:
+          type: array
+          description: Open tickets of the organization.
+          items:
+            $ref: '#/components/schemas/SupportTicket'
+        closed:
+          type: array
+          description: Closed tickets in the requested page.
+          items:
+            $ref: '#/components/schemas/SupportTicket'
+        closedPage:
+          type: integer
+          description: Index of the page of closed tickets in the response.
+        totalClosed:
+          type: integer
+          description: Number of closed tickets of the organization.
+        allowance:
+          type: integer
+          description: Number of tickets your support seat lets you open in a 1-month rolling window.
+        remaining:
+          type: integer
+          description: Number of new tickets you can open now. The value is the <code>allowance</code> minus the tickets you opened in the last month, including closed tickets.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from listing the support tickets of an organization.
+    SupportTicket:
+      type: object
+      properties:
+        hash:
+          type: string
+          description: Id of the ticket.
+        title:
+          type: string
+          description: Subject of the ticket.
+        status:
+          type: string
+          description: Status of the ticket.
+          enum:
+            - Open
+            - Closed
+        time:
+          type: string
+          description: Time of the last update of the ticket.
+          example: September 29, 2026 - 18:00
+        timeUnix:
+          type: integer
+          description: Unix timestamp of the last update of the ticket.
+        data:
+          $ref: '#/components/schemas/SupportTicketData'
+        profiles:
+          type: array
+          description: Members who took part in the ticket.
+          items:
+            $ref: '#/components/schemas/SupportTicketMember'
+      description: A support ticket of an organization.
+    SupportTicketData:
+      type: object
+      properties:
+        external_id:
+          type: string
+          description: Id of the ticket in the QuantConnect support system. Mention this Id when you contact our Support Team about the ticket.
+          example: "215476157330380"
+        ticket_hash:
+          type: string
+          description: Id of the ticket in the API. The value is the same as the <code>hash</code> of the ticket.
+        status:
+          type: string
+          description: Status of the ticket.
+          enum:
+            - open
+            - closed
+        subject:
+          type: string
+          description: Subject of the ticket.
+        created_time:
+          type: string
+          description: Time the ticket was opened, in YYYY-MM-DD HH:MM:SS format.
+          example: "2026-09-29 18:00:38"
+        updated_time:
+          type: string
+          description: Time of the last update of the ticket, in YYYY-MM-DD HH:MM:SS format.
+          example: "2026-09-29 18:01:28"
+        project_id:
+          type: integer
+          description: Id of the project attached to the ticket.
+        backtest_id:
+          type: string
+          description: Id of the backtest attached to the ticket.
+        live_deploy_id:
+          type: string
+          description: Id of the live deployment attached to the ticket.
+      description: Details of a support ticket.
+    SupportTicketMember:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the member.
+        profile:
+          type: string
+          description: URL of the profile image of the member.
+      description: A member who took part in a support ticket.
+    ReadSupportTicketRequest:
+      type: object
+      required:
+        - organizationId
+        - hash
+      properties:
+        organizationId:
+          type: string
+          description: Id of the organization.
+          examples:
+            - 5cad178b20a1d52567b534553413b691
+        hash:
+          type: string
+          description: Id of the ticket.
+      description: Request body to read a support ticket.
+    SupportTicketMessagesResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          description: Messages of the ticket.
+          items:
+            $ref: '#/components/schemas/SupportTicketMessage'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from reading a support ticket.
+    SupportTicketMessage:
+      type: object
+      properties:
+        message:
+          type: string
+          description: HTML body of the message.
+        name:
+          type: string
+          description: Name of the author.
+        profile:
+          type: string
+          description: URL of the profile image of the author.
+        time:
+          type: string
+          description: Time the message was sent.
+          example: September 29, 2026 - 18:00
+        myself:
+          type: boolean
+          description: True if you wrote the message.
+      description: A message in a support ticket.
   responses:
     BacktestResponse:
       description: Backtest read response packet.
