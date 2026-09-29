@@ -4,7 +4,7 @@
 
 <p class='python'>
   To get historical <a href='<?=$dataTypeLink?>'>quote data</a>, call the <code>history</code> method with the <code><?=$dataType?></code> type and a security's <code>Symbol</code>.
-  This method returns a DataFrame with columns for the open, high, low, close, and size of the bid and ask quotes.
+  This method returns a DataFrame with columns for the open, high, low, <? if ($supportsQuoteSize) { ?>close, and size<? } else { ?>and close<? } ?> of the bid and ask quotes.
   The columns that don't start with "bid" or "ask" are the mean of the quote prices on both sides of the market.
 </p>
 
