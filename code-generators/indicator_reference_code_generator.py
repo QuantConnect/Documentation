@@ -24,6 +24,9 @@ QC_API = 'https://www.quantconnect.com/api/v2'
 IMAGE_GENERATOR_PATH = Path('Resources/indicators/IndicatorImageGenerator.py')
 IMAGES_DIR = Path('Resources/indicators/images')
 OBJECT_STORE_PATH = 'indicators/images'
+# LEAN's candlestick doc comments only name the pattern, so the definitions live here.
+with open('Resources/indicators/candlestick-pattern-definitions.json', encoding='utf-8') as fp:
+    CANDLESTICK_DEFINITIONS = loads(fp.read())
 
 def _format_introduction(type_name: str, text: str) -> str:
     if 'CandlestickPatterns' in type_name:
@@ -164,7 +167,7 @@ class IndicatorProcessor:
 
         description = _format_introduction(_type, info['description']) \
             if 'description' in info else \
-            f"Create a new {key} candlestick pattern to indicate the pattern's presence."
+            f"{CANDLESTICK_DEFINITIONS[_type]} Create a new {key} candlestick pattern to indicate the pattern's presence."
         
         with open(self._path / "01 Introduction.html", 'w', encoding='utf-8') as f:
             f.write(self._get_introduction(description))
