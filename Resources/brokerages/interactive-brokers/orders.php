@@ -214,7 +214,7 @@
 
 <h4>Order Properties</h4>
 
-<p><?=  $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties." : "We model custom order properties from the IB API." ?> The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/interactive-brokers#18-Financial-Advisors'>methods for FA accounts</a>.</p>
+<p><?=  $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties." : "We model custom order properties from the IB API." ?> The following table describes the general members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. For FA-specific routing and percentage properties, see <a href='/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#02-Group-Routing'>Group Routing</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#03-Allocation-Methods'>Allocation Methods</a>.</p>
 
 <table class="table qc-table">
     <thead>
@@ -353,7 +353,7 @@ def on_data(self, slice: Slice) -&gt; None:
 
 
 <h4>Financial Advisor Group Orders</h4>
-<p>To place FA group orders, see <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/interactive-brokers#18-Financial-Advisors'>Financial Advisors</a>.</p>
+<p>To place direct managed-account and FA group orders, see <a href='/docs/v2/writing-algorithms/trading-and-orders/financial-advisors'>Financial Advisors</a>.</p>
 
 <h4>Fractional Trading</h4>
 <p>The <?= $writingAlgorithms ? "<code>InteractiveBrokersBrokerageModel</code> doesn't" : "IB API and FIX/CTCI don't" ?> support <a rel="nofollow" target="_blank" href='https://www.interactivebrokers.com/en/trading/fractional-trading.php'>fractional trading</a>.</p>

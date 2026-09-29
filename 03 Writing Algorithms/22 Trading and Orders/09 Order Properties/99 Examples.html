@@ -107,8 +107,8 @@
         self._last_price = self.securities[self._spy].price</pre>
 </div>
 
-<h4>Example 2: Financial Advisor Managing Client Funds</h4>
-<p>The following algorithm forms an equal-weight portfolio at the start of each week with the 10 most liquid US Equities. It demonstrates how order properties can give <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/financial-advisors'>financial advisors</a> easy control over client funds.</p>
+<h4>Example 2: Financial Advisor Group Routing</h4>
+<p>The following algorithm targets an aggregate equal-weight portfolio of 10 liquid US Equities and routes its orders to an Interactive Brokers Allocation Group saved with the <code>Equal</code> method. <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> sizes each aggregate parent order; IB applies the saved method to its managed accounts. Use <a href="/docs/v2/writing-algorithms/trading-and-orders/financial-advisors#05-Account-Snapshots">account snapshots</a> for per-account state.</p>
 <div class="section-example-container testable">
     <pre class="csharp">public class OrderPropertiesAlgorithm : QCAlgorithm
 {
@@ -121,8 +121,7 @@
         DefaultOrderProperties = new InteractiveBrokersOrderProperties
         {
             FaGroup = "TestGroupEQ",        // FA group
-            FaMethod = "NetLiq",            // Allocation by net liquidation
-            Account = "FA123456"            // FA account
+            FaMethod = "Equal"              // Match the group's saved method
         };
 
         // Add a universe that selects the 10 most liquid US Equities at the start of each week.
@@ -151,9 +150,8 @@
 
         # Define the order properties to trade with an FA group.
         self.default_order_properties = InteractiveBrokersOrderProperties()
-        self.default_order_properties.fa_group = "TestGroupEQ"          # FA group
-        self.default_order_properties.fa_method = "EqualQuantity"       # Allocation by net liquidation
-        self.default_order_properties.account = "DU123456"              # FA account
+        self.default_order_properties.fa_group = "TestGroupEQ"  # FA group
+        self.default_order_properties.fa_method = "Equal"       # Match the saved method
         
         # Add a universe that selects the 10 most liquid US Equities at the start of each week.
         spy = Symbol.create('SPY', SecurityType.EQUITY, Market.USA)
