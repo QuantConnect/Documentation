@@ -76,6 +76,27 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td></td>
       </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/bracket-orders'>Bracket</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-cancels-other-orders'>One cancels other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-triggers-other-orders'>One triggers other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
    </tbody>
 </table>
 
@@ -171,6 +192,15 @@ def on_data(self, slice: Slice) -&gt; None:
 </div>
 <? } ?>
 
+
+<h4>Contingent Orders</h4>
+<p>Alpaca accepts <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders'>contingent orders</a> for Equities with the following rules:</p>
+<ul>
+    <li>A set has up to three orders for the same security: a bracket order, an entry order that triggers one exit order, or a one cancels other pair of exit orders.</li>
+    <li>An exit order is a limit order (take profit) or a stop market or stop limit order (stop loss).</li>
+    <li>A one cancels other pair has one take-profit order and one stop-loss order on the same side, and it exits an existing position.</li>
+    <li>You can update the prices of the orders in a set, but not their quantities.</li>
+</ul>
 
 <h4>Updates</h4>
 <p><?= $writingAlgorithms ? "The <code>AlpacaBrokerageModel</code> supports" : "We model the Alpaca API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>

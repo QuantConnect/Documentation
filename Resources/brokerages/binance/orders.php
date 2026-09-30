@@ -31,6 +31,21 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/bracket-orders'>Bracket</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-cancels-other-orders'>One cancels other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-triggers-other-orders'>One triggers other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td></td>
+      </tr>
    </tbody>
 </table>
 <style>
@@ -128,6 +143,15 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
+
+<h4>Contingent Orders</h4>
+<p>Binance accepts <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders'>contingent orders</a> for spot Crypto with the following rules:</p>
+<ul>
+    <li>A set has up to three orders for the same security: a bracket order, a limit order that triggers one order, or a one cancels other pair.</li>
+    <li>An order that triggers other orders is a limit order outside any one cancels other pair.</li>
+    <li>A one cancels other pair has one limit order and one stop limit order on the same side.</li>
+</ul>
+<p>Binance US and Binance Futures don't support contingent orders.</p>
 
 <h4>Updates</h4>
 <p><?= $writingAlgorithms ? "The Binance and Binance US brokerage models don't support" : "We model the Binance and Binance US APIs by not supporting" ?> order updates, but you can cancel an existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
