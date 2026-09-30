@@ -54,6 +54,24 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/bracket-orders'>Bracket</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-cancels-other-orders'>One cancels other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-triggers-other-orders'>One triggers other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
    </tbody>
 </table>
 
@@ -143,6 +161,9 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <? } ?>
+
+<h4>Contingent Orders</h4>
+<p>Charles Schwab accepts sets of <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders'>contingent orders</a>, including chains of triggered orders. Every order in the set is a single-leg order. Charles Schwab doesn't accept combo orders or one updates other orders in a set, and you can't update the orders of a set. To change a set, cancel it and place a new one.</p>
 
 <h4>Updates</h4>
 <p><?= $writingAlgorithms ? "The <code>CharlesSchwabBrokerageModel</code> supports" : "We model the Charles Schwab API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>

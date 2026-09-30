@@ -76,7 +76,34 @@
       <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
     </tr>
-    <tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/bracket-orders'>Bracket</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-cancels-other-orders'>One cancels other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-triggers-other-orders'>One triggers other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders/one-updates-other-orders'>One updates other</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
    </tbody>
 </table>
 
@@ -180,6 +207,15 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <? } ?>
+
+<h4>Contingent Orders</h4>
+<p>TradeStation accepts sets of <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/contingent-orders'>contingent orders</a> with the following rules:</p>
+<ul>
+    <li>Every order in the set is a single-leg order. TradeStation doesn't accept combo orders in a set.</li>
+    <li>An order that another order triggers can't trigger other orders in turn.</li>
+    <li>The orders in a one updates other set are for the same security, and at least one of them is a stop market, stop limit, or trailing stop order.</li>
+    <li>When an order in a one cancels other or one updates other set fills, TradeStation cancels or resizes the rest of the set. If you cancel an order in the set, the other orders keep working.</li>
+</ul>
 
 <h4>Updates</h4>
 <p><?= $writingAlgorithms ? "The <code>TradeStationBrokerageModel</code> supports" : "We model the TradeStation API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
