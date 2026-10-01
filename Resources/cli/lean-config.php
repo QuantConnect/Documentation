@@ -50,5 +50,10 @@
             <td>The maximum number of data points you can add to a chart series in backtests.</td>
             <td>1,000,000</td>
         </tr>
+        <tr>
+            <td nowrap><code>data-monitor-store-succeeded-requests</code></td>
+            <td>Save the paths of the data files that LEAN loads during a backtest to a <span class='public-file-name'>succeeded-data-requests</span> file in the backtest results.</td>
+            <td>false</td>
+        </tr>
     </tbody>
 </table>

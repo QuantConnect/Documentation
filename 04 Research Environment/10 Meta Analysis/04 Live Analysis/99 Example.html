@@ -77,7 +77,7 @@ Console.WriteLine($"Deployments: {deployments.Count}");
 var orders = new List&lt;ApiOrderResponse&gt;();
 for (var attempt = 0; attempt &lt; 10; attempt++)
 {
-    orders = api.ReadLiveOrders(projectId, 0, 100);
+    orders = api.ReadLiveOrders(projectId, start: 0, end: 100).Orders;
     if (orders.Any()) break;
     Thread.Sleep(10000);
 }
@@ -86,7 +86,7 @@ for (var attempt = 0; attempt &lt; 10; attempt++)
 var start = 100;
 while (true)
 {
-    var window = api.ReadLiveOrders(projectId, start, start + 100);
+    var window = api.ReadLiveOrders(projectId, start: start, end: start + 100).Orders;
     if (!window.Any()) break;
     orders.AddRange(window);
     start += 100;
@@ -129,7 +129,7 @@ print(f'Deployments: {len(deployments)}')
 # Get the first window of orders. Retry while it is empty, since the orders may still be loading.
 orders = []
 for attempt in range(10):
-    orders = api.read_live_orders(project_id, 0, 100)
+    orders = api.read_live_orders(project_id, start=0, end=100).orders
     if orders:
         break
     sleep(10)
@@ -137,7 +137,7 @@ for attempt in range(10):
 # Get the remaining orders. A single project-level loop spans every deployment.
 start = 100
 while True:
-    window = api.read_live_orders(project_id, start, start + 100)
+    window = api.read_live_orders(project_id, start=start, end=start + 100).orders
     if not window:
         break
     orders.extend(window)

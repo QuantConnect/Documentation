@@ -3,7 +3,7 @@
 <ol>
     <li>Get the backtest orders.</li>
     <div class="section-example-container">
-	    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id)</pre>
+	    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id).orders</pre>
 	</div>
 	<p>The following table provides links to documentation that explains how to get the project Id and backtest Id, depending on the platform you use:</p>
 
@@ -34,7 +34,11 @@
 	    </tbody>
 	</table>
 	
-	<p>The <code class="csharp">ReadBacktestOrders</code><code class="python">read_backtest_orders</code> method returns a list of <code>ApiOrderResponse</code> objects, which have the following properties:</p>
+	<p>The <code class="csharp">ReadBacktestOrders</code><code class="python">read_backtest_orders</code> method returns an <code>OrdersResponseWrapper</code> object. Its <code class="csharp">Length</code><code class="python">length</code> property is the total number of orders in the backtest. Each call returns at most 100 orders. By default, you get the first 100 orders. To get the next ones, pass <code>start</code> and <code>end</code> arguments. Note that <code>end</code> - <code>start</code> must be 100 or less.</p>
+	<div class="section-example-container">
+	    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id, 100, 200).orders</pre>
+	</div>
+	<p>The <code class="csharp">Orders</code><code class="python">orders</code> property of the <code>OrdersResponseWrapper</code> is a list of <code>ApiOrderResponse</code> objects, which have the following properties:</p>
 	<div data-tree='QuantConnect.Orders.ApiOrderResponse'></div>
 
 	<? include(DOCS_RESOURCES."/qc-api/plot-fills.php"); ?>

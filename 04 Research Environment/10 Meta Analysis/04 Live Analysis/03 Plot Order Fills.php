@@ -3,7 +3,7 @@
 <ol>
     <li>Get the live trading orders.</li>	
 	<div class="section-example-container">
-	    <pre class="python">orders = api.read_live_orders(project_id)</pre>
+	    <pre class="python">orders = api.read_live_orders(project_id).orders</pre>
 	</div>
 
         <p>The following table provides links to documentation that explains how to get the project Id, depending on the platform you use:</p>
@@ -31,12 +31,12 @@
     </tbody>
 </table>
 	
-	<p>By default, the orders with an ID between 0 and 100. To get orders with an ID greater than 100, pass <code>start</code> and <code>end</code> arguments to the <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> method. Note that <code>end</code> - <code>start</code> must be less than 100.</p>
+	<p>The <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> method returns an <code>OrdersResponseWrapper</code> object. Its <code class="csharp">Length</code><code class="python">length</code> property is the total number of orders. Each call returns at most 100 orders. By default, you get the first 100 orders. To get the next ones, pass <code>start</code> and <code>end</code> arguments. Note that <code>end</code> - <code>start</code> must be 100 or less.</p>
 	<div class="section-example-container">
-	    <pre class="python">orders = api.read_live_orders(project_id, 100, 150)</pre>
+	    <pre class="python">orders = api.read_live_orders(project_id, start=100, end=200).orders</pre>
 	</div>
-	<p>The <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> method returns a list of <code>Order</code> objects, which have the following properties:</p>
-	<div data-tree='QuantConnect.Orders.Order'></div>
+	<p>The <code class="csharp">Orders</code><code class="python">orders</code> property of the <code>OrdersResponseWrapper</code> is a list of <code>ApiOrderResponse</code> objects, which have the following properties:</p>
+	<div data-tree='QuantConnect.Orders.ApiOrderResponse'></div>
 
 	<?php include(DOCS_RESOURCES."/qc-api/plot-fills.php"); ?>
 </ol>

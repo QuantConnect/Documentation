@@ -65,18 +65,11 @@
             	<span class='public-file-name'>failed-data-requests-&lt;backtestDate&gt;&lt;unixTimestamp&gt;.txt</span>
             	<br>Ex: <span class='public-file-name'>failed-data-requests-20230614155451004.txt</span>
             </td>
-            <td>A file containing all the local data paths that LEAN failed to load during the backtest.</td>
+            <td>A file containing the local data paths that LEAN failed to load during the backtest. The file lists up to 100,000 paths.</td>
         </tr>
         <tr>
             <td><span class='public-file-name'>log.txt</span></td>
             <td>A file containing the syslog.</td>
-        </tr>
-        <tr>
-            <td>
-            	<span class='public-file-name'>succeeded-data-requests-&lt;backtestDate&gt;&lt;unixTimestamp&gt;.txt</span>
-            	<br>Ex: <span class='public-file-name'>succeeded-data-requests-20230614155451004.txt</span>
-            </td>
-            <td>A file containing all the local data paths that LEAN successfully loaded during the backtest.</td>
         </tr>
     </tbody>
 </table>
@@ -101,6 +94,14 @@
             <td><span class='public-directory-name'>report.html</span> and <span class='public-directory-name'>report.pdf</span></td>
             <td>A file containing the <a href='/docs/v2/cloud-platform/backtesting/report'>backtest report</a></td>
             <td>See <a href='/docs/v2/local-platform/backtesting/results#09-Reports'>Reports</a></td>
+        </tr>
+        <tr>
+            <td>
+            	<span class='public-file-name'>succeeded-data-requests-&lt;backtestDate&gt;&lt;unixTimestamp&gt;.txt</span>
+            	<br>Ex: <span class='public-file-name'>succeeded-data-requests-20230614155451004.txt</span>
+            </td>
+            <td>A file containing all the local data paths that LEAN successfully loaded during the backtest.</td>
+            <td>Set <code>data-monitor-store-succeeded-requests</code> to <code>true</code> in the <a href='/docs/v2/local-platform/development-environment/configuration#03-LEAN-Settings'>LEAN settings</a></td>
         </tr>
     </tbody>
 </table>
