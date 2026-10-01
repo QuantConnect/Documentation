@@ -100,7 +100,7 @@ for deployment in deployments:
     return all;
 }
 
-var orders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
+var orders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, start: s, end: e).Orders);
 Console.WriteLine($"Orders: {orders.Count}");</pre>
         <pre class="python">from time import sleep
 
@@ -127,7 +127,7 @@ def read_all_orders(fetch_window):
         start += 100
     return orders
 
-orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e))
+orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, start=s, end=e).orders)
 print(f'Orders: {len(orders)}')</pre>
     </div>
     <p>The <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> method returns the orders of every deployment of the project, concatenated in the order the deployments launched, so a single project-level loop retrieves the complete order history. Each call returns at most 100 orders, so paginate in 100-index windows until the endpoint returns an empty window, like the <a href='/docs/v2/research-environment/meta-analysis/live-reconciliation#05-Plot-Order-Fills'>Live Reconciliation</a> tutorial does. Each element of the result is an <code>ApiOrderResponse</code> object that contains the order and its fill events.</p>

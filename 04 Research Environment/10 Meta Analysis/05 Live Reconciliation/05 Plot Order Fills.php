@@ -29,8 +29,8 @@
     return all;
 }
 
-var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
-var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e));
+var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, start: s, end: e).Orders);
+var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e).Orders);
 Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");</pre>
         <pre class="python">from time import sleep
 
@@ -57,8 +57,8 @@ def read_all_orders(fetch_window):
         start += 100
     return orders
 
-live_orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e))
-backtest_orders = read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e))
+live_orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, start=s, end=e).orders)
+backtest_orders = read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e).orders)
 print(f"Live orders: {len(live_orders)}, OOS orders: {len(backtest_orders)}")</pre>
     </div>
     <p>For more on the order objects returned, see <a href='/docs/v2/research-environment/meta-analysis/live-analysis#03-Plot-Order-Fills'>Plot Order Fills</a> in the Live Analysis documentation.</p>

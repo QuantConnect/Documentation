@@ -85,8 +85,8 @@ List&lt;ApiOrderResponse&gt; ReadAllOrders(Func&lt;int, int, List&lt;ApiOrderRes
     return all;
 }
 
-var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
-var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e));
+var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, start: s, end: e).Orders);
+var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e).Orders);
 
 Console.WriteLine($"Start: {startDate}, Starting cash: {startingCash}, End: {endDate}");
 Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");
@@ -268,8 +268,8 @@ def read_all_orders(fetch_window):
         start += 100
     return orders
 
-live_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e)))
-backtest_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e)))
+live_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_live_orders(project_id, start=s, end=e).orders))
+backtest_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e).orders))
 
 for symbol in set(live_by_symbol) | set(backtest_by_symbol):
     live = live_by_symbol.get(symbol, OrderData())
