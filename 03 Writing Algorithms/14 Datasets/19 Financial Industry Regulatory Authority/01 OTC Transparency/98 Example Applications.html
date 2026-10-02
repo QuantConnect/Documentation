@@ -1,9 +1,9 @@
-<p>The OTC Transparency dataset enables you to monitor short interest and the trading that happens away from the exchanges. Examples include the following strategies:</p>
+<p>The OTC Transparency dataset enables you to monitor short interest and off-exchange trading. Examples include the following strategies:</p>
 
 <ul>
     <li>Finding short squeeze candidates by comparing short interest to average daily volume</li>
     <li>Trading stocks when their short interest rises or falls sharply between reports</li>
-    <li>Spotting institutional buying or selling from changes in dark pool volume</li>
+    <li>Spotting institutional buying or selling from changes in alternative trading system (ATS) volume</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
 <p>The following example algorithm short sells AAPL when its open short interest increases. Otherwise, it buys AAPL.</p>
@@ -34,7 +34,7 @@ class FINRAOtcTransparencyDataAlgorithm(QCAlgorithm):
             if point.change is None:
                 continue
 
-            # Go short when open short interest is building; go long when it is unwinding
+            # Short sell when open short interest increases. Otherwise, buy.
             if point.change &gt; 0:
                 self.set_holdings(symbol.underlying, -1)
             else:
@@ -74,7 +74,7 @@ class FINRAOtcTransparencyDataAlgorithm(QCAlgorithm):
                 continue;
             }
 
-            // Go short when open short interest is building; go long when it is unwinding
+            // Short sell when open short interest increases. Otherwise, buy.
             if (point.Change &gt; 0)
             {
                 SetHoldings(kvp.Key.Underlying, -1);

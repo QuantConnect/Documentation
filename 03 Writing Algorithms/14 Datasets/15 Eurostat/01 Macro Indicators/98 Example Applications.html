@@ -39,7 +39,7 @@ class EurostatIndicatorsExampleAlgorithm(QCAlgorithm):
         if total_industry is None:
             return
 
-        # Buy SPY when output rises. Otherwise, liquidate.
+        # Buy SPY when industrial production rises. Otherwise, liquidate.
         if self.previous_production is not None:
             if total_industry &gt; self.previous_production:
                 self.set_holdings(self.equity, 1)
@@ -85,7 +85,7 @@ class EurostatIndicatorsExampleAlgorithm(QCAlgorithm):
             return;
         }
 
-        // Buy SPY when output rises. Otherwise, liquidate.
+        // Buy SPY when industrial production rises. Otherwise, liquidate.
         if (_previousProduction.HasValue)
         {
             if (totalIndustry &gt; _previousProduction)
@@ -127,7 +127,7 @@ class EurostatIndicatorsFrameworkAlgorithm(QCAlgorithm):
 
 
 class EurostatMacroCycleAlphaModel(AlphaModel):
-    """Emits insights from the European macro cycle, read across output and unemployment."""
+    """Emits insights from German industrial production and unemployment."""
 
     def __init__(self, algorithm):
         self._production = algorithm.add_data(EurostatIndustrialProduction, Eurostat.Economies.GERMANY, Resolution.DAILY).symbol

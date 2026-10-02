@@ -1,12 +1,12 @@
 <p>The Commitments of Traders dataset enables you to follow how different types of traders are positioned in the futures markets. Examples include the following strategies:</p>
 
 <ul>
-    <li>Trading with large speculators when their net position turns from short to long</li>
+    <li>Trading with non-commercial traders when their net position turns from short to long</li>
     <li>Fading a market when speculator positioning reaches a multi-year extreme</li>
     <li>Ranking commodities by the weekly change in speculator positions</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm buys SPY when the non-commercial traders are net long the E-mini S&amp;P 500 in the Legacy report. When they are net short, it short sells SPY.</p>
+<p>The following example algorithm buys SPY when non-commercial traders are net long the E-mini S&amp;P 500. When they are net short, it short sells SPY.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -32,7 +32,7 @@ class CFTCDataAlgorithm(QCAlgorithm):
         if net is None:
             return
 
-        # Go long when the large speculators are net long the E-mini S&amp;P 500
+        # Go long when the non-commercial traders are net long the E-mini S&amp;P 500
         if net &gt; 0:
             self.set_holdings(self._spy, 1)
 
@@ -71,7 +71,7 @@ class CFTCDataAlgorithm(QCAlgorithm):
             return;
         }
 
-        // Go long when the large speculators are net long the E-mini S&amp;P 500
+        // Go long when the non-commercial traders are net long the E-mini S&amp;P 500
         if (net &gt; 0)
         {
             SetHoldings(_spy, 1);
@@ -86,7 +86,7 @@ class CFTCDataAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm buys SPY when the large speculators are net long the E-mini S&amp;P 500 futures. When they turn net short, it short sells SPY.</p>
+<p>The following example algorithm buys SPY when non-commercial traders are net long the E-mini S&amp;P 500. When they are net short, it short sells SPY.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -100,7 +100,7 @@ class CFTCFrameworkAlgorithm(QCAlgorithm):
         self.set_cash(100000)
 
         self.universe_settings.resolution = Resolution.DAILY
-        # We trade SPY as the proxy of the E-mini S&amp;P 500 futures the report covers
+        # Trade SPY as the proxy of the E-mini S&amp;P 500 futures the report covers
         symbols = [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]
         self.add_universe_selection(ManualUniverseSelectionModel(symbols))
         # A custom alpha model that emits trade insights based on CFTC positioning data
@@ -135,11 +135,11 @@ class CFTCAlphaModel(AlphaModel):
         insights = []
 
         for symbol in self.tradable_symbols:
-            # Buy when the large speculators are net long
+            # Emit an up insight when the non-commercial traders are net long
             if net &gt; 0:
                 insights += [Insight.price(symbol, timedelta(days=7), InsightDirection.UP)]
 
-            # Short sell when they are net short
+            # Emit a down insight when they are net short
             elif net &lt; 0:
                 insights += [Insight.price(symbol, timedelta(days=7), InsightDirection.DOWN)]
 
@@ -157,7 +157,7 @@ class CFTCAlphaModel(AlphaModel):
         SetCash(100000);
 
         UniverseSettings.Resolution = Resolution.Daily;
-        // We trade SPY as the proxy of the E-mini S&amp;P 500 futures the report covers
+        // Trade SPY as the proxy of the E-mini S&amp;P 500 futures the report covers
         var symbols = new[] {QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)};
         AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
         // A custom alpha model that emits trade insights based on CFTC positioning data
@@ -203,13 +203,13 @@ public class CFTCAlphaModel : AlphaModel
 
         foreach (var symbol in tradableSymbols)
         {
-            // Buy when the large speculators are net long
+            // Emit an up insight when the non-commercial traders are net long
             if (net &gt; 0)
             {
                 insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Up));
             }
 
-            // Short sell when they are net short
+            // Emit a down insight when they are net short
             if (net &lt; 0)
             {
                 insights.Add(Insight.Price(symbol, TimeSpan.FromDays(7), InsightDirection.Down));

@@ -47,7 +47,7 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
         if self.equity not in slice.bars:
             return
 
-        # Step aside when stress is elevated in both economies.
+        # Exit SPY when stress is elevated in both economies.
         stressed = self.euro_area_stress &gt; 0.1 and self.united_states_stress &gt; 0.1
 
         if stressed:
@@ -105,7 +105,7 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
             return;
         }
 
-        // Step aside when stress is elevated in both economies.
+        // Exit SPY when stress is elevated in both economies.
         var stressed = _euroAreaStress &gt; 0.1m &amp;&amp; _unitedStatesStress &gt; 0.1m;
 
         if (stressed)
@@ -123,7 +123,7 @@ class ECBSystemicStressAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm emits flat insights for SPY when the composite stress indicator is above 0.1 in both the euro area and the United States. Otherwise, it emits up insights.</p>
+<p>The following example algorithm emits flat insights for SPY when the composite stress indicator exceeds 0.1 in both the euro area and the United States. Otherwise, it emits up insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -173,7 +173,7 @@ class ECBSystemicStressAlphaModel(AlphaModel):
         if self._euro_area_stress is None or self._united_states_stress is None:
             return []
 
-        # Step aside when stress is elevated in both economies.
+        # Emit flat insights when stress is elevated in both economies.
         stressed = self._euro_area_stress &gt; 0.1 and self._united_states_stress &gt; 0.1
         direction = InsightDirection.FLAT if stressed else InsightDirection.UP
 
@@ -246,7 +246,7 @@ public class ECBSystemicStressAlphaModel : AlphaModel
             return Enumerable.Empty&lt;Insight&gt;();
         }
 
-        // Step aside when stress is elevated in both economies.
+        // Emit flat insights when stress is elevated in both economies.
         var stressed = _euroAreaStress &gt; 0.1m &amp;&amp; _unitedStatesStress &gt; 0.1m;
         var direction = stressed ? InsightDirection.Flat : InsightDirection.Up;
 
