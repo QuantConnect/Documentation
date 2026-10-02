@@ -6,7 +6,7 @@
     <li>Comparing the euro area and US yield curves for cross-market positioning</li>
 </ul>
 <h4>Classic Algorithm Example</h4>
-<p>The following example algorithm buys SPY when the 10-year rate of the all issuers spot curve is at most 60 basis points above the 10-year rate of the triple A spot curve. Otherwise, it holds cash.</p>
+<p>The following example algorithm buys SPY when the all issuers 10-year spot rate is at most 60 basis points above the AAA rate. Otherwise, it holds cash.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -114,7 +114,7 @@ class ECBYieldCurveExampleAlgorithm(QCAlgorithm):
 }</pre>
 </div>
 <h4>Framework Algorithm Example</h4>
-<p>The following example algorithm emits up insights for SPY when the 10-year rate of the triple A spot curve is above its 2-year rate. Otherwise, it emits flat insights.</p>
+<p>The following example algorithm emits up insights for SPY when the 10-year rate of the AAA spot curve is above its 2-year rate. Otherwise, it emits flat insights.</p>
 
 <div class="section-example-container testable">
 <pre class="python">from AlgorithmImports import *
@@ -159,7 +159,7 @@ class ECBCurveSlopeAlphaModel(AlphaModel):
         if self._slope is None:
             return []
 
-        # Go long while the curve slopes upward, and step aside once it inverts.
+        # Emit up insights while the curve slopes upward and flat insights otherwise.
         direction = InsightDirection.UP if self._slope &gt; 0 else InsightDirection.FLAT
 
         # Emit insights only for the securities that have a bar in this slice.
@@ -225,7 +225,7 @@ public class ECBCurveSlopeAlphaModel : AlphaModel
             return new List&lt;Insight&gt;();
         }
 
-        // Go long while the curve slopes upward, and step aside once it inverts.
+        // Emit up insights while the curve slopes upward and flat insights otherwise.
         var direction = _slope &gt; 0m ? InsightDirection.Up : InsightDirection.Flat;
 
         // Emit insights only for the securities that have a bar in this slice.
