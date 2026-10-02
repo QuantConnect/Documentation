@@ -1,6 +1,6 @@
 <p>
 	Agent nodes are the servers that run your agents—a harness for quant finance that wraps your AI models in the tools, data, and context they need to be productive.
-	Agent nodes enable you to deploy agent tasks.
+	Agent nodes enable you to deploy agent tasks and connect to the <a href='/docs/v2/ai-assistance/mcp-server/key-concepts'>remote MCP server</a>.
 	The more agent nodes your organization has, the more concurrent agent tasks that you can run.
 	More powerful agent nodes have more cores and RAM to handle larger, more demanding tasks.
 	The following table shows the specifications of the agent node models:
@@ -14,6 +14,11 @@
 	The token cap is lifted and the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization to a paid tier</a> and <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a new agent node</a>.
 	Paid agent nodes don't have the 100,000-token cap, but a fair use token allowance applies over a weekly rolling window.
 	If you use tokens beyond the weekly quota, upgrade to the next agent node model or <a href='/docs/v2/ai-assistance/bring-your-own-key'>bring your own key</a>.
+</p>
+
+<p>
+	The free A-MICRO agent node can't connect to the remote MCP server.
+	To use the remote MCP server, <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a paid agent node</a>.
 </p>
 
 <p>
