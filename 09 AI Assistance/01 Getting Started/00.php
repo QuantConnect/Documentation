@@ -52,7 +52,7 @@
     <div class="tutorial-header">
         <h3 style="text-align:center;">QUANTCONNECT AGENTS</h3>
         <p style="max-width:70ch;margin: 0 auto;">Agentic AI helpers to execute your quant research process.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline.webp"
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-1.webp"
                 alt="AI Agents" />
         </div>
     </div>
@@ -100,11 +100,11 @@
     </div>
     <div class="tutorial-step">
         <p>4. In the description text area, describe a new trading idea you want to investigate.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/new-idea.webp" alt="add idea" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-2.webp" alt="add idea" /></div>
     </div>
     <div class="tutorial-step">
         <p>5. In the bottom-left corner, click the <span class='field-name'>Agent</span> field and then click <span class='field-name'>Mia</span> from the drop-down menu.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/select-mia.webp" alt="select agent" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-3.webp" alt="select agent" /></div>
     </div>
     <div class="tutorial-step">
         <p>6. Click <span class='button-name'>Deploy Mia</span>.</p>
