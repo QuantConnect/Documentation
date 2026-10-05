@@ -100,11 +100,11 @@
     </div>
     <div class="tutorial-step">
         <p>4. In the description text area, describe a new trading idea you want to investigate.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-2.webp" alt="add idea" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-3.webp" alt="add idea" /></div>
     </div>
     <div class="tutorial-step">
         <p>5. In the bottom-left corner, click the <span class='field-name'>Agent</span> field and then click <span class='field-name'>Mia</span> from the drop-down menu.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-3.webp" alt="select agent" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-4.webp" alt="select agent" /></div>
     </div>
     <div class="tutorial-step">
         <p>6. Click <span class='button-name'>Deploy Mia</span>.</p>
@@ -112,20 +112,20 @@
     </div>
     <div class="tutorial-step">
         <p>7. When Mia finishes the research, prompt her to backtest the strategy.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/assistant-prompt.webp" alt="prompt agent" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-5.webp" alt="prompt agent" /></div>
     </div>
     <div class="tutorial-step">
         <p>8. When the backtest completes, ask Mia to deploy the strategy to paper trading.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-prompt-assistant-deploy.webp" alt="prompt agent" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-6.webp" alt="prompt agent" /></div>
     </div>
     <div class="tutorial-step">
         <p>9. At the top of the conversation, click "Open Project" to open it.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-open-project.webp" alt="open project" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-7.webp" alt="open project" /></div>
     </div>
     <div class="tutorial-step">
         <p>10. At the top of the project page, click the <img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Deploy live icon"> <span class="icon-name">Deploy Live</span> icon.</p>
         <p>This page shows you the live performance of your strategy as it runs in the market, and you can check back here anytime to see how it's doing.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-deploy-live.webp" alt="deploy live" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-img-8.webp" alt="deploy live" /></div>
     </div>
     
 </div>
