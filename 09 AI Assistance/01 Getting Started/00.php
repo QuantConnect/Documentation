@@ -100,11 +100,11 @@
     </div>
     <div class="tutorial-step">
         <p>4. In the description text area, describe a new trading idea you want to investigate.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-new-idea.webp" alt="add idea" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/new-idea.webp" alt="add idea" /></div>
     </div>
     <div class="tutorial-step">
         <p>5. In the bottom-left corner, click the <span class='field-name'>Agent</span> field and then click <span class='field-name'>Mia</span> from the drop-down menu.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-select-mia.webp" alt="select agent" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/select-mia.webp" alt="select agent" /></div>
     </div>
     <div class="tutorial-step">
         <p>6. Click <span class='button-name'>Deploy Mia</span>.</p>
@@ -112,7 +112,7 @@
     </div>
     <div class="tutorial-step">
         <p>7. When Mia finishes the research, prompt her to backtest the strategy.</p>
-        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/pipeline-prompt-assistant.webp" alt="prompt agent" /></div>
+        <div class="bottom-screenshot"><img src="https://cdn.quantconnect.com/i/tu/assistant-prompt.webp" alt="prompt agent" /></div>
     </div>
     <div class="tutorial-step">
         <p>8. When the backtest completes, ask Mia to deploy the strategy to paper trading.</p>
