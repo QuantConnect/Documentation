@@ -1,0 +1,3 @@
+<?php $quoteOnlySecurities = isset($quoteOnlySecurities) ? $quoteOnlySecurities : "Forex pairs and CFD contracts"; ?>
+<p><?=$quoteOnlySecurities?> have only quote data, so use a <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types/time-period-consolidators/consolidate-quote-bars"><code>QuoteBarConsolidator</code></a> to consolidate their data. If you pass a <code>TradeBarConsolidator</code> for one of these securities to the <code class="csharp">AddConsolidator</code><code class="python">add_consolidator</code> method, LEAN throws an exception.</p>
+<?php unset($quoteOnlySecurities); ?>

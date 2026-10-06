@@ -3,4 +3,6 @@ $securityName = "CFD";
 $pythonVariable = "self._symbol";
 $cSharpVariable = "_symbol";
 include(DOCS_RESOURCES."/securities/quotebar.php"); 
+$quoteOnlySecurities = "CFD contracts";
+include(DOCS_RESOURCES."/consolidators/quote-only-securities.php");
 ?>

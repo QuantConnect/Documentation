@@ -42,4 +42,5 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$shortCutTickTypeArg);
 
 include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/quote-only-securities.php");
 ?>
