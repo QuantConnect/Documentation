@@ -5,3 +5,5 @@
 <p>
     The <code class="csharp">Portfolio</code><code class="python">portfolio</code> property of the <code>QCAlgorithm</code> class is a dictionary where the keys are <code>Symbol</code> objects and the values are <code>SecurityHolding</code> objects. The <code>SecurityHolding</code> object provides information about the investment state and history of a security.
 </p>
+
+<? include(DOCS_RESOURCES."/python-and-lean/dictionary-methods.php"); ?>
