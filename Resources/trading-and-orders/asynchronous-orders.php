@@ -4,3 +4,5 @@
 <pre class="csharp"><?=$csharpOrder?>;</pre>
 <pre class="python"><?=$pythonOrder?>;</pre>
 </div>
+
+<p>The <code>asynchronous</code> parameter comes before the <code>tag</code> parameter, so pass the tag as a named argument, such as <code class="csharp">tag: "Entry"</code><code class="python">tag="Entry"</code>. If you pass the tag by position, it fills the <code>asynchronous</code> parameter and the method call fails.</p>
