@@ -84,6 +84,19 @@ Two manual orders (close then open) double the fees/slippage, and — because th
 ## Order type
 - Default to py`set_holdings`cs`SetHoldings` / py`liquidate`cs`Liquidate` (market orders) unless the method calls for a specific order type. Use py`market_on_close_order`cs`MarketOnCloseOrder` only when the method requires a fill at the official close.
 
+## Order tags
+Pass the tag by name. The parameter after the prices is `asynchronous`, so a positional tag fails because the string fills the `bool` parameter.
+```python
+self.market_order(symbol, quantity, tag="rebalance")
+self.limit_order(symbol, quantity, limit_price, tag="entry")
+self.stop_market_order(symbol, -quantity, stop_price, tag="stop")
+```
+```csharp
+MarketOrder(symbol, quantity, tag: "rebalance");
+LimitOrder(symbol, quantity, limitPrice, tag: "entry");
+StopMarketOrder(symbol, -quantity, stopPrice, tag: "stop");
+```
+
 ## Set the security leverage to match the method's sizing
 If the method sizes positions above 1× notional (any use of leverage/margin — e.g. a 4× volatility target), pass py`leverage=`cs`leverage:` on the subscription: py`self.add_equity("SPY", Resolution.MINUTE, leverage=4)`cs`AddEquity("SPY", Resolution.Minute, leverage: 4)`. The default equity margin is ~2× (Reg-T 50% initial), so without this every order targeting more than 2× is rejected for `InsufficientBuyingPower`. Set it to the maximum leverage the method needs — it is a ceiling, not a target; the sizing formula still decides the actual exposure.
 
