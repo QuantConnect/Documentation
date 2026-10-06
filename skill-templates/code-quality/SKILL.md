@@ -112,6 +112,15 @@ if (targetWeight != 0)
     SetHoldings(_spy, targetWeight);
 }
 ```
+<!-- python-only -->## Dictionary Keys and Values
+LEAN dictionaries such as `self.portfolio`, `self.securities`, and the Slice collections expose `keys()`, `values()`, and `items()` as methods. Call them with parentheses to iterate the collection.
+```python
+for holding in self.portfolio.values():
+    pass
+for symbol, bar in slice.bars.items():
+    pass
+```
+<!-- /python-only -->
 ## Checklist
 <!-- python-only -->1. Standard library imports precede AlgorithmImports.
 2. Stored subscription variables are Security objects, not .symbol values.

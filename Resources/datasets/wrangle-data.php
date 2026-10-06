@@ -105,7 +105,7 @@
 <ol class='python'>
   <li>Create a dictionary where the keys are the string representations of each <code>SecurityIdentifier</code> and the values are the ticker.</li>
   <div class='section-example-container python'>
-    <pre class='python'>tickers_by_id = {str(x.id): x.value for x in qb.securities.keys}</pre>
+    <pre class='python'>tickers_by_id = {str(x.id): x.value for x in qb.securities.keys()}</pre>
   </div>
   <li>Get the values of the symbol level of the <code>DataFrame</code> index and create a list of tickers.</li>
   <div class='section-example-container python'>

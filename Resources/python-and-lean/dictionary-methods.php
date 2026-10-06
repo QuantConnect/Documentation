@@ -1,0 +1,1 @@
+<p class="python">To get the keys or values of a LEAN dictionary, call the <code>keys()</code> and <code>values()</code> methods with parentheses. For more information, see <a href="/docs/v2/writing-algorithms/key-concepts/python-and-lean#05-Dictionary-Types">Dictionary Types</a>.</p>
