@@ -12,6 +12,8 @@ description: >
 Apply these rules to `main.py` and custom data classes. The goal is compiling code that does not hide real failures.
 ## Imports
 Use AlgorithmImports for LEAN APIs and common algorithm types. Do not add redundant imports for datetime, timedelta, date, pandas, numpy, or math. Put required standard library imports before AlgorithmImports, separated by one blank line.
+
+Start every Python file in the project, not only main.py, with `from AlgorithmImports import *`. The algorithm class inherits only from QCAlgorithm; hold shared logic in helper objects such as `self._risk = RiskHelper(self)`.
 ## Subscription Variables
 Store the Security returned by add_data, add_equity, or add_crypto. Pass that Security directly anywhere a Symbol is expected; do not store or use .symbol.
 ```python
