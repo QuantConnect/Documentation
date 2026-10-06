@@ -24,10 +24,10 @@ var roc = ROC(symbol, 252, Resolution.Daily);   // 252-bar rate of change, auto-
 ```
 
 <!-- python-only -->
-  Common helpers (each is the constructor name lower-cased): `self.sma`, `self.ema`, `self.roc` (RateOfChange, a *fraction*), `self.rocp` (RateOfChangePercent, ×100 — same sign), `self.rsi`, `self.atr`, `self.bb` (BollingerBands), `self.std` (StandardDeviation), `self.mom` (Momentum), `self.macd`, `self.max` (Maximum), `self.min` (Minimum). Each takes `(symbol, period[, resolution])`; a few take extra args (e.g. `self.bb(symbol, period, k)`).
+  Common helpers (each is the constructor name lower-cased): `self.sma`, `self.ema`, `self.roc` (RateOfChange, a *fraction*), `self.rocp` (RateOfChangePercent, ×100 — same sign), `self.rsi`, `self.atr`, `self.bb` (BollingerBands), `self.std` (StandardDeviation), `self.mom` (Momentum), `self.macd`, `self.max` (Maximum), `self.min` (Minimum). Each takes `(symbol, period)` and an optional `resolution` keyword; a few take extra args (e.g. `self.bb(symbol, period, k)`).
 <!-- /python-only -->
 <!-- csharp-only -->
-  Common helpers (each is the indicator abbreviation): `SMA`, `EMA`, `ROC` (RateOfChange, a *fraction*), `ROCP` (RateOfChangePercent, ×100 — same sign), `RSI`, `ATR`, `BB` (BollingerBands), `STD` (StandardDeviation), `MOM` (Momentum), `MACD`, `MAX` (Maximum), `MIN` (Minimum). Each takes `(symbol, period[, resolution])`; a few take extra args (e.g. `BB(symbol, period, k)`).
+  Common helpers (each is the indicator abbreviation): `SMA`, `EMA`, `ROC` (RateOfChange, a *fraction*), `ROCP` (RateOfChangePercent, ×100 — same sign), `RSI`, `ATR`, `BB` (BollingerBands), `STD` (StandardDeviation), `MOM` (Momentum), `MACD`, `MAX` (Maximum), `MIN` (Minimum). Each takes `(symbol, period)` and an optional `resolution` named argument; a few take extra args (e.g. `BB(symbol, period, k)`).
 <!-- /csharp-only -->
   - **Do NOT also py`register_indicator(...)`cs`RegisterIndicator(...)` or call py`.update(...)`cs`.Update(...)` on an automatic (helper-created) indicator** — it would then receive each data point twice per cycle and compute wrong values. The helper already wired the updates.
 <!-- python-only -->
@@ -53,6 +53,20 @@ Litmus: *"does the indicator just need this security's normal bars/price?"* → 
 **Custom timeframe:** to drive an indicator on weekly/monthly/custom bars instead of the security's native resolution, register it against a consolidator — py`self.register_indicator(symbol, indicator, consolidator)`cs`RegisterIndicator(symbol, indicator, consolidator)` updates it from each consolidated bar.
 
 **Two-symbol indicators:** some indicators take a pair (e.g. Beta, correlation). Register them once per symbol, and warm them up by passing a symbol list — py`self.warm_up_indicator([symbol_a, symbol_b], beta, Resolution.DAILY)`cs`WarmUpIndicator(new[] {symbolA, symbolB}, beta, Resolution.Daily)`.
+
+## Pass resolution by name
+
+Some helpers, such as py`atr`cs`ATR`, py`rsi`cs`RSI`, py`bb`cs`BB`, and py`macd`cs`MACD`, have an optional argument like a `MovingAverageType` before `resolution`. Pass py`resolution=`cs`resolution:` by name so the value reaches the right parameter.
+
+```python
+self._atr = self.atr(symbol, 14, resolution=Resolution.DAILY)
+self._rsi = self.rsi(symbol, 14, resolution=Resolution.DAILY)
+```
+
+```csharp
+_atr = ATR(symbol, 14, resolution: Resolution.Daily);
+_rsi = RSI(symbol, 14, resolution: Resolution.Daily);
+```
 
 ## Acting on a fixed intraday bar — consolidators vs scheduled events
 If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in py`on_data`cs`OnData` (py`if bar.end_time.time() in MARKS: ...`cs`if (MARKS.Contains(bar.EndTime.TimeOfDay)) ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. A **market-hour-aware** consolidator anchors intraday bars to the market open (the first 30-min bar ends 30 min after the open) and respects early-close/holiday sessions:
