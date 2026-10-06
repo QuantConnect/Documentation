@@ -40,5 +40,16 @@ def on_data(self, slice: Slice) -&gt; None:
 <p>The <code>OrderField</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Orders.OrderField"></div>
 
+<p>To check whether an order is open, closed, or filled, <span class="csharp">call the <code>IsOpen</code>, <code>IsClosed</code>, or <code>IsFill</code> extension method on the order status</span><span class="python">compare the order status to the <code>OrderStatus</code> enumeration members</span>. An order is closed when its status is filled, canceled, or invalid.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var isOpen = _ticket.Status.IsOpen();
+var isClosed = _ticket.Status.IsClosed();
+var isFill = _ticket.Status.IsFill();</pre>
+<pre class="python">is_closed = self._ticket.status in (OrderStatus.FILLED, OrderStatus.CANCELED, OrderStatus.INVALID)
+is_open = not is_closed
+is_fill = self._ticket.status in (OrderStatus.FILLED, OrderStatus.PARTIALLY_FILLED)</pre>
+</div>
+
 
 <p>In addition to using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> event handler.</p>

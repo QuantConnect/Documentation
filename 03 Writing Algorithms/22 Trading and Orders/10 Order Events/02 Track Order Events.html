@@ -23,6 +23,17 @@ def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
     self.log(str(assignment_event))</pre>
 </div>
 
+<p>The <code>OrderEvent</code> object doesn't have a tag or a time property. To get the order tag, read it from the order ticket. To get the event time, read the <code class="csharp">UtcTime</code><code class="python">utc_time</code> property, which is in UTC. The fee amount is in the <code class="csharp">Value</code><code class="python">value</code> property of the order fee.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var tag = orderEvent.Ticket.Tag;
+var utcTime = orderEvent.UtcTime;
+var fee = orderEvent.OrderFee.Value.Amount;</pre>
+<pre class="python">tag = order_event.ticket.tag
+utc_time = order_event.utc_time
+fee = order_event.order_fee.value.amount</pre>
+</div>
+
 <p>To get a list of all <code>OrderEvent</code> objects for an order, call the <code class="csharp">OrderEvents</code><code class="python">order_events</code> method of the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets">order ticket</a>.
 
 </p><div class="section-example-container">
