@@ -19,7 +19,7 @@ Both are valid; pick by the input the indicator needs.
 var roc = ROC(symbol, 252, Resolution.Daily);   // 252-bar rate of change, auto-updated
 ```
 
-  Common helpers (each is the indicator abbreviation): `SMA`, `EMA`, `ROC` (RateOfChange, a *fraction*), `ROCP` (RateOfChangePercent, ×100 — same sign), `RSI`, `ATR`, `BB` (BollingerBands), `STD` (StandardDeviation), `MOM` (Momentum), `MACD`, `MAX` (Maximum), `MIN` (Minimum). Each takes `(symbol, period[, resolution])`; a few take extra args (e.g. `BB(symbol, period, k)`).
+  Common helpers (each is the indicator abbreviation): `SMA`, `EMA`, `ROC` (RateOfChange, a *fraction*), `ROCP` (RateOfChangePercent, ×100 — same sign), `RSI`, `ATR`, `BB` (BollingerBands), `STD` (StandardDeviation), `MOM` (Momentum), `MACD`, `MAX` (Maximum), `MIN` (Minimum). Each takes `(symbol, period)` and an optional `resolution` named argument; a few take extra args (e.g. `BB(symbol, period, k)`).
   - **Do NOT also `RegisterIndicator(...)` or call `.Update(...)` on an automatic (helper-created) indicator** — it would then receive each data point twice per cycle and compute wrong values. The helper already wired the updates.
 
 - **Manual — when the input is non-standard.** Construct the indicator directly and drive it yourself — when you need a **custom field** (not the default close), **consolidated / Renko bars**, a **custom data source**, or values you compute:
@@ -35,6 +35,15 @@ Litmus: *"does the indicator just need this security's normal bars/price?"* → 
 **Custom timeframe:** to drive an indicator on weekly/monthly/custom bars instead of the security's native resolution, register it against a consolidator — `RegisterIndicator(symbol, indicator, consolidator)` updates it from each consolidated bar.
 
 **Two-symbol indicators:** some indicators take a pair (e.g. Beta, correlation). Register them once per symbol, and warm them up by passing a symbol list — `WarmUpIndicator(new[] {symbolA, symbolB}, beta, Resolution.Daily)`.
+
+## Pass resolution by name
+
+Some helpers, such as `ATR`, `RSI`, `BB`, and `MACD`, have an optional argument like a `MovingAverageType` before `resolution`. Pass `resolution:` by name so the value reaches the right parameter.
+
+```csharp
+_atr = ATR(symbol, 14, resolution: Resolution.Daily);
+_rsi = RSI(symbol, 14, resolution: Resolution.Daily);
+```
 
 ## Acting on a fixed intraday bar — consolidators vs scheduled events
 If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in `OnData` (`if (MARKS.Contains(bar.EndTime.TimeOfDay)) ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. A **market-hour-aware** consolidator anchors intraday bars to the market open (the first 30-min bar ends 30 min after the open) and respects early-close/holiday sessions:

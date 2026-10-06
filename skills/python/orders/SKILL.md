@@ -61,6 +61,24 @@ Two manual orders (close then open) double the fees/slippage, and — because th
 ## Order type
 - Default to `set_holdings` / `liquidate` (market orders) unless the method calls for a specific order type. Use `market_on_close_order` only when the method requires a fill at the official close.
 
+## Order tags
+Pass the tag by name. The parameter after the prices is `asynchronous`, so a positional tag fails because the string fills the `bool` parameter.
+```python
+self.market_order(symbol, quantity, tag="rebalance")
+self.limit_order(symbol, quantity, limit_price, tag="entry")
+self.stop_market_order(symbol, -quantity, stop_price, tag="stop")
+```
+## Order events and status
+`OrderEvent` has no tag or time property. Read the tag from the ticket, the timestamp from `utc_time`, and the fee from `order_fee.value`.
+Python can't call the C# `OrderStatus` extension methods (`IsOpen`, `IsClosed`, `IsFill`), and `OrderStatus` has no `OPEN` member. Compare statuses instead. To cancel, call `cancel_open_orders` (plural) or `ticket.cancel()`.
+```python
+def on_order_event(self, order_event: OrderEvent) -> None:
+    tag = order_event.ticket.tag
+    utc_time = order_event.utc_time
+    fee = order_event.order_fee.value.amount
+    is_closed = order_event.status in (OrderStatus.FILLED, OrderStatus.CANCELED, OrderStatus.INVALID)
+    is_fill = order_event.status in (OrderStatus.FILLED, OrderStatus.PARTIALLY_FILLED)
+```
 ## Set the security leverage to match the method's sizing
 If the method sizes positions above 1× notional (any use of leverage/margin — e.g. a 4× volatility target), pass `leverage=` on the subscription: `self.add_equity("SPY", Resolution.MINUTE, leverage=4)`. The default equity margin is ~2× (Reg-T 50% initial), so without this every order targeting more than 2× is rejected for `InsufficientBuyingPower`. Set it to the maximum leverage the method needs — it is a ceiling, not a target; the sizing formula still decides the actual exposure.
 
@@ -87,3 +105,11 @@ qty = side * min(abs(daily_count), abs(affordable))
 ## Fee / slippage / fill / buying-power models
 - Do NOT override these models. QuantConnect's defaults are realistic and already charge commissions and slippage. Only set a custom model if the spec EXPLICITLY names a specific one. "Account for realistic costs" / "don't assume zero costs" means keep the defaults — it does NOT mean add a custom model.
 - **Never fake or disable transaction costs.** Do not zero/replace the fee model to emulate a paper's cost assumptions (`set_fee_model(ConstantFeeModel(0))` or similar), and NEVER mutate `portfolio.cash_book` / cash balances directly — that corrupts accounting and bypasses the platform's reality models. A paper's "κ bps per trade / net-of-transaction-cost" formula is a *reporting convention*, not something to implement. If a spec appears to mandate a bps-style cost model, flag it and build without it — the platform defaults are the only cost baseline.
+- When the spec does name a slippage model, use a built-in one: `ConstantSlippageModel(0.0005)` (a fraction of price), `VolumeShareSlippageModel()`, or `NullSlippageModel.INSTANCE`. For a custom model, implement `get_slippage_approximation`, which returns slippage in price units:
+```python
+class HalfSpreadSlippageModel:  # plain class with no ISlippageModel base
+    def get_slippage_approximation(self, asset: Security, order: Order) -> float:
+        return (asset.ask_price - asset.bid_price) / 2
+
+self.securities[symbol].set_slippage_model(HalfSpreadSlippageModel())
+```

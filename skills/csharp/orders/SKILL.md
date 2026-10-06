@@ -63,6 +63,27 @@ Two manual orders (close then open) double the fees/slippage, and — because th
 ## Order type
 - Default to `SetHoldings` / `Liquidate` (market orders) unless the method calls for a specific order type. Use `MarketOnCloseOrder` only when the method requires a fill at the official close.
 
+## Order tags
+Pass the tag by name. The parameter after the prices is `asynchronous`, so a positional tag fails because the string fills the `bool` parameter.
+```csharp
+MarketOrder(symbol, quantity, tag: "rebalance");
+LimitOrder(symbol, quantity, limitPrice, tag: "entry");
+StopMarketOrder(symbol, -quantity, stopPrice, tag: "stop");
+```
+
+## Order events and status
+`OrderEvent` has no tag or time property. Read the tag from the ticket, the timestamp from `UtcTime`, and the fee from `OrderFee.Value`.
+```csharp
+public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    var tag = orderEvent.Ticket.Tag;
+    var utcTime = orderEvent.UtcTime;
+    var fee = orderEvent.OrderFee.Value.Amount;
+    var isClosed = orderEvent.Status.IsClosed();
+    var isFill = orderEvent.Status.IsFill();
+}
+```
+
 ## Set the security leverage to match the method's sizing
 If the method sizes positions above 1× notional (any use of leverage/margin — e.g. a 4× volatility target), pass `leverage:` on the subscription: `AddEquity("SPY", Resolution.Minute, leverage: 4)`. The default equity margin is ~2× (Reg-T 50% initial), so without this every order targeting more than 2× is rejected for `InsufficientBuyingPower`. Set it to the maximum leverage the method needs — it is a ceiling, not a target; the sizing formula still decides the actual exposure.
 
@@ -91,3 +112,4 @@ var qty = side * Math.Min(Math.Abs(dailyCount), Math.Abs(affordable));
 ## Fee / slippage / fill / buying-power models
 - Do NOT override these models. QuantConnect's defaults are realistic and already charge commissions and slippage. Only set a custom model if the spec EXPLICITLY names a specific one. "Account for realistic costs" / "don't assume zero costs" means keep the defaults — it does NOT mean add a custom model.
 - **Never fake or disable transaction costs.** Do not zero/replace the fee model to emulate a paper's cost assumptions (`SetFeeModel(new ConstantFeeModel(0))` or similar), and NEVER mutate `Portfolio.CashBook` / cash balances directly — that corrupts accounting and bypasses the platform's reality models. A paper's "κ bps per trade / net-of-transaction-cost" formula is a *reporting convention*, not something to implement. If a spec appears to mandate a bps-style cost model, flag it and build without it — the platform defaults are the only cost baseline.
+- When the spec does name a slippage model, use a built-in one: `new ConstantSlippageModel(0.0005m)` (a fraction of price), `new VolumeShareSlippageModel()`, or `NullSlippageModel.Instance`. For a custom model, implement `GetSlippageApproximation`, which returns slippage in price units:
