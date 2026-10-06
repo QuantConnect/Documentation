@@ -19,7 +19,7 @@ Both are valid; pick by the input the indicator needs.
 roc = self.roc(symbol, 252, Resolution.DAILY)   # 252-bar rate of change, auto-updated
 ```
 
-  Common helpers (each is the constructor name lower-cased): `self.sma`, `self.ema`, `self.roc` (RateOfChange, a *fraction*), `self.rocp` (RateOfChangePercent, ×100 — same sign), `self.rsi`, `self.atr`, `self.bb` (BollingerBands), `self.std` (StandardDeviation), `self.mom` (Momentum), `self.macd`, `self.max` (Maximum), `self.min` (Minimum). Each takes `(symbol, period[, resolution])`; a few take extra args (e.g. `self.bb(symbol, period, k)`).
+  Common helpers (each is the constructor name lower-cased): `self.sma`, `self.ema`, `self.roc` (RateOfChange, a *fraction*), `self.rocp` (RateOfChangePercent, ×100 — same sign), `self.rsi`, `self.atr`, `self.bb` (BollingerBands), `self.std` (StandardDeviation), `self.mom` (Momentum), `self.macd`, `self.max` (Maximum), `self.min` (Minimum). Each takes `(symbol, period)` and an optional `resolution` keyword; a few take extra args (e.g. `self.bb(symbol, period, k)`).
   - **Do NOT also `register_indicator(...)` or call `.update(...)` on an automatic (helper-created) indicator** — it would then receive each data point twice per cycle and compute wrong values. The helper already wired the updates.
   - **Never assign a helper indicator to `self.<helpername>`** (e.g. `self.roc = self.roc(...)`) — it shadows the factory method. Use another name (or attach it to the Security, below).
 
@@ -36,6 +36,15 @@ Litmus: *"does the indicator just need this security's normal bars/price?"* → 
 **Custom timeframe:** to drive an indicator on weekly/monthly/custom bars instead of the security's native resolution, register it against a consolidator — `self.register_indicator(symbol, indicator, consolidator)` updates it from each consolidated bar.
 
 **Two-symbol indicators:** some indicators take a pair (e.g. Beta, correlation). Register them once per symbol, and warm them up by passing a symbol list — `self.warm_up_indicator([symbol_a, symbol_b], beta, Resolution.DAILY)`.
+
+## Pass resolution by name
+
+Some helpers, such as `atr`, `rsi`, `bb`, and `macd`, have an optional argument like a `MovingAverageType` before `resolution`. Pass `resolution=` by name so the value reaches the right parameter.
+
+```python
+self._atr = self.atr(symbol, 14, resolution=Resolution.DAILY)
+self._rsi = self.rsi(symbol, 14, resolution=Resolution.DAILY)
+```
 
 ## Acting on a fixed intraday bar — consolidators vs scheduled events
 If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in `on_data` (`if bar.end_time.time() in MARKS: ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. A **market-hour-aware** consolidator anchors intraday bars to the market open (the first 30-min bar ends 30 min after the open) and respects early-close/holiday sessions:

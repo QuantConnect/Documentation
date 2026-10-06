@@ -793,7 +793,6 @@ Page: https://www.quantconnect.com/datasets/sec-whales/pricing · listed as "Fre
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | SEC 13F - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
-| SEC 13F - On Premise Download | On Premise Download | 10 QCC/file |  |  |  |  |  | yes | yes |
 
 ## US SEC Filings (Securities and Exchange Commission)
 
@@ -911,4 +910,3 @@ What `lean data download` charges per file (`/data/prices`, the table the CLI it
 | US Future Options Minute Download by AlgoSeek | AlgoSeek | 50 | $0.50 |
 | Wikipedia Page Views Analysis Download by Brain Co | Brain | 100 | $1.00 |
 | US Electricity - On Premise Download | Energy Information Administration | 5 | $0.05 |
-| SEC 13F - On Premise Download | Securities and Exchange Commission | 10 | $0.10 |
