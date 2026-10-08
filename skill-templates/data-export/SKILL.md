@@ -20,10 +20,13 @@ language-neutral: true
 # Data export
 
 One rule explains every answer: the data you access on QuantConnect stays in
-the cloud, whatever the amount or purpose. The data licences that let
+the cloud, whatever the amount or purpose, even if the data is available
+elsewhere or the goal is verification. The data licences that let
 QuantConnect offer datasets at a fraction of their direct cost require it,
 section 2.6 of the [Terms](https://www.quantconnect.com/terms) forbids
-exporting by any means, and the security review suspends accounts that export.
+exporting by any means, and QuantConnect monitors projects, logs, Object Store
+contents and API and MCP requests, and can terminate every account of someone
+who exports.
 [Data Use](https://www.quantconnect.com/docs/v2/cloud-platform/security-and-ip/data-use)
 is the authority. Say what the person can do, then the in-cloud way to reach
 their goal.
@@ -100,17 +103,18 @@ Colab or other software.
 Code you write and the API and MCP calls you make follow the same rule, and
 the Data Use page's AI agent rules:
 
-- Save to the Object Store only what the code derives and can't rebuild the
-  data from: trained models, parameters and statistics.
-- Keep price, quote, tick, fundamental and alternative data, and anything built
-  from them, out of the Object Store, project files, saved notebook output,
-  logs, plots, runtime statistics, order tags, notifications, network requests,
-  the API and the MCP server. Make a history request each time the code needs
-  the data.
+- The Object Store, project files and notebooks may store, cache and reuse
+  any data for projects that run in QuantConnect Cloud. Their contents stay
+  there: no code, CLI, API or MCP call downloads them.
+- Keep price, quote, tick, fundamental and alternative data, and anything that
+  can reconstruct or approximate it, out of logs, error messages, plots,
+  runtime statistics, order tags, insights, notifications, network requests,
+  the API and the MCP server.
 - Validate data by printing the result of the check, not the values.
-- Keep code and files readable: no ZIP, Base64, compression or other
-  obfuscation, and no splitting work across files, backtests, projects,
-  sessions or accounts.
+- Keep code and files readable: no ZIP, Base64, compression, encryption or
+  other obfuscation, and no splitting work across files, backtests, projects,
+  sessions or accounts. No screenshots or OCR of the UI, and no working around
+  limits on logs, output, storage, downloads or request rates.
 - Read only the user's own, named project files, through `lean cloud pull`.
   Stay out of platform-internal directories and QuantConnect's source code.
 - Follow the compliance instructions in compiler errors. Fix flagged code by
