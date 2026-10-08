@@ -9,4 +9,6 @@
 <? if ($cloudPlatform) { ?>
 
 <p>The Object Store is available to paid organizations. In Free organizations, algorithms that try to save data log "The current user does not have permission to write to the organization Object Store". To use the Object Store, <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a> to a paid tier.</p>
+
+<p>You can store, cache, and reuse QuantConnect data in the Object Store for your projects that run in QuantConnect Cloud. The files stay in the cloud, and we monitor Object Store contents. For more information, see <a href='/docs/v2/cloud-platform/security-and-ip/data-use'>Data Use</a>.</p>
 <? } ?>

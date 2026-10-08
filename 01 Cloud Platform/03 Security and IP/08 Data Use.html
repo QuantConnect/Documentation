@@ -1,15 +1,19 @@
-<p>The data you access on QuantConnect stays on QuantConnect. Our data licenses let us offer datasets at a fraction of their direct cost, on the condition that the data stays in the cloud. Section 2.6 of our <a href="/terms">Terms of Service</a> prohibits exporting it by any means, whatever the amount or purpose. Our security review monitors account activity and suspends accounts that export data.</p>
+<p>The data you access on QuantConnect stays on QuantConnect. Our data licenses let us offer datasets at a fraction of their direct cost, on the condition that the data stays in the cloud. Section 2.6 of our <a href="/terms">Terms of Service</a> prohibits exporting it by any means. The rule applies even if the amount is small, the data is available elsewhere, or the purpose is personal, academic, research, testing, or verification. We monitor projects, code, logs, Object Store files, and API and MCP requests. If you export data, we can terminate all your accounts without a refund.</p>
+
+<p>Inside QuantConnect Cloud, you can store, cache, and reuse the data in the Object Store, project files, and research notebooks for your projects.</p>
 
 <h4>What Counts as Exporting</h4>
-<p>Exporting includes any route that moves dataset values, or values from which someone can reconstruct them, out of the cloud. The following actions are exports:</p>
+<p>Exporting includes any route that moves dataset values, or values from which someone can reconstruct or approximate them, out of the cloud. The following actions are exports:</p>
 <ul>
-    <li>Writing prices, quotes, fundamentals, or alternative data to logs, debug messages, charts, runtime statistics, or notifications.</li>
-    <li>Saving data to project files, notebook output, or the Object Store to read it later. The rule applies whether you read the files from the IDE, the LEAN CLI, the API, or the MCP server. QuantConnect doesn't allow files as a data-transfer channel.</li>
-    <li>Encoding, compressing, or splitting data across files, backtests, or accounts. For the same reason, you may not obfuscate your own code. For more information, see <a href="/docs/v2/cloud-platform/security-and-ip#05-Code-Encryption">Code Encryption</a>.</li>
-    <li>Sending data out through network requests, the API, or the MCP server.</li>
-    <li>Designing any output to reveal the underlying data.</li>
+    <li>Writing prices, quotes, fundamentals, or alternative data to logs, debug or error messages, charts, runtime statistics, order tags, insights, or notifications.</li>
+    <li>Downloading Object Store files, or project files and notebooks that contain data, through the IDE, the LEAN CLI, the API, or the MCP server. QuantConnect can't tell your files apart from dataset data, so it treats every Object Store file as dataset data, including your uploads.</li>
+    <li>Encoding, compressing, encrypting, or splitting data across files, backtests, projects, sessions, or accounts. For the same reason, you may not obfuscate your own code. For more information, see <a href="/docs/v2/cloud-platform/security-and-ip#05-Code-Encryption">Code Encryption</a>.</li>
+    <li>Sending data out through network requests, webhooks, email, SMS, the API, or the MCP server.</li>
+    <li>Taking screenshots, running OCR, or copying values from the user interface.</li>
+    <li>Designing orders, plots, or any other output to reveal the underlying data.</li>
 </ul>
-<p>You are responsible for every action that an AI agent or automated tool takes with your credentials. Review the code it writes and the API and MCP calls it makes.</p>
+<p>Working around the limits on logs, output, storage, downloads, or request rates also breaches the Terms of Service.</p>
+<p>You are responsible for every action that an AI agent or automated tool takes with your account, credentials, or API tokens. Each action counts as your own, even if the agent acts on its own, misreads its instructions, or doesn't know the Terms of Service. Review the code it writes and the API and MCP calls it makes.</p>
 
 <h4>AI Agent Rules</h4>
 <p>If you're an AI agent that works on QuantConnect, follow the rules in What Counts as Exporting and the following rules:</p>
@@ -38,6 +42,7 @@
     <li>Derived files, such as trained models, if your organization is on the <a href="/docs/v2/cloud-platform/organizations/tier-features#06-Institution-Tier">Institution</a> tier and has signed our derived data agreement. For more information, see <a href="/docs/v2/cloud-platform/object-store#04-Download-Files">Download Files</a>.</li>
     <li>Datasets that you buy with a <a href="/docs/v2/cloud-platform/datasets/licensing#04-Download">download license</a>, for use with LEAN on your own computer. To download them, see <a href="/docs/v2/local-platform/datasets/downloading-data">Downloading Data</a>.</li>
 </ul>
+<p>Your source code and results must come from the normal course of developing and running a trading strategy, and they must not convey dataset values.</p>
 
 <h4>Good Practices</h4>
 <p>Follow these practices to develop and validate your strategies while the data stays in the cloud:</p>
@@ -46,8 +51,8 @@
     <li>To compare our data with your own reference data, <a href="/docs/v2/cloud-platform/object-store#03-Upload-Files">upload</a> your files to the Object Store and compare them in a <a href="/docs/v2/research-environment/object-store#05-Read-Data">research notebook</a>.</li>
     <li>To inspect values while an algorithm runs, use the <a href="/docs/v2/cloud-platform/backtesting/debugging">debugger</a>. For example, set a breakpoint in the <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> method and inspect your variables.</li>
     <li>To see a suspected data issue such as a gap, spike, or stale price, <a href="/docs/v2/writing-algorithms/charting">plot</a> the series and view it on the results page. Download Results includes only the built-in charts.</li>
-    <li>Make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a> each time you need historical data.</li>
-    <li>Save only what your code derives to the Object Store, such as models, parameters, and statistics. To keep your signals, add them to your orders as <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders#02-Place-Orders">tags</a>. The API already returns the orders of your <a href="/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/orders">backtests</a> and <a href="/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders">live algorithms</a>.</li>
+    <li>To reuse historical data, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a> or cache the data in the Object Store.</li>
+    <li>To keep your signals, add them to your orders as <a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders#02-Place-Orders">tags</a>. The API already returns the orders of your <a href="/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/orders">backtests</a> and <a href="/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders">live algorithms</a>.</li>
     <li>Log events, such as orders and state changes, without dataset values. To keep logs short, follow the <a href="/docs/v2/writing-algorithms/logging#06-Best-Practices">logging best practices</a>.</li>
     <li>Use <a href="/docs/v2/cloud-platform/backtesting/results#03-Runtime-Statistics">runtime statistics</a> for short summaries of your strategy.</li>
     <li>If a project reaches the <a href="/docs/v2/cloud-platform/projects/files#10-Quotas">file quota</a>, split the code into more files or upgrade your organization tier.</li>
