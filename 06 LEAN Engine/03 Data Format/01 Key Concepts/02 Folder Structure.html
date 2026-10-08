@@ -1,9 +1,130 @@
-<p>Data files are separated and nested in a few predictable layers:</p>
+<p>
+    LEAN organizes data files into folders by security type, market, and resolution. The following table shows the security type folder of each asset class:
+</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Asset Class</th>
+            <th>Folder</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/us-equity'>US Equity</a></td>
+            <td><span class='public-file-name'>equity</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/equity-options'>Equity Options</a></td>
+            <td><span class='public-file-name'>option</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/index'>Index</a></td>
+            <td><span class='public-file-name'>index</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/index-options'>Index Options</a></td>
+            <td><span class='public-file-name'>indexoption</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/futures'>Futures</a></td>
+            <td><span class='public-file-name'>future</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/future-options'>Future Options</a></td>
+            <td><span class='public-file-name'>futureoption</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/forex-and-cfd'>Forex</a></td>
+            <td><span class='public-file-name'>forex</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/forex-and-cfd'>CFD</a></td>
+            <td><span class='public-file-name'>cfd</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/crypto'>Crypto</a></td>
+            <td><span class='public-file-name'>crypto</span></td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/lean-engine/data-format/crypto-futures'>Crypto Futures</a></td>
+            <td><span class='public-file-name'>cryptofuture</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    The market folder separates assets that have the same ticker but trade on different exchanges or brokerages. For example, BTCUSDT trades on several exchanges at slightly different prices, so each exchange has its own folder under <span class='public-file-name'>crypto</span>.
+</p>
+
+<p>
+    In general, tick, second, and minute data have one zip file for each ticker and day, in a ticker folder. Hour and daily data have one zip file for many days, in the resolution folder. The following list shows the general path patterns:
+</p>
+
 <ul>
-    <li>Tick, Second and Minute: <span class='public-file-name'>/data/securityType/marketName/resolution/ticker/date_tradeType.zip</span></li>
-    <li>Hour, Daily: <span class='public-file-name'>/data/securityType/marketName/resolution/ticker.zip</span></li>
+    <li>Tick, second, and minute: <span class='public-file-name'>&lt;securityType&gt; / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip</span></li>
+    <li>Hour and daily: <span class='public-file-name'>&lt;securityType&gt; / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;.zip</span></li>
 </ul>
 
 <p>
-    The <span class='public-file-name'>marketName</span> value is used to separate different tradable assets with the same ticker. E.g. BTCUSDT is traded on multiple brokerages all with slightly different prices.
+    Options, Futures, and Crypto add more fields to these paths, and some zip files hold one CSV file for each contract. Each asset class page gives the exact paths. The following table describes the placeholders in the paths:
 </p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Placeholder</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><span class='public-file-name'>&lt;securityType&gt;</span></td>
+            <td>Security type folder from the first table</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;market&gt;</span></td>
+            <td>Lowercase market name, such as usa, cme, oanda, or coinbase</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;resolution&gt;</span></td>
+            <td>tick, second, minute, hour, or daily</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;ticker&gt;</span></td>
+            <td>Lowercase ticker</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;tickType&gt;</span></td>
+            <td>trade, quote, or openinterest</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;date&gt;</span></td>
+            <td>Date of the data in YYYYMMDD format</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;year&gt;</span></td>
+            <td>Year of the data in YYYY format</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;style&gt;</span></td>
+            <td>Option style: american or european</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;right&gt;</span></td>
+            <td>Option right: call or put</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;strike&gt;</span></td>
+            <td>Option strike price multiplied by 10,000</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;expiry&gt;</span></td>
+            <td>Option expiry date in YYYYMMDD format</td>
+        </tr>
+        <tr>
+            <td><span class='public-file-name'>&lt;contractMonth&gt;</span></td>
+            <td>Futures contract month in YYYYMM format</td>
+        </tr>
+    </tbody>
+</table>
