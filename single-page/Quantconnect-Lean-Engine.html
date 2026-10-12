@@ -64,6 +64,15 @@
 <li><a href="#3" class="toc-h1" target="_parent">3 Data Format</a></li>
 <li><a href="#3.1" class="toc-h2" target="_parent">3.1 Key Concepts</a></li>
 <li><a href="#3.2" class="toc-h2" target="_parent">3.2 Core Data Types</a></li>
+<li><a href="#3.3" class="toc-h2" target="_parent">3.3 US Equity</a></li>
+<li><a href="#3.4" class="toc-h2" target="_parent">3.4 Equity Options</a></li>
+<li><a href="#3.5" class="toc-h2" target="_parent">3.5 Index</a></li>
+<li><a href="#3.6" class="toc-h2" target="_parent">3.6 Index Options</a></li>
+<li><a href="#3.7" class="toc-h2" target="_parent">3.7 Futures</a></li>
+<li><a href="#3.8" class="toc-h2" target="_parent">3.8 Future Options</a></li>
+<li><a href="#3.9" class="toc-h2" target="_parent">3.9 Forex and CFD</a></li>
+<li><a href="#3.10" class="toc-h2" target="_parent">3.10 Crypto</a></li>
+<li><a href="#3.11" class="toc-h2" target="_parent">3.11 Crypto Futures</a></li>
 <li><a href="#4" class="toc-h1" target="_parent">4 Statistics</a></li>
 <li><a href="#4.1" class="toc-h2" target="_parent">4.1 Capacity</a></li>
 <li><a href="#5" class="toc-h1" target="_parent">5 Class Reference</a></li>
@@ -4944,17 +4953,7 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
 <html>
  <body>
   <p>
-   From the beginning, LEAN has strived to use an open, human-readable data format - independent of any specific database or file format. From this core philosophy, we built LEAN to read its financial data from flat files on disk. Data compression is done in zip format, and all individual files are CSV or JSON.
-  </p>
-  <p>
-   The prices are expressed in the asset
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency">
-    quote currency
-   </a>
-   . For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, you need to buy 1 ETH.
-  </p>
-  <p>
-   When there is no activity for a security, the price is omitted from the file. Only new ticks and price changes are recorded.
+   LEAN reads financial data from flat files on disk. The files use an open, human-readable format that doesn't depend on a database. Each data file is a CSV file in a zip archive. Each line of the CSV file is one data point, and the file has no header row.
   </p>
  </body>
 </html>
@@ -4963,29 +4962,303 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
 <html>
  <body>
   <p>
-   Data files are separated and nested in a few predictable layers:
+   LEAN organizes data files into folders by security type, market, and resolution. The following table shows the security type folder of each asset class:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Asset Class
+     </th>
+     <th>
+      Folder
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.3">
+       US Equity
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       equity
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.4">
+       Equity Options
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       option
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.5">
+       Index
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       index
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.5-options">
+       Index Options
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       indexoption
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.7">
+       Futures
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       future
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.8">
+       Future Options
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       futureoption
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.9">
+       Forex
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       forex
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.9">
+       CFD
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       cfd
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.10">
+       Crypto
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       crypto
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.10-futures">
+       Crypto Futures
+      </a>
+     </td>
+     <td>
+      <span class="public-file-name">
+       cryptofuture
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The market folder separates assets that have the same ticker but trade on different exchanges or brokerages. For example, BTCUSDT trades on several exchanges at slightly different prices, so each exchange has its own folder under
+   <span class="public-file-name">
+    crypto
+   </span>
+   .
+  </p>
+  <p>
+   In general, tick, second, and minute data have one zip file for each ticker and day, in a ticker folder. Hour and daily data have one zip file for many days, in the resolution folder. The following list shows the general path patterns:
   </p>
   <ul>
    <li>
-    Tick, Second and Minute:
+    Tick, second, and minute:
     <span class="public-file-name">
-     /data/securityType/marketName/resolution/ticker/date_tradeType.zip
+     &lt;securityType&gt; / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip
     </span>
    </li>
    <li>
-    Hour, Daily:
+    Hour and daily:
     <span class="public-file-name">
-     /data/securityType/marketName/resolution/ticker.zip
+     &lt;securityType&gt; / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;.zip
     </span>
    </li>
   </ul>
   <p>
-   The
-   <span class="public-file-name">
-    marketName
-   </span>
-   value is used to separate different tradable assets with the same ticker. E.g. BTCUSDT is traded on multiple brokerages all with slightly different prices.
+   Options, Futures, and Crypto add more fields to these paths, and some zip files hold one CSV file for each contract. Each asset class page gives the exact paths. The following table describes the placeholders in the paths:
   </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Placeholder
+     </th>
+     <th>
+      Value
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;securityType&gt;
+      </span>
+     </td>
+     <td>
+      Security type folder from the first table
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;market&gt;
+      </span>
+     </td>
+     <td>
+      Lowercase market name, such as usa, cme, oanda, or coinbase
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;resolution&gt;
+      </span>
+     </td>
+     <td>
+      tick, second, minute, hour, or daily
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;
+      </span>
+     </td>
+     <td>
+      Lowercase ticker
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;tickType&gt;
+      </span>
+     </td>
+     <td>
+      trade, quote, or openinterest
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;
+      </span>
+     </td>
+     <td>
+      Date of the data in YYYYMMDD format
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;year&gt;
+      </span>
+     </td>
+     <td>
+      Year of the data in YYYY format
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;style&gt;
+      </span>
+     </td>
+     <td>
+      Option style: american or european
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;right&gt;
+      </span>
+     </td>
+     <td>
+      Option right: call or put
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;strike&gt;
+      </span>
+     </td>
+     <td>
+      Option strike price multiplied by 10,000
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;expiry&gt;
+      </span>
+     </td>
+     <td>
+      Option expiry date in YYYYMMDD format
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       &lt;contractMonth&gt;
+      </span>
+     </td>
+     <td>
+      Futures contract month in YYYYMM format
+     </td>
+    </tr>
+   </tbody>
+  </table>
  </body>
 </html>
 
@@ -4993,14 +5266,54 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
 <html>
  <body>
   <p>
-   The prices are expressed in the asset
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency">
+   Prices are in the
+   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/trading-and-orders/key-concepts#05-Quote-Currency">
     quote currency
    </a>
-   . For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, you need to buy 1 ETH.
+   of the asset. For example, the value 0.06920 for ETHBTC is the amount of BTC, the quote currency, that buys 1 ETH.
   </p>
   <p>
-   When there is no activity for a security, the price is omitted from the file. Only new ticks and price changes are recorded.
+   US Equity, Equity Options, and Index Options files store prices multiplied by 10,000. For example, a price of $644.80 is 6448000 in the file. LEAN divides these prices by 10,000 when it reads the files. The files of the other asset classes store the actual prices.
+  </p>
+  <p>
+   If a security has no activity in a period, the file has no row for that period.
+  </p>
+ </body>
+</html>
+
+<h3>Time Representation</h3>
+<html>
+ <body>
+  <p>
+   The first column of every row is the time. In tick, second, and minute files, the time is the number of milliseconds since midnight of the file date. Tick times can have a fractional part, such as 43.142. In hour and daily files, the time has the YYYYMMDD HH:mm format, such as 20140606 00:00. The time of a bar is the start of its period.
+  </p>
+  <p>
+   The times are in the data time zone of the security, which can differ from its exchange time zone. To find the data time zone, look up the
+   <code>
+    dataTimeZone
+   </code>
+   value of the security in the
+   <a href="https://github.com/QuantConnect/Lean/blob/master/Data/market-hours/market-hours-database.json" rel="nofollow" target="_blank">
+    <span class="public-file-name">
+     market-hours / market-hours-database.json
+    </span>
+   </a>
+   file. The keys of this file combine the security type, market, and ticker, such as
+   <code>
+    Equity-usa-[*]
+   </code>
+   . The
+   <code>
+    [*]
+   </code>
+   ticker applies to every ticker that has no entry of its own.
+  </p>
+  <p>
+   LEAN converts the times to the exchange time zone when it reads the files. For more information about time zones, see
+   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone">
+    Data Time Zone
+   </a>
+   .
   </p>
  </body>
 </html>
@@ -5017,36 +5330,28 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
 <html>
  <body>
   <p>
-   This page shows the file schema of the core data types represented in
-   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes">
-    supported asset classes
-   </a>
-   .
+   LEAN data files contain rows of four core data types: trade bars, quote bars, ticks, and open interest. The trade bar, quote bar, and open interest columns are the same for every asset class. The tick columns depend on the asset class, so each asset class page describes its own tick columns.
   </p>
  </body>
 </html>
 
-<h3>Trade Tick</h3>
+<h3>Trade Bar</h3>
 <html>
  <body>
   <p>
+   A
    <code>
-    Tick
+    TradeBar
    </code>
-   of
-   <code>
-    TickType.
-   </code>
-   <code class="csharp">
-    Trade
-   </code>
-   <code class="python">
-    Quote
-   </code>
-   represents an individual record of trades for an asset. Tick data does not have a period.
-  </p>
-  <p>
-   The file schema is as follows:
+   row aggregates the trades of one period. The following table describes the columns, with an example row from
+   <span class="public-file-name">
+    20131006_es_minute_trade_201312.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / cme / minute / es / 20131006_trade.zip
+   </span>
+   :
   </p>
   <table class="qc-table table">
    <thead>
@@ -5057,6 +5362,9 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
      <th>
       Description
      </th>
+     <th>
+      Example
+     </th>
     </tr>
    </thead>
    <tbody>
@@ -5065,15 +5373,615 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       Time
      </td>
      <td>
-      Milliseconds since midnight in the timezone of the data format
+      Start time of the bar
+     </td>
+     <td>
+      79200000
      </td>
     </tr>
     <tr>
      <td>
-      Trade Sale
+      Open
      </td>
      <td>
-      Most recent trade price
+      Price of the first trade in the period
+     </td>
+     <td>
+      1676.75
+     </td>
+    </tr>
+    <tr>
+     <td>
+      High
+     </td>
+     <td>
+      Highest trade price in the period
+     </td>
+     <td>
+      1677.25
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Low
+     </td>
+     <td>
+      Lowest trade price in the period
+     </td>
+     <td>
+      1673.5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Close
+     </td>
+     <td>
+      Price of the last trade in the period
+     </td>
+     <td>
+      1675.25
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Volume
+     </td>
+     <td>
+      Quantity traded in the period
+     </td>
+     <td>
+      1884
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Quote Bar</h3>
+<html>
+ <body>
+  <p>
+   A
+   <code>
+    QuoteBar
+   </code>
+   row aggregates the bid and ask quotes of one period. The following table describes the columns, with an example row from
+   <span class="public-file-name">
+    20131006_es_minute_quote_201312.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / cme / minute / es / 20131006_quote.zip
+   </span>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Start time of the bar
+     </td>
+     <td>
+      68400000
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Open
+     </td>
+     <td>
+      Opening bid price
+     </td>
+     <td>
+      1681.5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid High
+     </td>
+     <td>
+      Highest bid price
+     </td>
+     <td>
+      1681.5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Low
+     </td>
+     <td>
+      Lowest bid price
+     </td>
+     <td>
+      1681.5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Close
+     </td>
+     <td>
+      Closing bid price
+     </td>
+     <td>
+      1681.5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Size
+     </td>
+     <td>
+      Size of the last bid in the period
+     </td>
+     <td>
+      5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Open
+     </td>
+     <td>
+      Opening ask price
+     </td>
+     <td>
+      1682
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask High
+     </td>
+     <td>
+      Highest ask price
+     </td>
+     <td>
+      1682
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Low
+     </td>
+     <td>
+      Lowest ask price
+     </td>
+     <td>
+      1682
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Close
+     </td>
+     <td>
+      Closing ask price
+     </td>
+     <td>
+      1682
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Size
+     </td>
+     <td>
+      Size of the last ask in the period
+     </td>
+     <td>
+      19
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   If a period has no bid quotes, the four bid price columns are empty and the bid size is 0. The same rule applies to the ask side. For example, the following row from the same file has no bid quotes:
+  </p>
+  <div class="section-example-container">
+   <pre>75660000,,,,,0,1682.25,1682.25,1682.25,1682.25,39</pre>
+  </div>
+ </body>
+</html>
+
+<h3>Tick</h3>
+<html>
+ <body>
+  <p>
+   A
+   <code>
+    Tick
+   </code>
+   row records one trade, one quote update, or one open interest update. Tick data has no period. The following table shows the
+   <code>
+    TickType
+   </code>
+   of the rows in each tick file:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      File Tick Type
+     </th>
+     <th>
+      <code>
+       TickType
+      </code>
+     </th>
+     <th>
+      Row Content
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      trade
+     </td>
+     <td>
+      <code class="csharp">
+       Trade
+      </code>
+      <code class="python">
+       TRADE
+      </code>
+     </td>
+     <td>
+      One trade
+     </td>
+    </tr>
+    <tr>
+     <td>
+      quote
+     </td>
+     <td>
+      <code class="csharp">
+       Quote
+      </code>
+      <code class="python">
+       QUOTE
+      </code>
+     </td>
+     <td>
+      One update of the best bid or ask
+     </td>
+    </tr>
+    <tr>
+     <td>
+      openinterest
+     </td>
+     <td>
+      <code class="csharp">
+       OpenInterest
+      </code>
+      <code class="python">
+       OPEN_INTEREST
+      </code>
+     </td>
+     <td>
+      One open interest update
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The tick columns depend on the asset class. The following pages describe the tick columns of each asset class:
+  </p>
+  <ul>
+   <li>
+    <a href="#3.3#04-Tick-Data">
+     US Equity
+    </a>
+   </li>
+   <li>
+    <a href="#3.7#04-Tick-Data">
+     Futures
+    </a>
+   </li>
+   <li>
+    <a href="#3.9#04-Tick-Data">
+     Forex and CFD
+    </a>
+   </li>
+   <li>
+    <a href="#3.10#04-Tick-Data">
+     Crypto
+    </a>
+   </li>
+   <li>
+    <a href="#3.10-futures#04-Tick-Data">
+     Crypto Futures
+    </a>
+   </li>
+  </ul>
+ </body>
+</html>
+
+<h3>Open Interest</h3>
+<html>
+ <body>
+  <p>
+   An
+   <code>
+    OpenInterest
+   </code>
+   row records the number of open contracts of a derivative. Equity Options, Index Options, Futures, and Future Options have open interest files. The following table describes the columns, with an example row from
+   <span class="public-file-name">
+    20131006_es_minute_openinterest_201312.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / cme / minute / es / 20131006_openinterest.zip
+   </span>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Time of the open interest value
+     </td>
+     <td>
+      72360000
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Open Interest
+     </td>
+     <td>
+      Number of open contracts
+     </td>
+     <td>
+      2691941
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > US Equity</p>
+<div class='page-heading'>
+    <section id="3.3">
+        <h1>Data Format</h1>
+        <h2>US Equity</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   US Equity data has trade and quote data at tick, second, and minute resolutions. The hour and daily resolutions have trade data only. LEAN stores US Equity prices multiplied by 10,000. The data time zone is America/New_York. Other Equity markets, such as india, use the same format with their own market folder and data time zone.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the US Equity data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Tick
+     </td>
+     <td>
+      <span class="public-file-name">
+       equity / usa / tick / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_Trade_Tick.csv
+      </span>
+      <br/>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_Quote_Tick.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Second and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       equity / usa / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       equity / usa / &lt;resolution&gt; / &lt;ticker&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Each zip file contains one CSV file. For example,
+   <span class="public-file-name">
+    equity / usa / minute / aapl / 20140605_trade.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20140605_aapl_minute_trade.csv
+   </span>
+   . The CSV file names of tick data capitalize the tick type and resolution.
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with example rows from the AAPL minute files of June 5, 2014:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       15300000,6448000,6448000,6448000,6448000,90
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second and minute
+     </td>
+     <td>
+      <code>
+       14400000,6438000,6440600,6438000,6440600,100,6460000,6460000,6460000,6460000,100
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Tick Data</h3>
+<html>
+ <body>
+  <p>
+   US Equity tick files have trade ticks and quote ticks. The following table describes the columns of trade ticks, with an example row from
+   <span class="public-file-name">
+    equity / usa / tick / aig / 20131007_trade.zip
+   </span>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+     <td>
+      14400688
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Price
+     </td>
+     <td>
+      Trade price multiplied by 10,000
+     </td>
+     <td>
+      491800
      </td>
     </tr>
     <tr>
@@ -5081,7 +5989,10 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       Quantity
      </td>
      <td>
-      Amount of asset purchased or sold
+      Number of shares traded
+     </td>
+     <td>
+      300
      </td>
     </tr>
     <tr>
@@ -5089,15 +6000,24 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       Exchange
      </td>
      <td>
-      Location of the sale
+      Exchange code, such as P for ARCA or Q for NASDAQ
+     </td>
+     <td>
+      P
      </td>
     </tr>
     <tr>
      <td>
-      Trade Sale Condition
+      Sale Condition
      </td>
      <td>
-      Notes on the sale
+      Hexadecimal value of the
+      <code>
+       TradeConditionFlags
+      </code>
+     </td>
+     <td>
+      2000
      </td>
     </tr>
     <tr>
@@ -5105,21 +6025,157 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       Suspicious
      </td>
      <td>
-      Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the trade is far from other market prices and may be reversed.
-      <a href="#3.2">
-       TradeBar data
+      1 if the tick is
+      <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/securities/asset-classes/us-equity/data-preparation#04-Suspicious-Ticks">
+       suspicious
       </a>
-      excludes suspicious ticks.
+      and 0 otherwise
+     </td>
+     <td>
+      0
      </td>
     </tr>
    </tbody>
   </table>
   <p>
-   The trade has one of the following
-   <code>
-    QuoteConditionFlags
-   </code>
+   The following table describes the columns of quote ticks, with an example row from
+   <span class="public-file-name">
+    equity / usa / tick / aig / 20131007_quote.zip
+   </span>
    :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+     <td>
+      14400152
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Price
+     </td>
+     <td>
+      Bid price multiplied by 10,000
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Size
+     </td>
+     <td>
+      Number of shares at the bid
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Price
+     </td>
+     <td>
+      Ask price multiplied by 10,000
+     </td>
+     <td>
+      494100
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Size
+     </td>
+     <td>
+      Number of shares at the ask
+     </td>
+     <td>
+      300
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Exchange
+     </td>
+     <td>
+      Exchange code, such as P for ARCA or Q for NASDAQ
+     </td>
+     <td>
+      Q
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Sale Condition
+     </td>
+     <td>
+      Hexadecimal value of the
+      <code>
+       QuoteConditionFlags
+      </code>
+     </td>
+     <td>
+      1
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is
+      <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/securities/asset-classes/us-equity/data-preparation#04-Suspicious-Ticks">
+       suspicious
+      </a>
+      and 0 otherwise
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Each quote tick has data for one side of the book, and the other side has a price and size of 0. The bar-building process excludes the prices of suspicious ticks and of ticks with some condition flags. For the rules, see
+   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/securities/asset-classes/us-equity/data-preparation#03-Bar-Building">
+    Bar Building
+   </a>
+   .
+  </p>
+  <p>
+   The Sale Condition column holds a bit mask of flags. For example, the trade tick value 2000 is the
+   <code class="csharp">
+    TradeConditionFlags.ExtendedHours
+   </code>
+   <code class="python">
+    TradeConditionFlags.EXTENDED_HOURS
+   </code>
+   flag. The following table describes the
+   <code>
+    TradeConditionFlags
+   </code>
+   of trade ticks:
   </p>
   <table class="qc-table table">
    <thead>
@@ -5333,121 +6389,7 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
    </tbody>
   </table>
   <p>
-   See more information in the
-   <a href="https://us-equity-market-data-docs.s3.amazonaws.com/algoseek.US.Equity.TAQ.pdf" rel="nofollow" target="_blank">
-    AlgoSeek whitepaper
-   </a>
-   .
-  </p>
- </body>
-</html>
-
-<h3>Quote Tick</h3>
-<html>
- <body>
-  <p>
-   <code>
-    Tick
-   </code>
-   of
-   <code>
-    TickType.
-   </code>
-   <code class="csharp">
-    Quote
-   </code>
-   <code class="python">
-    QUOTE
-   </code>
-   represents an individual record of quote updates for an asset. Tick data does not have a period.
-  </p>
-  <p>
-   The file schema is as follows:
-  </p>
-  <table class="qc-table table">
-   <thead>
-    <tr>
-     <th>
-      Column
-     </th>
-     <th>
-      Description
-     </th>
-    </tr>
-   </thead>
-   <tbody>
-    <tr>
-     <td>
-      Time
-     </td>
-     <td>
-      Milliseconds since midnight in the timezone of the data format
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Bid Price
-     </td>
-     <td>
-      Best bid price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Ask Price
-     </td>
-     <td>
-      Best ask price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Bid Size
-     </td>
-     <td>
-      Best bid price's size/quantity
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Ask Size
-     </td>
-     <td>
-      Best ask price's size/quantity
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Exchange
-     </td>
-     <td>
-      Location of the sale
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Quote Sale Condition
-     </td>
-     <td>
-      Notes on the sale.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Suspicious
-     </td>
-     <td>
-      Boolean indicating the tick is flagged as suspicious according to AlgoSeek's algorithms. This generally indicates the quote is far from other market prices and may be reversed. Each quote tick contains either bid or ask data only.
-      <a href="#3.2">
-       QuoteBar data
-      </a>
-      data excludes suspicious ticks.
-     </td>
-    </tr>
-   </tbody>
-  </table>
-  <p>
-   The quote has one of the following
+   Quote bars use quotes that have at least one of the following
    <code>
     QuoteConditionFlags
    </code>
@@ -5462,7 +6404,92 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       </code>
      </th>
      <th>
-      Status
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <code class="csharp">
+       Regular
+      </code>
+      <code class="python">
+       REGULAR
+      </code>
+     </td>
+     <td>
+      This condition is used for the majority of quotes to indicate a normal trading environment.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Slow
+      </code>
+      <code class="python">
+       SLOW
+      </code>
+     </td>
+     <td>
+      This condition is used to indicate that the quote is a Slow Quote on both the bid and offer sides due to a Set Slow List that includes high price securities.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       Gap
+      </code>
+      <code class="python">
+       GAP
+      </code>
+     </td>
+     <td>
+      While in this mode, auto-execution is not eligible, the quote is then considered manual and non-firm in the bid and offer, and either or both sides can be traded through as per Regulation NMS.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       OpeningQuote
+      </code>
+      <code class="python">
+       OPENING_QUOTE
+      </code>
+     </td>
+     <td>
+      This condition can be disseminated to indicate that this quote was the opening quote for a security for that Participant.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code class="csharp">
+       FastTrading
+      </code>
+      <code class="python">
+       FAST_TRADING
+      </code>
+     </td>
+     <td>
+      For extremely active periods of short duration. While in this mode, the UTP Participant will enter quotations on a best efforts basis.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Quote bars exclude quotes that have any of the following
+   <code>
+    QuoteConditionFlags
+   </code>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th style="width: 25%">
+      <code>
+       QuoteConditionFlags
+      </code>
      </th>
      <th>
       Description
@@ -5480,9 +6507,6 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       </code>
      </td>
      <td>
-      Included
-     </td>
-     <td>
       Indicates that this quote was the last quote for a security for that Participant.
      </td>
     </tr>
@@ -5494,9 +6518,6 @@ $ dotnet test tests/bin/Debug/net9.0/Tests.dll</pre>
       <code class="python">
        NEWS_DISSEMINATION
       </code>
-     </td>
-     <td>
-      Included
      </td>
      <td>
       Denotes a regulatory trading halt when relevant news influencing the security is being disseminated. Trading is 
@@ -5513,9 +6534,6 @@ suspended until the primary market determines that an adequate publication or di
       </code>
      </td>
      <td>
-      Included
-     </td>
-     <td>
       Denotes a regulatory Trading Halt due to an expected news announcement, which may influence the security. An Opening Delay or Trading Halt may be continued once the news has been disseminated.
      </td>
     </tr>
@@ -5527,9 +6545,6 @@ suspended until the primary market determines that an adequate publication or di
       <code class="python">
        TRADING_RANGE_INDICATION
       </code>
-     </td>
-     <td>
-      Included
      </td>
      <td>
       Denotes the probable trading range (Bid and Offer prices, no sizes) of a security that is not Opening Delayed or Trading Halted. The Trading Range Indication is used prior to or after the opening of a security.
@@ -5545,9 +6560,6 @@ suspended until the primary market determines that an adequate publication or di
       </code>
      </td>
      <td>
-      Included
-     </td>
-     <td>
       Denotes a non-regulatory halt condition where there is a significant imbalance of buy or sell orders.
      </td>
     </tr>
@@ -5561,112 +6573,13 @@ suspended until the primary market determines that an adequate publication or di
       </code>
      </td>
      <td>
-      Included
-     </td>
-     <td>
       Indicates that trading for a Participant is no longer suspended in a security that had been Opening Delayed or Trading Halted.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code class="csharp">
-       Regular
-      </code>
-      <code class="python">
-       REGULAR
-      </code>
-     </td>
-     <td>
-      Excluded
-     </td>
-     <td>
-      This condition is used for the majority of quotes to indicate a normal trading environment.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code class="csharp">
-       Slow
-      </code>
-      <code class="python">
-       SLOW
-      </code>
-     </td>
-     <td>
-      Excluded
-     </td>
-     <td>
-      This condition is used to indicate that the quote is a Slow Quote on both the bid and offer sides due to a Set Slow List that includes high price securities.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code class="csharp">
-       Gap
-      </code>
-      <code class="python">
-       GAP
-      </code>
-     </td>
-     <td>
-      Excluded
-     </td>
-     <td>
-      While in this mode, auto-execution is not eligible, the quote is then considered manual and non-firm in the bid and offer, and either or both sides can be traded through as per Regulation NMS.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code class="csharp">
-       OpeningQuote
-      </code>
-      <code class="python">
-       OPENING_QUOTE
-      </code>
-     </td>
-     <td>
-      Excluded
-     </td>
-     <td>
-      This condition can be disseminated to indicate that this quote was the opening quote for a security for that Participant.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code class="csharp">
-       FastTrading
-      </code>
-      <code class="python">
-       FAST_TRADING
-      </code>
-     </td>
-     <td>
-      Excluded
-     </td>
-     <td>
-      For extremely active periods of short duration. While in this mode, the UTP Participant will enter quotations on a best efforts basis.
-     </td>
-    </tr>
-    <tr>
-     <td>
-      <code class="csharp">
-       Resume
-      </code>
-      <code class="python">
-       RESUME
-      </code>
-     </td>
-     <td>
-      Excluded
-     </td>
-     <td>
-      Indicate that trading for a Participant is no longer suspended in a security which had been Opening Delayed or Trading Halted.
      </td>
     </tr>
    </tbody>
   </table>
   <p>
-   See more information in the
+   For more information about the exchange codes and condition flags, see the
    <a href="https://us-equity-market-data-docs.s3.amazonaws.com/algoseek.US.Equity.TAQ.pdf" rel="nofollow" target="_blank">
     AlgoSeek whitepaper
    </a>
@@ -5675,81 +6588,166 @@ suspended until the primary market determines that an adequate publication or di
  </body>
 </html>
 
-<h3>Trade Bar</h3>
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Equity Options</p>
+<div class='page-heading'>
+    <section id="3.4">
+        <h1>Data Format</h1>
+        <h2>Equity Options</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
 <html>
  <body>
   <p>
-   <code>
-    TradeBar
-   </code>
-   represents trade ticks of assets consolidated for a period.
+   Equity Options data has trade, quote, and open interest data. LEAN stores Equity Options prices multiplied by 10,000. The data time zone is America/New_York.
   </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
   <p>
-   The file schema is as follows:
+   The following table shows the paths of the Equity Options data files:
   </p>
   <table class="qc-table table">
    <thead>
     <tr>
      <th>
-      Column
+      Resolution
      </th>
      <th>
-      Description
+      Zip File
+     </th>
+     <th>
+      CSV File
      </th>
     </tr>
    </thead>
    <tbody>
     <tr>
      <td>
-      Time
+      Second and minute
      </td>
      <td>
-      Second and Minute: Milliseconds since midnight in the timezone of the data format
-      <br/>
-      Hour or Daily: Date/time formatted as
       <span class="public-file-name">
-       YYYYMMDD HH:mm
+       option / usa / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;_&lt;style&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;_&lt;style&gt;_&lt;right&gt;_&lt;strike&gt;_&lt;expiry&gt;.csv
       </span>
      </td>
     </tr>
     <tr>
      <td>
-      Open
+      Hour and daily
      </td>
      <td>
-      Open Price
+      <span class="public-file-name">
+       option / usa / &lt;resolution&gt; / &lt;ticker&gt;_&lt;year&gt;_&lt;tickType&gt;_&lt;style&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;_&lt;tickType&gt;_&lt;style&gt;_&lt;right&gt;_&lt;strike&gt;_&lt;expiry&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   In these paths,
+   <span class="public-file-name">
+    &lt;ticker&gt;
+   </span>
+   is the ticker of the underlying Equity. Each zip file contains one CSV file for each contract. For example,
+   <span class="public-file-name">
+    option / usa / minute / aapl / 20140606_quote_american.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20140606_aapl_minute_quote_american_call_10000000_20150117.csv
+   </span>
+   . This CSV file holds the quotes of the AAPL $1,000 call that expires on January 17, 2015. The daily file of the same contract is
+   <span class="public-file-name">
+    aapl_quote_american_call_10000000_20150117.csv
+   </span>
+   in
+   <span class="public-file-name">
+    option / usa / daily / aapl_2014_quote_american.zip
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with example rows from the minute files of the AAPL $1,000 call on June 6, 2014:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       34200000,17000,17000,17000,17000,28
+      </code>
      </td>
     </tr>
     <tr>
      <td>
-      High
+      <a href="#3.2">
+       Quote bar
+      </a>
      </td>
      <td>
-      High Price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Low
+      Second, minute, hour, and daily
      </td>
      <td>
-      Low Price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Close
-     </td>
-     <td>
-      Close Price
+      <code>
+       34200000,14900,14900,14900,14900,9,16300,19500,15400,17000,51
+      </code>
      </td>
     </tr>
     <tr>
      <td>
-      Volume
+      <a href="#3.2">
+       Open interest
+      </a>
      </td>
      <td>
-      Number of shares traded in the period
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       23460000,9325
+      </code>
      </td>
     </tr>
    </tbody>
@@ -5757,17 +6755,473 @@ suspended until the primary market determines that an adequate publication or di
  </body>
 </html>
 
-<h3>Quote Bar</h3>
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Index</p>
+<div class='page-heading'>
+    <section id="3.5">
+        <h1>Data Format</h1>
+        <h2>Index</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
 <html>
  <body>
   <p>
-   <code>
-    QuoteBar
-   </code>
-   represents top of book quote data consolidated over a period of time (bid and ask bar).
+   Index data has trade data only, and the price columns hold the index value. The files store the actual values. The data time zone depends on the index. For example, the data time zone of SPX is America/Chicago.
   </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
   <p>
-   The file schema is as follows:
+   The following table shows the paths of the Index data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Second and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       index / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_trade.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_trade.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       index / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Each zip file contains one CSV file. For example,
+   <span class="public-file-name">
+    index / usa / minute / spx / 20210104_trade.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20210104_spx_minute_trade.csv
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with an example row from the SPX minute file of January 4, 2021:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       30600000,3764.61,3769.99,3764.61,3766.63,59
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   In this example, the time 30600000 is 8:30 AM in the America/Chicago data time zone, which is the 9:30 AM open in New York.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Index Options</p>
+<div class='page-heading'>
+    <section id="3.6">
+        <h1>Data Format</h1>
+        <h2>Index Options</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Index Options data has trade, quote, and open interest data. LEAN stores Index Options prices multiplied by 10,000. The data time zone is America/New_York, which differs from the America/Chicago exchange time zone.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the Index Options data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Second and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       indexoption / usa / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;_&lt;style&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;_&lt;style&gt;_&lt;right&gt;_&lt;strike&gt;_&lt;expiry&gt;.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       indexoption / usa / &lt;resolution&gt; / &lt;ticker&gt;_&lt;year&gt;_&lt;tickType&gt;_&lt;style&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;_&lt;tickType&gt;_&lt;style&gt;_&lt;right&gt;_&lt;strike&gt;_&lt;expiry&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   In these paths,
+   <span class="public-file-name">
+    &lt;ticker&gt;
+   </span>
+   is the ticker of the option, which can differ from the ticker of the underlying index. For example, SPX weekly options use
+   <span class="public-file-name">
+    spxw
+   </span>
+   . Each zip file contains one CSV file for each contract. For example,
+   <span class="public-file-name">
+    indexoption / usa / minute / spx / 20210104_quote_european.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20210104_spx_minute_quote_european_call_32000000_20210115.csv
+   </span>
+   . This CSV file holds the quotes of the SPX $3,200 call that expires on January 15, 2021.
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with example rows from the minute files of the SPX $3,200 call on January 4, 2021:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       39180000,5160400,5160400,5160400,5160400,1
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       34200000,5649000,5668000,5629000,5641000,115,5708000,5710000,5683000,5691000,115
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Open interest
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       23400000,11755
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Futures</p>
+<div class='page-heading'>
+    <section id="3.7">
+        <h1>Data Format</h1>
+        <h2>Futures</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Futures data has trade, quote, and open interest data. The files store the actual prices. The data time zone depends on the market. For example, the data time zone of the cme and comex markets is UTC.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the Futures data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Tick, second, and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       future / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;_&lt;contractMonth&gt;.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       future / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;_&lt;tickType&gt;_&lt;contractMonth&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Each zip file contains one CSV file for each contract. For example,
+   <span class="public-file-name">
+    future / cme / minute / es / 20131006_quote.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20131006_es_minute_quote_201312.csv
+   </span>
+   , which holds the quotes of the December 2013 ES contract. The daily file of the same contract is
+   <span class="public-file-name">
+    es_quote_201312.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / cme / daily / es_quote.zip
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with example rows from the minute files of the December 2013 ES contract on October 6, 2013:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       79200000,1676.75,1677.25,1673.5,1675.25,1884
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       68400000,1681.5,1681.5,1681.5,1681.5,5,1682,1682,1682,1682,19
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Open interest
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       72360000,2691941
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Tick Data</h3>
+<html>
+ <body>
+  <p>
+   Futures tick files have trade, quote, and open interest ticks. The following table describes the columns of trade ticks, with an example row from
+   <span class="public-file-name">
+    20131007_gc_tick_trade_201310.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / comex / tick / gc / 20131007_trade.zip
+   </span>
+   :
   </p>
   <table class="qc-table table">
    <thead>
@@ -5778,6 +7232,9 @@ suspended until the primary market determines that an adequate publication or di
      <th>
       Description
      </th>
+     <th>
+      Example
+     </th>
     </tr>
    </thead>
    <tbody>
@@ -5786,44 +7243,115 @@ suspended until the primary market determines that an adequate publication or di
       Time
      </td>
      <td>
-      Second and Minute: Milliseconds since midnight in the timezone of the data format
-      <br/>
-      Hour or Daily: Date/time formatted as
-      <span class="public-file-name">
-       YYYYMMDD HH:mm
-      </span>
+      Milliseconds since midnight
+     </td>
+     <td>
+      4933381
      </td>
     </tr>
     <tr>
      <td>
-      Bid Open
+      Price
      </td>
      <td>
-      Bid Open Price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Bid High
+      Trade price
      </td>
      <td>
-      Bid High Price
+      1313.8
      </td>
     </tr>
     <tr>
      <td>
-      Bid Low
+      Quantity
      </td>
      <td>
-      Bid Low Price
+      Number of contracts traded
+     </td>
+     <td>
+      1
      </td>
     </tr>
     <tr>
      <td>
-      Bid Close
+      Exchange
      </td>
      <td>
-      Bid Close Price
+      Exchange of the trade
+     </td>
+     <td>
+      usa
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Sale Condition
+     </td>
+     <td>
+      Sale condition of the trade
+     </td>
+     <td>
+      Empty
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is suspicious and 0 otherwise
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The following table describes the columns of quote ticks, with an example row from
+   <span class="public-file-name">
+    20131007_gc_tick_quote_201310.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / comex / tick / gc / 20131007_quote.zip
+   </span>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Price
+     </td>
+     <td>
+      Best bid price
+     </td>
+     <td>
+      1313.4
      </td>
     </tr>
     <tr>
@@ -5831,39 +7359,21 @@ suspended until the primary market determines that an adequate publication or di
       Bid Size
      </td>
      <td>
-      Number of shares being bid that quoted in this QuoteBar
+      Number of contracts at the bid
+     </td>
+     <td>
+      4
      </td>
     </tr>
     <tr>
      <td>
-      Ask Open
+      Ask Price
      </td>
      <td>
-      Ask Open Price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Ask High
+      Best ask price
      </td>
      <td>
-      Ask High Price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Ask Low
-     </td>
-     <td>
-      Ask Low Price
-     </td>
-    </tr>
-    <tr>
-     <td>
-      Ask Close
-     </td>
-     <td>
-      Ask Close Price
+      0
      </td>
     </tr>
     <tr>
@@ -5871,7 +7381,82 @@ suspended until the primary market determines that an adequate publication or di
       Ask Size
      </td>
      <td>
-      Number of shares being asked that quoted in this QuoteBar
+      Number of contracts at the ask
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Exchange
+     </td>
+     <td>
+      Exchange of the quote
+     </td>
+     <td>
+      usa
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is suspicious and 0 otherwise
+     </td>
+     <td>
+      0
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The following table describes the open interest tick columns, with an example row from
+   <span class="public-file-name">
+    20131007_gc_tick_openinterest_201310.csv
+   </span>
+   in
+   <span class="public-file-name">
+    future / comex / tick / gc / 20131007_openinterest.zip
+   </span>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+     <td>
+      22068523
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Open Interest
+     </td>
+     <td>
+      Number of open contracts
+     </td>
+     <td>
+      458
      </td>
     </tr>
    </tbody>
@@ -5879,17 +7464,529 @@ suspended until the primary market determines that an adequate publication or di
  </body>
 </html>
 
-<h3>Open Interest</h3>
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Future Options</p>
+<div class='page-heading'>
+    <section id="3.8">
+        <h1>Data Format</h1>
+        <h2>Future Options</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
 <html>
  <body>
   <p>
-   <code>
-    OpenIntest
-   </code>
-   represents the outstanding contracts.
+   Future Options data has trade, quote, and open interest data. The files store the actual prices. The market hours database has no Future Options entries, so the data time zone is the data time zone of the underlying Future. For example, the data time zone of ES Future Options is UTC.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the Future Options data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Second and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       futureoption / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;contractMonth&gt; / &lt;date&gt;_&lt;tickType&gt;_&lt;style&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;_&lt;style&gt;_&lt;right&gt;_&lt;strike&gt;_&lt;expiry&gt;.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       futureoption / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;contractMonth&gt; / &lt;ticker&gt;_&lt;year&gt;_&lt;tickType&gt;_&lt;style&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;_&lt;tickType&gt;_&lt;style&gt;_&lt;right&gt;_&lt;strike&gt;_&lt;expiry&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   In these paths,
+   <span class="public-file-name">
+    &lt;ticker&gt;
+   </span>
+   is the ticker of the option, which can differ from the ticker of the underlying Future. For example, options on GC Futures use
+   <span class="public-file-name">
+    og
+   </span>
+   . The
+   <span class="public-file-name">
+    &lt;contractMonth&gt;
+   </span>
+   folder is the contract month of the underlying Future, and every resolution uses it.
   </p>
   <p>
-   The file schema is as follows:
+   Each zip file contains one CSV file for each contract. For example,
+   <span class="public-file-name">
+    futureoption / cme / minute / es / 202003 / 20200105_quote_american.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20200105_es_minute_quote_american_call_30000000_20200320.csv
+   </span>
+   . This CSV file holds the quotes of the $3,000 call on the March 2020 ES contract.
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The trade and quote examples come from the ES minute files of January 5, 2020. The open interest example comes from the OZW minute files of February 20, 2026. The following table shows the bar data of Future Options files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       83940000,142.75,142.75,142.75,142.75,1
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       82500000,,,,,0,264.75,264.75,264.75,264.75,1
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Open interest
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       9300000,109
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Forex and CFD</p>
+<div class='page-heading'>
+    <section id="3.9">
+        <h1>Data Format</h1>
+        <h2>Forex and CFD</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Forex and CFD files have the same format and differ only in the security type folder. They have quote data only and store the actual prices. The data time zone depends on the market. For example, the data time zone of the oanda market is UTC and the data time zone of the fxcm Forex market is UTC-05.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the Forex and CFD data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Tick, second, and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;securityType&gt; / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_quote.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_quote.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;securityType&gt; / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   In these paths,
+   <span class="public-file-name">
+    &lt;securityType&gt;
+   </span>
+   is
+   <span class="public-file-name">
+    forex
+   </span>
+   or
+   <span class="public-file-name">
+    cfd
+   </span>
+   . Each zip file contains one CSV file. For example,
+   <span class="public-file-name">
+    forex / oanda / minute / eurusd / 20140501_quote.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20140501_eurusd_minute_quote.csv
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with an example row from the EURUSD minute file of the oanda market on May 1, 2014:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       0,1.38676,1.38686,1.38669,1.38686,0,1.38686,1.38697,1.38680,1.38697,0
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Tick Data</h3>
+<html>
+ <body>
+  <p>
+   Forex and CFD tick files have quote ticks only. The following table describes the columns, with an example row from
+   <span class="public-file-name">
+    forex / oanda / tick / eurusd / 20140501_quote.zip
+   </span>
+   :
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+     <td>
+      292
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Price
+     </td>
+     <td>
+      Best bid price
+     </td>
+     <td>
+      1.38676
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Price
+     </td>
+     <td>
+      Best ask price
+     </td>
+     <td>
+      1.38686
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Crypto</p>
+<div class='page-heading'>
+    <section id="3.10">
+        <h1>Data Format</h1>
+        <h2>Crypto</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Crypto data has trade and quote data. The files store the actual prices. The data time zone is UTC.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the Crypto data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Tick, second, and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       crypto / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       crypto / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Each zip file contains one CSV file. For example,
+   <span class="public-file-name">
+    crypto / coinbase / minute / btceur / 20180404_trade.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20180404_btceur_minute_trade.csv
+   </span>
+   . The hour and daily zip file names include the tick type, but the CSV file names don't. For example,
+   <span class="public-file-name">
+    crypto / coinbase / daily / btcusd_trade.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    btcusd.csv
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with example rows from the BTCEUR minute files of the coinbase market on April 4, 2018:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       0,6060,6060,6048.83,6049.68,6.72374365
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       0,6049.68,6049.68,6049.68,6049.68,2.22525012,6049.69,6049.69,6049.69,6049.69,0.98912614
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Tick Data</h3>
+<html>
+ <body>
+  <p>
+   Tick files have trade ticks and quote ticks. The following table describes the columns of trade ticks:
   </p>
   <table class="qc-table table">
    <thead>
@@ -5903,27 +8000,379 @@ suspended until the primary market determines that an adequate publication or di
     </tr>
    </thead>
    <tbody>
-    <td>
-     Time
-    </td>
-    <td>
-     Second and Minute: Milliseconds since midnight in the timezone of the data format
-     <br/>
-     Hour or Daily: Date/time formatted as
-     <span class="public-file-name">
-      YYYYMMDD HH:mm
-     </span>
-    </td>
     <tr>
      <td>
-      Open Interest
+      Time
      </td>
      <td>
-      Outstanding contracts
+      Milliseconds since midnight
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Price
+     </td>
+     <td>
+      Trade price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Quantity
+     </td>
+     <td>
+      Quantity traded
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is suspicious and 0 otherwise
      </td>
     </tr>
    </tbody>
   </table>
+  <p>
+   The following table describes the columns of quote ticks:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Price
+     </td>
+     <td>
+      Best bid price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Size
+     </td>
+     <td>
+      Size of the best bid
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Price
+     </td>
+     <td>
+      Best ask price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Size
+     </td>
+     <td>
+      Size of the best ask
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is suspicious and 0 otherwise
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   LEAN also reads tick files that don't have the Suspicious column.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Data Format > Crypto Futures</p>
+<div class='page-heading'>
+    <section id="3.11">
+        <h1>Data Format</h1>
+        <h2>Crypto Futures</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Crypto Futures data has trade and quote data. The files store the actual prices. The data time zone is UTC.
+  </p>
+ </body>
+</html>
+
+<h3>Folder Structure</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the paths of the Crypto Futures data files:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Zip File
+     </th>
+     <th>
+      CSV File
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Tick, second, and minute
+     </td>
+     <td>
+      <span class="public-file-name">
+       cryptofuture / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt; / &lt;date&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;date&gt;_&lt;ticker&gt;_&lt;resolution&gt;_&lt;tickType&gt;_perp.csv
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour and daily
+     </td>
+     <td>
+      <span class="public-file-name">
+       cryptofuture / &lt;market&gt; / &lt;resolution&gt; / &lt;ticker&gt;_&lt;tickType&gt;.zip
+      </span>
+     </td>
+     <td>
+      <span class="public-file-name">
+       &lt;ticker&gt;_&lt;tickType&gt;_perp.csv
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The
+   <span class="public-file-name">
+    perp
+   </span>
+   suffix marks a perpetual contract. For a contract with an expiry date, LEAN uses
+   <span class="public-file-name">
+    &lt;contractMonth&gt;
+   </span>
+   as the suffix. For example,
+   <span class="public-file-name">
+    cryptofuture / binance / minute / adausdt / 20221213_trade.zip
+   </span>
+   contains
+   <span class="public-file-name">
+    20221213_adausdt_minute_trade_perp.csv
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Bar Data</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the bar data, with example rows from the ADAUSDT minute files of the binance market on December 13, 2022:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Data Type
+     </th>
+     <th>
+      Resolutions
+     </th>
+     <th>
+      Example
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Trade bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       0,0.3067,0.3068,0.3066,0.3068,274004
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="#3.2">
+       Quote bar
+      </a>
+     </td>
+     <td>
+      Second, minute, hour, and daily
+     </td>
+     <td>
+      <code>
+       0,0.3066,0.3067,0.3066,0.3067,88126,0.3067,0.3068,0.3067,0.3068,236586
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Tick Data</h3>
+<html>
+ <body>
+  <p>
+   Tick files have trade ticks and quote ticks. The following table describes the columns of trade ticks:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Price
+     </td>
+     <td>
+      Trade price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Quantity
+     </td>
+     <td>
+      Quantity traded
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is suspicious and 0 otherwise
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The following table describes the columns of quote ticks:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Column
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Time
+     </td>
+     <td>
+      Milliseconds since midnight
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Price
+     </td>
+     <td>
+      Best bid price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Bid Size
+     </td>
+     <td>
+      Size of the best bid
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Price
+     </td>
+     <td>
+      Best ask price
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Ask Size
+     </td>
+     <td>
+      Size of the best ask
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Suspicious
+     </td>
+     <td>
+      1 if the tick is suspicious and 0 otherwise
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   LEAN also reads tick files that don't have the Suspicious column.
+  </p>
  </body>
 </html>
 
