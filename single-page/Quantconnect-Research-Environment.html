@@ -8401,7 +8401,7 @@ Name: close, dtype: float64</pre>
     and the values are the ticker.
    </li>
    <div class="section-example-container python">
-    <pre class="python">tickers_by_id = {str(x.id): x.value for x in qb.securities.keys}</pre>
+    <pre class="python">tickers_by_id = {str(x.id): x.value for x in qb.securities.keys()}</pre>
    </div>
    <li>
     Get the values of the symbol level of the
@@ -11114,7 +11114,7 @@ all_fundamentals_history = qb.history[Fundamentals](qb.securities.keys(), start_
   </p>
   <div class="section-example-container">
    <pre class="python">for fundamentals_dict in all_fundamentals_history: # Iterate trading days
-    fundamentals = list(fundamentals_dict.values)[0]
+    fundamentals = list(fundamentals_dict.values())[0]
     end_time = fundamentals.end_time
     for fundamental in fundamentals.data: # Iterate Symbols
         if not fundamental.has_fundamental_data:
@@ -32039,20 +32039,11 @@ var allHistorySlice = qb.History(10);
 // TradeBar objects
 var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(spx, TimeSpan.FromDays(3));
 var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {spx, vix}, TimeSpan.FromDays(3));
-var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(TimeSpan.FromDays(3));
-
-// Tick objects
-var singleHistoryTicks = qb.History&lt;Tick&gt;(spx, TimeSpan.FromDays(3), Resolution.Tick);
-var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spx, vix}, TimeSpan.FromDays(3), Resolution.Tick);<br/>var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Tick);<br/></pre>
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(TimeSpan.FromDays(3));</pre>
    <pre class="python"># DataFrame of trade data (indices don't have quote data)
 single_history_df = qb.history(spx, timedelta(days=3))
 subset_history_df = qb.history([spx, vix], timedelta(days=3))
 all_history_df = qb.history(qb.securities.keys(), timedelta(days=3))
-
-# DataFrame of tick data
-single_history_tick_df = qb.history(spx, timedelta(days=3), Resolution.TICK)
-subset_history_tick_df = qb.history([spx, usb], timedelta(days=3), Resolution.TICK)
-all_history_tick_df = qb.history(qb.securities.keys(), timedelta(days=3), Resolution.TICK)
 
 # Slice objects
 all_history_slice = qb.history(timedelta(days=3))
@@ -32060,15 +32051,10 @@ all_history_slice = qb.history(timedelta(days=3))
 # TradeBar objects
 single_history_trade_bars = qb.history[TradeBar](spx, timedelta(days=3))
 subset_history_trade_bars = qb.history[TradeBar]([spx, vix], timedelta(days=3))
-all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), timedelta(days=3))
-
-# Tick objects
-single_history_ticks = qb.history[Tick](spx, timedelta(days=3), Resolution.TICK)
-subset_history_ticks = qb.history[Tick]([spx, vix], timedelta(days=3), Resolution.TICK)
-all_history_ticks = qb.history[Tick](qb.securities.keys(), timedelta(days=3), Resolution.TICK)</pre>
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), timedelta(days=3))</pre>
   </div>
   <p>
-   The preceding calls return the most recent bars or ticks, excluding periods of time when the exchange was closed.
+   The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.
   </p>
   <h4>
    Defined Period of Time
@@ -32118,12 +32104,7 @@ var allHistorySlice = qb.History(qb.Securities.Keys, startTime, endTime);
 // TradeBar objects
 var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(spx, startTime, endTime);
 var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {spx, vix}, startTime, endTime);
-var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(qb.Securities.Keys, startTime, endTime);
-
-// Tick objects
-var singleHistoryTicks = qb.History&lt;Tick&gt;(spx, startTime, endTime, Resolution.Tick);
-var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spx, vix}, startTime, endTime, Resolution.Tick);
-var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Tick);</pre>
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(qb.Securities.Keys, startTime, endTime);</pre>
    <pre class="python">start_time = datetime(2021, 1, 1)
 end_time = datetime(2021, 2, 1)
 
@@ -32132,23 +32113,13 @@ single_history_df = qb.history(spx, start_time, end_time)
 subset_history_df = qb.history([spx, vix], start_time, end_time)
 all_history_df = qb.history(qb.securities.keys(), start_time, end_time)
 
-# DataFrame of tick data
-single_history_tick_df = qb.history(spx, start_time, end_time, Resolution.TICK)
-subset_history_tick_df = qb.history([spx, vix], start_time, end_time, Resolution.TICK)
-all_history_tick_df = qb.history(qb.securities.keys(), start_time, end_time, Resolution.TICK)
-
 # TradeBar objects
 single_history_trade_bars = qb.history[TradeBar](spx, start_time, end_time)
 subset_history_trade_bars = qb.history[TradeBar]([spx, vix], start_time, end_time)
-all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), start_time, end_time)
-
-# Tick objects
-single_history_ticks = qb.history[Tick](spx, start_time, end_time, Resolution.TICK)
-subset_history_ticks = qb.history[Tick]([spx, vix], start_time, end_time, Resolution.TICK)
-all_history_ticks = qb.history[Tick](qb.securities.keys(), start_time, end_time, Resolution.TICK)</pre>
+all_history_trade_bars = qb.history[TradeBar](qb.securities.keys(), start_time, end_time)</pre>
   </div>
   <p>
-   The preceding calls return the bars or ticks that have a timestamp within the defined period of time.
+   The preceding calls return the bars that have a timestamp within the defined period of time.
   </p>
  </body>
 </html>
@@ -32219,10 +32190,11 @@ all_history_ticks = qb.history[Tick](qb.securities.keys(), start_time, end_time,
        SECOND
       </code>
      </td>
-     <td class="unsupported">
+     <td class="supported" style="color: #d97706;">
       <span class="sr-only">
-       Not supported
+       Supported for SPX, NDX, and VIX only
       </span>
+      ⚠︎
      </td>
      <td class="unsupported">
       <span class="sr-only">
@@ -32335,6 +32307,12 @@ all_history_ticks = qb.history[Tick](qb.securities.keys(), start_time, end_time,
     </tr>
    </tbody>
   </table>
+  <p>
+   <span style="color: #d97706;">
+    ⚠︎
+   </span>
+   Supported for SPX, NDX, and VIX only.
+  </p>
  </body>
 </html>
 
@@ -34028,121 +34006,6 @@ var tradeBars = allHistorySlice.Where(slice =&gt; slice.Bars.ContainsKey(spx)).S
   </div>
   <!---- ----->
   <!---- ----->
-  <h4>
-   Tick Objects
-  </h4>
-  <p>
-   If the
-   <code class="csharp">
-    History
-   </code>
-   <code class="python">
-    history
-   </code>
-   method returns
-   <code class="csharp">
-    Tick
-   </code>
-   <code class="python">
-    TICK
-   </code>
-   objects, iterate through the
-   <code class="csharp">
-    Tick
-   </code>
-   <code class="python">
-    TICK
-   </code>
-   objects to get each one.
-  </p>
-  <div class="section-example-container">
-   <pre class="csharp">foreach (var tick in singleHistoryTicks)
-{
-    Console.WriteLine(tick);
-}</pre>
-   <pre class="python">for tick in single_history_ticks:
-    print(tick)</pre>
-  </div>
-  <p>
-   If the
-   <code class="csharp">
-    History
-   </code>
-   <code class="python">
-    history
-   </code>
-   method returns
-   <code>
-    Ticks
-   </code>
-   , iterate through the
-   <code>
-    Ticks
-   </code>
-   to get the
-   <code class="csharp">
-    Tick
-   </code>
-   <code class="python">
-    TICK
-   </code>
-   of each Index. The
-   <code>
-    Ticks
-   </code>
-   may not have data for all of your Index subscriptions. To avoid issues, check if the
-   <code>
-    Ticks
-   </code>
-   object contains data for your security before you index it with the Index
-   <code>
-    Symbol
-   </code>
-   .
-  </p>
-  <div class="section-example-container">
-   <pre class="csharp">foreach (var ticks in allHistoryTicks)
-{
-    if (ticks.ContainsKey(spx))
-    {
-        var tick = ticks[spx];
-    }
-}</pre>
-   <pre class="python">for ticks in all_history_ticks:
-    if ticks.contains_key(spx):
-        ticks = ticks[spx]</pre>
-  </div>
-  <p>
-   You can also iterate through each of the
-   <code>
-    Ticks
-   </code>
-   .
-  </p>
-  <div class="section-example-container">
-   <pre class="csharp">foreach (var ticks in allHistoryTicks)
-{
-    foreach (var kvp in ticks)
-    {
-        var symbol = kvp.Key;
-        var tick = kvp.Value;
-    }
-}</pre>
-   <pre class="python">for ticks in all_history_ticks:
-    for kvp in ticks:
-        symbol = kvp.key
-        tick = kvp.value</pre>
-  </div>
-  <p>
-   The
-   <code>
-    Ticks
-   </code>
-   objects only contain the last tick of each security for that particular
-   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/key-concepts/time-modeling/timeslices">
-    timeslice
-   </a>
-  </p>
   <!---- ----->
   <!---- ----->
   <!---- ----->
@@ -51885,7 +51748,7 @@ var backtest = api.ReadBacktest(projectId, backtestId);</pre>
     Get the backtest orders.
    </li>
    <div class="section-example-container">
-    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id)</pre>
+    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id).orders</pre>
    </div>
    <p>
     The following table provides links to documentation that explains how to get the project Id and backtest Id, depending on the platform you use:
@@ -51960,7 +51823,51 @@ var backtest = api.ReadBacktest(projectId, backtestId);</pre>
     <code class="python">
      read_backtest_orders
     </code>
-    method returns a list of
+    method returns an
+    <code>
+     OrdersResponseWrapper
+    </code>
+    object. Its
+    <code class="csharp">
+     Length
+    </code>
+    <code class="python">
+     length
+    </code>
+    property is the total number of orders in the backtest. Each call returns at most 100 orders. By default, you get the first 100 orders. To get the next ones, pass
+    <code>
+     start
+    </code>
+    and
+    <code>
+     end
+    </code>
+    arguments. Note that
+    <code>
+     end
+    </code>
+    -
+    <code>
+     start
+    </code>
+    must be 100 or less.
+   </p>
+   <div class="section-example-container">
+    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id, 100, 200).orders</pre>
+   </div>
+   <p>
+    The
+    <code class="csharp">
+     Orders
+    </code>
+    <code class="python">
+     orders
+    </code>
+    property of the
+    <code>
+     OrdersResponseWrapper
+    </code>
+    is a list of
     <code>
      ApiOrderResponse
     </code>
@@ -52861,7 +52768,7 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
       </a>
      </td>
      <td>
-      <a href="https://www.quantconnect.com/docs/v2//local-platform/live-trading/getting-started#11-Get-Deployment-Id">
+      <a href="https://www.quantconnect.com/docs/v2//local-platform/live-trading/getting-started#10-Get-Deployment-Id">
        Get Deployment Id
       </a>
      </td>
@@ -52910,7 +52817,7 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
     Get the live trading orders.
    </li>
    <div class="section-example-container">
-    <pre class="python">orders = api.read_live_orders(project_id)</pre>
+    <pre class="python">orders = api.read_live_orders(project_id).orders</pre>
    </div>
    <p>
     The following table provides links to documentation that explains how to get the project Id, depending on the platform you use:
@@ -52960,35 +52867,6 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
     </tbody>
    </table>
    <p>
-    By default, the orders with an ID between 0 and 100. To get orders with an ID greater than 100, pass
-    <code>
-     start
-    </code>
-    and
-    <code>
-     end
-    </code>
-    arguments to the
-    <code class="csharp">
-     ReadLiveOrders
-    </code>
-    <code class="python">
-     read_live_orders
-    </code>
-    method. Note that
-    <code>
-     end
-    </code>
-    -
-    <code>
-     start
-    </code>
-    must be less than 100.
-   </p>
-   <div class="section-example-container">
-    <pre class="python">orders = api.read_live_orders(project_id, 100, 150)</pre>
-   </div>
-   <p>
     The
     <code class="csharp">
      ReadLiveOrders
@@ -52996,13 +52874,57 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
     <code class="python">
      read_live_orders
     </code>
-    method returns a list of
+    method returns an
     <code>
-     Order
+     OrdersResponseWrapper
+    </code>
+    object. Its
+    <code class="csharp">
+     Length
+    </code>
+    <code class="python">
+     length
+    </code>
+    property is the total number of orders. Each call returns at most 100 orders. By default, you get the first 100 orders. To get the next ones, pass
+    <code>
+     start
+    </code>
+    and
+    <code>
+     end
+    </code>
+    arguments. Note that
+    <code>
+     end
+    </code>
+    -
+    <code>
+     start
+    </code>
+    must be 100 or less.
+   </p>
+   <div class="section-example-container">
+    <pre class="python">orders = api.read_live_orders(project_id, start=100, end=200).orders</pre>
+   </div>
+   <p>
+    The
+    <code class="csharp">
+     Orders
+    </code>
+    <code class="python">
+     orders
+    </code>
+    property of the
+    <code>
+     OrdersResponseWrapper
+    </code>
+    is a list of
+    <code>
+     ApiOrderResponse
     </code>
     objects, which have the following properties:
    </p>
-   <div data-tree="QuantConnect.Orders.Order">
+   <div data-tree="QuantConnect.Orders.ApiOrderResponse">
    </div>
    <li>
     Organize the trade times and prices for each security into a dictionary.
@@ -53568,7 +53490,7 @@ for deployment in deployments:
     return all;
 }
 
-var orders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
+var orders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, start: s, end: e).Orders);
 Console.WriteLine($"Orders: {orders.Count}");</pre>
     <pre class="python">from time import sleep
 
@@ -53595,7 +53517,7 @@ def read_all_orders(fetch_window):
         start += 100
     return orders
 
-orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e))
+orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, start=s, end=e).orders)
 print(f'Orders: {len(orders)}')</pre>
    </div>
    <p>
@@ -53787,7 +53709,7 @@ Console.WriteLine($"Deployments: {deployments.Count}");
 var orders = new List&lt;ApiOrderResponse&gt;();
 for (var attempt = 0; attempt &lt; 10; attempt++)
 {
-    orders = api.ReadLiveOrders(projectId, 0, 100);
+    orders = api.ReadLiveOrders(projectId, start: 0, end: 100).Orders;
     if (orders.Any()) break;
     Thread.Sleep(10000);
 }
@@ -53796,7 +53718,7 @@ for (var attempt = 0; attempt &lt; 10; attempt++)
 var start = 100;
 while (true)
 {
-    var window = api.ReadLiveOrders(projectId, start, start + 100);
+    var window = api.ReadLiveOrders(projectId, start: start, end: start + 100).Orders;
     if (!window.Any()) break;
     orders.AddRange(window);
     start += 100;
@@ -53839,7 +53761,7 @@ print(f'Deployments: {len(deployments)}')
 # Get the first window of orders. Retry while it is empty, since the orders may still be loading.
 orders = []
 for attempt in range(10):
-    orders = api.read_live_orders(project_id, 0, 100)
+    orders = api.read_live_orders(project_id, start=0, end=100).orders
     if orders:
         break
     sleep(10)
@@ -53847,7 +53769,7 @@ for attempt in range(10):
 # Get the remaining orders. A single project-level loop spans every deployment.
 start = 100
 while True:
-    window = api.read_live_orders(project_id, start, start + 100)
+    window = api.read_live_orders(project_id, start=start, end=start + 100).orders
     if not window:
         break
     orders.extend(window)
@@ -54486,8 +54408,8 @@ print(f"Annualized returns DTW: {annualized_dtw:.3f}")</pre>
     return all;
 }
 
-var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
-var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e));
+var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, start: s, end: e).Orders);
+var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e).Orders);
 Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");</pre>
     <pre class="python">from time import sleep
 
@@ -54514,8 +54436,8 @@ def read_all_orders(fetch_window):
         start += 100
     return orders
 
-live_orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e))
-backtest_orders = read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e))
+live_orders = read_all_orders(lambda s, e: api.read_live_orders(project_id, start=s, end=e).orders)
+backtest_orders = read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e).orders)
 print(f"Live orders: {len(live_orders)}, OOS orders: {len(backtest_orders)}")</pre>
    </div>
    <p>
@@ -54742,8 +54664,8 @@ List&lt;ApiOrderResponse&gt; ReadAllOrders(Func&lt;int, int, List&lt;ApiOrderRes
     return all;
 }
 
-var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, s, e));
-var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e));
+var liveOrders = ReadAllOrders((s, e) =&gt; api.ReadLiveOrders(projectId, start: s, end: e).Orders);
+var backtestOrders = ReadAllOrders((s, e) =&gt; api.ReadBacktestOrders(projectId, backtestId, s, e).Orders);
 
 Console.WriteLine($"Start: {startDate}, Starting cash: {startingCash}, End: {endDate}");
 Console.WriteLine($"Live orders: {liveOrders.Count}, OOS orders: {backtestOrders.Count}");
@@ -54925,8 +54847,8 @@ def read_all_orders(fetch_window):
         start += 100
     return orders
 
-live_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_live_orders(project_id, s, e)))
-backtest_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e)))
+live_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_live_orders(project_id, start=s, end=e).orders))
+backtest_by_symbol = group_by_symbol(read_all_orders(lambda s, e: api.read_backtest_orders(project_id, backtest_id, s, e).orders))
 
 for symbol in set(live_by_symbol) | set(backtest_by_symbol):
     live = live_by_symbol.get(symbol, OrderData())
