@@ -97,7 +97,7 @@ Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/agents#08-Research-Pip
 
 ### How do I teach agents my own rules, like risk limits or coding conventions?
 
-Add a custom skill to the `.agent/skills/` folder of your organization's Object Store, with one folder and one `skill.md` file per skill. The `skill.md` file starts with YAML frontmatter that has a name and a description, followed by Markdown instructions. Agents load a skill only when its description matches the task, and every agent in the organization can use it.
+Add a custom skill to the `.assistant/skills/` folder of your organization's Object Store, with one folder and one `skill.md` file per skill. The `skill.md` file starts with YAML frontmatter that has a name and a description, followed by Markdown instructions. Agents load a skill only when its description matches the task, and every agent in the organization can use it.
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/agents#14-Custom-Skills>
 
@@ -109,7 +109,7 @@ Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/agents#15-Custom-Memor
 
 ### Can agents start new projects from my own template?
 
-Yes. Put each template's project files in a subfolder of `.agent/templates/python/` or `.agent/templates/csharp/` in your organization's Object Store, and register it in that folder's `templates.json` file. Each entry has a name, folder, description, and tags array, and the folder must match the subfolder name. Write asset class tags in PascalCase, such as `Equity`, `Future`, `Option`, or `Crypto`.
+Yes. Put each template's project files in a subfolder of `.assistant/templates/python/` or `.assistant/templates/csharp/` in your organization's Object Store, and register it in that folder's `templates.json` file. Each entry has a name, folder, description, and tags array, and the folder must match the subfolder name. Write asset class tags in PascalCase, such as `Equity`, `Future`, `Option`, or `Crypto`.
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/agents#16-Custom-Templates>
 

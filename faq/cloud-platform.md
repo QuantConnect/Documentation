@@ -1686,9 +1686,9 @@ Yes, a live algorithm can access Object Store changes within minutes, so make su
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/object-store>
 
-### What is the .agent folder in my Object Store?
+### What is the .assistant folder in my Object Store?
 
-The `.agent` folder is a reserved folder that QuantConnect AI agents read. Its `skills` and `templates` subfolders hold the instructions and project scaffolds you define for your organization. The files are shared across the organization. The agents save each project's memory in the `.assistant/memories/<project_id>/memory.md` file.
+The `.assistant` folder is a reserved folder that QuantConnect AI agents read. Its `skills`, `memories`, and `templates` subfolders hold the instructions, per-project facts, and project scaffolds for your organization. The files are shared across the organization.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/object-store>
 
