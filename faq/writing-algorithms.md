@@ -2098,9 +2098,9 @@ Save the state to the Object Store and read it back in `initialize`. For example
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/object-store>
 
-### What is the `.agent` folder in my Object Store?
+### What is the `.assistant` folder in my Object Store?
 
-The `.agent` folder is a reserved folder that the QuantConnect AI agents read. Its `skills` and `templates` subfolders hold the instructions and project scaffolds you define for your organization. Everyone in your organization shares these files. The agents save each project's memory in the `.assistant/memories/<project_id>/memory.md` file.
+The `.assistant` folder is a reserved folder that the QuantConnect AI agents read. Its `skills`, `memories`, and `templates` subfolders hold the instructions, per-project facts, and project scaffolds for your organization. Everyone in your organization shares these files.
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/object-store>
 
