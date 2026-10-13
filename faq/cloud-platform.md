@@ -1688,7 +1688,7 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/object-store>
 
 ### What is the .agent folder in my Object Store?
 
-The `.agent` folder is a reserved folder that QuantConnect AI agents read. Its `skills`, `memories`, and `templates` subfolders hold the instructions, remembered facts, and project scaffolds you define for your organization. The files are shared across the organization.
+The `.agent` folder is a reserved folder that QuantConnect AI agents read. Its `skills` and `templates` subfolders hold the instructions and project scaffolds you define for your organization. The files are shared across the organization. The agents save each project's memory in the `.assistant/memories/<project_id>/memory.md` file.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/object-store>
 

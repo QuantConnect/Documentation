@@ -101,9 +101,9 @@ Add a custom skill to the `.agent/skills/` folder of your organization's Object 
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/agents#14-Custom-Skills>
 
-### How do I make agents remember facts about my organization across conversations?
+### How do I make agents remember facts about my project across conversations?
 
-Write the facts to the `.agent/memories/memory.md` file in your organization's Object Store, as a plain Markdown list or short notes. Agents that use memory load the file at the start of each run, and manual edits take effect on the next run. Agents also add new facts to the file as they learn them.
+Write the facts to the `.assistant/memories/<project_id>/memory.md` file in your organization's Object Store, as a plain Markdown list or short notes. Agents that use memory load the file at the start of each run, and manual edits take effect on the next run. Agents also add new facts to the file as they learn them.
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/agents#15-Custom-Memories>
 
