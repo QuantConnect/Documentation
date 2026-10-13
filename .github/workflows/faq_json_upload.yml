@@ -1,0 +1,37 @@
+name: Upload FAQ JSON
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'faq/**'
+      - 'code-generators/faq_json_generator.py'
+  workflow_dispatch:
+
+jobs:
+  upload-faq:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Install dependencies (pip)
+        run: pip install markdown==3.8.2 beautifulsoup4==4.14.3
+
+      - name: Generate FAQ JSON
+        run: python code-generators/faq_json_generator.py faq.en.json
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: us-west-1
+
+      # www reads it from https://s3.amazonaws.com/cdn.quantconnect.com/web/cache/faq.en.json
+      - name: Copy FAQ JSON to the CDN
+        run: aws s3 cp faq.en.json s3://cdn.quantconnect.com/web/cache/faq.en.json --acl bucket-owner-full-control --content-type "application/json" --cache-control "max-age=300"
+
+      - name: Copy FAQ Markdown files to the CDN
+        run: aws s3 sync faq s3://cdn.quantconnect.com/web/cache/faq --exclude "*" --include "*.md" --delete --acl bucket-owner-full-control --content-type "text/markdown; charset=utf-8" --cache-control "max-age=300"
