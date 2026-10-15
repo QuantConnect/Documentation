@@ -8,6 +8,7 @@ Usage:
     python API-Reference-Code-Generator.py
 """
 
+import html
 import json
 import pathlib
 
@@ -844,7 +845,27 @@ class APIReferenceGenerator:
                 elif code == "default":
                     f.write("<h4>Default Generic Error</h4>\n")
 
+                csv = props.get("content", {}).get("text/csv")
+                if csv:
+                    f.write(self._build_csv_table(props, csv["schema"]))
+                    continue
+
                 f.write(self._build_schema_tables(props))
+
+    @staticmethod
+    def _build_csv_table(wrapper, schema):
+        """Build the table for a response that is a CSV file."""
+        example = html.escape(schema["examples"][0], quote=False)
+        return (
+            '<table class="table qc-table">\n<thead>\n<tr>\n'
+            f'<th colspan="2"><code>text/csv</code> - {wrapper["description"]}</th>\n'
+            "</tr>\n</thead>\n<tr>\n"
+            f'<td width="20%">content</td> <td> <code>string</code> <br/> {schema["description"]}</td>\n'
+            "</tr>\n<tr>\n"
+            '<td width="20%">Example</td>\n<td>\n'
+            f'<div class="cli section-example-container"><pre>\n{example}</pre>\n</div>\n'
+            "</td>\n</tr>\n</table>\n"
+        )
 
 
 # ------------------------------------------------------------------ #

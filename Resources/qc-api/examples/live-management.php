@@ -97,5 +97,77 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] >= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') >= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start >= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
 </div>
