@@ -1039,6 +1039,66 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readLiveAlgorithmTrades
+  /live/export/orders:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 07 Live Management
+        - 02 Read Live Algorithm
+        - 08 Export Orders
+      summary: Download the orders of all the live deployments of a project as a CSV file.
+      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Orders</span> on the live results page. The response contains at most 750 days of orders. If the date range is longer, the response contains the last 750 days of the range. To get older orders, call the endpoint again with an earlier <code>end</code> or call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders'>/live/orders/read</a> endpoint. The response can contain orders outside of the date range. To get an exact range, filter the rows by their <code>Time</code> value."
+      requestBody:
+        description: Download the orders of a project for the date range provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportLiveOrdersRequest'
+        required: true
+      responses:
+        "200":
+          description: Orders of the live deployments of the project, sorted by time.
+          content:
+            text/csv:
+              schema:
+                type: string
+                description: "One row per order. The Time column is in UTC."
+                examples:
+                  - "Deploy,Time,Symbol,Price,Quantity,Type,Status,Value,Tag\nL-6e9d8a78f5af89d401f630585be90e43,2026-10-08T14:20:04.8005773Z,SPY,672.35,10,\"Market\",\"Filled\",6723.5,\"\" "
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportLiveAlgorithmOrders
+  /live/export/trades:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 07 Live Management
+        - 02 Read Live Algorithm
+        - 09 Export Trades
+      summary: Download the closed trades of all the live deployments of a project as a CSV file.
+      description: "The CSV file contains the closed trades that the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/trades'>/live/trades/read</a> endpoint returns for the project. The response contains the trades with an entry time at or after <code>start</code>."
+      requestBody:
+        description: Download the closed trades of a project from the start time provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportLiveTradesRequest'
+        required: true
+      responses:
+        "200":
+          description: Closed trades of the live deployments of the project.
+          content:
+            text/csv:
+              schema:
+                type: string
+                description: "One row per closed trade. The Entry Time and Exit Time columns are in UTC."
+                examples:
+                  - "Entry Time,Symbols,Exit Time,Direction,Entry Price,Exit Price,Quantity,P&L,Fees,MAE,MFE,Drawdown,IsWin,Order Ids\n2026-10-09T14:17:04.8008663Z,\"SPY\",2026-10-09T18:06:03.8005312Z,Buy,670.08,672.61,10,25.3,2,-8.9,25.3,8.9,1,\"\t276,308\" "
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportLiveAlgorithmTrades
   /live/insights/read:
     post:
       tags:
@@ -6981,11 +7041,14 @@ components:
         - projectId
       type: object
       properties:
-        algorithmId:
+        deployId:
           type: string
-          description: Deploy Id (Algorithm Id) of the live running algorithm.
           examples:
             - L-6e9d8a78f5af89d401f630585be90e43
+          description: >-
+            Deploy Id of the live algorithm. When you provide it, the response contains the orders
+            of that deployment. When you omit it, the response contains the orders of every
+            deployment of the project.
         start:
           type: integer
           examples:
@@ -7002,6 +7065,43 @@ components:
             - 23456789
           description: Id of the project from which to read the live algorithm.
       description: Request to read orders from a live algorithm.
+    ExportLiveOrdersRequest:
+      required:
+        - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project from which to download the orders.
+        start:
+          type: integer
+          examples:
+            - 1727222400
+          description: Start of the date range in Unix time (seconds). The default value is one hour before the first deployment of the project.
+        end:
+          type: integer
+          examples:
+            - 1792022400
+          description: End of the date range in Unix time (seconds). The default value is the current time.
+      description: Request to download the orders of the live deployments of a project.
+    ExportLiveTradesRequest:
+      required:
+        - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project from which to download the closed trades.
+        start:
+          type: integer
+          examples:
+            - 1727222400
+          description: Earliest entry time of the trades in Unix time (seconds). The default value is one hour before the first deployment of the project.
+      description: Request to download the closed trades of the live deployments of a project.
     ReadLiveTradesRequest:
       required:
         - start
