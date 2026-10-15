@@ -97,5 +97,23 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
 </div>

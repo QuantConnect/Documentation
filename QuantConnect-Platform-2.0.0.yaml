@@ -614,6 +614,66 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readBacktestTrades
+  /backtests/export/orders:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 07 Export Orders
+      summary: Download the orders of a backtest as a CSV file.
+      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Orders</span> on the backtest results page. To get all the properties of the orders, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/orders'>/backtests/orders/read</a> endpoint."
+      requestBody:
+        description: Download the orders of the backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportBacktestOrdersRequest'
+        required: true
+      responses:
+        "200":
+          description: Orders of the backtest, sorted by time.
+          content:
+            text/csv:
+              schema:
+                type: string
+                description: "One row per order. The Time column is in UTC."
+                examples:
+                  - "Time,Symbol,Price,Quantity,Type,Status,Value,Tag\n2024-01-02T15:00:00Z,IWM,195.236280785,500,Market,Filled,97618.1403925,\"\" "
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportBacktestOrders
+  /backtests/export/trades:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 08 Export Trades
+      summary: Download the closed trades of a backtest as a CSV file.
+      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Trades</span> on the backtest results page. It contains the closed trades that the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/trades'>/backtests/trades/read</a> endpoint returns, sorted by entry time."
+      requestBody:
+        description: Download the closed trades of the backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportBacktestTradesRequest'
+        required: true
+      responses:
+        "200":
+          description: Closed trades of the backtest, sorted by entry time.
+          content:
+            text/csv:
+              schema:
+                type: string
+                description: "One row per closed trade. The Entry Time and Exit Time columns are in UTC."
+                examples:
+                  - "Entry Time,Symbols,Exit Time,Direction,Entry Price,Exit Price,Quantity,P&L,Fees,MAE,MFE,Drawdown,IsWin,Order Ids\n2024-01-02T15:00:00Z,\"IWM\",2024-01-02T19:54:00Z,Buy,195.236280785,193.28,500,-978.14,5,-1029.04,203.87,1232.91,0,\"\t1,3\" "
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportBacktestTrades
   /backtests/read/report:
     post:
       tags:
@@ -7311,6 +7371,28 @@ components:
             - 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to read the closed trades.
       description: Request to read closed trades from a backtest.
+    ExportBacktestOrdersRequest:
+      required:
+        - backtestId
+      type: object
+      properties:
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to download the orders.
+      description: Request to download the orders of a backtest.
+    ExportBacktestTradesRequest:
+      required:
+        - backtestId
+      type: object
+      properties:
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to download the closed trades.
+      description: Request to download the closed trades of a backtest.
     ReadBacktestInsightsRequest:
       required:
         - start
