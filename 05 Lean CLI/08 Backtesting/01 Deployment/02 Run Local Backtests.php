@@ -44,6 +44,8 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </li>
 </ol>
 
+<p>To view the results in the terminal while the backtest runs, run the backtest from the <a href="/docs/v2/lean-cli/projects/ui">terminal UI</a>.</p>
+
 <h4>Custom LEAN Engine</h4>
 <p>
     Follow these steps to run a local backtest with a custom version of the LEAN engine:
