@@ -1,0 +1,227 @@
+<p>The US Bank Financials dataset enables you to monitor the funding, asset quality, and capital of US banks. Examples include the following strategies:</p>
+
+<ul>
+    <li>Ranking listed banks by the share of their deposits that is uninsured</li>
+    <li>Measuring unrealized losses on held-to-maturity securities against regulatory capital</li>
+    <li>Tracking deposit flows across the banks of one state, listed or not</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm buys BAC when the share of uninsured deposits across its banks falls from the previous quarter. Otherwise, it liquidates the position.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class FDICBankFinancialsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("BAC", Resolution.DAILY).symbol
+        self.dataset_symbol = self.add_data(FDICBankFinancials, self.equity).symbol
+        self.previous_share = None
+
+    def on_data(self, slice):
+        reports = slice.get(FDICBankFinancials).get(self.dataset_symbol)
+        if not reports:
+            return
+
+        # Sum the latest quarter over every bank the company owns.
+        latest = max(report.report_date for report in reports.data)
+        quarter = [report for report in reports.data if report.report_date == latest]
+        deposits = sum(report.domestic_deposits or 0 for report in quarter)
+        if not deposits:
+            return
+        share = sum(report.estimated_uninsured_deposits or 0 for report in quarter) / deposits
+
+        # Hold the stock while the share of uninsured deposits falls.
+        if self.previous_share is None or share &lt;= self.previous_share:
+            self.set_holdings(self.equity, 1)
+        else:
+            self.liquidate(self.equity)
+        self.previous_share = share</pre>
+<pre class="csharp">using System;
+using System.Linq;
+using QuantConnect;
+using QuantConnect.Algorithm;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+
+    public class FDICBankFinancialsDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _equity, _datasetSymbol;
+        private decimal? _previousShare;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2021, 3, 31);
+            SetCash(100000);
+
+            _equity = AddEquity("BAC", Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;FDICBankFinancials&gt;(_equity).Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            if (!slice.TryGet&lt;FDICBankFinancials&gt;(_datasetSymbol, out var reports))
+            {
+                return;
+            }
+
+            // Sum the latest quarter over every bank the company owns.
+            var records = reports.Data.OfType&lt;FDICBankFinancial&gt;().ToList();
+            var latest = records.Max(report =&gt; report.ReportDate);
+            var quarter = records.Where(report =&gt; report.ReportDate == latest).ToList();
+            var deposits = quarter.Sum(report =&gt; report.DomesticDeposits ?? 0m);
+            if (deposits == 0m)
+            {
+                return;
+            }
+            var share = quarter.Sum(report =&gt; report.EstimatedUninsuredDeposits ?? 0m) / deposits;
+
+            // Hold the stock while the share of uninsured deposits falls.
+            if (_previousShare == null || share &lt;= _previousShare)
+            {
+                SetHoldings(_equity, 1);
+            }
+            else
+            {
+                Liquidate(_equity);
+            }
+            _previousShare = share;
+        }
+    }</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm emits an up insight for BAC when the share of uninsured deposits across its banks falls from the previous quarter. Otherwise, it emits a flat insight.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class FDICBankFinancialsFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.set_universe_selection(ManualUniverseSelectionModel(
+            [Symbol.create("BAC", SecurityType.EQUITY, Market.USA)]))
+
+        self.add_alpha(UninsuredDepositsAlphaModel())
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class UninsuredDepositsAlphaModel(AlphaModel):
+
+    def __init__(self):
+        self._dataset_symbols = {}
+        self._previous_share = {}
+
+    def update(self, algorithm, data):
+        insights = []
+        for dataset_symbol, reports in data.get(FDICBankFinancials).items():
+            equity = dataset_symbol.underlying
+            latest = max(report.report_date for report in reports.data)
+            quarter = [report for report in reports.data if report.report_date == latest]
+            deposits = sum(report.domestic_deposits or 0 for report in quarter)
+            if not deposits:
+                continue
+            share = sum(report.estimated_uninsured_deposits or 0 for report in quarter) / deposits
+
+            # Emit an up insight while the share of uninsured deposits falls.
+            previous = self._previous_share.get(equity)
+            direction = InsightDirection.UP if previous is None or share &lt;= previous else InsightDirection.FLAT
+            insights.append(Insight.price(equity, timedelta(days=90), direction))
+            self._previous_share[equity] = share
+        return insights
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._dataset_symbols[security.symbol] = algorithm.add_data(FDICBankFinancials, security.symbol).symbol
+        for security in changes.removed_securities:
+            dataset_symbol = self._dataset_symbols.pop(security.symbol, None)
+            if dataset_symbol:
+                algorithm.remove_security(dataset_symbol)</pre>
+<pre class="csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+using QuantConnect;
+using QuantConnect.Algorithm;
+using QuantConnect.Algorithm.Framework.Alphas;
+using QuantConnect.Algorithm.Framework.Execution;
+using QuantConnect.Algorithm.Framework.Portfolio;
+using QuantConnect.Algorithm.Framework.Selection;
+using QuantConnect.Data;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.DataSource;
+
+    public class FDICBankFinancialsFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2021, 3, 31);
+            SetCash(100000);
+
+            UniverseSettings.Resolution = Resolution.Daily;
+            SetUniverseSelection(new ManualUniverseSelectionModel(
+                QuantConnect.Symbol.Create("BAC", SecurityType.Equity, Market.USA)));
+
+            AddAlpha(new UninsuredDepositsAlphaModel());
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class UninsuredDepositsAlphaModel : AlphaModel
+    {
+        private readonly Dictionary&lt;Symbol, Symbol&gt; _datasetSymbols = new();
+        private readonly Dictionary&lt;Symbol, decimal&gt; _previousShare = new();
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+        {
+            var insights = new List&lt;Insight&gt;();
+            foreach (var kvp in data.Get&lt;FDICBankFinancials&gt;())
+            {
+                var equity = kvp.Key.Underlying;
+                var records = kvp.Value.Data.OfType&lt;FDICBankFinancial&gt;().ToList();
+                var latest = records.Max(report =&gt; report.ReportDate);
+                var quarter = records.Where(report =&gt; report.ReportDate == latest).ToList();
+                var deposits = quarter.Sum(report =&gt; report.DomesticDeposits ?? 0m);
+                if (deposits == 0m)
+                {
+                    continue;
+                }
+                var share = quarter.Sum(report =&gt; report.EstimatedUninsuredDeposits ?? 0m) / deposits;
+
+                // Emit an up insight while the share of uninsured deposits falls.
+                var rising = !_previousShare.TryGetValue(equity, out var previous) || share &lt;= previous;
+                insights.Add(Insight.Price(equity, TimeSpan.FromDays(90), rising ? InsightDirection.Up : InsightDirection.Flat));
+                _previousShare[equity] = share;
+            }
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                _datasetSymbols[security.Symbol] = algorithm.AddData&lt;FDICBankFinancials&gt;(security.Symbol).Symbol;
+            }
+            foreach (var security in changes.RemovedSecurities)
+            {
+                if (_datasetSymbols.Remove(security.Symbol, out var datasetSymbol))
+                {
+                    algorithm.RemoveSecurity(datasetSymbol);
+                }
+            }
+        }
+    }</pre>
+</div>

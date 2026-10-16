@@ -1,0 +1,279 @@
+<p>The US SEC 13F Whales dataset enables you to follow what large institutional investors hold and how their positions change. Examples include the following strategies:</p>
+
+<ul>
+    <li>Following the quarterly positions of specific fund managers on the premise that they are more informed</li>
+    <li>Buying the securities that institutions are accumulating and selling the ones they are reducing</li>
+    <li>Avoiding crowded securities that many managers hold at the same time</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm buys AAPL when Parnassus Investments reports more shares of it than in the previous quarter. Otherwise, it liquidates the position.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class SEC13FDataAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 8, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.add_data(SEC13FHoldings, self.equity)
+
+        self.shares_by_quarter = {}
+
+    def on_data(self, slice):
+        for _, point in slice.get(SEC13FHoldings).items():
+            for holding in point:
+                # Sum the share lines Parnassus Investments reports for each quarter.
+                if (holding.manager_cik != 948669 or holding.form_type != "13F-HR"
+                        or holding.amount_type != "SH" or holding.put_call is not None):
+                    continue
+
+                quarter = holding.period_end
+                self.shares_by_quarter[quarter] = self.shares_by_quarter.get(quarter, 0) + (holding.amount or 0)
+                self.log(f"{self.time:%Y-%m-%d} {holding.manager_name} reports {holding.amount:,.0f} shares "
+                         f"for {quarter:%Y-%m-%d}")
+
+        quarters = [self.shares_by_quarter[q] for q in sorted(self.shares_by_quarter)]
+        if len(quarters) &lt; 2 or slice.bars.count == 0:
+            return
+
+        # Buy when the manager adds shares, otherwise liquidate.
+        if quarters[-1] &gt; quarters[-2]:
+            self.set_holdings(self.equity, 1)
+        else:
+            self.liquidate(self.equity)</pre>
+<pre class="csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+using QuantConnect;
+using QuantConnect.Algorithm;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+
+    public class SEC13FDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _equity;
+        private readonly Dictionary&lt;DateTime, decimal&gt; _sharesByQuarter = new();
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 8, 31);
+            SetCash(100000);
+
+            _equity = AddEquity("AAPL", Resolution.Daily).Symbol;
+            AddData&lt;SEC13FHoldings&gt;(_equity);
+        }
+
+        public override void OnData(Slice slice)
+        {
+            foreach (var (_, point) in slice.Get&lt;SEC13FHoldings&gt;())
+            {
+                // Sum the share lines Parnassus Investments reports for each quarter.
+                foreach (var holding in point.OfType&lt;SEC13FHolding&gt;().Where(holding =&gt;
+                             holding.ManagerCik == 948669 &amp;&amp; holding.FormType == "13F-HR" &amp;&amp;
+                             holding.AmountType == "SH" &amp;&amp; !holding.PutCall.HasValue))
+                {
+                    _sharesByQuarter.TryGetValue(holding.PeriodEnd, out var reported);
+                    _sharesByQuarter[holding.PeriodEnd] = reported + (holding.Amount ?? 0);
+                    Log($"{Time:yyyy-MM-dd} {holding.ManagerName} reports {holding.Amount:N0} shares " +
+                        $"for {holding.PeriodEnd:yyyy-MM-dd}");
+                }
+            }
+
+            var quarters = _sharesByQuarter.OrderBy(entry =&gt; entry.Key).Select(entry =&gt; entry.Value).ToList();
+            if (quarters.Count &lt; 2 || slice.Bars.Count == 0)
+            {
+                return;
+            }
+
+            // Buy when the manager adds shares, otherwise liquidate.
+            if (quarters[^1] &gt; quarters[^2])
+            {
+                SetHoldings(_equity, 1);
+            }
+            else
+            {
+                Liquidate(_equity);
+            }
+        }
+    }</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm compares how many managers report AAPL in two consecutive quarters once their 45-day filing deadline has passed. It emits an up insight when the later quarter has more managers and a down insight when it has fewer.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class SEC13FFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2020, 12, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.set_universe_selection(ManualUniverseSelectionModel(
+            [Symbol.create("AAPL", SecurityType.EQUITY, Market.USA)]))
+
+        self.add_alpha(SEC13FCrowdingAlphaModel())
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class SEC13FCrowdingAlphaModel(AlphaModel):
+
+    # Count a quarter only after its 45-day filing deadline has passed.
+    FILING_DEADLINE = timedelta(days=45)
+
+    def __init__(self):
+        self._holdings = {}
+        self._managers = {}
+        self._emitted = set()
+
+    def update(self, algorithm, data):
+        insights = []
+
+        for holdings_symbol, point in data.get(SEC13FHoldings).items():
+            equity = holdings_symbol.underlying
+            by_period = self._managers.setdefault(equity, {})
+
+            for holding in point:
+                if (holding.form_type != "13F-HR" or holding.amount_type != "SH"
+                        or holding.put_call is not None
+                        or algorithm.time &gt; holding.period_end + self.FILING_DEADLINE):
+                    continue
+                by_period.setdefault(holding.period_end, set()).add(holding.manager_cik)
+
+            closed = [p for p in sorted(by_period) if algorithm.time &gt;= p + self.FILING_DEADLINE]
+            if len(closed) &lt; 2 or (equity, closed[-1]) in self._emitted:
+                continue
+
+            self._emitted.add((equity, closed[-1]))
+            latest, previous = len(by_period[closed[-1]]), len(by_period[closed[-2]])
+            if latest == previous:
+                continue
+
+            algorithm.log(f"{algorithm.time:%Y-%m-%d} {equity.value}: {previous} -&gt; {latest} managers")
+            direction = InsightDirection.UP if latest &gt; previous else InsightDirection.DOWN
+            insights.append(Insight.price(equity, timedelta(days=30), direction))
+
+        return insights
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._holdings[security.symbol] = algorithm.add_data(SEC13FHoldings, security.symbol).symbol
+
+        for security in changes.removed_securities:
+            holdings_symbol = self._holdings.pop(security.symbol, None)
+            if holdings_symbol is not None:
+                algorithm.remove_security(holdings_symbol)</pre>
+<pre class="csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+using QuantConnect;
+using QuantConnect.Algorithm;
+using QuantConnect.Algorithm.Framework.Alphas;
+using QuantConnect.Algorithm.Framework.Execution;
+using QuantConnect.Algorithm.Framework.Portfolio;
+using QuantConnect.Algorithm.Framework.Selection;
+using QuantConnect.Data;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.DataSource;
+
+    public class SEC13FFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2020, 12, 31);
+            SetCash(100000);
+
+            UniverseSettings.Resolution = Resolution.Daily;
+            SetUniverseSelection(new ManualUniverseSelectionModel(
+                QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)));
+
+            AddAlpha(new SEC13FCrowdingAlphaModel());
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class SEC13FCrowdingAlphaModel : AlphaModel
+    {
+        // Count a quarter only after its 45-day filing deadline has passed.
+        private static readonly TimeSpan FilingDeadline = TimeSpan.FromDays(45);
+
+        private readonly Dictionary&lt;Symbol, Symbol&gt; _holdings = new();
+        private readonly Dictionary&lt;Symbol, Dictionary&lt;DateTime, HashSet&lt;int&gt;&gt;&gt; _managers = new();
+        private readonly HashSet&lt;(Symbol, DateTime)&gt; _emitted = new();
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+        {
+            var insights = new List&lt;Insight&gt;();
+
+            foreach (var (holdingsSymbol, point) in data.Get&lt;SEC13FHoldings&gt;())
+            {
+                var equity = holdingsSymbol.Underlying;
+                if (!_managers.TryGetValue(equity, out var byPeriod))
+                {
+                    _managers[equity] = byPeriod = new Dictionary&lt;DateTime, HashSet&lt;int&gt;&gt;();
+                }
+
+                foreach (var holding in point.OfType&lt;SEC13FHolding&gt;().Where(holding =&gt;
+                             holding.FormType == "13F-HR" &amp;&amp; holding.AmountType == "SH" &amp;&amp;
+                             !holding.PutCall.HasValue &amp;&amp;
+                             algorithm.Time &lt;= holding.PeriodEnd + FilingDeadline))
+                {
+                    if (!byPeriod.TryGetValue(holding.PeriodEnd, out var managers))
+                    {
+                        byPeriod[holding.PeriodEnd] = managers = new HashSet&lt;int&gt;();
+                    }
+
+                    managers.Add(holding.ManagerCik);
+                }
+
+                var closed = byPeriod.Keys.Where(p =&gt; algorithm.Time &gt;= p + FilingDeadline)
+                    .OrderBy(p =&gt; p).ToList();
+                if (closed.Count &lt; 2 || !_emitted.Add((equity, closed[^1])))
+                {
+                    continue;
+                }
+
+                var latest = byPeriod[closed[^1]].Count;
+                var previous = byPeriod[closed[^2]].Count;
+                if (latest == previous)
+                {
+                    continue;
+                }
+
+                algorithm.Log($"{algorithm.Time:yyyy-MM-dd} {equity.Value}: {previous} -&gt; {latest} managers");
+                var direction = latest &gt; previous ? InsightDirection.Up : InsightDirection.Down;
+                insights.Add(Insight.Price(equity, TimeSpan.FromDays(30), direction));
+            }
+
+            return insights;
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                _holdings[security.Symbol] = algorithm.AddData&lt;SEC13FHoldings&gt;(security.Symbol).Symbol;
+            }
+
+            foreach (var security in changes.RemovedSecurities)
+            {
+                if (_holdings.Remove(security.Symbol, out var holdingsSymbol))
+                {
+                    algorithm.RemoveSecurity(holdingsSymbol);
+                }
+            }
+        }
+    }</pre>
+</div>

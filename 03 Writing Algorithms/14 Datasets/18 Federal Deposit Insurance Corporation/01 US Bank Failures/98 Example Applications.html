@@ -1,0 +1,193 @@
+<p>The US Bank Failures dataset enables you to follow stress in the US banking system as it happens. Examples include the following strategies:</p>
+
+<ul>
+    <li>Reducing exposure to bank stocks when failures cluster</li>
+    <li>Comparing the assets of failed banks against the size of the sector</li>
+    <li>Following the states and regions where banks fail</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm holds SPY and liquidates it for 30 days after an FDIC-insured bank fails.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class FDICBankFailuresDataAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.equity = self.add_equity("SPY", Resolution.DAILY).symbol
+        self.dataset_symbol = self.add_data(FDICBankFailures, FDIC.FAILURES).symbol
+        self.last_failure = datetime.min
+
+    def on_data(self, slice):
+        failures = slice.get(FDICBankFailures).get(self.dataset_symbol)
+        if failures:
+            for failure in failures.data:
+                self.log(f"{failure.institution_name} ({failure.state}) failed with assets of {failure.total_assets}")
+            self.last_failure = self.time
+
+        # Liquidate SPY for 30 days after a bank fails.
+        if self.time - self.last_failure &lt; timedelta(days=30):
+            self.liquidate(self.equity)
+        elif not self.portfolio.invested:
+            self.set_holdings(self.equity, 1)</pre>
+<pre class="csharp">using System;
+using QuantConnect;
+using QuantConnect.Algorithm;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+
+    public class FDICBankFailuresDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _equity, _datasetSymbol;
+        private DateTime _lastFailure = DateTime.MinValue;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2021, 3, 31);
+            SetCash(100000);
+
+            _equity = AddEquity("SPY", Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;FDICBankFailures&gt;(FDIC.Failures).Symbol;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            if (slice.TryGet&lt;FDICBankFailures&gt;(_datasetSymbol, out var failures))
+            {
+                foreach (FDICBankFailure failure in failures.Data)
+                {
+                    Log($"{failure.InstitutionName} ({failure.State}) failed with assets of {failure.TotalAssets}");
+                }
+                _lastFailure = Time;
+            }
+
+            // Liquidate SPY for 30 days after a bank fails.
+            if (Time - _lastFailure &lt; TimeSpan.FromDays(30))
+            {
+                Liquidate(_equity);
+            }
+            else if (!Portfolio.Invested)
+            {
+                SetHoldings(_equity, 1);
+            }
+        }
+    }</pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm emits a flat insight for SPY when an FDIC-insured bank failed in the last 30 days. Otherwise, it emits an up insight.</p>
+
+<div class="section-example-container testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class FDICBankFailuresFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self):
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.set_universe_selection(ManualUniverseSelectionModel(
+            [Symbol.create("SPY", SecurityType.EQUITY, Market.USA)]))
+
+        self.add_alpha(BankFailureAlphaModel(self))
+        self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+        self.set_execution(ImmediateExecutionModel())
+
+
+class BankFailureAlphaModel(AlphaModel):
+
+    def __init__(self, algorithm):
+        self._dataset_symbol = algorithm.add_data(FDICBankFailures, FDIC.FAILURES).symbol
+        self._last_failure = datetime.min
+        self._symbols = set()
+
+    def update(self, algorithm, data):
+        if data.get(FDICBankFailures).get(self._dataset_symbol):
+            self._last_failure = algorithm.time
+
+        # Emit a flat insight within 30 days of a bank failure, otherwise an up insight.
+        failed_recently = algorithm.time - self._last_failure &lt; timedelta(days=30)
+        direction = InsightDirection.FLAT if failed_recently else InsightDirection.UP
+        return [Insight.price(symbol, timedelta(days=1), direction) for symbol in self._symbols]
+
+    def on_securities_changed(self, algorithm, changes):
+        for security in changes.added_securities:
+            self._symbols.add(security.symbol)
+        for security in changes.removed_securities:
+            self._symbols.discard(security.symbol)</pre>
+<pre class="csharp">using System;
+using System.Collections.Generic;
+using System.Linq;
+using QuantConnect;
+using QuantConnect.Algorithm;
+using QuantConnect.Algorithm.Framework.Alphas;
+using QuantConnect.Algorithm.Framework.Execution;
+using QuantConnect.Algorithm.Framework.Portfolio;
+using QuantConnect.Algorithm.Framework.Selection;
+using QuantConnect.Data;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.DataSource;
+
+    public class FDICBankFailuresFrameworkAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2021, 3, 31);
+            SetCash(100000);
+
+            UniverseSettings.Resolution = Resolution.Daily;
+            SetUniverseSelection(new ManualUniverseSelectionModel(
+                QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)));
+
+            AddAlpha(new BankFailureAlphaModel(this));
+            SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+            SetExecution(new ImmediateExecutionModel());
+        }
+    }
+
+    public class BankFailureAlphaModel : AlphaModel
+    {
+        private readonly Symbol _datasetSymbol;
+        private readonly HashSet&lt;Symbol&gt; _symbols = new();
+        private DateTime _lastFailure = DateTime.MinValue;
+
+        public BankFailureAlphaModel(QCAlgorithm algorithm)
+        {
+            _datasetSymbol = algorithm.AddData&lt;FDICBankFailures&gt;(FDIC.Failures).Symbol;
+        }
+
+        public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+        {
+            if (data.ContainsKey(_datasetSymbol))
+            {
+                _lastFailure = algorithm.Time;
+            }
+
+            // Emit a flat insight within 30 days of a bank failure, otherwise an up insight.
+            var failedRecently = algorithm.Time - _lastFailure &lt; TimeSpan.FromDays(30);
+            var direction = failedRecently ? InsightDirection.Flat : InsightDirection.Up;
+            return _symbols.Select(symbol =&gt; Insight.Price(symbol, TimeSpan.FromDays(1), direction)).ToList();
+        }
+
+        public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+        {
+            foreach (var security in changes.AddedSecurities)
+            {
+                _symbols.Add(security.Symbol);
+            }
+            foreach (var security in changes.RemovedSecurities)
+            {
+                _symbols.Remove(security.Symbol);
+            }
+        }
+    }</pre>
+</div>

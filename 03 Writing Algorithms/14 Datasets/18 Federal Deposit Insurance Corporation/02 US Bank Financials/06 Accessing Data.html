@@ -1,0 +1,39 @@
+<p>To get the current US Bank Financials data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    reports = slice.get(FDICBankFinancials).get(self._dataset_symbol)
+    if reports:
+        for report in reports.data:
+            self.log(f"{report.institution_name} {report.report_date}: {report.estimated_uninsured_deposits}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.TryGet&lt;FDICBankFinancials&gt;(_datasetSymbol, out var reports))
+    {
+        foreach (FDICBankFinancial report in reports.Data)
+        {
+            Log($"{report.InstitutionName} {report.ReportDate}: {report.EstimatedUninsuredDeposits}");
+        }
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <code>Slice</code>, call the <code class="csharp">Get</code><code class="python">get</code> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, reports in slice.get(FDICBankFinancials).items():
+        for report in reports.data:
+            self.log(f"{dataset_symbol} {report.institution_name}: {report.total_deposits}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;FDICBankFinancials&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        foreach (FDICBankFinancial report in kvp.Value.Data)
+        {
+            Log($"{datasetSymbol} {report.InstitutionName}: {report.TotalDeposits}");
+        }
+    }
+}</pre>
+</div>

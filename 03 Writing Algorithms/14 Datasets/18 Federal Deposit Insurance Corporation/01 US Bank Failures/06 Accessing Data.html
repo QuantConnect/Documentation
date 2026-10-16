@@ -1,0 +1,19 @@
+<p>To get the current US Bank Failures data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> with the dataset <code>Symbol</code>. <code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    failures = slice.get(FDICBankFailures).get(self._dataset_symbol)
+    if failures:
+        for failure in failures.data:
+            self.log(f"{failure.institution_name} ({failure.state}): assets {failure.total_assets}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.TryGet&lt;FDICBankFailures&gt;(_datasetSymbol, out var failures))
+    {
+        foreach (FDICBankFailure failure in failures.Data)
+        {
+            Log($"{failure.InstitutionName} ({failure.State}): assets {failure.TotalAssets}");
+        }
+    }
+}</pre>
+</div>

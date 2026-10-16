@@ -1,0 +1,28 @@
+<p>To add Factors data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. For the factors linked to a specific Equity, pass the underlying Equity <code>Symbol</code>. For the unlinked factors, which aren't tied to any tradable security, pass <code class="csharp">Factors.Unlinked</code><code class="python">Factors.UNLINKED</code>. Save a reference to each dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class FactorsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2014, 3, 25)
+        self.set_end_date(2014, 4, 8)
+        self.set_cash(100000)
+        self._equity = self.add_equity("SPY", Resolution.DAILY)
+        self._equity.factors = self.add_data(Factors, self._equity.symbol).symbol
+        self._unlinked_factors = self.add_data(Factors, Factors.UNLINKED).symbol</pre>
+<pre class="csharp">public class FactorsDataAlgorithm : QCAlgorithm
+{
+    private Equity _equity;
+    private Symbol _equityFactors, _unlinkedFactors;
+
+    public override void Initialize()
+    {
+        SetStartDate(2014, 3, 25);
+        SetEndDate(2014, 4, 8);
+        SetCash(100000);
+        _equity = AddEquity("SPY", Resolution.Daily);
+        _equityFactors = AddData&lt;Factors&gt;(_equity.Symbol).Symbol;
+        _unlinkedFactors = AddData&lt;Factors&gt;(Factors.Unlinked).Symbol;
+    }
+}</pre>
+</div>

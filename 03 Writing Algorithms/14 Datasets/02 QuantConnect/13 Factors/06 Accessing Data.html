@@ -1,0 +1,28 @@
+<p>To get the current factor data, index the current <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'><code>Slice</code></a> with the dataset <code>Symbol</code>.
+<code>Slice</code> objects deliver unique events to your algorithm as they happen, but the <code>Slice</code> may not contain data for your dataset at every time step. To avoid issues, check if the <code>Slice</code> contains the data you want before you index it. Each <code>Factors</code> object behaves like a dictionary, mapping the factor name to its value. Index the object with a factor name constant (for example, <code class="csharp">Factors.Technical.Roc1Day</code><code class="python">Factors.Technical.ROC_1_DAY</code> is "technical_roc_1d") to get the value.
+
+</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, data: Slice) -&gt; None:
+    equity_factors = data.get(Factors).get(self._equity.factors)
+    if equity_factors:
+        value = equity_factors[Factors.ROC_1_DAY]
+
+    unlinked_factors = data.get(Factors).get(self._unlinked_factors)
+    if unlinked_factors:
+        ust_yield = unlinked_factors[Factors.UST_YIELD_1_MONTH]</pre>
+<pre class="csharp">public override void OnData(Slice data)
+{
+    if (data.Get&lt;Factors&gt;().TryGetValue(_equityFactors, out var equityFactors))
+    {
+        var value = equityFactors[Factors.Roc1Day];
+    }
+
+    if (data.Get&lt;Factors&gt;().TryGetValue(_unlinkedFactors, out var unlinkedFactors))
+    {
+        var ustYield = unlinkedFactors[Factors.UstYield1Month];
+    }
+}
+</pre>
+</div>
