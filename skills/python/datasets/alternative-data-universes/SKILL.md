@@ -13,6 +13,7 @@ description: Use when selecting a dynamic Equity universe from QuantConnect/LEAN
 - `EODHDUpcomingEarnings` — Upcoming Earnings
 - `EODHDUpcomingIPOs` — Upcoming IPOs
 - `EODHDUpcomingSplits` — Upcoming Splits
+- `FDICBankFinancialsUniverse` — US Bank Financials
 - `FINRAShortInterestUniverse` — OTC Transparency
 - `FINRAShortSaleVolumeUniverse` — Regulation SHO
 - `QuiverCNBCsUniverse` — CNBC Trading

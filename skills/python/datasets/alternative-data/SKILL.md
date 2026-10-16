@@ -46,6 +46,7 @@ def on_data(self, slice: Slice) -> None:
 | `EstimizeEstimate` | Estimize | `id`, `ticker`, `fiscal_year`, `fiscal_quarter`, `created_at`, `eps`, `revenue`, `user_name`, `analyst_id`, `flagged` |
 | `EstimizeRelease` | Estimize | `id`, `fiscal_year`, `fiscal_quarter`, `release_date`, `eps`, `revenue`, `wall_street_eps_estimate`, `wall_street_revenue_estimate`, `consensus_eps_estimate`, `consensus_revenue_estimate`, `consensus_weighted_eps_estimate`, `consensus_weighted_revenue_estimate` |
 | `ECBYieldCurve` | Euro Yield Curve | `three_month`, `six_month`, `one_year`, `two_year`, `three_year`, `five_year`, `seven_year`, `ten_year`, `twenty_year`, `thirty_year` |
+| `Factors` | Factors | `item`, `keys`, `is_unlinked` |
 | `FamaFrench` | Fama French | `market_excess_return`, `smb`, `hml`, `rmw`, `cma`, `momentum`, `risk_free_rate`, `is_estimate` |
 | `FearGreedIndex` | Fear and Greed | `spx`, `spx_sma`, `market_momentum`, `stocks_at_yearly_highs`, `stocks_at_yearly_lows`, `total_for_strength`, `net_yearly_highs_and_lows`, `stock_price_strength`, `stocks_up_daily`, `stocks_down_daily`, `total_for_breadth`, `mc_clellan_summation_index`, `stock_price_breadth`, `put_call_ratio_daily`, `put_call_ratio_sma`, `put_call_ratio_normalized`, `vix`, `vix_sma`, `market_volatility`, `stock_returns`, `bond_returns`, `stock_bond_return_difference`, `safe_haven_demand`, `junk_bond_yield`, `investment_grade_bond_yield`, `bond_yield_spread`, `junk_bond_demand`, `qc_index`, `cnn_index` |
 | `BEAGDPByIndustry` | GDP by Industry | `value_added`, `real_value_added`, `value_added_price_index`, `value_added_quantity_index`, `share_of_gdp`, `gross_output`, `real_gross_output`, `gross_output_price_index`, `gross_output_quantity_index`, `intermediate_inputs`, `real_intermediate_inputs`, `intermediate_inputs_price_index`, `intermediate_inputs_quantity_index` |
@@ -70,6 +71,9 @@ def on_data(self, slice: Slice) -> None:
 | `EODHDUpcomingEarnings` | Upcoming Earnings | `report_date`, `report_time`, `estimate` |
 | `EODHDUpcomingIPOs` | Upcoming IPOs | `name`, `exchange`, `ipo_date`, `filing_date`, `amended_date`, `lowest_price`, `highest_price`, `offer_price`, `shares`, `deal_type` |
 | `EODHDUpcomingSplits` | Upcoming Splits | `split_date`, `optionable`, `split_factor` |
+| `FDICBankFailures` | US Bank Failures | `value` |
+| `FDICBankFinancials` | US Bank Financials | `value` |
+| `FDICBankReports` | US Bank Financials | `value` |
 | `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `total_nonfarm`, `total_private`, `average_hourly_earnings`, `average_weekly_hours`, `average_weekly_earnings`, `production_hourly_earnings`, `production_employees`, `manufacturing`, `goods_producing`, `private_service_providing`, `construction`, `retail_trade`, `financial_activities`, `education_and_health_services`, `leisure_and_hospitality`, `mining_and_logging` |
 | `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `all_items`, `core_cpi`, `food`, `food_at_home`, `food_away_from_home`, `energy`, `shelter`, `rent_of_primary_residence`, `gasoline`, `medical_care`, `apparel`, `education_and_communication`, `new_vehicles`, `used_cars_and_trucks`, `college_tuition_and_fees` |
 | `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `job_openings`, `job_openings_rate`, `hires`, `hires_rate`, `quits`, `quits_rate`, `total_separations`, `layoffs_and_discharges` |
@@ -104,6 +108,7 @@ def on_data(self, slice: Slice) -> None:
 | `ExtractAlphaTrueBeats`->`ExtractAlphaTrueBeat` | True Beats | `fiscal_period`, `earnings_metric`, `analyst_estimates_count`, `true_beat`, `expert_beat`, `trend_beat`, `management_beat` |
 | `QuiverCongress`->`QuiverCongressDataPoint` | US Congress Trading | `record_date`, `updated_at`, `report_date`, `transaction_date`, `representative`, `transaction`, `amount`, `maximum_amount`, `house`, `party`, `district`, `state` |
 | `RegalyticsRegulatoryArticles`->`RegalyticsRegulatoryArticle` | US Regulatory Alerts - Financial Sector | `id`, `title`, `summary`, `status`, `classification`, `filing_type`, `in_federal_register`, `federal_register_number`, `docket_file_number`, `sec_release_number`, `proposed_comments_due_date`, `original_publication_date`, `federal_register_publication_date`, `rule_effective_date`, `sourced_at`, `latest_update`, `alert_type`, `states`, `agencies`, `sector`, `announcement_url`, `created_at` |
+| `SEC13FHoldings`->`SEC13FHolding` | US SEC 13F Whales | `accession_number`, `manager_cik`, `manager_name`, `period_end`, `form_type`, `amendment_type`, `amendment_number`, `title_of_class`, `amount`, `amount_type`, `reported_value`, `value_scale`, `market_value`, `put_call`, `investment_discretion`, `other_manager`, `voting_sole`, `voting_shared`, `voting_none`, `confidential_omitted`, `date_reported` |
 | `USDAFruitAndVegetables`->`USDAFruitAndVegetable` | USDA Fruit And Vegetables | `form`, `average_retail_price`, `unit`, `preparation_yield_factor`, `cup_equivalent_size`, `cup_equivalent_unit`, `price_per_cup_equivalent` |
 
 ## Common mistakes

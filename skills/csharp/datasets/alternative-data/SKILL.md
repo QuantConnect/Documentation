@@ -50,6 +50,7 @@ public override void OnData(Slice slice)
 | `EstimizeEstimate` | Estimize | `Id`, `Ticker`, `FiscalYear`, `FiscalQuarter`, `CreatedAt`, `Eps`, `Revenue`, `UserName`, `AnalystId`, `Flagged` |
 | `EstimizeRelease` | Estimize | `Id`, `FiscalYear`, `FiscalQuarter`, `ReleaseDate`, `Eps`, `Revenue`, `WallStreetEpsEstimate`, `WallStreetRevenueEstimate`, `ConsensusEpsEstimate`, `ConsensusRevenueEstimate`, `ConsensusWeightedEpsEstimate`, `ConsensusWeightedRevenueEstimate` |
 | `ECBYieldCurve` | Euro Yield Curve | `ThreeMonth`, `SixMonth`, `OneYear`, `TwoYear`, `ThreeYear`, `FiveYear`, `SevenYear`, `TenYear`, `TwentyYear`, `ThirtyYear` |
+| `Factors` | Factors | `[System.String]`, `Keys`, `IsUnlinked` |
 | `FamaFrench` | Fama French | `MarketExcessReturn`, `Smb`, `Hml`, `Rmw`, `Cma`, `Momentum`, `RiskFreeRate`, `IsEstimate` |
 | `FearGreedIndex` | Fear and Greed | `Spx`, `SpxSma`, `MarketMomentum`, `StocksAtYearlyHighs`, `StocksAtYearlyLows`, `TotalForStrength`, `NetYearlyHighsAndLows`, `StockPriceStrength`, `StocksUpDaily`, `StocksDownDaily`, `TotalForBreadth`, `McClellanSummationIndex`, `StockPriceBreadth`, `PutCallRatioDaily`, `PutCallRatioSma`, `PutCallRatioNormalized`, `Vix`, `VixSma`, `MarketVolatility`, `StockReturns`, `BondReturns`, `StockBondReturnDifference`, `SafeHavenDemand`, `JunkBondYield`, `InvestmentGradeBondYield`, `BondYieldSpread`, `JunkBondDemand`, `QCIndex`, `CNNIndex` |
 | `BEAGDPByIndustry` | GDP by Industry | `ValueAdded`, `RealValueAdded`, `ValueAddedPriceIndex`, `ValueAddedQuantityIndex`, `ShareOfGDP`, `GrossOutput`, `RealGrossOutput`, `GrossOutputPriceIndex`, `GrossOutputQuantityIndex`, `IntermediateInputs`, `RealIntermediateInputs`, `IntermediateInputsPriceIndex`, `IntermediateInputsQuantityIndex` |
@@ -74,6 +75,9 @@ public override void OnData(Slice slice)
 | `EODHDUpcomingEarnings` | Upcoming Earnings | `ReportDate`, `ReportTime`, `Estimate` |
 | `EODHDUpcomingIPOs` | Upcoming IPOs | `Name`, `Exchange`, `IpoDate`, `FilingDate`, `AmendedDate`, `LowestPrice`, `HighestPrice`, `OfferPrice`, `Shares`, `DealType` |
 | `EODHDUpcomingSplits` | Upcoming Splits | `SplitDate`, `Optionable`, `SplitFactor` |
+| `FDICBankFailures` | US Bank Failures | `Value` |
+| `FDICBankFinancials` | US Bank Financials | `Value` |
+| `FDICBankReports` | US Bank Financials | `Value` |
 | `BLSEconomicSurveysCes` | US Bureau of Labor Statistics (BLS) | `TotalNonfarm`, `TotalPrivate`, `AverageHourlyEarnings`, `AverageWeeklyHours`, `AverageWeeklyEarnings`, `ProductionHourlyEarnings`, `ProductionEmployees`, `Manufacturing`, `GoodsProducing`, `PrivateServiceProviding`, `Construction`, `RetailTrade`, `FinancialActivities`, `EducationAndHealthServices`, `LeisureAndHospitality`, `MiningAndLogging` |
 | `BLSEconomicSurveysCpi` | US Bureau of Labor Statistics (BLS) | `AllItems`, `CoreCpi`, `Food`, `FoodAtHome`, `FoodAwayFromHome`, `Energy`, `Shelter`, `RentOfPrimaryResidence`, `Gasoline`, `MedicalCare`, `Apparel`, `EducationAndCommunication`, `NewVehicles`, `UsedCarsAndTrucks`, `CollegeTuitionAndFees` |
 | `BLSEconomicSurveysJolts` | US Bureau of Labor Statistics (BLS) | `JobOpenings`, `JobOpeningsRate`, `Hires`, `HiresRate`, `Quits`, `QuitsRate`, `TotalSeparations`, `LayoffsAndDischarges` |
@@ -114,6 +118,7 @@ public override void OnData(Slice slice)
 | `ExtractAlphaTrueBeats`->`ExtractAlphaTrueBeat` | True Beats | `FiscalPeriod`, `EarningsMetric`, `AnalystEstimatesCount`, `TrueBeat`, `ExpertBeat`, `TrendBeat`, `ManagementBeat` |
 | `QuiverCongress`->`QuiverCongressDataPoint` | US Congress Trading | `RecordDate`, `UpdatedAt`, `ReportDate`, `TransactionDate`, `Representative`, `Transaction`, `Amount`, `MaximumAmount`, `House`, `Party`, `District`, `State` |
 | `RegalyticsRegulatoryArticles`->`RegalyticsRegulatoryArticle` | US Regulatory Alerts - Financial Sector | `Id`, `Title`, `Summary`, `Status`, `Classification`, `FilingType`, `InFederalRegister`, `FederalRegisterNumber`, `DocketFileNumber`, `SecReleaseNumber`, `ProposedCommentsDueDate`, `OriginalPublicationDate`, `FederalRegisterPublicationDate`, `RuleEffectiveDate`, `SourcedAt`, `LatestUpdate`, `AlertType`, `States`, `Agencies`, `Sector`, `AnnouncementUrl`, `CreatedAt` |
+| `SEC13FHoldings`->`SEC13FHolding` | US SEC 13F Whales | `AccessionNumber`, `ManagerCik`, `ManagerName`, `PeriodEnd`, `FormType`, `AmendmentType`, `AmendmentNumber`, `TitleOfClass`, `Amount`, `AmountType`, `ReportedValue`, `ValueScale`, `MarketValue`, `PutCall`, `InvestmentDiscretion`, `OtherManager`, `VotingSole`, `VotingShared`, `VotingNone`, `ConfidentialOmitted`, `DateReported` |
 | `USDAFruitAndVegetables`->`USDAFruitAndVegetable` | USDA Fruit And Vegetables | `Form`, `AverageRetailPrice`, `Unit`, `PreparationYieldFactor`, `CupEquivalentSize`, `CupEquivalentUnit`, `PricePerCupEquivalent` |
 
 ## Common mistakes
