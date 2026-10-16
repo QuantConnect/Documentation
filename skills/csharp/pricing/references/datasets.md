@@ -10,7 +10,7 @@ come from the Dataset Licensing and LEAN CLI dataset docs listed in
 
 | They want | What it is | What it costs |
 | --- | --- | --- |
-| Use market data in cloud backtests, research, live trading | Included | Nothing. Most price data (US equities, options, futures, index options, forex, CFD, crypto) and many alternative datasets are free in QuantConnect Cloud on every tier, Free included. |
+| Use market data in cloud backtests, research, live trading | Included | Nothing. Most price data (US equities, options, futures, index options, forex, CFD, crypto) and many alternative datasets are free in QuantConnect Cloud on every tier, Free included. Live data from the QuantConnect data provider has no tier limit either: you get it when you deploy a live algorithm, which needs a live node. |
 | Use a paid alternative dataset in the cloud | **Cloud Access** licence | A monthly or yearly subscription on the organization's bill (for example Benzinga, ExtractAlpha, Brain, Quiver, Smart Insider, Kavout, RegAlytics). Needs a paid organization. One licence covers every member. |
 | Run LEAN on their own machine with our data | **Download** licence via the LEAN CLI | Per file in QCC ("by ticker") or in bulk (billed annually: History the first year, then Updates). Needs a paid organization. |
 
