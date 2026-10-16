@@ -1,0 +1,54 @@
+<p>To select a dynamic universe of US Equities based on factor values, call the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method with the <code>FactorsUniverse</code> class and a selection function.</p> 
+
+<div class="section-example-container">
+<pre class="python">def initialize(self) -&gt; None:
+    self._universe = self.add_universe(FactorsUniverse, self._select_assets)
+
+def _select_assets(self, data: List[FactorsUniverse]) -&gt; List[Symbol]:
+    ust_yield = None
+    positive = []
+    negative = []
+    for factors in data:
+        if Factors.UST_YIELD_1_MONTH in factors.keys:
+            ust_yield = factors[Factors.UST_YIELD_1_MONTH]
+        elif Factors.ROC_1_DAY in factors.keys:
+            if factors[Factors.ROC_1_DAY] &gt; 0:
+                positive.append(factors.symbol)
+            else:
+                negative.append(factors.symbol)
+    return positive if ust_yield &lt; 4 else negative</pre>
+<pre class="csharp">private Universe _universe;
+
+public override void Initialize()
+{
+    _universe = AddUniverse&lt;FactorsUniverse&gt;(SelectAssets);
+}
+
+private IEnumerable&lt;Symbol&gt; SelectAssets(IEnumerable&lt;BaseData&gt; data)
+{
+    decimal? ustYield = null;
+    var positive = new List&lt;Symbol&gt;();
+    var negative = new List&lt;Symbol&gt;();
+    foreach (var factors in data.OfType&lt;FactorsUniverse&gt;())
+    {
+        if (factors.ContainsKey(Factors.UstYield1Month))
+        {
+            ustYield = factors[Factors.UstYield1Month];
+        }
+        else if (factors.ContainsKey(Factors.Roc1Day))
+        {
+            if (factors[Factors.Roc1Day] &gt; 0)
+            {
+                positive.Add(factors.Symbol);
+            }
+            else
+            {
+                negative.Add(factors.Symbol);
+            }
+        }
+    }
+    return ustYield &lt; 4 ? positive : negative;
+}</pre>
+</div>
+
+<p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

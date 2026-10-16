@@ -1,0 +1,701 @@
+<p>
+The QuantConnect Factors dataset enables researchers to accurately design strategies harnessing precomputed, point-in-time factor values. Examples include:
+</p>
+
+<ul><li><code>Factor momentum:</code> weight each factor by its recent performance and form a long-short portfolio of the top-ranked stocks and bottom-ranked stocks</li>
+<li><code>Momentum rotation:</code> rank the universe by 1-day rate of change and hold the leaders</li>
+<li><code>Rate regime filters:</code> scale Equity exposure with the level of the 1-month US Treasury yield</li>
+</ul>
+<h4>Classic Algorithm Example</h4>
+<p>The following example algorithm ranks the S&P 500 constituents on every linked factor each day and weights each factor by how it performed over the trailing year in market conditions like today's, as measured by unlinked factors such as the VIX and the 1-month Treasury yield. It then buys the 5% of constituents with the highest weighted-rank scores, sizes each position by its score, and rebalances at every market open.</p>
+
+<div class="section-example-container testable">
+<pre><code class="python"># region imports
+from AlgorithmImports import *
+from collections import deque
+from datetime import date
+from scipy.stats import rankdata
+# endregion
+
+
+class DaySnapshot:
+    """What the algorithm knows about one trading day before its open."""
+
+    def __init__(self, day: date, symbols: List[Symbol], ranks: np.ndarray, active: np.ndarray, unlinked: np.ndarray) -&gt; None:
+        self.day = day                # the trading day
+        self.symbols = symbols        # S&P 500 constituents of the day
+        self.ranks = ranks            # scaled ranks: one row per constituent, one column per linked factor
+        self.active = active          # linked factors with ranks that day
+        self.unlinked = unlinked      # unlinked factor values known before the open
+
+
+class FactorsPortfolioAlgorithm(QCAlgorithm):
+    """Conditional multi-factor long-only portfolio on the QuantConnect Factors dataset.
+
+    Every trading day before the open, the algorithm ranks the S&P 500 constituents on each
+    linked factor, measures each factor's daily payoff with a cross-sectional regression of
+    open-to-open returns on all the ranks at once, and predicts each factor's payoff from its
+    trailing-year payoffs, conditioned on the standardized unlinked factors. A stock's score is
+    its predicted open-to-open return relative to the day's average. The algorithm holds the
+    top 5% of the scores, weighted by score and fully invested.
+    """
+
+    _MONTH = 21                       # sessions in the dataset's month
+    _LOOKBACK = 12 * _MONTH           # complete days in the estimation window
+    _TAIL_FRACTION = 0.05             # share of the eligible stocks the portfolio holds
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2024, 11, 1)
+        self.set_end_date(2026, 10, 1)
+        self.set_cash(10_000_000)
+        self.settings.seed_initial_prices = True
+        self.universe_settings.resolution = Resolution.DAILY
+        self._linked = list(Factors.EQUITY_FACTOR_NAMES)
+        self._unlinked = list(Factors.UNLINKED_FACTOR_NAMES)
+        self._members = {}            # constituent -&gt; linked factor values, from the latest universe data
+        self._new_data = False        # whether universe data arrived since the last rebalance
+        self._unlinked_values = {}    # most recent value of each unlinked factor
+        self._opens = {}              # session date -&gt; {symbol: open price}
+        self._days = deque(maxlen=2)  # the last two trading days, kept until their returns are complete
+        self._payoffs = deque(maxlen=self._LOOKBACK)  # (day, payoff of each linked factor, unlinked values)
+        self._first_payoff = {}       # linked factor index -&gt; day of its first payoff
+        self.add_universe(FactorsUniverse, self._select)
+        self.schedule.on(self.date_rules.every_day("SPY"), self.time_rules.at(8, 0), self._rebalance)
+        # The estimation window comes from the year before the start date.
+        self.set_warm_up(timedelta(days=380))
+
+    def _select(self, rows: List[Factors]) -&gt; List[Symbol]:
+        previous = set(self._members)
+        members = {}
+        for row in rows:
+            keys = set(row.keys)
+            if row.is_unlinked:
+                self._unlinked_values.update({name: float(row[name]) for name in self._unlinked if name in keys})
+            else:
+                members[row.symbol] = {name: float(row[name]) for name in self._linked if name in keys}
+        self._members = members
+        self._new_data = True
+        # Keep the previous constituents subscribed one more session, so a stock that leaves the
+        # index still has the next open that completes its last open-to-open return.
+        return list(previous | set(members))
+
+    def on_data(self, slice: Slice) -&gt; None:
+        for symbol, bar in slice.bars.items():
+            if not bar.is_fill_forward:
+                self._opens.setdefault(bar.time.date(), {})[symbol] = bar.open
+
+    def _rebalance(self) -&gt; None:
+        # The day two sessions back now has a complete open-to-open return.
+        if len(self._days) == 2:
+            self._record_payoff(*self._days)
+        today = self._snapshot()
+        self._days.append(today)
+        if self.is_warming_up or today.ranks is None:
+            return
+        model = self._factor_weights(today.unlinked)
+        if model is None:
+            return
+        carried, weights = model
+        targets = self._targets(today, carried, weights)
+        names = [name for name, keep in zip(self._linked, carried) if keep]
+        for name, weight in zip(names, weights):
+            self.plot("Factor Weights", name, float(weight))
+        self.set_holdings(targets, liquidate_existing_holdings=True)
+
+    def _snapshot(self) -&gt; DaySnapshot:
+        unlinked = np.array([self._unlinked_values.get(name, np.nan) for name in self._unlinked])
+        if not self._new_data:
+            return DaySnapshot(self.time.date(), [], None, None, unlinked)
+        self._new_data = False
+        symbols = list(self._members)
+        ranks = np.zeros((len(symbols), len(self._linked)))
+        active = np.zeros(len(self._linked), dtype=bool)
+        for k, name in enumerate(self._linked):
+            rows = [i for i, symbol in enumerate(symbols) if name in self._members[symbol]]
+            if len(rows) &lt; 2:
+                continue
+            values = [self._members[symbols[i]][name] for i in rows]
+            # Ranks scaled to run from -1/2 to 1/2; a constituent without a value keeps the middle rank, 0.
+            ranks[rows, k] = (rankdata(values) - 1) / (len(rows) - 1) - 0.5
+            active[k] = True
+        if not active.any():
+            return DaySnapshot(self.time.date(), symbols, None, None, unlinked)
+        return DaySnapshot(self.time.date(), symbols, ranks, active, unlinked)
+
+    def _record_payoff(self, day: DaySnapshot, next_day: DaySnapshot) -&gt; None:
+        start_opens = self._opens.pop(day.day, {})
+        end_opens = self._opens.get(next_day.day, {})
+        for stale in [session for session in self._opens if session &lt; next_day.day]:
+            del self._opens[stale]
+        if day.ranks is None:
+            return
+        rows, returns = [], []
+        for i, symbol in enumerate(day.symbols):
+            start, end = start_opens.get(symbol), end_opens.get(symbol)
+            if start and end:
+                rows.append(i)
+                returns.append(end / start - 1)
+        if not rows:
+            return
+        # Regress the open-to-open returns on all active factors' ranks at once, with an intercept.
+        columns = np.flatnonzero(day.active)
+        design = np.column_stack([np.ones(len(rows)), day.ranks[np.ix_(rows, columns)]])
+        coefficients = np.linalg.lstsq(design, np.array(returns), rcond=None)[0]
+        payoff = np.full(len(self._linked), np.nan)
+        payoff[columns] = coefficients[1:]
+        self._payoffs.append((day.day, payoff, day.unlinked))
+        for k in columns:
+            self._first_payoff.setdefault(k, day.day)
+
+    def _factor_weights(self, unlinked_today: np.ndarray) -&gt; tuple[np.ndarray, np.ndarray] | None:
+        """The linked factors that carry weight today, and the predicted payoff of each."""
+        if len(self._payoffs) &lt; self._LOOKBACK:
+            return None
+        window_start = self._payoffs[0][0]
+        # A linked factor carries weight once its payoff history spans the full window.
+        carried = np.array([k in self._first_payoff and self._first_payoff[k] &lt;= window_start for k in range(len(self._linked))])
+        if not carried.any():
+            return None
+        payoffs = np.array([payoff for _, payoff, _ in self._payoffs])[:, carried]
+        unlinked = np.array([values for _, _, values in self._payoffs])
+        rows = ~np.isnan(payoffs).any(axis=1)
+        # An unlinked factor takes part when it has values throughout the window and today, and it moved.
+        known = ~np.isnan(unlinked).any(axis=0) & ~np.isnan(unlinked_today)
+        mean = unlinked[:, known].mean(axis=0)
+        std = unlinked[:, known].std(axis=0)
+        moved = std &gt; 0
+        z = (unlinked[:, known][:, moved] - mean[moved]) / std[moved]
+        z_today = (unlinked_today[known][moved] - mean[moved]) / std[moved]
+        design = np.column_stack([np.ones(rows.sum()), z[rows]])
+        # The fit needs more complete days than coefficients.
+        if len(design) &lt;= design.shape[1]:
+            return None
+        # Regress each factor's payoffs on the standardized unlinked values and predict at today's values.
+        coefficients = np.linalg.lstsq(design, payoffs[rows], rcond=None)[0]
+        point = np.concatenate([[1.0], z_today])
+        return carried, point @ coefficients
+
+    def _targets(self, today: DaySnapshot, carried: np.ndarray, weights: np.ndarray) -&gt; List[PortfolioTarget]:
+        eligible = [
+            i for i, symbol in enumerate(today.symbols)
+            if symbol in self.securities and self.securities[symbol].is_tradable and self.securities[symbol].price &gt; 0
+        ]
+        if not eligible:
+            return []
+        scores = today.ranks[eligible][:, carried] @ weights
+        # Hold the highest tail of the scores, each stock weighted by its score above the day's average.
+        excess = scores - scores.mean()
+        count = int(len(eligible) * self._TAIL_FRACTION)
+        top = np.argsort(excess)[len(eligible) - count:]
+        positions = np.zeros(len(eligible))
+        positions[top] = np.maximum(excess[top], 0)
+        total = positions.sum()
+        if total == 0:
+            return []
+        positions = positions / total
+        return [PortfolioTarget(today.symbols[i], weight) for i, weight in zip(eligible, positions) if weight != 0]</code></pre>
+<pre><code class="csharp">#region imports
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using MathNet.Numerics.LinearAlgebra;
+using QuantConnect.Algorithm.Framework.Portfolio;
+using QuantConnect.Data;
+using QuantConnect.DataSource;
+#endregion
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    /// &lt;summary&gt;
+    /// What the algorithm knows about one trading day before its open.
+    /// &lt;/summary&gt;
+    public class DaySnapshot
+    {
+        public DateTime Day;          // the trading day
+        public List&lt;Symbol&gt; Symbols;  // S&P 500 constituents of the day
+        public double[,] Ranks;       // scaled ranks: one row per constituent, one column per linked factor
+        public bool[] Active;         // linked factors with ranks that day
+        public double[] Unlinked;     // unlinked factor values known before the open
+    }
+
+    /// &lt;summary&gt;
+    /// Conditional multi-factor long-only portfolio on the QuantConnect Factors dataset.
+    ///
+    /// Every trading day before the open, the algorithm ranks the S&amp;P 500 constituents on each
+    /// linked factor, measures each factor's daily payoff with a cross-sectional regression of
+    /// open-to-open returns on all the ranks at once, and predicts each factor's payoff from its
+    /// trailing-year payoffs, conditioned on the standardized unlinked factors. A stock's score is
+    /// its predicted open-to-open return relative to the day's average. The algorithm holds the
+    /// top 5% of the scores, weighted by score and fully invested.
+    /// &lt;/summary&gt;
+    public class FactorsPortfolioAlgorithm : QCAlgorithm
+    {
+        private const int Month = 21;               // sessions in the dataset's month
+        private const int Lookback = 12 * Month;    // complete days in the estimation window
+        private const double TailFraction = 0.05;   // share of the eligible stocks the portfolio holds
+
+        private string[] _linked;
+        private string[] _unlinked;
+        // constituent -&gt; linked factor values, from the latest universe data
+        private Dictionary&lt;Symbol, Dictionary&lt;string, double&gt;&gt; _members = new();
+        // the constituents in the universe data's order
+        private List&lt;Symbol&gt; _memberOrder = new();
+        // whether universe data arrived since the last rebalance
+        private bool _newData;
+        // most recent value of each unlinked factor
+        private readonly Dictionary&lt;string, double&gt; _unlinkedValues = new();
+        // session date -&gt; {symbol: open price}
+        private readonly Dictionary&lt;DateTime, Dictionary&lt;Symbol, decimal&gt;&gt; _opens = new();
+        // the last two trading days, kept until their returns are complete
+        private readonly List&lt;DaySnapshot&gt; _days = new();
+        // (day, payoff of each linked factor, unlinked values) of the Lookback most recent complete days
+        private readonly List&lt;(DateTime Day, double[] Payoff, double[] Unlinked)&gt; _payoffs = new();
+        // linked factor index -&gt; day of its first payoff
+        private readonly Dictionary&lt;int, DateTime&gt; _firstPayoff = new();
+
+        public override void Initialize()
+        {
+            SetStartDate(2024, 11, 1);
+            SetEndDate(2026, 10, 1);
+            SetCash(10_000_000);
+            Settings.SeedInitialPrices = true;
+            UniverseSettings.Resolution = Resolution.Daily;
+            _linked = Factors.EquityFactorNames;
+            _unlinked = Factors.UnlinkedFactorNames;
+            AddUniverse&lt;FactorsUniverse&gt;(Select);
+            Schedule.On(DateRules.EveryDay("SPY"), TimeRules.At(8, 0), Rebalance);
+            // The estimation window comes from the year before the start date.
+            SetWarmUp(TimeSpan.FromDays(380));
+        }
+
+        private IEnumerable&lt;Symbol&gt; Select(IEnumerable&lt;BaseData&gt; rows)
+        {
+            var selected = _members.Keys.ToHashSet();
+            var members = new Dictionary&lt;Symbol, Dictionary&lt;string, double&gt;&gt;();
+            var order = new List&lt;Symbol&gt;();
+            foreach (var row in rows.OfType&lt;Factors&gt;())
+            {
+                if (row.IsUnlinked)
+                {
+                    foreach (var name in _unlinked)
+                    {
+                        if (row.TryGetValue(name, out var value))
+                        {
+                            _unlinkedValues[name] = (double)value;
+                        }
+                    }
+                    continue;
+                }
+                var values = new Dictionary&lt;string, double&gt;();
+                foreach (var name in _linked)
+                {
+                    if (row.TryGetValue(name, out var value))
+                    {
+                        values[name] = (double)value;
+                    }
+                }
+                if (members.TryAdd(row.Symbol, values))
+                {
+                    order.Add(row.Symbol);
+                }
+            }
+            _members = members;
+            _memberOrder = order;
+            _newData = true;
+            // Keep the previous constituents subscribed one more session, so a stock that leaves the
+            // index still has the next open that completes its last open-to-open return.
+            selected.UnionWith(order);
+            return selected;
+        }
+
+        public override void OnData(Slice slice)
+        {
+            foreach (var bar in slice.Bars.Values)
+            {
+                if (bar.IsFillForward)
+                {
+                    continue;
+                }
+                if (!_opens.TryGetValue(bar.Time.Date, out var opens))
+                {
+                    _opens[bar.Time.Date] = opens = new Dictionary&lt;Symbol, decimal&gt;();
+                }
+                opens[bar.Symbol] = bar.Open;
+            }
+        }
+
+        private void Rebalance()
+        {
+            // The day two sessions back now has a complete open-to-open return.
+            if (_days.Count == 2)
+            {
+                RecordPayoff(_days[0], _days[1]);
+                _days.RemoveAt(0);
+            }
+            var today = Snapshot();
+            _days.Add(today);
+            if (IsWarmingUp || today.Ranks == null)
+            {
+                return;
+            }
+            var model = FactorWeights(today.Unlinked);
+            if (model == null)
+            {
+                return;
+            }
+            var (carried, weights) = model.Value;
+            var targets = Targets(today, carried, weights);
+            var names = _linked.Where((name, k) =&gt; carried[k]).ToArray();
+            for (var j = 0; j &lt; names.Length; j++)
+            {
+                Plot("Factor Weights", names[j], weights[j]);
+            }
+            SetHoldings(targets, liquidateExistingHoldings: true);
+        }
+
+        private DaySnapshot Snapshot()
+        {
+            var unlinked = _unlinked
+                .Select(name =&gt; _unlinkedValues.TryGetValue(name, out var value) ? value : double.NaN)
+                .ToArray();
+            if (!_newData)
+            {
+                return new DaySnapshot { Day = Time.Date, Symbols = new List&lt;Symbol&gt;(), Unlinked = unlinked };
+            }
+            _newData = false;
+            var symbols = _memberOrder;
+            var ranks = new double[symbols.Count, _linked.Length];
+            var active = new bool[_linked.Length];
+            for (var k = 0; k &lt; _linked.Length; k++)
+            {
+                var name = _linked[k];
+                var rows = Enumerable.Range(0, symbols.Count)
+                    .Where(i =&gt; _members[symbols[i]].ContainsKey(name))
+                    .ToList();
+                if (rows.Count &lt; 2)
+                {
+                    continue;
+                }
+                var rank = AverageRanks(rows.Select(i =&gt; _members[symbols[i]][name]).ToArray());
+                // Ranks scaled to run from -1/2 to 1/2; a constituent without a value keeps the middle rank, 0.
+                for (var j = 0; j &lt; rows.Count; j++)
+                {
+                    ranks[rows[j], k] = (rank[j] - 1) / (rows.Count - 1) - 0.5;
+                }
+                active[k] = true;
+            }
+            if (!active.Any(isActive =&gt; isActive))
+            {
+                return new DaySnapshot { Day = Time.Date, Symbols = symbols, Unlinked = unlinked };
+            }
+            return new DaySnapshot { Day = Time.Date, Symbols = symbols, Ranks = ranks, Active = active, Unlinked = unlinked };
+        }
+
+        // Ranks from 1 for the lowest value to n for the highest; tied values share their average rank.
+        private static double[] AverageRanks(double[] values)
+        {
+            var order = Enumerable.Range(0, values.Length).OrderBy(i =&gt; values[i]).ToArray();
+            var ranks = new double[values.Length];
+            var start = 0;
+            while (start &lt; order.Length)
+            {
+                var end = start;
+                while (end + 1 &lt; order.Length &amp;&amp; values[order[end + 1]] == values[order[start]])
+                {
+                    end++;
+                }
+                for (var j = start; j &lt;= end; j++)
+                {
+                    ranks[order[j]] = (start + end) / 2.0 + 1;
+                }
+                start = end + 1;
+            }
+            return ranks;
+        }
+
+        private void RecordPayoff(DaySnapshot day, DaySnapshot nextDay)
+        {
+            _opens.Remove(day.Day, out var startOpens);
+            _opens.TryGetValue(nextDay.Day, out var endOpens);
+            foreach (var stale in _opens.Keys.Where(session =&gt; session &lt; nextDay.Day).ToList())
+            {
+                _opens.Remove(stale);
+            }
+            if (day.Ranks == null || startOpens == null || endOpens == null)
+            {
+                return;
+            }
+            var rows = new List&lt;int&gt;();
+            var returns = new List&lt;double&gt;();
+            for (var i = 0; i &lt; day.Symbols.Count; i++)
+            {
+                if (startOpens.TryGetValue(day.Symbols[i], out var start) &amp;&amp; start != 0
+                    &amp;&amp; endOpens.TryGetValue(day.Symbols[i], out var end) &amp;&amp; end != 0)
+                {
+                    rows.Add(i);
+                    returns.Add((double)end / (double)start - 1);
+                }
+            }
+            if (rows.Count == 0)
+            {
+                return;
+            }
+            // Regress the open-to-open returns on all active factors' ranks at once, with an intercept.
+            var columns = Enumerable.Range(0, _linked.Length).Where(k =&gt; day.Active[k]).ToArray();
+            var design = Matrix&lt;double&gt;.Build.Dense(rows.Count, columns.Length + 1,
+                (i, j) =&gt; j == 0 ? 1 : day.Ranks[rows[i], columns[j - 1]]);
+            var coefficients = design.PseudoInverse() * Vector&lt;double&gt;.Build.DenseOfEnumerable(returns);
+            var payoff = Enumerable.Repeat(double.NaN, _linked.Length).ToArray();
+            for (var j = 0; j &lt; columns.Length; j++)
+            {
+                payoff[columns[j]] = coefficients[j + 1];
+                _firstPayoff.TryAdd(columns[j], day.Day);
+            }
+            _payoffs.Add((day.Day, payoff, day.Unlinked));
+            if (_payoffs.Count &gt; Lookback)
+            {
+                _payoffs.RemoveAt(0);
+            }
+        }
+
+        // The linked factors that carry weight today, and the predicted payoff of each.
+        private (bool[] Carried, double[] Weights)? FactorWeights(double[] unlinkedToday)
+        {
+            if (_payoffs.Count &lt; Lookback)
+            {
+                return null;
+            }
+            var windowStart = _payoffs[0].Day;
+            // A linked factor carries weight once its payoff history spans the full window.
+            var carried = Enumerable.Range(0, _linked.Length)
+                .Select(k =&gt; _firstPayoff.TryGetValue(k, out var first) &amp;&amp; first &lt;= windowStart)
+                .ToArray();
+            var factors = Enumerable.Range(0, _linked.Length).Where(k =&gt; carried[k]).ToArray();
+            if (factors.Length == 0)
+            {
+                return null;
+            }
+            var rows = _payoffs.Where(day =&gt; factors.All(k =&gt; !double.IsNaN(day.Payoff[k]))).ToList();
+            // An unlinked factor takes part when it has values throughout the window and today, and it moved.
+            var conditions = new List&lt;(int Index, double Mean, double Std)&gt;();
+            for (var j = 0; j &lt; _unlinked.Length; j++)
+            {
+                var index = j;
+                if (double.IsNaN(unlinkedToday[index]) || _payoffs.Any(day =&gt; double.IsNaN(day.Unlinked[index])))
+                {
+                    continue;
+                }
+                var mean = _payoffs.Average(day =&gt; day.Unlinked[index]);
+                var std = Math.Sqrt(_payoffs.Average(day =&gt; Math.Pow(day.Unlinked[index] - mean, 2)));
+                if (std &gt; 0)
+                {
+                    conditions.Add((index, mean, std));
+                }
+            }
+            var design = Matrix&lt;double&gt;.Build.Dense(rows.Count, conditions.Count + 1,
+                (i, j) =&gt; j == 0 ? 1 : (rows[i].Unlinked[conditions[j - 1].Index] - conditions[j - 1].Mean) / conditions[j - 1].Std);
+            // The fit needs more complete days than coefficients.
+            if (design.RowCount &lt;= design.ColumnCount)
+            {
+                return null;
+            }
+            // Regress each factor's payoffs on the standardized unlinked values and predict at today's values.
+            var payoffs = Matrix&lt;double&gt;.Build.Dense(rows.Count, factors.Length, (i, j) =&gt; rows[i].Payoff[factors[j]]);
+            var coefficients = design.PseudoInverse() * payoffs;
+            var point = Vector&lt;double&gt;.Build.Dense(conditions.Count + 1,
+                j =&gt; j == 0 ? 1 : (unlinkedToday[conditions[j - 1].Index] - conditions[j - 1].Mean) / conditions[j - 1].Std);
+            return (carried, (coefficients.Transpose() * point).ToArray());
+        }
+
+        private List&lt;PortfolioTarget&gt; Targets(DaySnapshot today, bool[] carried, double[] weights)
+        {
+            var eligible = Enumerable.Range(0, today.Symbols.Count)
+                .Where(i =&gt; Securities.TryGetValue(today.Symbols[i], out var security) &amp;&amp; security.IsTradable &amp;&amp; security.Price &gt; 0)
+                .ToList();
+            if (eligible.Count == 0)
+            {
+                return new List&lt;PortfolioTarget&gt;();
+            }
+            var factors = Enumerable.Range(0, _linked.Length).Where(k =&gt; carried[k]).ToArray();
+            var scores = eligible
+                .Select(i =&gt; factors.Select((k, j) =&gt; today.Ranks[i, k] * weights[j]).Sum())
+                .ToArray();
+            // Hold the highest tail of the scores, each stock weighted by its score above the day's average.
+            var mean = scores.Average();
+            var excess = scores.Select(score =&gt; score - mean).ToArray();
+            var count = (int)(eligible.Count * TailFraction);
+            var top = Enumerable.Range(0, eligible.Count)
+                .OrderBy(i =&gt; excess[i])
+                .Skip(eligible.Count - count)
+                .ToHashSet();
+            var positions = excess.Select((value, i) =&gt; top.Contains(i) ? Math.Max(value, 0) : 0).ToArray();
+            var total = positions.Sum();
+            if (total == 0)
+            {
+                return new List&lt;PortfolioTarget&gt;();
+            }
+            return eligible
+                .Select((i, j) =&gt; (Symbol: today.Symbols[i], Weight: positions[j] / total))
+                .Where(target =&gt; target.Weight != 0)
+                .Select(target =&gt; new PortfolioTarget(target.Symbol, (decimal)target.Weight))
+                .ToList();
+        }
+    }
+}</code></pre>
+</div>
+<h4>Framework Algorithm Example</h4>
+<p>The following example algorithm selects the SPY constituents, the dataset's coverage universe. The Alpha model emits daily ROC-weighted insights for the Equities that moved more than 1% over the last trading session, targeting only long positions while the 1-month US Treasury yield is below 4% and only short positions otherwise.</p>
+
+<div class="section-example-container testable  testable">
+<pre class="python">from AlgorithmImports import *
+
+
+class FactorsFrameworkAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2025, 9, 1)
+        self.set_end_date(2025, 12, 31)
+        self.set_cash(10_000_000)
+
+        self.universe_settings.resolution = Resolution.DAILY
+        self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))
+        self.add_alpha(FactorsAlphaModel(self))
+        self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())
+
+
+class FactorsAlphaModel(AlphaModel):
+
+    def __init__(self, algorithm: QCAlgorithm) -&gt; None:
+        self._unlinked_factors = algorithm.add_data(Factors, Factors.UNLINKED).symbol
+        self._roc_by_symbol = {}
+
+    def update(self, algorithm: QCAlgorithm, data: Slice) -&gt; List[Insight]:
+        # Cache the Equities that moved more than 1%. Their factors arrive with
+        # the session's 4PM close, ahead of the unlinked factors row.
+        for symbol, factors in data.get(Factors).items():
+            if Factors.ROC_1_DAY in factors.keys and abs(factors[Factors.ROC_1_DAY]) &gt; 0.01:
+                self._roc_by_symbol[symbol.underlying] = factors[Factors.ROC_1_DAY]
+
+        # The unlinked factors arrive at 4:30PM, when the US Treasury publishes
+        # the daily yield curve rates, completing the session's signals.
+        unlinked_factors = data.get(Factors).get(self._unlinked_factors)
+        if not unlinked_factors or Factors.UST_YIELD_1_MONTH not in unlinked_factors.keys:
+            return []
+
+        # Consume the session's cache so stale values never roll into the
+        # next emission.
+        roc_by_symbol = self._roc_by_symbol
+        self._roc_by_symbol = {}
+
+        # While short-term rates are low, only target long assets. Otherwise,
+        # only target short assets.
+        if unlinked_factors[Factors.UST_YIELD_1_MONTH] &lt; 4:
+            direction = InsightDirection.UP
+            selected = {s: roc for s, roc in roc_by_symbol.items() if roc &gt; 0}
+        else:
+            direction = InsightDirection.DOWN
+            selected = {s: roc for s, roc in roc_by_symbol.items() if roc &lt; 0}
+        if not selected:
+            return []
+
+        # Weight each insight by the magnitude of the asset's ROC.
+        total_roc = sum(abs(roc) for roc in selected.values())
+        return [
+            Insight.price(symbol, timedelta(1), direction, weight=abs(roc)/total_roc)
+            for symbol, roc in selected.items()
+        ]
+
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        for security in changes.added_securities:
+            security.factors = algorithm.add_data(Factors, security.symbol).symbol
+        for security in changes.removed_securities:
+            algorithm.remove_security(security.factors)
+            self._roc_by_symbol.pop(security.symbol, None)</pre>
+<pre class="csharp">public class FactorsFrameworkAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2025, 9, 1);
+        SetEndDate(2025, 12, 31);
+        SetCash(10000000);
+
+        UniverseSettings.Resolution = Resolution.Daily;
+        AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("SPY"));
+        AddAlpha(new FactorsAlphaModel(this));
+        SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+    }
+}
+
+public class FactorsAlphaModel : AlphaModel
+{
+    private readonly Symbol _unlinkedFactors;
+    private Dictionary&lt;Symbol, decimal&gt; _rocBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+
+    public FactorsAlphaModel(QCAlgorithm algorithm)
+    {
+        _unlinkedFactors = algorithm.AddData&lt;Factors&gt;(Factors.Unlinked).Symbol;
+    }
+
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data)
+    {
+        // Cache the Equities that moved more than 1%. Their factors arrive with
+        // the session's 4PM close, ahead of the unlinked factors row.
+        foreach (var factors in data.Get&lt;Factors&gt;().Values)
+        {
+            if (factors.ContainsKey(Factors.Roc1Day) &amp;&amp; Math.Abs(factors[Factors.Roc1Day]) &gt; 0.01m)
+            {
+                _rocBySymbol[factors.Symbol.Underlying] = factors[Factors.Roc1Day];
+            }
+        }
+
+        // The unlinked factors arrive at 4:30PM, when the US Treasury publishes
+        // the daily yield curve rates, completing the session's signals.
+        if (!data.Get&lt;Factors&gt;().TryGetValue(_unlinkedFactors, out var unlinkedFactors) || !unlinkedFactors.ContainsKey(Factors.UstYield1Month))
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+
+        // Consume the session's cache so stale values never roll into the
+        // next emission.
+        var rocBySymbol = _rocBySymbol;
+        _rocBySymbol = new Dictionary&lt;Symbol, decimal&gt;();
+
+        // While short-term rates are low, only target long assets. Otherwise,
+        // only target short assets.
+        InsightDirection direction;
+        List&lt;KeyValuePair&lt;Symbol, decimal&gt;&gt; selected;
+        if (unlinkedFactors[Factors.UstYield1Month] &lt; 4)
+        {
+            direction = InsightDirection.Up;
+            selected = rocBySymbol.Where(kvp =&gt; kvp.Value &gt; 0).ToList();
+        }
+        else
+        {
+            direction = InsightDirection.Down;
+            selected = rocBySymbol.Where(kvp =&gt; kvp.Value &lt; 0).ToList();
+        }
+        if (selected.Count == 0)
+        {
+            return Enumerable.Empty&lt;Insight&gt;();
+        }
+
+        // Weight each insight by the magnitude of the asset's ROC.
+        var totalRoc = selected.Sum(kvp =&gt; Math.Abs(kvp.Value));
+        return selected.Select(kvp =&gt;
+            Insight.Price(kvp.Key, TimeSpan.FromDays(1), direction, weight: (double)(Math.Abs(kvp.Value) / totalRoc)));
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        foreach (dynamic security in changes.AddedSecurities)
+        {
+            security.Factors = algorithm.AddData&lt;Factors&gt;(security.Symbol).Symbol;
+        }
+        foreach (dynamic security in changes.RemovedSecurities)
+        {
+            algorithm.RemoveSecurity(security.Factors);
+            _rocBySymbol.Remove(security.Symbol);
+        }
+    }
+}</pre>
+</div>

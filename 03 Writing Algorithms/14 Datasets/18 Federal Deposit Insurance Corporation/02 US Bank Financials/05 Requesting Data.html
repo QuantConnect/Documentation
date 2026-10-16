@@ -1,0 +1,27 @@
+<p>To add US Bank Financials data to your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. Save a reference to the dataset <code>Symbol</code> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class FDICBankFinancialsDataAlgorithm(QCAlgorithm):
+
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2021, 3, 31)
+        self.set_cash(100000)
+        self._symbol = self.add_equity("BAC", Resolution.DAILY).symbol
+        self._dataset_symbol = self.add_data(FDICBankFinancials, self._symbol).symbol
+        self._all_banks_symbol = self.add_data(FDICBankReports, FDIC.Banks.ALL).symbol</pre>
+<pre class="csharp">public class FDICBankFinancialsDataAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol, _datasetSymbol, _allBanksSymbol;
+
+    public override void Initialize()
+    {
+        SetStartDate(2019, 1, 1);
+        SetEndDate(2021, 3, 31);
+        SetCash(100000);
+        _symbol = AddEquity("BAC", Resolution.Daily).Symbol;
+        _datasetSymbol = AddData&lt;FDICBankFinancials&gt;(_symbol).Symbol;
+        _allBanksSymbol = AddData&lt;FDICBankReports&gt;(FDIC.Banks.All).Symbol;
+    }
+}</pre>
+</div>

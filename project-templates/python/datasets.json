@@ -721,6 +721,66 @@
             }
         },
         {
+            "name": "US SEC 13F Whales",
+            "shortDescription": "Ownership filings from the SEC as their holders filed them, starting with Form 13F institutional holdings",
+            "history": "May 2013",
+            "reach": "18,877 US Equities",
+            "url": "sec-whales",
+            "examples": {
+                "init": "self._dataset_symbol = self.add_data(SEC13FHoldings, self._symbol).symbol",
+                "history": "history_df = self.history(SEC13FHoldings, self._dataset_symbol, timedelta(days=60), Resolution.DAILY, flatten=True)",
+                "research-history": "history_df = qb.history(SEC13FHoldings, dataset_symbol, timedelta(days=60), Resolution.DAILY, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    if slice.contains_key(self._dataset_symbol):\n        for holding in slice[self._dataset_symbol]:\n            self.log(f\"{self._dataset_symbol} CIK {holding.manager_cik} at {slice.time}: {holding.amount} {holding.amount_type}\")"
+            }
+        },
+        {
+            "name": "US Bank Financials",
+            "shortDescription": "Quarterly call reports of every FDIC-insured bank, linked to the listed owner, published by the Federal Deposit Insurance Corporation",
+            "history": "June 1984",
+            "reach": "24,064 Banks",
+            "url": "fdic-us-bank-financials",
+            "examples": {
+                "init": "self._dataset_symbol = self.add_data(FDICBankFinancials, self._symbol).symbol",
+                "history": "history = self.history[FDICBankFinancials](self._dataset_symbol, timedelta(days=365), Resolution.DAILY)",
+                "universe-init": "self._universe = self.add_universe(FDICBankFinancialsUniverse, self.universe_selection)",
+                "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+                "universe-filter": "def universe_selection(self, alt_coarse: List[FDICBankFinancialsUniverse]) -> List[Symbol]:\n    return list({d.symbol for d in alt_coarse if d.domestic_deposits and (d.estimated_uninsured_deposits or 0) / d.domestic_deposits < 0.3})",
+                "research-history": "history = qb.history[FDICBankFinancials](dataset_symbol, timedelta(days=365), Resolution.DAILY)",
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    reports = slice.get(FDICBankFinancials).get(self._dataset_symbol)\n    if reports:\n        for report in reports.data:\n            self.log(f\"{report.institution_name} {report.report_date}: {report.estimated_uninsured_deposits}\")"
+            }
+        },
+        {
+            "name": "US Bank Failures",
+            "shortDescription": "Every failure of an FDIC-insured bank since 1934, with its assets and deposits, published by the Federal Deposit Insurance Corporation",
+            "history": "April 1934",
+            "reach": "4,117 Bank Failures",
+            "url": "fdic-us-bank-failures",
+            "examples": {
+                "init": "self._dataset_symbol = self.add_data(FDICBankFailures, FDIC.FAILURES).symbol",
+                "history": "history = self.history[FDICBankFailures](self._dataset_symbol, timedelta(days=730), Resolution.DAILY)",
+                "research-history": "history = qb.history[FDICBankFailures](dataset_symbol, timedelta(days=730), Resolution.DAILY)",
+                "usage": "def on_data(self, slice: Slice) -> None:\n    failures = slice.get(FDICBankFailures).get(self._dataset_symbol)\n    if failures:\n        for failure in failures.data:\n            self.log(f\"{failure.institution_name} ({failure.state}): assets {failure.total_assets}\")"
+            }
+        },
+        {
+            "name": "Factors",
+            "shortDescription": "Daily precomputed factors for individual US Equities, plus market-wide factors not linked to specific Equities",
+            "history": "January 1998",
+            "reach": "SPY Constituents, plus unlinked factors",
+            "url": "quantconnect-factors",
+            "examples": {
+                "init": "self._equity.factors = self.add_data(Factors, self._equity.symbol).symbol",
+                "history": "equity_factors_history_df = self.history(self._equity.factors, 100, Resolution.DAILY)",
+                "universe-init": "self._universe = self.add_universe(FactorsUniverse, self._select_assets)",
+                "universe-history": "history = self.history(self._universe, 30, Resolution.DAILY, flatten=True)",
+                "universe-filter": "def _select_assets(self, data: List[FactorsUniverse]) -> List[Symbol]:\n    ust_yield = None\n    positive = []\n    negative = []\n    for factors in data:\n        if Factors.UST_YIELD_1_MONTH in factors.keys:\n            ust_yield = factors[Factors.UST_YIELD_1_MONTH]\n        elif Factors.ROC_1_DAY in factors.keys:\n            if factors[Factors.ROC_1_DAY] > 0:\n                positive.append(factors.symbol)\n            else:\n                negative.append(factors.symbol)\n    return positive if ust_yield < 4 else negative",
+                "research-history": "equity_factors_history_df = qb.history(equity.factors, 100, Resolution.DAILY)",
+                "research-universe-history": "history = qb.universe_history(universe, qb.time-timedelta(30), qb.time, flatten=True)",
+                "usage": "def on_data(self, data: Slice) -> None:\n    equity_factors = data.get(Factors).get(self._equity.factors)\n    if equity_factors:\n        value = equity_factors[Factors.ROC_1_DAY]\n\n    unlinked_factors = data.get(Factors).get(self._unlinked_factors)\n    if unlinked_factors:\n        ust_yield = unlinked_factors[Factors.UST_YIELD_1_MONTH]"
+            }
+        },
+        {
             "name": "Fear and Greed",
             "shortDescription": "A daily index between 0 and 100, representing the degree of fear or greed in the US Equity market.",
             "history": "July 2014",
