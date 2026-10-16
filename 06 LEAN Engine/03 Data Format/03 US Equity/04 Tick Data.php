@@ -38,7 +38,7 @@
         </tr>
         <tr>
             <td>Suspicious</td>
-            <td>1 if the tick is <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#04-Suspicious-Ticks'>suspicious</a> and 0 otherwise</td>
+            <td>1 if the tick is <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#04-Suspicious-Ticks'>suspicious</a> and 0 otherwise</td>
             <td>0</td>
         </tr>
     </tbody>
@@ -94,14 +94,14 @@
         </tr>
         <tr>
             <td>Suspicious</td>
-            <td>1 if the tick is <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#04-Suspicious-Ticks'>suspicious</a> and 0 otherwise</td>
+            <td>1 if the tick is <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#04-Suspicious-Ticks'>suspicious</a> and 0 otherwise</td>
             <td>0</td>
         </tr>
     </tbody>
 </table>
 
 <p>
-    Each quote tick has data for one side of the book, and the other side has a price and size of 0. The bar-building process excludes the prices of suspicious ticks and of ticks with some condition flags. For the rules, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#03-Bar-Building'>Bar Building</a>.
+    Each quote tick has data for one side of the book, and the other side has a price and size of 0. The bar-building process excludes the prices of suspicious ticks and of ticks with some condition flags. For the rules, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#03-Bar-Building'>Bar Building</a>.
 </p>
 
 <p>
