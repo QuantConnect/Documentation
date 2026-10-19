@@ -196,6 +196,8 @@
 <li><a href="#15.5.2.4" class="toc-h4" target="_parent">15.5.2.4 Trades</a></li>
 <li><a href="#15.5.2.5" class="toc-h4" target="_parent">15.5.2.5 Insights</a></li>
 <li><a href="#15.5.2.6" class="toc-h4" target="_parent">15.5.2.6 Logs</a></li>
+<li><a href="#15.5.2.7" class="toc-h4" target="_parent">15.5.2.7 Export Orders</a></li>
+<li><a href="#15.5.2.8" class="toc-h4" target="_parent">15.5.2.8 Export Trades</a></li>
 <li><a href="#15.5.3" class="toc-h3" target="_parent">15.5.3 Update Backtest</a></li>
 <li><a href="#15.5.4" class="toc-h3" target="_parent">15.5.4 Delete Backtest</a></li>
 <li><a href="#15.5.5" class="toc-h3" target="_parent">15.5.5 List Backtests</a></li>
@@ -209,6 +211,8 @@
 <li><a href="#15.6.2.5" class="toc-h4" target="_parent">15.6.2.5 Trades</a></li>
 <li><a href="#15.6.2.6" class="toc-h4" target="_parent">15.6.2.6 Insights</a></li>
 <li><a href="#15.6.2.7" class="toc-h4" target="_parent">15.6.2.7 Logs</a></li>
+<li><a href="#15.6.2.8" class="toc-h4" target="_parent">15.6.2.8 Export Orders</a></li>
+<li><a href="#15.6.2.9" class="toc-h4" target="_parent">15.6.2.9 Export Trades</a></li>
 <li><a href="#15.6.3" class="toc-h3" target="_parent">15.6.3 Update Live Algorithm</a></li>
 <li><a href="#15.6.3.1" class="toc-h4" target="_parent">15.6.3.1 Liquidate Live Portfolio</a></li>
 <li><a href="#15.6.3.2" class="toc-h4" target="_parent">15.6.3.2 Stop Live Algorithm</a></li>
@@ -1376,15 +1380,11 @@ padding-top: 2rem;
    The Team tier expands on the features included in the Quant Researcher tier. Organizations on the Team tier can have up to 10 members and the members can collaborate on projects together. These organizations can produce 1MB of logs/backtest, 10MB of logs/day, and there is no limit on the number of orders that they can place in backtests. Organizations on the Team tier can have up to 10 backtesting nodes, 10 research nodes, and 10 live trading nodes. Members in these organizations can have up to four active coding sessions in the organization.
   </p>
   <p>
-   To accommodate a large number of projects in Team organizations, these organizations can expand the capacity of their Object Store up to 10GB. Annual contracts for onboarding services are available on request to get teams operational in the shortest amount of time. When live trading, Team organizations have more options than the lower tiers because both the
+   To accommodate a large number of projects in Team organizations, these organizations can expand the capacity of their Object Store up to 10GB. Annual contracts for onboarding services are available on request to get teams operational in the shortest amount of time. When live trading, Team organizations have more options than the lower tiers because the
    <a href="#10.2/trading-technologies">
     Trading Technologies brokerage
    </a>
-   and our
-   <a href="#9.7.6">
-    live Futures data provider
-   </a>
-   are available. Each live algorithm in a Team organization can send up to 60 Telegram, Email, or Webhook notifications per hour for free.
+   is available. Each live algorithm in a Team organization can send up to 60 Telegram, Email, or Webhook notifications per hour for free.
   </p>
  </body>
 </html>
@@ -1414,7 +1414,7 @@ padding-top: 2rem;
    to the organization's members, including designating a member to manage the organization's billing. These organizations have access to custom lean builds, so they can use feature branches or historical master branches to run their strategies. An example of this could be granting only a few members of your team live trading deployment access.
   </p>
   <p>
-   In addition to the brokerages and data providers available to Team organizations, Trading Firm organizations can use
+   In addition to the brokerages available to Team organizations, Trading Firm organizations can use
    <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/trading-and-orders/financial-advisors">
     Interactive Brokers Financial Advisor accounts
    </a>
@@ -15320,7 +15320,11 @@ As the backtest executes, you can refresh or close the IDE without interfering w
    <span class="button-name">
     Download Orders
    </span>
-   . The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC).
+   . The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC).  To download the CSV file with the API, call the
+   <a href="#15/backtest-management/read-backtest/export-orders">
+    /backtests/export/orders
+   </a>
+   endpoint.
   </p>
   <h4>
    Access the Orders JSON
@@ -15394,7 +15398,11 @@ As the backtest executes, you can refresh or close the IDE without interfering w
    <span class="button-name">
     Download Trades
    </span>
-   . The content of the CSV file is the content displayed in the Trades Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC).
+   . The content of the CSV file is the content displayed in the Trades Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC).  To download the CSV file with the API, call the
+   <a href="#15/backtest-management/read-backtest/export-trades">
+    /backtests/export/trades
+   </a>
+   endpoint.
   </p>
   <h4>
    Access the Trades JSON
@@ -26265,7 +26273,7 @@ class QuantConnectPaperTradingDemoAlgorithm(QCAlgorithm):
     US Index Options
    </a>
    ,
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    ,
@@ -28340,7 +28348,7 @@ self.log(f'deployment_details: {deployment_details}')</pre>
     US Index Options
    </a>
    , and
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    data during live trading.
@@ -29599,7 +29607,7 @@ self.log(f'deployment_details: {deployment_details}')</pre>
     US Index Options
    </a>
    , and
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    data during live trading.
@@ -41602,7 +41610,7 @@ self.log(f'deployment_details: {deployment_details}')</pre>
     US Index Options
    </a>
    , and
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    data during live trading. It also supplies
@@ -43303,7 +43311,7 @@ self.log(f'deployment_details: {deployment_details}')</pre>
     US Index Options
    </a>
    , and
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    data during live trading. It also supplies
@@ -44490,7 +44498,7 @@ self.log(f'deployment_details: {deployment_details}')</pre>
     US Index Options
    </a>
    , and
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    data during live trading.
@@ -45468,7 +45476,7 @@ self.log(f'deployment_details: {deployment_details}')</pre>
     QuantConnect data provider
    </a>
    , which is free and supplies
-   <a href="#9.7.6">
+   <a href="#9/quantconnect/futures">
     Futures
    </a>
    data during live trading.
@@ -50764,7 +50772,24 @@ self.log(f'deployment_details: {deployment_details}')</pre>
    <span class="button-name">
     Download Orders
    </span>
-   . The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC).
+   . The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC). To download the CSV file with the API, call the
+   <a href="#15/live-management/read-live-algorithm/export-orders">
+    /live/export/orders
+   </a>
+   endpoint. The CSV file only contains the orders from the last 750 days. To get older orders, call the
+   <a href="https://www.quantconnect.com/docs/v2//research-environment/meta-analysis/live-analysis#03-Plot-Order-Fills">
+    <span class="csharp">
+     ReadLiveOrders
+    </span>
+    <span class="python">
+     read_live_orders
+    </span>
+   </a>
+   method or the
+   <a href="#15.5.2.3">
+    /live/orders/read
+   </a>
+   endpoint.
   </p>
   <h4>
    Access in Jupyter Notebooks
@@ -50782,6 +50807,55 @@ self.log(f'deployment_details: {deployment_details}')</pre>
    method or the
    <a href="#15.5.2.3">
     /live/orders/read
+   </a>
+   endpoint.
+  </p>
+  <p>
+  </p>
+ </body>
+</html>
+
+<h3>Trades</h3>
+<html>
+ <body>
+  <p>
+   The live results page displays the closed trades of your algorithm and you can download them to your local machine. You can set how orders are combined to define a trade. For more information, see
+   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/trading-and-orders/trade-statistics">
+    Trade Statistics
+   </a>
+  </p>
+  <h4>
+   View in the GUI
+  </h4>
+  <p>
+   To see the trades that your algorithm created, open the live results page and then click the
+   <span class="tab-name">
+    Trades
+   </span>
+   tab. If there are more than 10 trades, use the pagination tools at the bottom of the Trades Summary table to see all of the orders. Click on an individual trade in the Trades Summary table to reveal the
+   <a href="https://www.quantconnect.com/docs/v2//writing-algorithms/trading-and-orders/order-events">
+    order fills
+   </a>
+   of the trade.
+  </p>
+  <p>
+   The timestamps in the Trades Summary table are based in Eastern Time (ET).
+  </p>
+  <h4>
+   Access the Trade Summary CSV
+  </h4>
+  <p>
+   To view the trades data in CSV format, open the live results page, click the
+   <span class="tab-name">
+    Trades
+   </span>
+   tab, and then click
+   <span class="button-name">
+    Download Trades
+   </span>
+   . The content of the CSV file is the content displayed in the Trades Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC). To download the CSV file with the API, call the
+   <a href="#15/live-management/read-live-algorithm/export-trades">
+    /live/export/trades
    </a>
    endpoint.
   </p>
@@ -54733,7 +54807,7 @@ scatter plot for each objective. If your optimization job has two parameters, th
   <p>
    Your organization's Object Store includes a reserved
    <span class="public-directory-name">
-    .agent
+    .assistant
    </span>
    folder that the
    <a href="https://www.quantconnect.com/docs/v2//ai-assistance/agents">
@@ -54752,12 +54826,12 @@ scatter plot for each objective. If your optimization job has two parameters, th
    <a href="https://www.quantconnect.com/docs/v2//ai-assistance/agents#16-Custom-Templates">
     templates
    </a>
-   you define for your organization, which let the agents apply your own expertise, remember your preferences, and start new projects from your own scaffolds.
+   that let the agents apply your own expertise, remember each project's context, and start new projects from your own scaffolds.
   </p>
   <p>
    The
    <span class="public-directory-name">
-    .agent
+    .assistant
    </span>
    folder contains the following subfolders:
   </p>
@@ -54790,7 +54864,11 @@ scatter plot for each objective. If your optimization job has two parameters, th
       </span>
      </td>
      <td>
-      Facts the agents remember across conversations.
+      Facts the agents remember about each project, in one
+      <span class="public-file-name">
+       &lt;project_id&gt; / memory.md
+      </span>
+      file per project.
      </td>
     </tr>
     <tr>
@@ -73660,7 +73738,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -77275,7 +77371,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -77358,6 +77472,28 @@ if result['success']:
        <div class="docs-internal-link">
         <h4>
          Logs
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-orders">
+      <div class="content clickable" onclick="window.location.href = '#15.5.2.7'">
+       <div class="docs-internal-link">
+        <h4>
+         Export Orders
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-trades">
+      <div class="content clickable" onclick="window.location.href = '#15.5.2.8'">
+       <div class="docs-internal-link">
+        <h4>
+         Export Trades
         </h4>
        </div>
       </div>
@@ -80938,7 +81074,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -81659,7 +81813,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -83189,7 +83361,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -85112,7 +85302,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -85866,7 +86074,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -86331,7 +86557,703 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>API Reference > Backtest Management > Read Backtest > Export Orders</p>
+<div class='page-heading'>
+    <section id="15.5.2.7">
+        <h1>Read Backtest</h1>
+        <h2>Export Orders</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the orders of a backtest as a CSV file.
+  </p>
+ </body>
+</html>
+
+<h3>Description</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The CSV file has the same format as the file you get when you click
+   <span class="button-name">
+    Download Orders
+   </span>
+   on the backtest results page. To get all the properties of the orders, call the
+   <a href="#15.5.2.3">
+    /backtests/orders/read
+   </a>
+   endpoint.
+  </p>
+ </body>
+</html>
+
+<h3>Request</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the orders of the backtest Id provided. The
+   <code>
+    /backtests/export/orders
+   </code>
+   API accepts requests in the following format:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       ExportBacktestOrdersRequest
+      </code>
+      Model - Request to download the orders of a backtest.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     backtestId
+    </td>
+    <td>
+     <code>
+      string
+      <br/>
+      <i>
+       <sub>
+        required
+       </sub>
+      </i>
+      <br/>
+      <i>
+       <sub>
+        example: 26c7bb06b8487cff1c7b3c44652b30f1
+       </sub>
+      </i>
+     </code>
+     <br/>
+     Id of the backtest from which to download the orders.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+{
+  "backtestId": "26c7bb06b8487cff1c7b3c44652b30f1"
+}</pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Responses</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    /backtests/export/orders
+   </code>
+   API provides a response in the following format:
+  </p>
+  <h4>
+   200 Success
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       text/csv
+      </code>
+      - Orders of the backtest, sorted by time.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     content
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     One row per order. The Time column is in UTC.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+Time,Symbol,Price,Quantity,Type,Status,Value,Tag
+2024-01-02T15:00:00Z,IWM,195.236280785,500,Market,Filled,97618.1403925,"" </pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+  <h4>
+   401 Authentication Error
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       UnauthorizedError
+      </code>
+      Model - Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     www_authenticate
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     Header
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Examples</h3>
+<html>
+ <body>
+  <p>
+   The following example demonstates creating, reading, updating, deleting, and listing backtests of a project through the cloud API.
+  </p>
+  <div class="section-example-container">
+   <pre>from base64 import b64encode
+from hashlib import sha256
+from time import time
+from requests import get, post
+BASE_URL = 'https://www.quantconnect.com/api/v2/'
+
+# You need to replace these with your actual credentials.
+# You can request your credentials at https://www.quantconnect.com/settings/
+# You can find our organization ID at https://www.quantconnect.com/organization/ 
+USER_ID = 0
+API_TOKEN = '____'
+ORGANIZATION_ID = '____'
+
+def get_headers():
+    # Get timestamp
+    timestamp = f'{int(time())}'
+    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
+
+    # Get hased API token
+    hashed_token = sha256(time_stamped_token).hexdigest()
+    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
+    authentication = b64encode(authentication).decode('ascii')
+
+    # Create headers dictionary.
+    return {
+        'Authorization': f'Basic {authentication}',
+        'Timestamp': timestamp
+    }
+
+# Authenticate to verify credentials
+response = post(f'{BASE_URL}/authenticate', headers = get_headers())
+print(response.json())
+
+# --------------------
+
+
+### Create Backtest
+# Define placeholder compilation ID (replace with actual value)
+compile_id = "compile_id..."
+# Send a POST request to the /backtests/create endpoint to create a backtest
+response = post(f'{BASE_URL}/backtests/create', headers=get_headers(), json={
+    "projectId": project_id,  # ID of the project to backtest
+    "compileId": compile_id,  # Compilation ID for the backtest
+    "backtestName": f"Backtest {int(time())}"  # Unique name for the backtest using current timestamp
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Extract the backtest ID from the response
+backtest_id = result['backtest']['backtestId']
+# Check if the request was successful and print the result
+if result['success']:
+    print("Backtest Created Successfully:")
+    print(result)
+
+### Read Backtest Statistics
+# Prepare data payload to read backtest statistics
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id  # ID of the backtest to read
+}
+# Send a POST request to the /backtests/read endpoint to get statistics
+response = post(f'{BASE_URL}/backtests/read', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the statistics
+if result['success']:
+    print("Backtest Statistics:")
+    print(result)
+
+### Read Backtest Logs
+# Prepare data payload to read the first 200 log lines
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id,  # ID of the backtest to read
+    "start": 0,  # Start line (inclusive)
+    "end": 200,  # End line (exclusive), at most 200 lines per request
+    "query": None  # Keyword to filter the lines, or None to read all of them
+}
+# Send a POST request to the /backtests/read/log endpoint to get the logs
+response = post(f'{BASE_URL}/backtests/read/log', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the logs
+if result['success']:
+    print("Backtest Logs:")
+    print(result)
+
+### Update Backtest
+# Send a POST request to the /backtests/update endpoint to update backtest details
+response = post(f'{BASE_URL}/backtests/update', headers=get_headers(), json={
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id,  # ID of the backtest to update
+    "name": f"Backtest_{backtest_id}",  # New name for the backtest
+    "note": "The new backtest name is awesome!"  # Additional note
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Backtest Updated Successfully:")
+    print(result)
+
+### Delete Backtest
+# Prepare data payload to delete the backtest
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id  # ID of the backtest to delete
+}
+# Send a POST request to the /backtests/delete endpoint to delete the backtest
+response = post(f'{BASE_URL}/backtests/delete', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Backtest Deleted Successfully:")
+    print(result)
+
+### List Backtests
+# Prepare data payload to list backtests with statistics
+payload = {
+    "projectId": project_id,  # ID of the project
+    "includeStatistics": True  # Include statistics in the response
+}
+# Send a POST request to the /backtests/list endpoint to list backtests
+response = post(f'{BASE_URL}/backtests/list', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the list
+if result['success']:
+    print("List of Backtests:")
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>API Reference > Backtest Management > Read Backtest > Export Trades</p>
+<div class='page-heading'>
+    <section id="15.5.2.8">
+        <h1>Read Backtest</h1>
+        <h2>Export Trades</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the closed trades of a backtest as a CSV file.
+  </p>
+ </body>
+</html>
+
+<h3>Description</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The CSV file has the same format as the file you get when you click
+   <span class="button-name">
+    Download Trades
+   </span>
+   on the backtest results page. It contains the closed trades that the
+   <a href="#15/backtest-management/read-backtest/trades">
+    /backtests/trades/read
+   </a>
+   endpoint returns, sorted by entry time.
+  </p>
+ </body>
+</html>
+
+<h3>Request</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the closed trades of the backtest Id provided. The
+   <code>
+    /backtests/export/trades
+   </code>
+   API accepts requests in the following format:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       ExportBacktestTradesRequest
+      </code>
+      Model - Request to download the closed trades of a backtest.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     backtestId
+    </td>
+    <td>
+     <code>
+      string
+      <br/>
+      <i>
+       <sub>
+        required
+       </sub>
+      </i>
+      <br/>
+      <i>
+       <sub>
+        example: 26c7bb06b8487cff1c7b3c44652b30f1
+       </sub>
+      </i>
+     </code>
+     <br/>
+     Id of the backtest from which to download the closed trades.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+{
+  "backtestId": "26c7bb06b8487cff1c7b3c44652b30f1"
+}</pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Responses</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    /backtests/export/trades
+   </code>
+   API provides a response in the following format:
+  </p>
+  <h4>
+   200 Success
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       text/csv
+      </code>
+      - Closed trades of the backtest, sorted by entry time.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     content
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     One row per closed trade. The Entry Time and Exit Time columns are in UTC.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+Entry Time,Symbols,Exit Time,Direction,Entry Price,Exit Price,Quantity,P&amp;L,Fees,MAE,MFE,Drawdown,IsWin,Order Ids
+2024-01-02T15:00:00Z,"IWM",2024-01-02T19:54:00Z,Buy,195.236280785,193.28,500,-978.14,5,-1029.04,203.87,1232.91,0,"	1,3" </pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+  <h4>
+   401 Authentication Error
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       UnauthorizedError
+      </code>
+      Model - Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     www_authenticate
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     Header
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Examples</h3>
+<html>
+ <body>
+  <p>
+   The following example demonstates creating, reading, updating, deleting, and listing backtests of a project through the cloud API.
+  </p>
+  <div class="section-example-container">
+   <pre>from base64 import b64encode
+from hashlib import sha256
+from time import time
+from requests import get, post
+BASE_URL = 'https://www.quantconnect.com/api/v2/'
+
+# You need to replace these with your actual credentials.
+# You can request your credentials at https://www.quantconnect.com/settings/
+# You can find our organization ID at https://www.quantconnect.com/organization/ 
+USER_ID = 0
+API_TOKEN = '____'
+ORGANIZATION_ID = '____'
+
+def get_headers():
+    # Get timestamp
+    timestamp = f'{int(time())}'
+    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
+
+    # Get hased API token
+    hashed_token = sha256(time_stamped_token).hexdigest()
+    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
+    authentication = b64encode(authentication).decode('ascii')
+
+    # Create headers dictionary.
+    return {
+        'Authorization': f'Basic {authentication}',
+        'Timestamp': timestamp
+    }
+
+# Authenticate to verify credentials
+response = post(f'{BASE_URL}/authenticate', headers = get_headers())
+print(response.json())
+
+# --------------------
+
+
+### Create Backtest
+# Define placeholder compilation ID (replace with actual value)
+compile_id = "compile_id..."
+# Send a POST request to the /backtests/create endpoint to create a backtest
+response = post(f'{BASE_URL}/backtests/create', headers=get_headers(), json={
+    "projectId": project_id,  # ID of the project to backtest
+    "compileId": compile_id,  # Compilation ID for the backtest
+    "backtestName": f"Backtest {int(time())}"  # Unique name for the backtest using current timestamp
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Extract the backtest ID from the response
+backtest_id = result['backtest']['backtestId']
+# Check if the request was successful and print the result
+if result['success']:
+    print("Backtest Created Successfully:")
+    print(result)
+
+### Read Backtest Statistics
+# Prepare data payload to read backtest statistics
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id  # ID of the backtest to read
+}
+# Send a POST request to the /backtests/read endpoint to get statistics
+response = post(f'{BASE_URL}/backtests/read', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the statistics
+if result['success']:
+    print("Backtest Statistics:")
+    print(result)
+
+### Read Backtest Logs
+# Prepare data payload to read the first 200 log lines
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id,  # ID of the backtest to read
+    "start": 0,  # Start line (inclusive)
+    "end": 200,  # End line (exclusive), at most 200 lines per request
+    "query": None  # Keyword to filter the lines, or None to read all of them
+}
+# Send a POST request to the /backtests/read/log endpoint to get the logs
+response = post(f'{BASE_URL}/backtests/read/log', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the logs
+if result['success']:
+    print("Backtest Logs:")
+    print(result)
+
+### Update Backtest
+# Send a POST request to the /backtests/update endpoint to update backtest details
+response = post(f'{BASE_URL}/backtests/update', headers=get_headers(), json={
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id,  # ID of the backtest to update
+    "name": f"Backtest_{backtest_id}",  # New name for the backtest
+    "note": "The new backtest name is awesome!"  # Additional note
+})
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Backtest Updated Successfully:")
+    print(result)
+
+### Delete Backtest
+# Prepare data payload to delete the backtest
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id  # ID of the backtest to delete
+}
+# Send a POST request to the /backtests/delete endpoint to delete the backtest
+response = post(f'{BASE_URL}/backtests/delete', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Backtest Deleted Successfully:")
+    print(result)
+
+### List Backtests
+# Prepare data payload to list backtests with statistics
+payload = {
+    "projectId": project_id,  # ID of the project
+    "includeStatistics": True  # Include statistics in the response
+}
+# Send a POST request to the /backtests/list endpoint to list backtests
+response = post(f'{BASE_URL}/backtests/list', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the list
+if result['success']:
+    print("List of Backtests:")
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -86701,7 +87623,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -87045,7 +87985,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -87836,7 +88794,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -91968,7 +92944,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -92062,6 +93110,28 @@ if result['success']:
        <div class="docs-internal-link">
         <h4>
          Logs
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/export-orders">
+      <div class="content clickable" onclick="window.location.href = '#15.5.2.7'">
+       <div class="docs-internal-link">
+        <h4>
+         Export Orders
+        </h4>
+       </div>
+      </div>
+     </a>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <a class="docs-landing-link" href="/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/export-trades">
+      <div class="content clickable" onclick="window.location.href = '#15.5.2.8'">
+       <div class="docs-internal-link">
+        <h4>
+         Export Trades
         </h4>
        </div>
       </div>
@@ -93134,7 +94204,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -93830,7 +94972,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -94459,7 +95673,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -94506,7 +95792,7 @@ if result['success']:
    </thead>
    <tr>
     <td width="20%">
-     algorithmId
+     deployId
     </td>
     <td>
      <code>
@@ -94519,7 +95805,7 @@ if result['success']:
       </i>
      </code>
      <br/>
-     Deploy Id (Algorithm Id) of the live running algorithm.
+     Deploy Id of the live algorithm. When you provide it, the response contains the orders of that deployment. When you omit it, the response contains the orders of every deployment of the project.
     </td>
    </tr>
    <tr>
@@ -94602,7 +95888,7 @@ if result['success']:
      <div class="cli section-example-container">
       <pre>
 {
-  "algorithmId": "L-6e9d8a78f5af89d401f630585be90e43",
+  "deployId": "L-6e9d8a78f5af89d401f630585be90e43",
   "start": 0,
   "end": 100,
   "projectId": 23456789
@@ -96074,7 +97360,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -98054,7 +99412,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -98796,7 +100226,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -99270,7 +100772,930 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>API Reference > Live Management > Read Live Algorithm > Export Orders</p>
+<div class='page-heading'>
+    <section id="15.6.2.8">
+        <h1>Read Live Algorithm</h1>
+        <h2>Export Orders</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the orders of all the live deployments of a project as a CSV file.
+  </p>
+ </body>
+</html>
+
+<h3>Description</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The CSV file has the same format as the file you get when you click
+   <span class="button-name">
+    Download Orders
+   </span>
+   on the live results page. The response contains at most 750 days of orders. If the date range is longer, the response contains the last 750 days of the range. To get older orders, call the endpoint again with an earlier
+   <code>
+    end
+   </code>
+   or call the
+   <a href="#15.5.2.3">
+    /live/orders/read
+   </a>
+   endpoint. The response can contain orders outside of the date range. To get an exact range, filter the rows by their
+   <code>
+    Time
+   </code>
+   value.
+  </p>
+ </body>
+</html>
+
+<h3>Request</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the orders of a project for the date range provided. The
+   <code>
+    /live/export/orders
+   </code>
+   API accepts requests in the following format:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       ExportLiveOrdersRequest
+      </code>
+      Model - Request to download the orders of the live deployments of a project.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     projectId
+    </td>
+    <td>
+     <code>
+      integer
+      <br/>
+      <i>
+       <sub>
+        required
+       </sub>
+      </i>
+      <br/>
+      <i>
+       <sub>
+        example: 23456789
+       </sub>
+      </i>
+     </code>
+     <br/>
+     Id of the project from which to download the orders.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     start
+    </td>
+    <td>
+     <code>
+      integer
+      <br/>
+      <i>
+       <sub>
+        example: 1727222400
+       </sub>
+      </i>
+     </code>
+     <br/>
+     Start of the date range in Unix time (seconds). The default value is one hour before the first deployment of the project.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     end
+    </td>
+    <td>
+     <code>
+      integer
+      <br/>
+      <i>
+       <sub>
+        example: 1792022400
+       </sub>
+      </i>
+     </code>
+     <br/>
+     End of the date range in Unix time (seconds). The default value is the current time.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+{
+  "projectId": 23456789,
+  "start": 1727222400,
+  "end": 1792022400
+}</pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Responses</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    /live/export/orders
+   </code>
+   API provides a response in the following format:
+  </p>
+  <h4>
+   200 Success
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       text/csv
+      </code>
+      - Orders of the live deployments of the project, sorted by time.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     content
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     One row per order. The Time column is in UTC.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+Deploy,Time,Symbol,Price,Quantity,Type,Status,Value,Tag
+L-6e9d8a78f5af89d401f630585be90e43,2026-10-08T14:20:04.8005773Z,SPY,672.35,10,"Market","Filled",6723.5,"" </pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+  <h4>
+   401 Authentication Error
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       UnauthorizedError
+      </code>
+      Model - Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     www_authenticate
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     Header
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Examples</h3>
+<html>
+ <body>
+  <p>
+   The following example demonstates creating, reading, updating, and listing live algorithms of a project through the cloud API.
+  </p>
+  <div class="section-example-container">
+   <pre>from base64 import b64encode
+from hashlib import sha256
+from time import time
+from requests import get, post
+BASE_URL = 'https://www.quantconnect.com/api/v2/'
+
+# You need to replace these with your actual credentials.
+# You can request your credentials at https://www.quantconnect.com/settings/
+# You can find our organization ID at https://www.quantconnect.com/organization/ 
+USER_ID = 0
+API_TOKEN = '____'
+ORGANIZATION_ID = '____'
+
+def get_headers():
+    # Get timestamp
+    timestamp = f'{int(time())}'
+    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
+
+    # Get hased API token
+    hashed_token = sha256(time_stamped_token).hexdigest()
+    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
+    authentication = b64encode(authentication).decode('ascii')
+
+    # Create headers dictionary.
+    return {
+        'Authorization': f'Basic {authentication}',
+        'Timestamp': timestamp
+    }
+
+# Authenticate to verify credentials
+response = post(f'{BASE_URL}/authenticate', headers = get_headers())
+print(response.json())
+
+# --------------------
+
+
+### Create Live Algorithm
+# Define placeholder IDs for compilation and node (replace with actual values)
+project_id = 12345678
+compile_id = "compile_id..."
+node_id = "node_id..."
+# Prepare the data payload for creating a live algorithm with necessary details
+payload = {
+    "versionId": "-1",  # Use the latest version of the algorithm
+    "projectId": project_id,  # ID of the project to deploy as a live algorithm
+    "compileId": compile_id,  # Compilation ID for the algorithm code
+    "nodeId": node_id,  # Node ID where the algorithm will run
+    "brokerage": {  # Brokerage configuration for live trading
+        "id": "QuantConnectBrokerage",  # Brokerage identifier
+        "user": "",  # Brokerage username (replace with actual value)
+        "password": "",  # Brokerage password (replace with actual value)
+        "environment": "live-paper",  # Trading environment (live or paper)
+        "account": ""  # Brokerage account ID (replace with actual value)
+    },
+    "dataProviders": {  # Data provider configuration
+        "QuantConnectBrokerage": {
+            "id": "QuantConnectBrokerage"  # Data provider identifier
+        }
+    },
+    "parameters": {},  # Optional algorithm parameters (empty in this example)
+    "notification": {}  # Optional notification settings (empty in this example)
+}
+# Send a POST request to the /live/create endpoint to deploy the algorithm
+response = post(f'{BASE_URL}/live/create', headers=get_headers(), json=data)
+# Parse the JSON response into python managable dict from the API
+result = response.json()
+# Extract the deploy ID from the response for future operations
+deploy_id = result['deployId']
+# Check if the request was successful and print the result
+if result['success']:
+    print("Live Algorithm Created Successfully:")
+    print(result)
+
+### Read Live Algorithm Statistics
+# Prepare data payload with project and deploy IDs to fetch statistics
+payload = {
+    "projectId": project_id,  # ID of the project
+    "deployId": deploy_id  # ID of the deployed live algorithm
+}
+# Send a POST request to the /live/read endpoint to get algorithm statistics
+response = post(f'{BASE_URL}/live/read', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the statistics
+if result['success']:
+    print("Live Algorithm Statistics:")
+    print(result)
+
+### Liquidate Live Algorithm
+# Prepare data payload with project ID to liquidate the algorithm
+payload = {
+    "projectId": project_id  # ID of the project to liquidate
+}
+# Send a POST request to the /live/update/liquidate endpoint to liquidate
+response = post(f'{BASE_URL}/live/update/liquidate', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Live Algorithm Liquidated Successfully:")
+    print(result)
+
+### Stop Live Algorithm
+# Prepare data payload with project ID to stop the algorithm
+payload = {
+    "projectId": project_id  # ID of the project to stop
+}
+# Send a POST request to the /live/update/stop endpoint to stop the algorithm
+response = post(f'{BASE_URL}/live/update/stop', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Live Algorithm Stopped Successfully:")
+    print(result)
+
+### List Live Algorithms
+# Prepare data payload with filters for listing live algorithms
+payload = {
+    "status": "Running",  # Filter to show only running algorithms
+    "start": 1717801200,  # Start time (Unix timestamp) for the list range
+    "end": 1743462000  # End time (Unix timestamp) for the list range
+}
+# Send a POST request to the /live/list endpoint to list algorithms
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the list
+if result['success']:
+    print("List of Live Algorithms:")
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>API Reference > Live Management > Read Live Algorithm > Export Trades</p>
+<div class='page-heading'>
+    <section id="15.6.2.9">
+        <h1>Read Live Algorithm</h1>
+        <h2>Export Trades</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the closed trades of all the live deployments of a project as a CSV file.
+  </p>
+ </body>
+</html>
+
+<h3>Description</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The CSV file contains the closed trades that the
+   <a href="#15/live-management/read-live-algorithm/trades">
+    /live/trades/read
+   </a>
+   endpoint returns for the project. The response contains the trades with an entry time at or after
+   <code>
+    start
+   </code>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Request</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   Download the closed trades of a project from the start time provided. The
+   <code>
+    /live/export/trades
+   </code>
+   API accepts requests in the following format:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       ExportLiveTradesRequest
+      </code>
+      Model - Request to download the closed trades of the live deployments of a project.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     projectId
+    </td>
+    <td>
+     <code>
+      integer
+      <br/>
+      <i>
+       <sub>
+        required
+       </sub>
+      </i>
+      <br/>
+      <i>
+       <sub>
+        example: 23456789
+       </sub>
+      </i>
+     </code>
+     <br/>
+     Id of the project from which to download the closed trades.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     start
+    </td>
+    <td>
+     <code>
+      integer
+      <br/>
+      <i>
+       <sub>
+        example: 1727222400
+       </sub>
+      </i>
+     </code>
+     <br/>
+     Earliest entry time of the trades in Unix time (seconds). The default value is one hour before the first deployment of the project.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+{
+  "projectId": 23456789,
+  "start": 1727222400
+}</pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Responses</h3>
+<!-- Code generated by API-Reference-Code-Generator.py -->
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    /live/export/trades
+   </code>
+   API provides a response in the following format:
+  </p>
+  <h4>
+   200 Success
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       text/csv
+      </code>
+      - Closed trades of the live deployments of the project.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     content
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     One row per closed trade. The Entry Time and Exit Time columns are in UTC.
+    </td>
+   </tr>
+   <tr>
+    <td width="20%">
+     Example
+    </td>
+    <td>
+     <div class="cli section-example-container">
+      <pre>
+Entry Time,Symbols,Exit Time,Direction,Entry Price,Exit Price,Quantity,P&amp;L,Fees,MAE,MFE,Drawdown,IsWin,Order Ids
+2026-10-09T14:17:04.8008663Z,"SPY",2026-10-09T18:06:03.8005312Z,Buy,670.08,672.61,10,25.3,2,-8.9,25.3,8.9,1,"	276,308" </pre>
+     </div>
+    </td>
+   </tr>
+  </table>
+  <h4>
+   401 Authentication Error
+  </h4>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th colspan="2">
+      <code>
+       UnauthorizedError
+      </code>
+      Model - Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+     </th>
+    </tr>
+   </thead>
+   <tr>
+    <td width="20%">
+     www_authenticate
+    </td>
+    <td>
+     <code>
+      string
+     </code>
+     <br/>
+     Header
+    </td>
+   </tr>
+  </table>
+ </body>
+</html>
+
+<h3>Examples</h3>
+<html>
+ <body>
+  <p>
+   The following example demonstates creating, reading, updating, and listing live algorithms of a project through the cloud API.
+  </p>
+  <div class="section-example-container">
+   <pre>from base64 import b64encode
+from hashlib import sha256
+from time import time
+from requests import get, post
+BASE_URL = 'https://www.quantconnect.com/api/v2/'
+
+# You need to replace these with your actual credentials.
+# You can request your credentials at https://www.quantconnect.com/settings/
+# You can find our organization ID at https://www.quantconnect.com/organization/ 
+USER_ID = 0
+API_TOKEN = '____'
+ORGANIZATION_ID = '____'
+
+def get_headers():
+    # Get timestamp
+    timestamp = f'{int(time())}'
+    time_stamped_token = f'{API_TOKEN}:{timestamp}'.encode('utf-8')
+
+    # Get hased API token
+    hashed_token = sha256(time_stamped_token).hexdigest()
+    authentication = f'{USER_ID}:{hashed_token}'.encode('utf-8')
+    authentication = b64encode(authentication).decode('ascii')
+
+    # Create headers dictionary.
+    return {
+        'Authorization': f'Basic {authentication}',
+        'Timestamp': timestamp
+    }
+
+# Authenticate to verify credentials
+response = post(f'{BASE_URL}/authenticate', headers = get_headers())
+print(response.json())
+
+# --------------------
+
+
+### Create Live Algorithm
+# Define placeholder IDs for compilation and node (replace with actual values)
+project_id = 12345678
+compile_id = "compile_id..."
+node_id = "node_id..."
+# Prepare the data payload for creating a live algorithm with necessary details
+payload = {
+    "versionId": "-1",  # Use the latest version of the algorithm
+    "projectId": project_id,  # ID of the project to deploy as a live algorithm
+    "compileId": compile_id,  # Compilation ID for the algorithm code
+    "nodeId": node_id,  # Node ID where the algorithm will run
+    "brokerage": {  # Brokerage configuration for live trading
+        "id": "QuantConnectBrokerage",  # Brokerage identifier
+        "user": "",  # Brokerage username (replace with actual value)
+        "password": "",  # Brokerage password (replace with actual value)
+        "environment": "live-paper",  # Trading environment (live or paper)
+        "account": ""  # Brokerage account ID (replace with actual value)
+    },
+    "dataProviders": {  # Data provider configuration
+        "QuantConnectBrokerage": {
+            "id": "QuantConnectBrokerage"  # Data provider identifier
+        }
+    },
+    "parameters": {},  # Optional algorithm parameters (empty in this example)
+    "notification": {}  # Optional notification settings (empty in this example)
+}
+# Send a POST request to the /live/create endpoint to deploy the algorithm
+response = post(f'{BASE_URL}/live/create', headers=get_headers(), json=data)
+# Parse the JSON response into python managable dict from the API
+result = response.json()
+# Extract the deploy ID from the response for future operations
+deploy_id = result['deployId']
+# Check if the request was successful and print the result
+if result['success']:
+    print("Live Algorithm Created Successfully:")
+    print(result)
+
+### Read Live Algorithm Statistics
+# Prepare data payload with project and deploy IDs to fetch statistics
+payload = {
+    "projectId": project_id,  # ID of the project
+    "deployId": deploy_id  # ID of the deployed live algorithm
+}
+# Send a POST request to the /live/read endpoint to get algorithm statistics
+response = post(f'{BASE_URL}/live/read', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the statistics
+if result['success']:
+    print("Live Algorithm Statistics:")
+    print(result)
+
+### Liquidate Live Algorithm
+# Prepare data payload with project ID to liquidate the algorithm
+payload = {
+    "projectId": project_id  # ID of the project to liquidate
+}
+# Send a POST request to the /live/update/liquidate endpoint to liquidate
+response = post(f'{BASE_URL}/live/update/liquidate', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Live Algorithm Liquidated Successfully:")
+    print(result)
+
+### Stop Live Algorithm
+# Prepare data payload with project ID to stop the algorithm
+payload = {
+    "projectId": project_id  # ID of the project to stop
+}
+# Send a POST request to the /live/update/stop endpoint to stop the algorithm
+response = post(f'{BASE_URL}/live/update/stop', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the result
+if result['success']:
+    print("Live Algorithm Stopped Successfully:")
+    print(result)
+
+### List Live Algorithms
+# Prepare data payload with filters for listing live algorithms
+payload = {
+    "status": "Running",  # Filter to show only running algorithms
+    "start": 1717801200,  # Start time (Unix timestamp) for the list range
+    "end": 1743462000  # End time (Unix timestamp) for the list range
+}
+# Send a POST request to the /live/list endpoint to list algorithms
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json=payload)
+# Parse the JSON response into python managable dict
+result = response.json()
+# Check if the request was successful and print the list
+if result['success']:
+    print("List of Live Algorithms:")
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -99633,7 +102058,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -99952,7 +102449,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -100490,7 +103059,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -100889,7 +103530,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -101263,7 +103976,79 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Live Algorithms:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+from decimal import Decimal
+from time import sleep
+
+# Download the orders of the last 750 days as a CSV file
+payload = {
+    "projectId": project_id  # ID of the project
+}
+response = post(f'{BASE_URL}/live/export/orders', headers=get_headers(), json=payload)
+rows = response.text.splitlines()
+header, recent = rows[0], rows[1:]
+# The export starts at its first row. Older orders come from the /live/orders/read endpoint.
+cutoff = recent[0].split(',')[1][:19].replace('T', ' ') if recent else '9999'
+
+# Map the order type and status enums to the names in the CSV file
+order_types = ["Market", "Limit", "Stop Market", "Stop Limit", "Market On Open", "Market On Close",
+    "Option Exercise", "Limit If Touched", "Combo Market", "Combo Limit", "Combo Leg Limit", "Trailing Stop"]
+order_statuses = ["New", "Submitted", "Partially Filled", "Filled", "", "Canceled", "None", "Invalid",
+    "Cancel Pending", "Update Submitted"]
+
+def number(value):
+    text = format(Decimal(str(value)), 'f')
+    return text.rstrip('0').rstrip('.') if '.' in text else text
+
+# Read the older orders of each deployment that started before the cutoff
+older = []
+response = post(f'{BASE_URL}/live/list', headers=get_headers(), json={"projectId": project_id})
+deployments = sorted(response.json()['live'], key=lambda x: x['launched'])
+for deployment in deployments:
+    if deployment['launched'] &gt;= cutoff:
+        continue
+    start = 0
+    while True:
+        payload = {
+            "projectId": project_id,  # ID of the project
+            "deployId": deployment['deployId'],  # ID of the deployment
+            "start": start,  # Starting index for orders
+            "end": start + 1000  # Ending index for orders
+        }
+        result = post(f'{BASE_URL}/live/orders/read', headers=get_headers(), json=payload).json()
+        # The first request can return a loading status while the orders are prepared
+        if result.get('status') == 'loading':
+            sleep(1)
+            continue
+        for order in result['orders']:
+            if order['time'][:19].replace('T', ' ') &gt;= cutoff:
+                continue
+            older.append(','.join([
+                deployment['deployId'], order['time'], order['symbol']['value'],
+                number(order['price']), number(order['quantity']),
+                f'"{order_types[order["type"]]}"', f'"{order_statuses[order["status"]]}"',
+                number(order['value']), '"' + order['tag'].replace('"', '""') + '" '
+            ]))
+        start += 1000
+        if start &gt;= result['length']:
+            break
+
+# Save all the orders in one CSV file
+with open(f'orders-{project_id}.csv', 'w', newline='') as file:
+    file.write('\n'.join([header] + older + recent) + '\n')
+print(f"Saved {len(older) + len(recent)} orders")
+
+### Export Trades
+# Download the closed trades that opened since the start time as a CSV file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "start": 1717801200  # Start time (Unix timestamp) for the trade entry time
+}
+response = post(f'{BASE_URL}/live/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{project_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
@@ -112584,7 +115369,25 @@ result = response.json()
 # Check if the request was successful and print the list
 if result['success']:
     print("List of Backtests:")
-    print(result)</pre>
+    print(result)
+
+### Export Orders
+# Download the orders of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/orders', headers=get_headers(), json=payload)
+with open(f'orders-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Trades
+# Download the closed trades of the backtest as a CSV file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
+with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)</pre>
   </div>
  </body>
 </html>
