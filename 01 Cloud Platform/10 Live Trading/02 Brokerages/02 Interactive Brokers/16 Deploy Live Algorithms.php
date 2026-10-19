@@ -1,5 +1,5 @@
 <?
-$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a>";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactive-brokers'>Interactive Brokers</a>";
 $cashState = false;
 $holdingsState = false;
 $secondBullet = "";
