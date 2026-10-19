@@ -1,12 +1,12 @@
 <?
-$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>Interactive Brokers</a>";
+$brokerageName = "<a rel='nofollow' target='_blank' href='https://qnt.co/interactive-brokers'>Interactive Brokers</a>";
 $cashState = false;
 $holdingsState = false;
 $secondBullet = "";
 $authentication = "
     <li>In the <span class='page-section-name'>Interactive Brokers (FIX) Authentication</span> section, follow these steps:</li>
     <ol>
-        <li>Click the <span class='field-name'>Account</span> field and then click your <a rel='nofollow' target='_blank' href='https://qnt.co/interactivebrokers'>IB</a> user name from the drop-down menu.</li>
+        <li>Click the <span class='field-name'>Account</span> field and then click your <a rel='nofollow' target='_blank' href='https://qnt.co/interactive-brokers'>IB</a> user name from the drop-down menu.</li>
         <p>To use an IB user name you haven't linked yet, click <span class='button-name'>+ Add Account</span> and then enter it in the <span class='field-name'>IBKR User Name</span> field.</p>
         <li>Click <span class='button-name'>Authenticate</span> and then log in to IB.</li>
         <p>When you succeed, the <span class='field-name'>Authorization</span> row shows <span class='field-name'>Authorization Complete</span> and the wizard displays the <span class='field-name'>Account ID</span> and <span class='field-name'>IBKR QC UID</span> fields.</p>
