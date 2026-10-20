@@ -949,6 +949,7 @@ paths:
         - 02 Read Live Algorithm
         - 01 Live Algorithm Statistics
       summary: Read details of a live algorithm.
+      description: "The response contains the most recent live deployment of the project. To read the deployments of a project, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/list-live-algorithms'>/live/list</a> endpoint."
       requestBody:
         description: Id of the project that contains the algorithm.
         content:
@@ -1108,7 +1109,7 @@ paths:
         - 02 Read Live Algorithm
         - 08 Export Orders
       summary: Download the orders of all the live deployments of a project as a CSV file.
-      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Orders</span> on the live results page. The response contains at most 750 days of orders. If the date range is longer, the response contains the last 750 days of the range. To get older orders, call the endpoint again with an earlier <code>end</code> or call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders'>/live/orders/read</a> endpoint. The response can contain orders outside of the date range. To get an exact range, filter the rows by their <code>Time</code> value."
+      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Orders</span> on the live results page. The response contains at most 750 days of orders. If the date range is longer, the response contains the last 750 days of the range. To get older orders, call the endpoint again with an earlier <code>end</code> or call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/orders'>/live/orders/read</a> endpoint. The response can contain orders outside of the date range. To get an exact range, filter the rows by their <code>Time</code> value. The response is a file download with the <code>application/octet-stream</code> content type."
       requestBody:
         description: Download the orders of a project for the date range provided.
         content:
@@ -1138,9 +1139,9 @@ paths:
         - 02 Read Live Algorithm
         - 09 Export Trades
       summary: Download the closed trades of all the live deployments of a project as a CSV file.
-      description: "The CSV file contains the closed trades that the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/trades'>/live/trades/read</a> endpoint returns for the project. The response contains the trades with an entry time at or after <code>start</code>."
+      description: "The CSV file contains the closed trades that the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/trades'>/live/trades/read</a> endpoint returns for the project. The response contains the trades with an entry time at or after <code>start</code> and an exit time at or before <code>end</code>. The response is a file download with the <code>application/octet-stream</code> content type."
       requestBody:
-        description: Download the closed trades of a project from the start time provided.
+        description: Download the closed trades of a project in the date range provided.
         content:
           application/json:
             schema:
@@ -1159,6 +1160,65 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: exportLiveAlgorithmTrades
+  /live/export/logs:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 07 Live Management
+        - 02 Read Live Algorithm
+        - 11 Export Logs
+      summary: Download the logs of all the live deployments of a project as a text file.
+      description: "The text file contains every log line of the project, from all its live deployments, oldest first. To read the logs of one deployment, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/logs'>/live/logs/read</a> endpoint. The response is a file download with the <code>application/octet-stream</code> content type. You can call this endpoint up to 45 times per 30 minutes."
+      requestBody:
+        description: Download the logs of a project.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportLiveLogsRequest'
+        required: true
+      responses:
+        "200":
+          description: Logs of the live deployments of the project.
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "One log line per row."
+                examples:
+                  - "Launching analysis for L-6e9d8a78f5af89d401f630585be90e43 with LEAN Engine v2.5.0.0.17503\n2026-10-08 14:20:04 Algorithm started"
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportLiveAlgorithmLogs
+  /live/export/insights:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 07 Live Management
+        - 02 Read Live Algorithm
+        - 10 Export Insights
+      summary: Download the insights of all the live deployments of a project as a JSON file.
+      description: "The JSON file contains up to 1,000,000 insights of the project that owns the deployment, from all its live deployments, sorted by generated time. To read the insights of one deployment, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/insights'>/live/insights/read</a> endpoint. The response is a file download named <code>insights.json</code>."
+      requestBody:
+        description: Download the insights of the project that owns a live deployment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportLiveInsightsRequest'
+        required: true
+      responses:
+        "200":
+          description: Insights of the live deployments of the project.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LiveInsightExportRow'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportLiveAlgorithmInsights
   /live/insights/read:
     post:
       tags:
@@ -3625,10 +3685,10 @@ components:
         - brokerage
       properties:
         versionId:
-          type: string
+          type: integer
           description: The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.
           examples:
-            - "-1"
+            - -1
         projectId:
           type: integer
           examples:
@@ -3644,6 +3704,22 @@ components:
           description: Id of the node that will run the algorithm.
           examples:
             - LN-c54129e1b4f667613d3f34542b787771
+        parameters:
+          type: object
+          description: Algorithm parameters to set for the deployment, as name-value pairs.
+          additionalProperties:
+            type: string
+        automaticRedeploy:
+          type: boolean
+          description: If true, the algorithm uses best efforts to restart after a runtime error, up to five attempts. The default value is false.
+        signature:
+          type: string
+          description: Signature of the project code you expect to deploy. If the project code changed since you read the signature, the request fails. The check doesn't apply to encrypted projects.
+        notification:
+          $ref: '#/components/schemas/LiveNotificationSettings'
+        dataHandler:
+          type: string
+          description: Legacy alternative to <code>dataProviders</code>. Name of the data queue handler to use. You can't send both <code>dataHandler</code> and <code>dataProviders</code>.
         brokerage:
           type: object
           description: Brokerage configuration for the live algorithm.
@@ -3710,6 +3786,28 @@ components:
             AlpacaBrokerage:
               $ref: '#/components/schemas/AlpacaDataProviderSettings'
           default: { "QuantConnectBrokerage": { "id": "QuantConnectBrokerage" } }
+    LiveNotificationSettings:
+      type: object
+      required:
+        - events
+        - targets
+      properties:
+        events:
+          type: array
+          description: Events that send a notification. If the list is empty, the algorithm sends no notifications.
+          items:
+            type: string
+            enum:
+              - insight
+              - orderEvent
+        targets:
+          type: array
+          description: "Notification targets. An email target has <code>address</code> and <code>subject</code>, with optional <code>message</code>, <code>data</code>, and <code>headers</code>. A webhook target has <code>address</code>, with optional <code>data</code> and <code>headers</code>. An SMS target has <code>phoneNumber</code>, with optional <code>message</code>. A Telegram target has <code>id</code>, with optional <code>token</code> and <code>message</code>."
+          items:
+            type: object
+          examples:
+            - [{"address": "https://www.example.com/webhook", "headers": {"Authorization": "Bearer token"}}]
+      description: Notifications to send when the live algorithm emits insights or order events.
     QuantConnectDataProviderSettings:
       type: object
       required:
@@ -3725,8 +3823,6 @@ components:
       type: object
       required:
         - id
-        - holdings
-        - cash
       properties:
         id:
           type: string
@@ -5456,15 +5552,12 @@ components:
           description: The snapshot project Id for cloning the live development's source code.
         launched:
           type: string
-          description: Datetime the algorithm was launched in UTC.
+          description: Datetime the first live deployment of the project started in UTC. To get the start time of this deployment, call the /live/list endpoint.
           format: date-time
         stopped:
           type: [string, "null"]
           description: Datetime the algorithm was stopped in UTC, null if its still running.
           format: date-time
-        description:
-          type: [string, "null"]
-          description: Project description
         projectName:
           type: string
           description: Project name
@@ -5482,15 +5575,12 @@ components:
         isPublicStreaming:
           type: boolean
           description: Flag to indicate if public streaming is enabled.
-        success:
-          type: boolean
-          description: Response success.
         public:
           type: boolean
           description: Flag to indicate if the algorithm is public.
         files:
           type: array
-          description: Files present in the project that contains the algorithm.
+          description: Files of the deployed algorithm. If the deployment has no files, this is an empty object instead of an array.
           items:
             $ref: '#/components/schemas/ProjectFile'
         runtimeStatistics:
@@ -5567,7 +5657,7 @@ components:
           description: The snapshot project Id for cloning the live development's source code.
         launched:
           type: string
-          description: Datetime the algorithm was launched in UTC.
+          description: Datetime the first live deployment of the project started in UTC. To get the start time of this deployment, call the /live/list endpoint.
           format: date-time
         stopped:
           type: [string, "null"]
@@ -5590,12 +5680,9 @@ components:
         public:
           type: boolean
           description: Flag to indicate if the algorithm is public.
-        description:
-          type: [string, "null"]
-          description: Project description
         files:
           type: array
-          description: Files present in the project that contains the algorithm.
+          description: Files of the deployed algorithm. If the deployment has no files, this is an empty object instead of an array.
           items:
             $ref: '#/components/schemas/ProjectFile'
         runtimeStatistics:
@@ -6989,10 +7076,6 @@ components:
         - startLine
         - endLine
       properties:
-        format:
-          description: Format of the log results.
-          examples:
-            - json
         projectId:
           type: integer
           examples:
@@ -7161,7 +7244,144 @@ components:
           examples:
             - 1727222400
           description: Earliest entry time of the trades in Unix time (seconds). The default value is one hour before the first deployment of the project.
+        end:
+          type: integer
+          examples:
+            - 1792022400
+          description: Latest exit time of the trades in Unix time (seconds). The default value is the current time.
       description: Request to download the closed trades of the live deployments of a project.
+    ExportLiveLogsRequest:
+      required:
+        - projectId
+        - deployId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project from which to download the logs.
+        deployId:
+          type: string
+          examples:
+            - L-6e9d8a78f5af89d401f630585be90e43
+          description: Id of a live deployment of the project. It names the file, <code>algorithm-log_{deployId}.txt</code>, and doesn't filter the logs.
+      description: Request to download the logs of the live deployments of a project.
+    ExportLiveInsightsRequest:
+      required:
+        - deployId
+      type: object
+      properties:
+        deployId:
+          type: string
+          examples:
+            - L-6e9d8a78f5af89d401f630585be90e43
+          description: Id of a live deployment. The response contains the insights of all the deployments of its project.
+      description: Request to download the insights of the live deployments of a project.
+    LiveInsightExportRow:
+      type: object
+      properties:
+        project_id:
+          type: integer
+          description: Id of the project.
+        deploy_id:
+          type: integer
+          description: Internal id of the live deployment. It isn't the deployment Id that starts with <code>L-</code>.
+        insight_id:
+          type: string
+          description: Id of the insight.
+        source:
+          type: string
+          description: Source of the insight.
+          examples:
+            - live trading
+        source_model:
+          type: [string, "null"]
+          description: Name of the Alpha model that emitted the insight.
+        symbol_id:
+          type: string
+          description: Id of the Symbol.
+          examples:
+            - SPY R735QTJ8XC9X
+        ticker:
+          type: string
+          description: Ticker of the Symbol.
+        symbol_market:
+          type: [string, "null"]
+          description: Market of the Symbol.
+          examples:
+            - usa
+        security_type:
+          type: [string, "null"]
+          description: Security type of the Symbol.
+          examples:
+            - Equity
+        type:
+          type: string
+          description: Type of the insight.
+          enum:
+            - price
+            - volatility
+        direction:
+          type: string
+          description: Direction of the insight.
+          enum:
+            - up
+            - flat
+            - down
+        period:
+          type: integer
+          description: Period of the insight in seconds.
+        magnitude:
+          type: [number, "null"]
+          description: Predicted magnitude of the change.
+        confidence:
+          type: [number, "null"]
+          description: Confidence of the insight.
+        weight:
+          type: [number, "null"]
+          description: Weight of the insight.
+        group_id:
+          type: [string, "null"]
+          description: Id of the insight group.
+        generated_time:
+          type: string
+          description: Time when the algorithm emitted the insight, in UTC.
+          examples:
+            - "2026-01-29 05:00:00"
+        close_time:
+          type: string
+          description: Time when the insight expires, in UTC.
+          examples:
+            - "2026-01-30 05:00:00"
+        received_time:
+          type: [string, "null"]
+          description: Time when the insight was received, in UTC.
+        reference_value:
+          type: number
+          description: Price of the Symbol when the algorithm emitted the insight.
+        reference_value_final:
+          type: integer
+          description: 1 if the reference value is final, otherwise 0.
+        estimated_value:
+          type: number
+          description: Estimated value of the insight.
+        score_direction:
+          type: number
+          description: Direction score of the insight.
+        score_magnitude:
+          type: number
+          description: Magnitude score of the insight.
+        score_final:
+          type: integer
+          description: 1 if the scores are final, otherwise 0.
+        invalid:
+          type: integer
+          description: 1 if the insight is invalid, otherwise 0.
+        in_storage:
+          type: [integer, "null"]
+          description: Internal storage flag.
+      description: Insight row of a live deployment export.
     ReadLiveTradesRequest:
       required:
         - start
@@ -7229,6 +7449,9 @@ components:
           examples:
             - 23456789
           description: Id of the project to include in response. If you omit this property, the response includes all your projects.
+        latest:
+          type: boolean
+          description: If true, the response includes only the most recent deployment of each project and ignores the status filter. It skips projects whose most recent deployment stopped more than one month ago. The default value is false.
         status:
           type: string
           description: Status of the live deployments to include in the response. If you omit this property, the response includes deployments with any status.

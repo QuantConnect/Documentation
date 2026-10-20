@@ -21,6 +21,32 @@ SPECS = {"Cloud Platform": "QuantConnect-Platform-2.0.0.yaml"}
 # Endpoints whose tag doesn't map directly to the example filename
 EXAMPLE_OVERRIDES = {"reports": "backtest-management"}
 
+# Introduction of the landing page (00.json) of each folder that groups endpoints
+LANDING_CONTENT = {
+    "02 Project Management": "lets you manage your projects on our cloud servers",
+    "02 Project Management/05 Collaboration": "lets you manage the collaborators of your projects on our cloud servers",
+    "02 Project Management/06 Nodes": "lets you manage the nodes of your projects on our cloud servers",
+    "03 File Management": "lets you manage your files on our cloud servers",
+    "04 Compiling Code": "lets you compile your projects on our cloud servers",
+    "05 Backtest Management": "lets you manage backtests on our cloud servers",
+    "05 Backtest Management/02 Read Backtest": "lets you read backtest results from our cloud servers",
+    "07 Live Management": "lets you manage your live algorithms on our cloud servers",
+    "07 Live Management/02 Read Live Algorithm": "lets you read your live algorithm results from our cloud servers",
+    "07 Live Management/03 Update Live Algorithm": "lets you update your live algorithms on our cloud servers",
+    "07 Live Management/05 Live Commands": "lets you send commands to live algorithms on our cloud servers",
+    "08 Optimization Management": "lets you manage your optimizations on our cloud servers",
+    "09 Object Store Management": "lets you manage the files in your Object Store on our cloud servers",
+    "10 AI Assistance": "lets you use AI tools to assist with coding tasks",
+    "10 AI Assistance/02 Tools": "lets you use AI tools to assist with coding tasks",
+    "11 Reports": "lets you access your backtest reports from our cloud servers",
+    "14 Agent Management": "lets you manage your agents on our cloud servers",
+    "14 Agent Management/01 Agents": "lets you manage your agents on our cloud servers",
+    "14 Agent Management/02 Tasks": "lets you manage the tasks of your agents on our cloud servers",
+    "14 Agent Management/03 Deployments": "lets you manage the deployments of your agents on our cloud servers",
+    "15 Data Issues": "lets you report and list data issues",
+    "16 Support": "lets you open, comment on, and read support tickets",
+}
+
 
 class APIReferenceGenerator:
     """Generates HTML API reference pages from an OpenAPI spec."""
@@ -720,6 +746,45 @@ class APIReferenceGenerator:
             if not method:
                 continue
             self._generate_endpoint(api_call, method)
+        self._generate_landings()
+
+    def _generate_landings(self):
+        """Write the 00.json landing page of each folder below the API Reference root that has subfolders."""
+        # {folder tags: {child folder name: endpoint of the child, or "" if the child is a folder}}
+        landings = {}
+        for api_call, endpoint in self.doc["paths"].items():
+            method = endpoint.get("post") or endpoint.get("get")
+            if not method:
+                continue
+            tags = tuple(method["tags"])
+            for depth in range(3, len(tags)):
+                children = landings.setdefault(tags[:depth], {})
+                if depth == len(tags) - 1:
+                    children[tags[depth]] = api_call
+                else:
+                    children.setdefault(tags[depth], "")
+
+        for tags, children in landings.items():
+            key = "/".join(tags[2:])
+            if key not in LANDING_CONTENT:
+                print(f"No landing content for {key}, skipping 00.json...")
+                continue
+            content = f"<p>The QuantConnect REST API {LANDING_CONTENT[key]} through URL endpoints.</p>"
+            descriptions = ",\n".join(
+                f'\t  "{name[:2]}" : {json.dumps(children[name])}' for name in sorted(children)
+            )
+            with open(pathlib.Path("/".join(tags)) / "00.json", "w") as f:
+                f.write("{\n"
+                        '\t"type" : "landing",\n'
+                        '\t"heading" : "API Reference",\n'
+                        '\t"subHeading" : "",\n'
+                        f'\t"content" : {json.dumps(content)},\n'
+                        '\t"alsoLinks" : [\n'
+                        "\t],\n"
+                        '\t"featureShortDescription": {\n'
+                        f"{descriptions}\n"
+                        "\t}\n"
+                        "}\n")
 
     def _generate_endpoint(self, api_call, content):
         """Generate all HTML files for a single API endpoint."""
@@ -845,20 +910,21 @@ class APIReferenceGenerator:
                 elif code == "default":
                     f.write("<h4>Default Generic Error</h4>\n")
 
-                csv = props.get("content", {}).get("text/csv")
-                if csv:
-                    f.write(self._build_csv_table(props, csv["schema"]))
+                content = props.get("content", {})
+                text_type = next((t for t in ("text/csv", "text/plain") if t in content), None)
+                if text_type:
+                    f.write(self._build_csv_table(props, content[text_type]["schema"], text_type))
                     continue
 
                 f.write(self._build_schema_tables(props))
 
     @staticmethod
-    def _build_csv_table(wrapper, schema):
-        """Build the table for a response that is a CSV file."""
+    def _build_csv_table(wrapper, schema, content_type="text/csv"):
+        """Build the table for a response that is a CSV or plain text file."""
         example = html.escape(schema["examples"][0], quote=False)
         return (
             '<table class="table qc-table">\n<thead>\n<tr>\n'
-            f'<th colspan="2"><code>text/csv</code> - {wrapper["description"]}</th>\n'
+            f'<th colspan="2"><code>{content_type}</code> - {wrapper["description"]}</th>\n'
             "</tr>\n</thead>\n<tr>\n"
             f'<td width="20%">content</td> <td> <code>string</code> <br/> {schema["description"]}</td>\n'
             "</tr>\n<tr>\n"
