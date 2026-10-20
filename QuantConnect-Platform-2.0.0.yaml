@@ -571,6 +571,7 @@ paths:
         - 02 Read Backtest
         - 03 Orders
       summary: Read out the orders of a backtest.
+      description: "This endpoint returns a page of orders with all their properties. To get all the orders of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-orders'>/backtests/export/orders</a> endpoint, which returns them as a CSV file."
       requestBody:
         description: Fetch the orders of a backtest for the project Id, backtest Id and steps provided.
         content:
@@ -597,6 +598,7 @@ paths:
         - 02 Read Backtest
         - 04 Trades
       summary: Read out the closed trades of a backtest.
+      description: "This endpoint returns a page of closed trades with all their properties. To get all the closed trades of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-trades'>/backtests/export/trades</a> endpoint, which returns them as a CSV file."
       requestBody:
         description: Fetch the closed trades of a backtest for the project Id, backtest Id and steps provided.
         content:
@@ -653,7 +655,7 @@ paths:
         - 02 Read Backtest
         - 08 Export Trades
       summary: Download the closed trades of a backtest as a CSV file.
-      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Trades</span> on the backtest results page. It contains the closed trades that the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/trades'>/backtests/trades/read</a> endpoint returns, sorted by entry time."
+      description: "The CSV file has the same format as the file you get when you click <span class='button-name'>Download Trades</span> on the backtest results page. It contains the closed trades of the backtest, sorted by entry time. To read a page of closed trades with all their properties, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/trades'>/backtests/trades/read</a> endpoint."
       requestBody:
         description: Download the closed trades of the backtest Id provided.
         content:
@@ -674,6 +676,65 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: exportBacktestTrades
+  /backtests/export/insights:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 09 Export Insights
+      summary: Download the insights of a backtest as a JSON file.
+      description: "The JSON file contains all the insights of the backtest. To read a page of insights, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/insights'>/backtests/read/insights</a> endpoint. The response is a file download named after the backtest."
+      requestBody:
+        description: Download the insights of the backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportBacktestInsightsRequest'
+        required: true
+      responses:
+        "200":
+          description: Insights of the backtest, sorted by generated time.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BacktestInsightExportRow'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportBacktestInsights
+  /backtests/export/logs:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 10 Export Logs
+      summary: Download the logs of a backtest as a text file.
+      description: "The text file contains every log line of the backtest, oldest first. To read a range of lines or filter them by keyword, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/logs'>/backtests/read/log</a> endpoint. The response is a file download named after the backtest. The download counts toward your daily backtest log quota. For more information, see <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>Log Quotas</a>. Per our <a href='/terms'>Terms and Conditions</a>, you may not use this endpoint to export market data or any other dataset information."
+      requestBody:
+        description: Download the logs of the backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportBacktestLogsRequest'
+        required: true
+      responses:
+        "200":
+          description: Logs of the backtest.
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "One log line per row."
+                examples:
+                  - "2024-01-02 00:00:00 Launching analysis for 26c7bb06b8487cff1c7b3c44652b30f1 with LEAN Engine v2.5.0.0.18198\n2024-01-02 16:00:00 Algorithm started"
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportBacktestLogs
   /backtests/read/report:
     post:
       tags:
@@ -734,6 +795,7 @@ paths:
         - 02 Read Backtest
         - 05 Insights
       summary: Read out the insights of a backtest.
+      description: "This endpoint returns a page of insights. To get all the insights of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-insights'>/backtests/export/insights</a> endpoint, which returns them as a JSON file."
       requestBody:
         description: Fetch the insights of a backtest for the project Id, backtest Id and steps provided.
         content:
@@ -760,7 +822,7 @@ paths:
         - 02 Read Backtest
         - 06 Logs
       summary: Read out the logs of a backtest.
-      description: "Per our <a href='/terms'>Terms and Conditions</a>, you may not use this endpoint to export market data or any other dataset information. For more information about the logs you can produce, see <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>Log Quotas</a>."
+      description: "Per our <a href='/terms'>Terms and Conditions</a>, you may not use this endpoint to export market data or any other dataset information. For more information about the logs you can produce, see <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>Log Quotas</a>. This endpoint returns a range of lines and can filter them by keyword. To get all the logs of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-logs'>/backtests/export/logs</a> endpoint, which returns them as a text file."
       requestBody:
         description: Fetch the logs of a backtest for the project Id, backtest Id and lines provided.
         content:
@@ -1001,6 +1063,7 @@ paths:
         - 02 Read Live Algorithm
         - 07 Logs
       summary: Get the logs of a live algorithm. The snapshot updates about every 5 minutes.
+      description: "This endpoint returns a range of lines and can filter them by keyword. To get the logs of all the live deployments in one request, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/export-logs'>/live/export/logs</a> endpoint, which returns a text file."
       requestBody:
         description: Information about the algorithm to read live logs from.
         content:
@@ -1053,6 +1116,7 @@ paths:
         - 02 Read Live Algorithm
         - 04 Orders
       summary: Read out the orders of a live algorithm. The snapshot updates about every 10 minutes.
+      description: "This endpoint returns a page of orders with all their properties. To get the orders of all the live deployments in one request, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/export-orders'>/live/export/orders</a> endpoint, which returns a CSV file."
       requestBody:
         description: Fetch the orders of a live algorithm for the project Id and steps provided.
         content:
@@ -1081,6 +1145,7 @@ paths:
         - 02 Read Live Algorithm
         - 05 Trades
       summary: Read out the closed trades of a live algorithm. The snapshot updates about every 10 minutes.
+      description: "This endpoint returns a page of closed trades with all their properties. To get the closed trades of all the live deployments in one request, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/export-trades'>/live/export/trades</a> endpoint, which returns a CSV file."
       requestBody:
         description: Fetch the closed trades of a live algorithm for the project Id and steps provided.
         content:
@@ -1139,7 +1204,7 @@ paths:
         - 02 Read Live Algorithm
         - 09 Export Trades
       summary: Download the closed trades of all the live deployments of a project as a CSV file.
-      description: "The CSV file contains the closed trades that the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/trades'>/live/trades/read</a> endpoint returns for the project. The response contains the trades with an entry time at or after <code>start</code> and an exit time at or before <code>end</code>. The response is a file download with the <code>application/octet-stream</code> content type."
+      description: "The CSV file contains the closed trades of the project. To read a page of closed trades with all their properties, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/trades'>/live/trades/read</a> endpoint. The response contains the trades with an entry time at or after <code>start</code> and an exit time at or before <code>end</code>. The response is a file download with the <code>application/octet-stream</code> content type."
       requestBody:
         description: Download the closed trades of a project in the date range provided.
         content:
@@ -1169,7 +1234,7 @@ paths:
         - 02 Read Live Algorithm
         - 11 Export Logs
       summary: Download the logs of all the live deployments of a project as a text file.
-      description: "The text file contains every log line of the project, from all its live deployments, oldest first. To read the logs of one deployment, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/logs'>/live/logs/read</a> endpoint. The response is a file download with the <code>application/octet-stream</code> content type. You can call this endpoint up to 45 times per 30 minutes."
+      description: "The text file contains every log line of the project, from all its live deployments, oldest first. To read a range of lines of one deployment or filter them by keyword, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/logs'>/live/logs/read</a> endpoint. The response is a file download with the <code>application/octet-stream</code> content type. You can call this endpoint up to 45 times per 30 minutes."
       requestBody:
         description: Download the logs of a project.
         content:
@@ -1228,6 +1293,7 @@ paths:
         - 02 Read Live Algorithm
         - 06 Insights
       summary: Read out the insights of a live algorithm. The snapshot updates about every 10 minutes.
+      description: "This endpoint returns a page of the insights of one deployment. To get the insights of all the live deployments in one request, call the <a href='/docs/v2/cloud-platform/api-reference/live-management/read-live-algorithm/export-insights'>/live/export/insights</a> endpoint, which returns a JSON file."
       requestBody:
         description: Fetch the insights of a live algorithm for the project Id and steps provided.
         content:
@@ -2150,7 +2216,7 @@ paths:
         - 99 API Reference
         - 14 Agent Management
         - 03 Deployments
-        - 04 List Deployments
+        - 05 List Deployments
       summary: List the deployments of an agent task.
       requestBody:
         description: Id of the task whose deployments to list.
@@ -2176,7 +2242,7 @@ paths:
         - 99 API Reference
         - 14 Agent Management
         - 03 Deployments
-        - 05 Stop Deployment
+        - 06 Stop Deployment
       summary: Stop a running agent deployment.
       requestBody:
         description: Id of the deployment to stop.
@@ -2202,7 +2268,7 @@ paths:
         - 99 API Reference
         - 14 Agent Management
         - 03 Deployments
-        - 06 Delete Deployment
+        - 04 Delete Deployment
       summary: Delete an agent deployment.
       requestBody:
         description: Id of the deployment to delete.
@@ -2331,7 +2397,7 @@ paths:
         - 01 Cloud Platform
         - 99 API Reference
         - 16 Support
-        - 02 List Support Tickets
+        - 03 List Support Tickets
       summary: List the support tickets of an organization.
       description: The response contains all the open tickets and one page of 10 closed tickets. Use the <code>closedPage</code> property to select the page of closed tickets and the <code>totalClosed</code> property of the response to get the number of closed tickets.
       requestBody:
@@ -2357,7 +2423,7 @@ paths:
         - 01 Cloud Platform
         - 99 API Reference
         - 16 Support
-        - 03 Read Support Ticket
+        - 02 Read Support Ticket
       summary: Read the messages of a support ticket.
       description: To get the <code>hash</code> of your tickets, use the <code>/organizations/support/tickets/list</code> endpoint.
       requestBody:
@@ -7616,6 +7682,135 @@ components:
             - 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to download the closed trades.
       description: Request to download the closed trades of a backtest.
+    ExportBacktestInsightsRequest:
+      required:
+        - backtestId
+      type: object
+      properties:
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to download the insights.
+      description: Request to download the insights of a backtest.
+    ExportBacktestLogsRequest:
+      required:
+        - projectId
+        - backtestId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project that contains the backtest.
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to download the logs.
+      description: Request to download the logs of a backtest.
+    BacktestInsightExportRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the insight.
+          examples:
+            - 4e9e6b461ef04756b6e6450b54953dea
+        groupId:
+          type: [string, "null"]
+          description: Id of the insight group.
+        sourceModel:
+          type: string
+          description: Id of the Alpha model that emitted the insight.
+          examples:
+            - d1e4e8e4-a645-492c-bfb9-0006971e22b9
+        generatedTime:
+          type: integer
+          format: unix-time
+          description: Unix time when the algorithm emitted the insight.
+          examples:
+            - 1705093200
+        createdTime:
+          type: integer
+          format: unix-time
+          description: Unix time when the insight was created.
+          examples:
+            - 1705093200
+        closeTime:
+          type: integer
+          format: unix-time
+          description: Unix time when the insight expires.
+          examples:
+            - 1705438800
+        symbol:
+          type: string
+          description: Id of the Symbol.
+          examples:
+            - SPY R735QTJ8XC9X
+        ticker:
+          type: string
+          description: Ticker of the Symbol.
+          examples:
+            - SPY
+        type:
+          type: string
+          description: Type of the insight.
+          enum:
+            - price
+            - volatility
+        reference:
+          type: number
+          description: Price of the Symbol when the algorithm emitted the insight.
+          examples:
+            - 461.57615586
+        referenceValueFinal:
+          type: number
+          description: Final reference value that scores the insight.
+        direction:
+          type: string
+          description: Direction of the insight.
+          enum:
+            - down
+            - flat
+            - up
+        period:
+          type: integer
+          description: Period of the insight in seconds.
+          examples:
+            - 86400
+        magnitude:
+          type: [number, "null"]
+          description: Predicted percent change of the insight type (price or volatility).
+        confidence:
+          type: [number, "null"]
+          description: Confidence of the insight.
+        weight:
+          type: [number, "null"]
+          description: Portfolio weight of the insight.
+        scoreIsFinal:
+          type: boolean
+          description: True if the scores are final.
+        scoreMagnitude:
+          type: string
+          description: Magnitude score of the insight, as a decimal string.
+          examples:
+            - "0"
+        scoreDirection:
+          type: string
+          description: Direction score of the insight, as a decimal string.
+          examples:
+            - "0"
+        estimatedValue:
+          type: string
+          description: Estimated value of the insight in the account currency, as a decimal string.
+          examples:
+            - "0"
+        tag:
+          type: string
+          description: Tag of the insight.
+      description: Insight row of a backtest export.
     ReadBacktestInsightsRequest:
       required:
         - start
