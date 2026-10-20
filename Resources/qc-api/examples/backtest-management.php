@@ -115,5 +115,24 @@ payload = {
 }
 response = post(f'{BASE_URL}/backtests/export/trades', headers=get_headers(), json=payload)
 with open(f'trades-{backtest_id}.csv', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Insights
+# Download the insights of the backtest as a JSON file
+payload = {
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/insights', headers=get_headers(), json=payload)
+with open(f'insights-{backtest_id}.json', 'w', newline='') as file:
+    file.write(response.text)
+
+### Export Logs
+# Download the logs of the backtest as a text file
+payload = {
+    "projectId": project_id,  # ID of the project
+    "backtestId": backtest_id  # ID of the backtest
+}
+response = post(f'{BASE_URL}/backtests/export/logs', headers=get_headers(), json=payload)
+with open(f'logs-{backtest_id}.txt', 'w', newline='') as file:
     file.write(response.text)</pre>
 </div>

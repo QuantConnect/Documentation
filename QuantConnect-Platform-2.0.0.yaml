@@ -674,6 +674,65 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: exportBacktestTrades
+  /backtests/export/insights:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 09 Export Insights
+      summary: Download the insights of a backtest as a JSON file.
+      description: "The JSON file contains all the insights of the backtest. To read a range of insights, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/insights'>/backtests/read/insights</a> endpoint. The response is a file download named after the backtest."
+      requestBody:
+        description: Download the insights of the backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportBacktestInsightsRequest'
+        required: true
+      responses:
+        "200":
+          description: Insights of the backtest, sorted by generated time.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BacktestInsightExportRow'
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportBacktestInsights
+  /backtests/export/logs:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+        - 05 Backtest Management
+        - 02 Read Backtest
+        - 10 Export Logs
+      summary: Download the logs of a backtest as a text file.
+      description: "The text file contains every log line of the backtest, oldest first. To read a range of lines, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/logs'>/backtests/read/log</a> endpoint. The response is a file download named after the backtest. The download counts toward your daily backtest log quota. For more information, see <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>Log Quotas</a>. Per our <a href='/terms'>Terms and Conditions</a>, you may not use this endpoint to export market data or any other dataset information."
+      requestBody:
+        description: Download the logs of the backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportBacktestLogsRequest'
+        required: true
+      responses:
+        "200":
+          description: Logs of the backtest.
+          content:
+            text/plain:
+              schema:
+                type: string
+                description: "One log line per row."
+                examples:
+                  - "2024-01-02 00:00:00 Launching analysis for 26c7bb06b8487cff1c7b3c44652b30f1 with LEAN Engine v2.5.0.0.18198\n2024-01-02 16:00:00 Algorithm started"
+        "401":
+          $ref: '#/components/responses/UnauthorizedErrorResponse'
+      operationId: exportBacktestLogs
   /backtests/read/report:
     post:
       tags:
@@ -7616,6 +7675,135 @@ components:
             - 26c7bb06b8487cff1c7b3c44652b30f1
           description: Id of the backtest from which to download the closed trades.
       description: Request to download the closed trades of a backtest.
+    ExportBacktestInsightsRequest:
+      required:
+        - backtestId
+      type: object
+      properties:
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to download the insights.
+      description: Request to download the insights of a backtest.
+    ExportBacktestLogsRequest:
+      required:
+        - projectId
+        - backtestId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project that contains the backtest.
+        backtestId:
+          type: string
+          examples:
+            - 26c7bb06b8487cff1c7b3c44652b30f1
+          description: Id of the backtest from which to download the logs.
+      description: Request to download the logs of a backtest.
+    BacktestInsightExportRow:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Id of the insight.
+          examples:
+            - 4e9e6b461ef04756b6e6450b54953dea
+        groupId:
+          type: [string, "null"]
+          description: Id of the insight group.
+        sourceModel:
+          type: string
+          description: Id of the Alpha model that emitted the insight.
+          examples:
+            - d1e4e8e4-a645-492c-bfb9-0006971e22b9
+        generatedTime:
+          type: integer
+          format: unix-time
+          description: Unix time when the algorithm emitted the insight.
+          examples:
+            - 1705093200
+        createdTime:
+          type: integer
+          format: unix-time
+          description: Unix time when the insight was created.
+          examples:
+            - 1705093200
+        closeTime:
+          type: integer
+          format: unix-time
+          description: Unix time when the insight expires.
+          examples:
+            - 1705438800
+        symbol:
+          type: string
+          description: Id of the Symbol.
+          examples:
+            - SPY R735QTJ8XC9X
+        ticker:
+          type: string
+          description: Ticker of the Symbol.
+          examples:
+            - SPY
+        type:
+          type: string
+          description: Type of the insight.
+          enum:
+            - price
+            - volatility
+        reference:
+          type: number
+          description: Price of the Symbol when the algorithm emitted the insight.
+          examples:
+            - 461.57615586
+        referenceValueFinal:
+          type: number
+          description: Final reference value that scores the insight.
+        direction:
+          type: string
+          description: Direction of the insight.
+          enum:
+            - down
+            - flat
+            - up
+        period:
+          type: integer
+          description: Period of the insight in seconds.
+          examples:
+            - 86400
+        magnitude:
+          type: [number, "null"]
+          description: Predicted percent change of the insight type (price or volatility).
+        confidence:
+          type: [number, "null"]
+          description: Confidence of the insight.
+        weight:
+          type: [number, "null"]
+          description: Portfolio weight of the insight.
+        scoreIsFinal:
+          type: boolean
+          description: True if the scores are final.
+        scoreMagnitude:
+          type: string
+          description: Magnitude score of the insight, as a decimal string.
+          examples:
+            - "0"
+        scoreDirection:
+          type: string
+          description: Direction score of the insight, as a decimal string.
+          examples:
+            - "0"
+        estimatedValue:
+          type: string
+          description: Estimated value of the insight in the account currency, as a decimal string.
+          examples:
+            - "0"
+        tag:
+          type: string
+          description: Tag of the insight.
+      description: Insight row of a backtest export.
     ReadBacktestInsightsRequest:
       required:
         - start
