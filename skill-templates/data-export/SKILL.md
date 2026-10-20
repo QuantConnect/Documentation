@@ -3,7 +3,7 @@ name: data-export
 description: >-
   Use when someone asks whether or how they can get data out of QuantConnect
   Cloud, and whenever you write an algorithm or notebook that saves to the
-  Object Store or project files, logs, plots, tags orders or sends
+  Object Store or a file, logs, plots, tags orders or sends
   notifications. Triggers: "download my Object Store files",
   `lean cloud object-store get`, the Get Object Store File API, "Organization
   does not have derivative export enabled", "export to CSV/Excel", "download
@@ -103,9 +103,12 @@ Colab or other software.
 Code you write and the API and MCP calls you make follow the same rule, and
 the Data Use page's AI agent rules:
 
-- The Object Store, project files and notebooks may store, cache and reuse
-  any data for projects that run in QuantConnect Cloud. Their contents stay
-  there: no code, CLI, API or MCP call downloads them.
+- The Object Store of a paid organization may store, cache and reuse any
+  data for projects that run in QuantConnect Cloud. Its contents stay there:
+  no code, CLI, API or MCP call downloads them.
+- Project files and notebooks hold code. Never save dataset values to them,
+  or values that can reconstruct or approximate them. Parameters the
+  strategy uses, such as pre-calculated weights, are code.
 - Keep price, quote, tick, fundamental and alternative data, and anything that
   can reconstruct or approximate it, out of logs, error messages, plots,
   runtime statistics, order tags, insights, notifications, network requests,
