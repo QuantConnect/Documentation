@@ -9,7 +9,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </tr>
 </thead>
 <tr>
-<td width="20%">versionId</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: -1</sub></i></code> <br/> The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.</td>
+<td width="20%">versionId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: -1</sub></i></code> <br/> The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.</td>
 </tr>
 <tr>
 <td width="20%">projectId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 23456789</sub></i></code> <br/> Project Id.</td>
@@ -19,6 +19,21 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </tr>
 <tr>
 <td width="20%">nodeId</td> <td> <code>string<br/><i><sub>required</sub></i><br/><i><sub>example: LN-c54129e1b4f667613d3f34542b787771</sub></i></code> <br/> Id of the node that will run the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">parameters</td> <td> <code>string object</code> <br/> Algorithm parameters to set for the deployment, as name-value pairs.</td>
+</tr>
+<tr>
+<td width="20%">automaticRedeploy</td> <td> <code>boolean</code> <br/> If true, the algorithm uses best efforts to restart after a runtime error, up to five attempts. The default value is false.</td>
+</tr>
+<tr>
+<td width="20%">signature</td> <td> <code>string</code> <br/> Signature of the project code you expect to deploy. If the project code changed since you read the signature, the request fails. The check doesn't apply to encrypted projects.</td>
+</tr>
+<tr>
+<td width="20%">notification</td> <td> <code>LiveNotificationSettings object</code> <br/> Notifications to send when the live algorithm emits insights or order events.</td>
+</tr>
+<tr>
+<td width="20%">dataHandler</td> <td> <code>string</code> <br/> Legacy alternative to <code>dataProviders</code>. Name of the data queue handler to use. You can't send both <code>dataHandler</code> and <code>dataProviders</code>.</td>
 </tr>
 <tr>
 <td width="20%">brokerage</td> <td> <code>object<br/><i><sub>required</sub></i></code> <br/> Brokerage configuration for the live algorithm.</td>
@@ -31,10 +46,29 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "versionId": "-1",
+  "versionId": -1,
   "projectId": 23456789,
   "compileId": "5d1f2cba3a0ec7407c566614300502b5-173e0419674daf4144ce7c9931155ca8",
   "nodeId": "LN-c54129e1b4f667613d3f34542b787771",
+  "parameters": {
+    "key": "string"
+  },
+  "automaticRedeploy": true,
+  "signature": "string",
+  "notification": {
+    "events": [
+      "string"
+    ],
+    "targets": [
+      {
+        "address": "https://www.example.com/webhook",
+        "headers": {
+          "Authorization": "Bearer token"
+        }
+      }
+    ]
+  },
+  "dataHandler": "string",
   "brokerage": {
   "QuantConnectBrokerageSettings": object,
   "InteractiveBrokersBrokerageSettings": object,
@@ -111,6 +145,38 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
+<th colspan="2"><code>LiveNotificationSettings</code> Model - Notifications to send when the live algorithm emits insights or order events.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">events</td> <td> <code>string Array<br/><i><sub>required</sub></i></code> <br/> Events that send a notification. If the list is empty, the algorithm sends no notifications.</td>
+</tr>
+<tr>
+<td width="20%">targets</td> <td> <code>object Array<br/><i><sub>required</sub></i><br/><i><sub>example: [{'address': 'https://www.example.com/webhook', 'headers': {'Authorization': 'Bearer token'}}]</sub></i></code> <br/> Notification targets. An email target has <code>address</code> and <code>subject</code>, with optional <code>message</code>, <code>data</code>, and <code>headers</code>. A webhook target has <code>address</code>, with optional <code>data</code> and <code>headers</code>. An SMS target has <code>phoneNumber</code>, with optional <code>message</code>. A Telegram target has <code>id</code>, with optional <code>token</code> and <code>message</code>.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "events": [
+    "string"
+  ],
+  "targets": [
+    {
+      "address": "https://www.example.com/webhook",
+      "headers": {
+        "Authorization": "Bearer token"
+      }
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
 <th colspan="2"><code>QuantConnectBrokerageSettings</code> Model - Settings for using Paper Trading as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
@@ -118,10 +184,10 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">id</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> Id of the module. Options : ['QuantConnectBrokerage']</td>
 </tr>
 <tr>
-<td width="20%">holdings</td> <td> <code>BrokerageHolding Array<br/><i><sub>required</sub></i></code> <br/> List of holdings for the brokerage.</td>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
 </tr>
 <tr>
-<td width="20%">cash</td> <td> <code>CashAmount Array<br/><i><sub>required</sub></i></code> <br/> List of cash amount.</td>
+<td width="20%">cash</td> <td> <code>CashAmount Array</code> <br/> List of cash amount.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>

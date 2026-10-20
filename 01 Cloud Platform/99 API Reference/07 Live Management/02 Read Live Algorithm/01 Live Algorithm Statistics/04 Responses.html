@@ -23,7 +23,7 @@ The <code>/live/read</code> API provides a response in the following format:
 <td width="20%">cloneId</td> <td> <code>integer</code> <br/> The snapshot project Id for cloning the live development's source code.</td>
 </tr>
 <tr>
-<td width="20%">launched</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was launched in UTC.</td>
+<td width="20%">launched</td> <td> <code>string($date-time)</code> <br/> Datetime the first live deployment of the project started in UTC. To get the start time of this deployment, call the /live/list endpoint.</td>
 </tr>
 <tr>
 <td width="20%">stopped</td> <td> <code>string($date-time)</code> <br/> Datetime the algorithm was stopped in UTC, null if its still running.</td>
@@ -44,10 +44,7 @@ The <code>/live/read</code> API provides a response in the following format:
 <td width="20%">public</td> <td> <code>boolean</code> <br/> Flag to indicate if the algorithm is public.</td>
 </tr>
 <tr>
-<td width="20%">description</td> <td> <code>string</code> <br/> Project description.</td>
-</tr>
-<tr>
-<td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files present in the project that contains the algorithm.</td>
+<td width="20%">files</td> <td> <code>ProjectFile Array</code> <br/> Files of the deployed algorithm. If the deployment has no files, this is an empty object instead of an array.</td>
 </tr>
 <tr>
 <td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI. It can be empty if the algorithm is not running.</td>
@@ -86,7 +83,6 @@ The <code>/live/read</code> API provides a response in the following format:
   "datacenter": "NY7",
   "isPublicStreaming": true,
   "public": true,
-  "description": "string",
   "files": [
     {
       "id": 0,

@@ -8,10 +8,9 @@ project_id = 12345678
 deploy_id = "..."
 
 ### Read Live Algorithm Statistics
-# Prepare data payload with project and deploy IDs to fetch statistics
+# Prepare data payload with the project ID to fetch the statistics of its latest deployment
 payload = {
-    "projectId": project_id,  # ID of the project containing the live algorithm
-    "deployId": deploy_id  # ID of the deployed live algorithm
+    "projectId": project_id  # ID of the project containing the live algorithm
 }
 # Send a POST request to the /live/read endpoint to get algorithm statistics
 response = post(f'{BASE_URL}/live/read', headers=get_headers(), json=payload)
@@ -93,7 +92,6 @@ if result['success']:
 payload = {
     "projectId": project_id,  # ID of the project
     "algorithmId": deploy_id,  # ID of the deployed algorithm (same as deploy_id)
-    "format": "json",  # Format of the logs (JSON in this case)
     "startLine": 0,  # Starting line for logs
     "endLine": 100,  # Ending line for logs
     "query": None  # Keyword to filter the lines, or None to read all of them
