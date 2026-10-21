@@ -31,12 +31,11 @@ raw_dict = get_json_content(MHDB)
 entries = raw_dict["entries"]
 
 SKIP = ["IndexOption-usa-RUTW", "IndexOption-usa-SPXW"]
-EXCEPTIONS = ['base', 'crypto', 'index-india', 'option-india-', 'fxcm', 'spxw']
+EXCEPTIONS = ['base', 'crypto', 'equity-india', 'index-india', 'option-india-', 'fxcm', 'spxw']
 
 # Mapping: security-type-exchange -> JS filename
 JS_FILE_MAP = {
     'equity-usa':              'us-equity-market-hours.js',
-    'equity-india':            'india-equity-market-hours.js',
     'option-usa':              'equity-options-market-hours.js',
     'forex-oanda':             'forex-market-hours.js',
     'index-usa':               'index-market-hours.js',
@@ -113,7 +112,6 @@ for js_file, data in grouped.items():
 # Default MHDB key and div ID prefix per JS file
 default_keys = {
     'us-equity-market-hours.js':       'Equity-usa-[*]',
-    'india-equity-market-hours.js':    'Equity-india-[*]',
     'equity-options-market-hours.js':  'Option-usa-[*]',
     'forex-market-hours.js':           'Forex-oanda-[*]',
     'futures-market-hours.js':         'Future-cme-[*]',
@@ -124,7 +122,6 @@ default_keys = {
 
 id_prefixes = {
     'us-equity-market-hours.js':       'us-equity',
-    'india-equity-market-hours.js':    'india-equity',
     'equity-options-market-hours.js':  'equity-options',
     'forex-market-hours.js':           'forex',
     'futures-market-hours.js':         'futures',

@@ -1,1 +1,0 @@
-<p id="india-equity-description">This page shows the trading hours, holidays, and time zone of the India Equity market.</p>
