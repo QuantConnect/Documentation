@@ -1,1 +1,0 @@
-<div id="india-equity-post-market"></div>
