@@ -8,6 +8,8 @@
 
 <p>
 	Refer to the <a href="/pricing">Pricing</a> page for the price of each backtesting node model.
+	B2-8 nodes are subsidized, so your organization can have at most two B2-8 nodes per organization seat.
+	For more backtesting nodes, add B4-12 or larger models, or add more seats.
 	Your first organization includes one free B-MICRO backtesting node.
 	This node introduces a 20-second delay when launching backtests and caps usage to 200 backtests per day. These restrictions are lifted and the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization to a paid tier</a> and <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a new backtesting node</a>.
 </p>
