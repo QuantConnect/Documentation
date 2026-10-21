@@ -96,6 +96,9 @@ Notes that customers ask about:
 - One backtest node runs one backtest at a time: concurrency needs more nodes.
   One live node runs one live algorithm. Research nodes do not speed up
   backtests.
+- **B2-8 is capped at 2 per organization seat** (subsidized), within the
+  tier's backtest node cap. More nodes are B4-12 or larger, or more seats: 10
+  backtest nodes on 2 Team seats are 4 B2-8 + 6 B4-12.
 - **Changing a node model** is add the new one and remove the old one in the
   same Customize Plan session; there is no in-place upgrade button.
 - **Adding** a node renews the whole subscription period and charges the
