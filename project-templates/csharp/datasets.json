@@ -721,58 +721,6 @@
             }
         },
         {
-            "name": "US SEC 13F Whales",
-            "shortDescription": "Ownership filings from the SEC as their holders filed them, starting with Form 13F institutional holdings",
-            "history": "May 2013",
-            "reach": "18,877 US Equities",
-            "url": "sec-whales",
-            "examples": {
-                "init": "_datasetSymbol = AddData<SEC13FHoldings>(_symbol).Symbol;",
-                "history": "var history = History<SEC13FHoldings>(_datasetSymbol, TimeSpan.FromDays(60), Resolution.Daily);",
-                "research-history": "var history = qb.History<SEC13FHoldings>(datasetSymbol, TimeSpan.FromDays(60), Resolution.Daily);",
-                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_datasetSymbol))\n    {\n        foreach (SEC13FHolding holding in slice[_datasetSymbol])\n        {\n            Log($\"{_datasetSymbol} CIK {holding.ManagerCik} at {slice.Time}: {holding.Amount} {holding.AmountType}\");\n        }\n    }\n}"
-            }
-        },
-        {
-            "name": "US Bank Financials",
-            "shortDescription": "Quarterly call reports of every FDIC-insured bank, linked to the listed owner, published by the Federal Deposit Insurance Corporation",
-            "history": "June 1984",
-            "reach": "24,064 Banks",
-            "url": "fdic-us-bank-financials",
-            "examples": {
-                "init": "_datasetSymbol = AddData<FDICBankFinancials>(_symbol).Symbol;",
-                "history": "var history = History<FDICBankFinancials>(_datasetSymbol, TimeSpan.FromDays(365), Resolution.Daily);",
-                "research-history": "var history = qb.History<FDICBankFinancials>(datasetSymbol, TimeSpan.FromDays(365), Resolution.Daily);",
-                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.TryGet<FDICBankFinancials>(_datasetSymbol, out var reports))\n    {\n        foreach (FDICBankFinancial report in reports.Data)\n        {\n            Log($\"{report.InstitutionName} {report.ReportDate}: {report.EstimatedUninsuredDeposits}\");\n        }\n    }\n}"
-            }
-        },
-        {
-            "name": "US Bank Failures",
-            "shortDescription": "Every failure of an FDIC-insured bank since 1934, with its assets and deposits, published by the Federal Deposit Insurance Corporation",
-            "history": "April 1934",
-            "reach": "4,117 Bank Failures",
-            "url": "fdic-us-bank-failures",
-            "examples": {
-                "init": "_datasetSymbol = AddData<FDICBankFailures>(FDIC.Failures).Symbol;",
-                "history": "var history = History<FDICBankFailures>(_datasetSymbol, TimeSpan.FromDays(730), Resolution.Daily);",
-                "research-history": "var history = qb.History<FDICBankFailures>(datasetSymbol, TimeSpan.FromDays(730), Resolution.Daily);",
-                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.TryGet<FDICBankFailures>(_datasetSymbol, out var failures))\n    {\n        foreach (FDICBankFailure failure in failures.Data)\n        {\n            Log($\"{failure.InstitutionName} ({failure.State}): assets {failure.TotalAssets}\");\n        }\n    }\n}"
-            }
-        },
-        {
-            "name": "Factors",
-            "shortDescription": "Daily precomputed factors for individual US Equities, plus market-wide factors not linked to specific Equities",
-            "history": "January 1998",
-            "reach": "SPY Constituents, plus unlinked factors",
-            "url": "quantconnect-factors",
-            "examples": {
-                "init": "_equityFactors = AddData<Factors>(_equity.Symbol).Symbol;",
-                "history": "var equityFactorsHistory = History<Factors>(_equityFactors, 100, Resolution.Daily);",
-                "research-history": "var equityFactorsHistory = qb.History<Factors>(equityFactors, 100, Resolution.Daily);",
-                "usage": "public override void OnData(Slice data)\n{\n    if (data.Get<Factors>().TryGetValue(_equityFactors, out var equityFactors))\n    {\n        var value = equityFactors[Factors.Roc1Day];\n    }\n\n    if (data.Get<Factors>().TryGetValue(_unlinkedFactors, out var unlinkedFactors))\n    {\n        var ustYield = unlinkedFactors[Factors.UstYield1Month];\n    }\n}"
-            }
-        },
-        {
             "name": "Fear and Greed",
             "shortDescription": "A daily index between 0 and 100, representing the degree of fear or greed in the US Equity market.",
             "history": "July 2014",
@@ -1038,6 +986,19 @@
             }
         },
         {
+            "name": "Factors",
+            "shortDescription": "Daily precomputed factors for individual US Equities, plus market-wide factors not linked to specific Equities",
+            "history": "January 1998",
+            "reach": "SPY Constituents, plus unlinked factors",
+            "url": "quantconnect-factors",
+            "examples": {
+                "init": "_equityFactors = AddData<Factors>(_equity.Symbol).Symbol;",
+                "history": "var equityFactorsHistory = History<Factors>(_equityFactors, 100, Resolution.Daily);",
+                "research-history": "var equityFactorsHistory = qb.History<Factors>(equityFactors, 100, Resolution.Daily);",
+                "usage": "public override void OnData(Slice data)\n{\n    if (data.Get<Factors>().TryGetValue(_equityFactors, out var equityFactors))\n    {\n        var value = equityFactors[Factors.Roc1Day];\n    }\n\n    if (data.Get<Factors>().TryGetValue(_unlinkedFactors, out var unlinkedFactors))\n    {\n        var ustYield = unlinkedFactors[Factors.UstYield1Month];\n    }\n}"
+            }
+        },
+        {
             "name": "Euro Yield Curve",
             "shortDescription": "Spot, par and forward euro area government bond yield curves at ten maturities, published daily by the European Central Bank",
             "history": "September 2004",
@@ -1091,6 +1052,45 @@
                 "research-history": "var history = qb.History<USPTOPatentMaintenance>(patentsSymbol, 100, Resolution.Daily);",
                 "research-universe-history": "var history = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);",
                 "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(patentsSymbol))\n    {\n        var dataPoint = slice[patentsSymbol];\n        Log($\"{patentsSymbol} patents expired at {slice.Time}: {dataPoint.PatentsExpired}\");\n    }\n}"
+            }
+        },
+        {
+            "name": "US SEC 13F Whales",
+            "shortDescription": "Ownership filings from the SEC as their holders filed them, starting with Form 13F institutional holdings",
+            "history": "May 2013",
+            "reach": "18,877 US Equities",
+            "url": "sec-whales",
+            "examples": {
+                "init": "_datasetSymbol = AddData<SEC13FHoldings>(_symbol).Symbol;",
+                "history": "var history = History<SEC13FHoldings>(_datasetSymbol, TimeSpan.FromDays(60), Resolution.Daily);",
+                "research-history": "var history = qb.History<SEC13FHoldings>(datasetSymbol, TimeSpan.FromDays(60), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.ContainsKey(_datasetSymbol))\n    {\n        foreach (SEC13FHolding holding in slice[_datasetSymbol])\n        {\n            Log($\"{_datasetSymbol} CIK {holding.ManagerCik} at {slice.Time}: {holding.Amount} {holding.AmountType}\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "name": "US Bank Financials",
+            "shortDescription": "Quarterly call reports of every FDIC-insured bank, linked to the listed owner, published by the Federal Deposit Insurance Corporation",
+            "history": "June 1984",
+            "reach": "24,064 Banks",
+            "url": "fdic-us-bank-financials",
+            "examples": {
+                "init": "_datasetSymbol = AddData<FDICBankFinancials>(_symbol).Symbol;",
+                "history": "var history = History<FDICBankFinancials>(_datasetSymbol, TimeSpan.FromDays(365), Resolution.Daily);",
+                "research-history": "var history = qb.History<FDICBankFinancials>(datasetSymbol, TimeSpan.FromDays(365), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.TryGet<FDICBankFinancials>(_datasetSymbol, out var reports))\n    {\n        foreach (FDICBankFinancial report in reports.Data)\n        {\n            Log($\"{report.InstitutionName} {report.ReportDate}: {report.EstimatedUninsuredDeposits}\");\n        }\n    }\n}"
+            }
+        },
+        {
+            "name": "US Bank Failures",
+            "shortDescription": "Every failure of an FDIC-insured bank since 1934, with its assets and deposits, published by the Federal Deposit Insurance Corporation",
+            "history": "April 1934",
+            "reach": "4,117 Bank Failures",
+            "url": "fdic-us-bank-failures",
+            "examples": {
+                "init": "_datasetSymbol = AddData<FDICBankFailures>(FDIC.Failures).Symbol;",
+                "history": "var history = History<FDICBankFailures>(_datasetSymbol, TimeSpan.FromDays(730), Resolution.Daily);",
+                "research-history": "var history = qb.History<FDICBankFailures>(datasetSymbol, TimeSpan.FromDays(730), Resolution.Daily);",
+                "usage": "public override void OnData(Slice slice)\n{\n    if (slice.TryGet<FDICBankFailures>(_datasetSymbol, out var failures))\n    {\n        foreach (FDICBankFailure failure in failures.Data)\n        {\n            Log($\"{failure.InstitutionName} ({failure.State}): assets {failure.TotalAssets}\");\n        }\n    }\n}"
             }
         },
         {
