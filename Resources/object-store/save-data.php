@@ -42,14 +42,8 @@ $pythonPrefix = $research ? "qb." : "self.";
 </div>
 
 <h4>Bytes</h4>
-<p>To save a <code>Bytes</code> object (for example, zipped data), call the <code class='csharp'>SaveBytes</code><code class='python'>save_bytes</code> method.</p>
+<p>To save a <code>Bytes</code> object, call the <code class='csharp'>SaveBytes</code><code class='python'>save_bytes</code> method.</p>
 <div class='section-example-container'>
-    <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey", bytesSample)
-
-var zippedDataSample = Compression.ZipBytes(Encoding.UTF8.GetBytes(stringSample), "data");
-var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey.zip", zippedDataSample);</pre>
-    <pre class='python'>save_successful = <?=$pythonPrefix?>object_store.save_bytes(f"{<?=$pythonPrefix?>project_id}/bytes_key", bytes_sample)
-
-zipped_data_sample = Compression.zip_bytes(bytes(string_sample, "utf-8"), "data")
-zip_save_successful = <?=$pythonPrefix?>object_store.save_bytes(f"{<?=$pythonPrefix?>project_id}/bytesKey.zip", zipped_data_sample)</pre>
+    <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey", bytesSample);</pre>
+    <pre class='python'>save_successful = <?=$pythonPrefix?>object_store.save_bytes(f"{<?=$pythonPrefix?>project_id}/bytes_key", bytes_sample)</pre>
 </div>
