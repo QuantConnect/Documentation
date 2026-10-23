@@ -89,7 +89,7 @@
     <hr />
     <h4>Follow these steps to create and deploy a new strategy to paper trading with the help of the Agents:</h4>
     <div class="tutorial-step">
-        <p>1. <a href="/terminal/">Log in to the Algorithm Lab</a>.</p>
+        <p>1. <a href="/lab/">Log in to the Algorithm Lab</a>.</p>
     </div>
     <div class="tutorial-step">
         <p>2. Click the <span class='tab-name'>Research Pipeline</span> tab.</p>
