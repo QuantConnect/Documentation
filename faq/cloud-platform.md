@@ -150,7 +150,7 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members
 
 ### What's the difference between the Trading Firm and Institution tiers?
 
-Trading Firm organizations own all member projects, grant member permissions, use custom LEAN builds, and can manage Interactive Brokers Financial Advisor accounts. The Institution tier adds on-premises deployment, Terminal Link and Bloomberg FIX trading, custom libraries, and unlimited backtest logs. Institution is also the only tier with Object Store downloads, under the derived data agreement.
+Trading Firm organizations own all member projects, grant member permissions, use custom LEAN builds, and can manage Interactive Brokers Financial Advisor accounts. The Institution tier adds on-premises deployment, Quant Bridge and Bloomberg FIX trading, custom libraries, and unlimited backtest logs. Institution is also the only tier with Object Store downloads, under the derived data agreement.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features#06-Institution-Tier>
 
@@ -1350,13 +1350,13 @@ For Equities, use the QuantConnect data provider for real-time data. For Options
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/tradier>
 
-### What do I need to use Bloomberg EMSX through Terminal Link on QuantConnect Cloud?
+### What do I need to use Bloomberg EMSX through Quant Bridge on QuantConnect Cloud?
 
 You need a Trading Firm or Institution organization, a Bloomberg license, and Bloomberg SAPI and EMSX permissions. QuantConnect Cloud only routes orders through the Bloomberg Server API (SAPI), which you install on your own cloud server. The SAPI provides no data, so use the QuantConnect data provider.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx>
 
-### How is the Bloomberg FIX connection different from Terminal Link?
+### How is the Bloomberg FIX connection different from Quant Bridge?
 
 The Bloomberg FIX connection routes orders to the Bloomberg FixNet HUB over FIX, so none of the SAPI setup applies. It requires an Institution organization and a FIX session that Bloomberg provisions. The two connections support the same asset classes but differ in order types, order updates, and account types.
 
@@ -1364,7 +1364,7 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerag
 
 ### Why do I enter my cash and holdings manually for FIX connections?
 
-FIX connections can't fetch the portfolio state from the brokerage. Enter your cash in the Algorithm Cash State section and your positions in the Algorithm Holdings State section when you deploy. SS&C Eze and Terminal Link also ask you to set the buying power in the wizard.
+FIX connections can't fetch the portfolio state from the brokerage. Enter your cash in the Algorithm Cash State section and your positions in the Algorithm Holdings State section when you deploy. SS&C Eze and Quant Bridge also ask you to set the buying power in the wizard.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/fix-connections>
 

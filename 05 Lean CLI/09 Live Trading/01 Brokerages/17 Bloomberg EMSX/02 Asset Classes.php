@@ -1,4 +1,4 @@
-<p>Terminal Link supports trading the following asset classes:</p>
+<p>Quant Bridge supports trading the following asset classes:</p>
 
 <ul>
     <li><a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>Equities</a></li>

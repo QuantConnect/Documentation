@@ -1,7 +1,7 @@
-<p>You need to <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
+<p>You need to <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Quant Bridge.</p>
 
 <?
-$brokerageName = "Terminal Link";
+$brokerageName = "Quant Bridge";
 $cashState = true;
 $holdingsState = true;
 $secondBullet = "";

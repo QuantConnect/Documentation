@@ -306,7 +306,7 @@ Docs: <https://www.quantconnect.com/docs/v2/lean-cli/datasets/brokerages#05-Alte
 
 ### Which third-party data providers can I use with the LEAN CLI?
 
-The CLI supports historical data from Alpha Vantage, Databento, FactSet, IQFeed, Polygon, Terminal Link, and Theta Data. Each provider needs its own account or API key, and you pay the provider directly. IQFeed works only on Windows, and Terminal Link requires an organization on the Institution tier.
+The CLI supports historical data from Alpha Vantage, Databento, FactSet, IQFeed, Polygon, Quant Bridge, and Theta Data. Each provider needs its own account or API key, and you pay the provider directly. IQFeed works only on Windows, and Quant Bridge requires an organization on the Institution tier.
 
 Docs: <https://www.quantconnect.com/docs/v2/lean-cli/datasets>
 

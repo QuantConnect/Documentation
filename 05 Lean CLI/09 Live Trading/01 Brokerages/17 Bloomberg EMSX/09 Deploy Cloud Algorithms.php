@@ -1,11 +1,11 @@
-<p>You need to <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
+<p>You need to <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Quant Bridge.</p>
 
 <?
 $brokerageDetails = "
 <li>Enter your unique user identifier (UUID).</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-Configure credentials for Terminal Link
+Configure credentials for Quant Bridge
 Using 'SAPI' Connection Type
 Server Auth ID: </pre>
 </div>
@@ -43,8 +43,8 @@ EMSX account []: </pre>
 OpenFIGI API key: </pre>
 </div>
 ";
-$dataProviderName = "Terminal Link";
-$brokerageName="Terminal Link";
+$dataProviderName = "Quant Bridge";
+$brokerageName="Quant Bridge";
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;

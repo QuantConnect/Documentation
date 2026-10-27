@@ -1,7 +1,7 @@
-<p>Terminal Link enables you to create and manage Bloomberg™ orders.</p>
+<p>Quant Bridge enables you to create and manage Bloomberg™ orders.</p>
 
 <h4>Order Types</h4>
-<p>The following table describes the available order types for each asset class that Terminal Link supports:</p>
+<p>The following table describes the available order types for each asset class that Quant Bridge supports:</p>
 
 <table class="qc-table table" id="order-types-table">
    <thead>
@@ -60,9 +60,9 @@
 </style>
 
 <h4>Order Properties</h4>
-<p>We model custom order properties from the Bloomberg EMSX API. The following table describes the members of the <code>TerminalLinkOrderProperties</code> object that you can set to customize order execution:</p>
+<p>We model custom order properties from the Bloomberg EMSX API. The following table describes the members of the <code>QuantBridgeOrderProperties</code> object that you can set to customize order execution:</p>
 
-<table class="table qc-table" id="terminal-link-order-properties-table">
+<table class="table qc-table" id="quant-bridge-order-properties-table">
     <thead>
         <tr>
          <th style="width: 18%">Property</th>
@@ -214,12 +214,12 @@
 </table>
 
 <style>
-#terminal-link-order-properties-table {
+#quant-bridge-order-properties-table {
     table-layout: fixed;
 }
 
-#terminal-link-order-properties-table td,
-#terminal-link-order-properties-table code {
+#quant-bridge-order-properties-table td,
+#quant-bridge-order-properties-table code {
     white-space: normal;
     overflow-wrap: break-word;
 }
@@ -230,12 +230,12 @@
     <pre class="csharp">public override void Initialize()
 {
     // Set the default order properties
-    DefaultOrderProperties = new TerminalLinkOrderProperties
+    DefaultOrderProperties = new QuantBridgeOrderProperties
     {
         TimeInForce = TimeInForce.GoodTilCanceled,
-        Strategy = new TerminalLinkOrderProperties.StrategyParameters(
+        Strategy = new QuantBridgeOrderProperties.StrategyParameters(
             "VWAP",
-            new List&lt;TerminalLinkOrderProperties.StrategyField&gt;
+            new List&lt;QuantBridgeOrderProperties.StrategyField&gt;
             {
                 new("09:30:00"),
                 new("10:30:00"),
@@ -253,13 +253,13 @@ public override void OnData(Slice slice)
     
     // Override the default order properties
     LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new TerminalLinkOrderProperties
+               orderProperties: new QuantBridgeOrderProperties
                { 
                    TimeInForce = TimeInForce.Day,
                    Account = "account1"
                });
     LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new TerminalLinkOrderProperties
+               orderProperties: new QuantBridgeOrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
                    Account = "account2"
@@ -267,15 +267,15 @@ public override void OnData(Slice slice)
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.default_order_properties = TerminalLinkOrderProperties()
+    self.default_order_properties = QuantBridgeOrderProperties()
     self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
-    self.default_order_properties.strategy = TerminalLinkOrderProperties.StrategyParameters(
+    self.default_order_properties.strategy = QuantBridgeOrderProperties.StrategyParameters(
         "VWAP",
         [
-            TerminalLinkOrderProperties.StrategyField("09:30:00"),
-            TerminalLinkOrderProperties.StrategyField("10:30:00"),
-            TerminalLinkOrderProperties.StrategyField(),
-            TerminalLinkOrderProperties.StrategyField()
+            QuantBridgeOrderProperties.StrategyField("09:30:00"),
+            QuantBridgeOrderProperties.StrategyField("10:30:00"),
+            QuantBridgeOrderProperties.StrategyField(),
+            QuantBridgeOrderProperties.StrategyField()
         ]
     )
 
@@ -284,7 +284,7 @@ def on_data(self, slice: Slice) -&gt; None:
     self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
-    order_properties = TerminalLinkOrderProperties()
+    order_properties = QuantBridgeOrderProperties()
     order_properties.time_in_force = TimeInForce.DAY
     order_properties.account = "account1"
     self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
@@ -302,13 +302,13 @@ def on_data(self, slice: Slice) -&gt; None:
     <pre class="csharp">public override void Initialize()
 {
     // Set the default order properties to book the orders as CFD trades and to flag them as odd lots
-    var orderProperties = new TerminalLinkOrderProperties { IsCfdTrade = true };
+    var orderProperties = new QuantBridgeOrderProperties { IsCfdTrade = true };
     orderProperties.AdditionalProperties["EMSX_ODD_LOT"] = "1";
     DefaultOrderProperties = orderProperties;
 }</pre>
     <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties to book the orders as CFD trades and to flag them as odd lots
-    order_properties = TerminalLinkOrderProperties()
+    order_properties = QuantBridgeOrderProperties()
     order_properties.is_cfd_trade = True
     order_properties.additional_properties["EMSX_ODD_LOT"] = "1"
     self.default_order_properties = order_properties</pre>
@@ -320,16 +320,16 @@ def on_data(self, slice: Slice) -&gt; None:
 <p>For more information about the format that the Bloomberg EMSX API expects, see <a href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/requestResponse.html#create-order-and-route-extended-request' rel='nofollow' target='_blank'>Create Order and Route Extended Request</a> in the EMSX API documentation and the <a rel='nofollow' target='_blank' href='https://www.mathworks.com/help/datafeed/emsx.createorderandroutewithstrat.html'>createOrderAndRouteWithStrat documentation</a> on the MathWorks website.</p>
 
 <h4>Get Open Orders</h4>
-<p>Terminal Link lets you <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
+<p>Quant Bridge lets you <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
 
 <h4>Monitor Fills</h4>
-<p>Terminal Link allows you to monitor orders as they fill through <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>.</p>
+<p>Quant Bridge allows you to monitor orders as they fill through <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>.</p>
 
 <h4>Updates</h4>
-<p>Terminal Link doesn't support <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>, but you can cancel an existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
+<p>Quant Bridge doesn't support <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>, but you can cancel an existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
 
 <h4>Cancellations</h4>
-<p>Terminal Link enables you to <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
+<p>Quant Bridge enables you to <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
 

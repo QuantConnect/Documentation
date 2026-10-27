@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/brokerages/terminal-link/asset-classes.html"); ?>
+<? include(DOCS_RESOURCES."/brokerages/quant-bridge/asset-classes.html"); ?>

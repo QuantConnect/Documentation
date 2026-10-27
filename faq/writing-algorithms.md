@@ -1872,7 +1872,7 @@ Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/
 
 ### Does my algorithm process orders I place on my brokerage website?
 
-No, except with Terminal Link. Most QuantConnect brokerage integrations don't support brokerage-side orders, so your algorithm doesn't process orders you create in the brokerage website or third-party software. With Terminal Link, a custom brokerage message handler can accept them.
+No, except with Quant Bridge. Most QuantConnect brokerage integrations don't support brokerage-side orders, so your algorithm doesn't process orders you create in the brokerage website or third-party software. With Quant Bridge, a custom brokerage message handler can accept them.
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerage-message-handler>
 

@@ -3,8 +3,8 @@
     If you create an order directly through your brokerage instead of through LEAN, your algorithm won't process the order because the return value of the <code class="csharp">HandleOrder</code><code class="python">handle_order</code> method is ignored.
 </p>
 <p>
-    <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx'>Terminal Link</a> is the exception that can support brokerage-side orders. 
-    The following algorithm demonstrates how to implement a custom brokerage handler that accepts orders with a target <code class="csharp">TerminalLinkOrderProperties.CustomNotes1</code><code class="python">TerminalLinkOrderProperties.custom_notes_1</code> value.
+    <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx'>Quant Bridge</a> is the exception that can support brokerage-side orders. 
+    The following algorithm demonstrates how to implement a custom brokerage handler that accepts orders with a target <code class="csharp">QuantBridgeOrderProperties.CustomNotes1</code><code class="python">QuantBridgeOrderProperties.custom_notes_1</code> value.
 </p>
 
 <div class="section-example-container testable">
@@ -50,11 +50,11 @@ public class CustomBrokerageMessageHandler : IBrokerageMessageHandler
         var order = eventArgs.Order;
         _algorithm.BrokerageSideOrder = order;
 
-        // Only accept TerminalLink orders with a custom note "AcceptOrder".
-        var orderProperties = order.Properties as TerminalLinkOrderProperties;
+        // Only accept QuantBridge orders with a custom note "AcceptOrder".
+        var orderProperties = order.Properties as QuantBridgeOrderProperties;
         if (orderProperties == null)
         {
-            _algorithm.Log("HandleOrder(): order properties is not set to expected terminal link type, skipping");
+            _algorithm.Log("HandleOrder(): order properties is not set to expected quant bridge type, skipping");
             return false;
         }
         var result = orderProperties.CustomNotes1.Contains("AcceptOrder");
@@ -90,9 +90,9 @@ class CustomBrokerageMessageHandler(DefaultBrokerageMessageHandler):
         order = event_args.order
         self._algorithm.brokerage_side_order = order
 
-        # Only accept TerminalLink orders with a custom note "AcceptOrder".
-        if not isinstance(order.properties, TerminalLinkOrderProperties):
-            self._algorithm.log("handle_order(): order properties is not set to expected terminal link type, skipping")
+        # Only accept QuantBridge orders with a custom note "AcceptOrder".
+        if not isinstance(order.properties, QuantBridgeOrderProperties):
+            self._algorithm.log("handle_order(): order properties is not set to expected quant bridge type, skipping")
             return False
         custom_notes1 = order.properties.custom_notes1
         result = custom_notes1 and "AcceptOrder" in custom_notes1

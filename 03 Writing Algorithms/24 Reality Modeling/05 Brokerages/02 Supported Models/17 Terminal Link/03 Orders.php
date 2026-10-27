@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/brokerages/terminal-link/orders.php"); ?>

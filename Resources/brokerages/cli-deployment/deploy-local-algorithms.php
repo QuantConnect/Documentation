@@ -51,7 +51,7 @@ if ($isBrokerage) {
       "Binance",
       "Zerodha",
       "Samco",
-      "Terminal Link",
+      "Quant Bridge",
       "Trading Technologies",
       "Kraken",
       "Charles Schwab",
@@ -77,7 +77,7 @@ $dataProviders = array(
     "Binance",
     "Zerodha",
     "Samco",
-    "Terminal Link",
+    "Quant Bridge",
     "Trading Technologies",
     "Kraken",
     "Charles Schwab",
@@ -110,7 +110,7 @@ Select a brokerage:
 7) Binance
 8) Zerodha
 9) Samco
-10) Terminal Link
+10) Quant Bridge
 11) Trading Technologies
 12) Kraken
 13) Charles Schwab
@@ -161,9 +161,9 @@ Do you want to add more holdings? [y/N]: n</pre>
 <? } ?>
 
 <?
-if ($isBrokerage && $brokerageName == "Terminal Link") {
+if ($isBrokerage && $brokerageName == "Quant Bridge") {
 ?>
-<li>Enter <span class='key-combinations'>9</span> to select the Terminal Link live data provider.
+<li>Enter <span class='key-combinations'>9</span> to select the Quant Bridge live data provider.
 <div class='cli section-example-container'>
 <pre>$ lean live deploy "My Project"
 Select a live data provider:
@@ -175,7 +175,7 @@ Select a live data provider:
 6) Binance
 7) Zerodha
 8) Samco
-9) Terminal Link
+9) Quant Bridge
 10) Trading Technologies
 11) Kraken
 12) Charles Schwab
@@ -209,7 +209,7 @@ Select a live data feed:
 6) Binance
 7) Zerodha
 8) Samco
-9) Terminal Link
+9) Quant Bridge
 10) Trading Technologies
 11) Kraken
 12) Charles Schwab
@@ -243,7 +243,7 @@ Select a live data provider:
 6) Binance
 7) Zerodha
 8) Samco
-9) Terminal Link
+9) Quant Bridge
 10) Trading Technologies
 11) Kraken
 12) Charles Schwab

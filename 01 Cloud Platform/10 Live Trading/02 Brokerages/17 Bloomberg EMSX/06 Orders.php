@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/brokerages/terminal-link/orders.php"); ?>
+<? include(DOCS_RESOURCES."/brokerages/quant-bridge/orders.php"); ?>

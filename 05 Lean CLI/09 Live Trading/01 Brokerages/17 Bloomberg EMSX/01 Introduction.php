@@ -1,5 +1,5 @@
 <?
-$brokerageName="Terminal Link";
+$brokerageName="Quant Bridge";
 include(DOCS_RESOURCES."/brokerages/cli-deployment/introduction.php"); 
 ?>
 

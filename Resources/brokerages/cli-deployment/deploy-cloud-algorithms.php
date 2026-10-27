@@ -24,7 +24,7 @@ $brokerages = array(
       "Binance",
       "Zerodha",
       "Samco",
-      "Terminal Link",
+      "Quant Bridge",
       "Trading Technologies",
       "Kraken",
       "Charles Schwab",
@@ -50,7 +50,7 @@ $dataProviders = array(
     "Binance",
     "Zerodha",
     "Samco",
-    "Terminal Link",
+    "Quant Bridge",
     "Trading Technologies",
     "Kraken",
     "Charles Schwab",
@@ -81,7 +81,7 @@ Select a brokerage:
 7) Binance
 8) Zerodha
 9) Samco
-10) Terminal Link
+10) Quant Bridge
 11) Trading Technologies
 12) Kraken
 13) Charles Schwab
@@ -182,7 +182,7 @@ Select a live data feed:
 7) Binance
 8) Zerodha
 9) Samco
-10) Terminal Link
+10) Quant Bridge
 11) Trading Technologies
 12) Kraken
 13) Charles Schwab
@@ -215,7 +215,7 @@ Select a live data feed:
 7) Binance
 8) Zerodha
 9) Samco
-10) Terminal Link
+10) Quant Bridge
 11) Trading Technologies
 12) Kraken
 13) Charles Schwab

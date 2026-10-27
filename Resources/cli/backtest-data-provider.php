@@ -105,15 +105,15 @@
         </tr>
 
         <tr>
-            <td rowspan="7"><code>"Terminal Link"</code></td>
-            <td><code>--terminal-link-connection-type</code></td>
+            <td rowspan="7"><code>"Quant Bridge"</code></td>
+            <td><code>--quant-bridge-connection-type</code></td>
         </tr>
-        <tr><td><code>--terminal-link-environment</code></td></tr>
-        <tr><td><code>--terminal-link-server-host</code></td></tr>
-        <tr><td><code>--terminal-link-server-port</code></td></tr>
-        <tr><td><code>--terminal-link-emsx-broker</code></td></tr>
-        <tr><td><code>--terminal-link-openfigi-api-key</code></td></tr>
-        <tr><td><code>--terminal-link-server-auth-id</code> if you use <code>--terminal-link-connection-type SAPI</code></td></tr>
+        <tr><td><code>--quant-bridge-environment</code></td></tr>
+        <tr><td><code>--quant-bridge-server-host</code></td></tr>
+        <tr><td><code>--quant-bridge-server-port</code></td></tr>
+        <tr><td><code>--quant-bridge-emsx-broker</code></td></tr>
+        <tr><td><code>--quant-bridge-openfigi-api-key</code></td></tr>
+        <tr><td><code>--quant-bridge-server-auth-id</code> if you use <code>--quant-bridge-connection-type SAPI</code></td></tr>
 
         <tr>
             <td><code>ThetaData</code></td>

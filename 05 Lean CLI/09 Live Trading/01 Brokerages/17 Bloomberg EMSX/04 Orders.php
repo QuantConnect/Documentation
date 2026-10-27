@@ -1,7 +1,7 @@
-<p>Terminal Link enables you to create and manage Bloomberg™ orders. You can also use the LEAN CLI with the Terminal Link integration to test paper trading with LEAN. In this case, LEAN models order fills using the live tick data feed from Bloomberg™.</p>
+<p>Quant Bridge enables you to create and manage Bloomberg™ orders. You can also use the LEAN CLI with the Quant Bridge integration to test paper trading with LEAN. In this case, LEAN models order fills using the live tick data feed from Bloomberg™.</p>
 
 <h4>Order Types</h4>
-<p>The following table describes the available order types for each asset class that Terminal Link supports:</p>
+<p>The following table describes the available order types for each asset class that Quant Bridge supports:</p>
 
 <table class="qc-table table" id="order-types-table">
    <thead>
@@ -55,7 +55,7 @@
 
 
 <h4>Time In Force</h4>
-<p>Terminal Link supports the following <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
+<p>Quant Bridge supports the following <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 <ul>
     <li><code class="csharp">Day</code><code class="python">DAY</code></li>
     <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
@@ -63,15 +63,15 @@
 </ul>
 
 <h4>Get Open Orders</h4>
-<p>Terminal Link lets you <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
+<p>Quant Bridge lets you <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
 
 <h4>Monitor Fills</h4>
-<p>Terminal Link allows you to monitor orders as they fill through <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>.</p>
+<p>Quant Bridge allows you to monitor orders as they fill through <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>.</p>
 
 <h4>Updates</h4>
-<p>Terminal Link doesn't support <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p>Quant Bridge doesn't support <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 <h4>Cancellations</h4>
-<p>Terminal Link enables you to <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
+<p>Quant Bridge enables you to <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
