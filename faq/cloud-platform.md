@@ -1352,13 +1352,13 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerag
 
 ### What do I need to use Bloomberg EMSX through Quant Bridge on QuantConnect Cloud?
 
-You need a Trading Firm or Institution organization, a Bloomberg license, and Bloomberg SAPI and EMSX permissions. QuantConnect Cloud only routes orders through the Bloomberg Server API (SAPI), which you install on your own cloud server. The SAPI provides no data, so use the QuantConnect data provider.
+You need a Trading Firm or Institution organization, a Bloomberg license, and Bloomberg EMSX and EMSX API Server permissions. QuantConnect Cloud only routes orders through the Bloomberg EMSX API Server, which you install on your own cloud server. The EMSX API Server provides no data, so use the QuantConnect data provider.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx>
 
 ### How is the Bloomberg FIX connection different from Quant Bridge?
 
-The Bloomberg FIX connection routes orders to the Bloomberg FixNet HUB over FIX, so none of the SAPI setup applies. It requires an Institution organization and a FIX session that Bloomberg provisions. The two connections support the same asset classes but differ in order types, order updates, and account types.
+The Bloomberg FIX connection routes orders to the Bloomberg FixNet HUB over FIX, so none of the EMSX API Server setup applies. It requires an Institution organization and a FIX session that Bloomberg provisions. The two connections support the same asset classes but differ in order types, order updates, and account types.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-fix>
 

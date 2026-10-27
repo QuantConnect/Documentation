@@ -1,4 +1,4 @@
-<p>You need to <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Quant Bridge.</p>
+<p>You need to <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#11-Set-Up-EMSX-API-Server'>set up the Bloomberg&trade; EMSX API Server</a> before you can deploy cloud algorithms with Quant Bridge.</p>
 
 <?
 $brokerageDetails = "
@@ -17,7 +17,7 @@ Server Auth ID: </pre>
 Environment (Production, Beta): </pre>
 </div>
 
-<li>Enter the SAPI host and port.</li>
+<li>Enter the EMSX API Server host and port.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Server host: 
