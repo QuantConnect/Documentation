@@ -162,7 +162,7 @@
 </style>
 
 <p>
-   In live trading, Option orders require a third-party data provider that supports Options.
+   In live trading, the <a href='/docs/v2/cloud-platform/datasets/quantconnect'>QuantConnect data provider</a> supplies US Equity Options and US Index Options data. Future Options orders require a third-party data provider that supports Future Options.
   <? if ($cloudPlatform) {?> To view the data providers that support Options, see <a href='/docs/v2/cloud-platform/datasets'>Datasets</a>. <? } ?>
   <? if ($writingAlgorithms) {?> To view the data providers that support Options, see their respective documentation in <a href='/docs/v2/cloud-platform/datasets'>Cloud Platform</a>, <a href='/docs/v2/local-platform/datasets/getting-started'>Local Platform</a>, or the <a href='/docs/v2/lean-cli/live-trading/data-providers'>CLI</a>. <? } ?>
 </p>
