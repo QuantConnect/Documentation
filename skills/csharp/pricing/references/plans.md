@@ -65,7 +65,7 @@ caps are the number of nodes the organization may subscribe to.
 | Workspace capacity | 500 MB | 2 GB | 4 GB | 20 GB | 50 GB |
 | Object Store | none | 50 MB, capped | expandable | expandable | expandable, download with the derived data agreement |
 | Second and tick data, API, LEAN CLI | no | yes | yes | yes | yes |
-| Live trading | QuantConnect Paper Trading only (one trial deployment) | yes | yes, plus Trading Technologies and the live Futures feed | plus IB Financial Advisor, prime and FIX brokerages | plus Bloomberg EMSX, on-premises LEAN Enterprise |
+| Live trading, paper included | no | yes | yes, plus Trading Technologies and the live Futures feed | plus IB Financial Advisor, prime and FIX brokerages | plus Bloomberg EMSX, on-premises LEAN Enterprise |
 
 Notes that customers ask about:
 
@@ -73,10 +73,11 @@ Notes that customers ask about:
   backtests a day), one free R1-4 research node and one free A-MICRO agent node
   (100,000 tokens a month). Free data in the cloud covers every asset class at
   minute to daily resolution. Free cannot buy anything: every add-on (nodes,
-  storage, datasets, QCC-funded features) needs a paid organization first. The
-  one trial live deployment works only with QuantConnect Paper Trading; any
-  external brokerage, even in paper mode, needs a paid live node. Opening extra
-  accounts to get more free deployments is against the terms.
+  storage, datasets, QCC-funded features) needs a paid organization first.
+  Free has no live nodes, so it cannot paper trade: every live deployment,
+  QuantConnect Paper Trading or an external brokerage's paper account included,
+  needs a paid organization and a paid live node. Opening extra accounts to get
+  free resources is against the terms.
 - **Out-of-sample holdout:** Free organizations cannot backtest the most recent
   90 days, and cannot remove that holdout; any paid organization's manager can
   set No Holdout Period on the organization homepage.
