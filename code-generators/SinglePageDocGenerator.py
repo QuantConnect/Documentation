@@ -167,7 +167,7 @@ def ModifySectionPointer(content: str, name: str) -> str:
     replacement = {}
     soup = BeautifulSoup(content, features="lxml")
     
-    for x in soup.findAll('a'):
+    for x in soup.find_all('a'):
         try:
             if f"https://www.quantconnect.com/docs/v2/{name.lower().replace(' ', '-')}" in x["href"] or f"https://www.quantconnect.com/docs/v2//{name.lower().replace(' ', '-')}" in x["href"]:
                 section = [y.replace('-', ' ').lower().strip() for y in re.split('/|#', x["href"].split(name.lower().replace(' ', '-'))[-1])]
@@ -257,7 +257,7 @@ def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, li
 def ExtractImage(content: str) -> dict:
     conversions = {}
     soup = BeautifulSoup(content, features="lxml")
-    images = soup.findAll('img')
+    images = soup.find_all('img')
     
     for image in images:
         url = image["src"].strip()
