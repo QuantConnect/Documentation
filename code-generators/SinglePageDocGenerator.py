@@ -4,8 +4,8 @@ from datetime import datetime
 import json
 import os
 from pathlib import Path
+import pdfkit
 from PIL import Image
-from playwright.sync_api import sync_playwright
 import re
 import sys
 import time
@@ -150,6 +150,10 @@ def Knit(content: list, name: str) -> str:
             # Only inline img src; a data URI in an <a href> is too large for a PDF link
             content = re.sub(rf'(src\s*=\s*["\']?){re.escape(img_url)}', lambda m: f'{m.group(1)}data:image/{img_path.split(".")[-1]};base64,{base64_img}', content)
 
+        # Embeds can't play in a PDF, and Vimeo player URLs return 401 outside quantconnect.com
+        content = re.sub(r'https://player\.vimeo\.com/video/(\d+)[^"]*', r'https://vimeo.com/\1', content)
+        content = re.sub(r'<iframe\b[^>]*?\bsrc="([^"]+)"[^>]*>.*?</iframe>', r'<p><a href="\1">\1</a></p>', content, flags=re.S | re.I)
+
         content = ModifySectionPointer(content, name)
         html += content
         
@@ -242,16 +246,16 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
 
 def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, list[str]] = None) -> None:
     pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
-    with sync_playwright() as p:
-        browser = p.chromium.launch()
-        page = browser.new_page()
-        page.set_default_timeout(0)
-        page.goto(Path(html_path).resolve().as_uri(), wait_until="networkidle")
-        page.add_style_tag(path=f'{css}/pdf-styles-{language}.css')
-        page.evaluate("document.fonts.ready")
-        # Scale the 920px .article-body to fit an A4 page
-        page.pdf(path=pdf_name, format="A4", scale=0.75, margin={"top": "10mm", "bottom": "10mm", "left": "10mm", "right": "10mm"}, print_background=True, outline=True)
-        browser.close()
+    try:
+        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css', options={"image-quality": 50})
+    except Exception as e:
+        # wkhtmltopdf exits 1 on non-fatal load errors but still writes the PDF
+        print(f"PdfConversion(): wkhtmltopdf reported an error for {html_path} - {e}")
+    # wkhtmltopdf can crash mid-write and leave a truncated file; fail before it is uploaded
+    with open(pdf_name, 'rb') as pdf:
+        pdf.seek(-1024, os.SEEK_END)
+        if b'%%EOF' not in pdf.read():
+            raise Exception(f"PdfConversion(): {pdf_name} is truncated")
     print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
 
 def ExtractImage(content: str) -> dict:
