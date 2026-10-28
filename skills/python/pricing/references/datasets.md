@@ -41,7 +41,7 @@ data.
   only. "Request a quote" or "contact us" SKUs (US Future Options): the
   customer contacts us.
 - **Cancel a dataset subscription** on the organization's Pricing page
-  (Customize Plan > Build Your Own Pack > Data, click Added, then checkout);
+  (Customize Plan > Data, click Added, then checkout);
   access continues to the end of the paid term.
 - **Trials** of a paid dataset are granted case by case by a human; vendors
   can also grant them. Never promise one.
