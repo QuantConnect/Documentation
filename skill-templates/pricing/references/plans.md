@@ -19,7 +19,7 @@ listed in [docs.md](docs.md), read 2026-09-22.
 - **A plan is the seat plus whatever is added to it.** The four plan cards on
   the Pricing page are *recommended packs*: a seat with a preselected set of
   nodes and a support seat. The customer can add or remove any line under
-  Customize Plan > Build Your Own Pack (seats, compute nodes, add-ons, data,
+  the Customize Plan tab (seats, compute nodes, add-ons, data,
   support). The cheapest paid organization is the Quant Researcher seat on its
   own.
 - **A pack's price is the sum of its lines at the minimum seat count.** Every
