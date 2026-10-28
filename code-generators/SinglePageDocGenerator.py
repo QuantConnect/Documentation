@@ -4,8 +4,8 @@ from datetime import datetime
 import json
 import os
 from pathlib import Path
-import pdfkit
 from PIL import Image
+from playwright.sync_api import sync_playwright
 import re
 import sys
 import time
@@ -147,8 +147,9 @@ def Knit(content: list, name: str) -> str:
         images = ExtractImage(content)
         for img_url, img_path in images.items():
             base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
-            content = content.replace(img_url, f'data:image/{img_path.split(".")[-1]};base64,{base64_img}')
-            
+            # Only inline img src; a data URI in an <a href> is too large for a PDF link
+            content = re.sub(rf'(src\s*=\s*["\']?){re.escape(img_url)}', lambda m: f'{m.group(1)}data:image/{img_path.split(".")[-1]};base64,{base64_img}', content)
+
         content = ModifySectionPointer(content, name)
         html += content
         
@@ -240,14 +241,19 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
 
 def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, list[str]] = None) -> None:
-    try:
-        pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
-        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css', options={"image-quality": 50})
-        print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
-    except Exception as e:
-        # Do not break with raising exceptions in case due to warnings
-        print(f"PdfConversion(): Unable to converting {html_path} - {e}")
-        
+    pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_page()
+        page.set_default_timeout(0)
+        page.goto(Path(html_path).resolve().as_uri(), wait_until="networkidle")
+        page.add_style_tag(path=f'{css}/pdf-styles-{language}.css')
+        page.evaluate("document.fonts.ready")
+        # Scale the 920px .article-body to fit an A4 page
+        page.pdf(path=pdf_name, format="A4", scale=0.75, margin={"top": "10mm", "bottom": "10mm", "left": "10mm", "right": "10mm"}, print_background=True, outline=True)
+        browser.close()
+    print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
+
 def ExtractImage(content: str) -> dict:
     conversions = {}
     soup = BeautifulSoup(content, features="lxml")
