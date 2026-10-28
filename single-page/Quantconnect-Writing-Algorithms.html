@@ -127,8 +127,6 @@
 <li><a href="#3.6.10.1" class="toc-h4" target="_parent">3.6.10.1 Requesting Data</a></li>
 <li><a href="#3.6.10.2" class="toc-h4" target="_parent">3.6.10.2 Handling Data</a></li>
 <li><a href="#3.6.10.3" class="toc-h4" target="_parent">3.6.10.3 Market Hours</a></li>
-<li><a href="#3.6.11" class="toc-h3" target="_parent">3.6.11 India Equity</a></li>
-<li><a href="#3.6.11.1" class="toc-h4" target="_parent">3.6.11.1 Market Hours</a></li>
 <li><a href="#4" class="toc-h1" target="_parent">4 Portfolio</a></li>
 <li><a href="#4.1" class="toc-h2" target="_parent">4.1 Key Concepts</a></li>
 <li><a href="#4.2" class="toc-h2" target="_parent">4.2 Holdings</a></li>
@@ -1882,8 +1880,7 @@ quantity = self.portfolio[self._symbol].quantity
  </head>
  <body>
   <div class="videoWrapper">
-   <iframe allow="autoplay; fullscreen" allowfullscreen="" frameborder="0" height="360" src="https://player.vimeo.com/video/420736510" width="640">
-   </iframe>
+   <p><a href="https://vimeo.com/420736510">https://vimeo.com/420736510</a></p>
   </div>
  </body>
 </html>
@@ -15772,17 +15769,6 @@ class PriceNoiseFilter(SecurityDataFilter):
       </div>
      </a>
     </div>
-    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
-     <a class="docs-landing-link" href="/docs/v2/writing-algorithms/securities/asset-classes/india-equity">
-      <div class="content clickable" onclick="window.location.href = '#3.6.11'">
-       <div class="docs-internal-link">
-        <h4>
-         India Equity
-        </h4>
-       </div>
-      </div>
-     </a>
-    </div>
    </div>
    <div class="see-also">
     <h3>
@@ -21511,7 +21497,11 @@ renderDefault();
        US Equity Options dataset listing
       </a>
       . 
-            To trade Equity Options live, you can use one of the
+            To trade Equity Options live, use the
+      <a href="https://www.quantconnect.com/docs/v2//cloud-platform/datasets/quantconnect/us-equity-options">
+       QuantConnect data provider
+      </a>
+      or one of the
       <a href="https://www.quantconnect.com/docs/v2//cloud-platform/datasets">
        brokerage data providers
       </a>
@@ -141902,7 +141892,7 @@ renderDefault();
  <body>
   <p>
    To create a CFD subscription for
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers (IB)
    </a>
    , in the
@@ -157599,710 +157589,6 @@ renderDefault();
 </html>
 
 <p style="page-break-after: always;">&nbsp;</p>
-<p class='page-breadcrumb'>Securities > Asset Classes > India Equity</p>
-<div class='page-heading'>
-    <section id="3.6.11">
-        <h1>Asset Classes</h1>
-        <h2>India Equity</h2>
-    </section>
-</div>
-<p class='page-breadcrumb'>Securities > Asset Classes > India Equity > Market Hours</p>
-<div class='page-heading'>
-    <section id="3.6.11.1">
-        <h1>India Equity</h1>
-        <h2>Market Hours</h2>
-    </section>
-</div>
-<h3>Introduction</h3>
-<html>
- <body>
-  <p id="india-equity-description">
-   This page shows the trading hours, holidays, and time zone of the India Equity market.
-  </p>
- </body>
-</html>
-
-<h3>Pre-market Hours</h3>
-<html>
- <body>
-  <div id="india-equity-pre-market">
-  </div>
- </body>
-</html>
-
-<h3>Regular Trading Hours</h3>
-<html>
- <body>
-  <div id="india-equity-regular">
-  </div>
- </body>
-</html>
-
-<h3>Post-market Hours</h3>
-<html>
- <body>
-  <div id="india-equity-post-market">
-  </div>
- </body>
-</html>
-
-<h3>Holidays</h3>
-<html>
- <body>
-  <div id="india-equity-holidays">
-  </div>
- </body>
-</html>
-
-<h3>Early Closes</h3>
-<html>
- <body>
-  <div id="india-equity-early-closes">
-  </div>
- </body>
-</html>
-
-<h3>Late Opens</h3>
-<html>
- <body>
-  <div id="india-equity-late-opens">
-  </div>
- </body>
-</html>
-
-<h3>Time Zone</h3>
-<html>
- <body>
-  <div id="india-equity-time-zone">
-  </div>
-  <script>
-   const DAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-
-function getFullname(key, names) {
-    const tmp = key.split('-');
-    const symbol = tmp[tmp.length - 1];
-    const exchange = tmp[1];
-    const secType = tmp[0];
-
-    if (symbol === '[*]') {
-        return FULLNAME_MAP[key] || secType;
-    }
-
-    const name = (names && names[symbol]) || symbol;
-    const assetClass = secType.replace('Cfd', 'CFD').replace('IndexOption', 'US Index Option');
-    const label = {
-        'cfd': 'contract in the ' + assetClass.toUpperCase(),
-        'forex': 'pair in the ' + assetClass,
-        'index': '',
-        'indexoption': 'Option contracts'
-    }[secType.toLowerCase()];
-
-    if (label !== undefined) {
-        return (name + ' ' + label).trim();
-    }
-    return name + ' contract in the ' + exchange.toUpperCase() + ' ' + assetClass;
-}
-
-const FULLNAME_MAP = {
-    'Cfd-interactivebrokers-[*]': 'CFD',
-    'Cfd-oanda-[*]': 'CFD',
-    'Equity-usa-[*]': 'US Equity',
-    'Equity-india-[*]': 'India Equity',
-    'Option-usa-[*]': 'Equity Option',
-    'Index-usa-[*]': 'US Indices',
-    'Index-eurex-[*]': 'EUREX Indices',
-    'Index-hkfe-[*]': 'HKFE Indices',
-    'Index-ose-[*]': 'Japan Indices',
-    'IndexOption-usa-[*]': 'US Index Option'
-};
-
-function fixEnd(t) {
-    return t.replace('1.00:00:00', '24:00:00').replace('1:00:00:00', '24:00:00');
-}
-
-function hoursTable(category, fullname, timezone, entry) {
-    let lines = '';
-    for (const day of DAYS) {
-        const segments = entry[day];
-        if (!segments || segments.length === 0) continue;
-        const times = segments.map(s => fixEnd(s.start) + ' to ' + fixEnd(s.end)).join(', ');
-        lines += '<tr><td>' + day.charAt(0).toUpperCase() + day.slice(1) + '</td><td>' + times + '</td></tr>\n';
-    }
-    if (!lines) return null;
-
-    return '<p>The following table shows the ' + category + ' hours for the ' + fullname + ' market:</p>\n' +
-        '<table class="table qc-table table-reflow">\n' +
-        '<thead>\n<tr><th style="width: 20%;">Weekday</th><th style="width: 80%;">Time (' + timezone + ')</th></tr>\n</thead>\n' +
-        '<tbody>\n' + lines + '</tbody>\n</table>';
-}
-
-function extractHours(entry, state) {
-    const result = {};
-    for (const day of DAYS) {
-        const segments = (entry[day] || []).filter(s => s.state === state);
-        if (segments.length > 0) result[day] = segments;
-    }
-    return Object.keys(result).length > 0 ? result : null;
-}
-
-function renderHoursSection(divId, category, fullname, timezone, entry, state) {
-    const el = document.getElementById(divId);
-    if (!el) return;
-    const data = extractHours(entry, state);
-    if (!data) {
-        const msgs = {
-            'premarket': '<p>Pre-market trading is not available.</p>',
-            'market': '',
-            'postmarket': '<p>Post-market trading is not available.</p>'
-        };
-        el.innerHTML = msgs[state] || '';
-        return;
-    }
-    el.innerHTML = hoursTable(category, fullname, timezone, data) || '';
-}
-
-function parseDate(str) {
-    const parts = str.split('/');
-    return new Date(parseInt(parts[2]), parseInt(parts[0]) - 1, parseInt(parts[1]));
-}
-
-function formatDate(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return y + '-' + m + '-' + day;
-}
-
-function renderHolidays(divId, fullname, holidays, isUsEquity) {
-    const el = document.getElementById(divId);
-    if (!el) return;
-    if (!holidays || holidays.length === 0) {
-        el.innerHTML = '<p>There are no holidays for this market.</p>';
-        return;
-    }
-    const cutoff = new Date();
-    cutoff.setFullYear(cutoff.getFullYear() + 1);
-    const dates = holidays
-        .map(parseDate)
-        .filter(d => d < cutoff)
-        .sort((a, b) => a - b);
-
-    if (dates.length === 0) {
-        el.innerHTML = '<p>There are no holidays for this market.</p>';
-        return;
-    }
-
-    let nyse = '';
-    if (isUsEquity) {
-        nyse = "<p>LEAN uses the <a target='_blank' rel='nofollow' href='https://www.nyse.com/markets/hours-calendars'>trading holidays</a> from the NYSE website.</p>\n";
-    }
-
-    let rows = '';
-    for (let i = 0; i < dates.length; i += 5) {
-        rows += '<tr>' + dates.slice(i, i + 5).map(d => '<td>' + formatDate(d) + '</td>').join('') + '</tr>\n';
-    }
-
-    el.innerHTML = nyse +
-        '<p>The following table shows the dates of holidays for the ' + fullname + ' market:</p>\n' +
-        '<table class="table qc-table table-reflow">\n' +
-        '<thead><tr><th colspan="5">Date (<i>yyyy-mm-dd</i>)</th></tr></thead>\n' +
-        '<tbody>\n' + rows + '</tbody>\n</table>';
-}
-
-function renderEarlyCloses(divId, fullname, timezone, earlyCloses) {
-    const el = document.getElementById(divId);
-    if (!el) return;
-    if (!earlyCloses || Object.keys(earlyCloses).length === 0) {
-        el.innerHTML = '<p>There are no days with early closes.</p>';
-        return;
-    }
-    const cutoff = new Date();
-    cutoff.setFullYear(cutoff.getFullYear() + 1);
-    const entries = Object.entries(earlyCloses)
-        .map(([date, time]) => [parseDate(date), time])
-        .filter(([d]) => d < cutoff)
-        .sort((a, b) => a[0] - b[0]);
-
-    if (entries.length === 0) {
-        el.innerHTML = '<p>There are no days with early closes.</p>';
-        return;
-    }
-
-    let rows = '';
-    for (const [date, time] of entries) {
-        rows += '<tr><td>' + formatDate(date) + '</td><td>' + time + '</td></tr>\n';
-    }
-
-    el.innerHTML = '<p>The following table shows the early closes for the ' + fullname + ' market:</p>\n' +
-        '<table class="table qc-table table-reflow">\n' +
-        '<thead>\n<tr><th style="width: 50%;">Date (<i>yyyy-mm-dd</i>)</th><th style="width: 50%;">Time Of Market Close (' + timezone + ')</th></tr>\n</thead>\n' +
-        '<tbody>\n' + rows + '</tbody>\n</table>';
-}
-
-function renderLateOpens(divId, fullname, timezone, lateOpens) {
-    const el = document.getElementById(divId);
-    if (!el) return;
-    if (!lateOpens || Object.keys(lateOpens).length === 0) {
-        el.innerHTML = '<p>There are no days with late opens.</p>';
-        return;
-    }
-    const cutoff = new Date();
-    cutoff.setFullYear(cutoff.getFullYear() + 1);
-    const entries = Object.entries(lateOpens)
-        .map(([date, time]) => [parseDate(date), time])
-        .filter(([d]) => d < cutoff)
-        .sort((a, b) => a[0] - b[0]);
-
-    if (entries.length === 0) {
-        el.innerHTML = '<p>There are no days with late opens.</p>';
-        return;
-    }
-
-    let rows = '';
-    for (const [date, time] of entries) {
-        rows += '<tr><td>' + formatDate(date) + '</td><td>' + time + '</td></tr>\n';
-    }
-
-    el.innerHTML = '<p>The following table shows the late opens for the ' + fullname + ' market:</p>\n' +
-        '<table class="table qc-table table-reflow">\n' +
-        '<thead>\n<tr><th style="width: 50%;">Date (<i>yyyy-mm-dd</i>)</th><th style="width: 50%;">Time Of Market Open (' + timezone + ')</th></tr>\n</thead>\n' +
-        '<tbody>\n' + rows + '</tbody>\n</table>';
-}
-
-function renderTimeZone(divId, fullname, timezone) {
-    const el = document.getElementById(divId);
-    if (!el) return;
-    el.innerHTML = '<p>The ' + fullname + ' market trades in the <code>' + timezone + '</code> time zone.</p>';
-}
-
-function render(key, prefix, names, isUsEquity) {
-    const entry = DATA[key];
-    if (!entry) return;
-    const tz = entry.exchangeTimeZone.replace(/_/g, ' ');
-    const fullname = getFullname(key, names);
-
-    const descEl = document.getElementById(prefix + '-description');
-    if (descEl) {
-        let intro = '<p>This page shows the trading hours, holidays, and time zone of the ' + fullname + ' market.</p>';
-        const tmp = key.split('-');
-        if (tmp[0] === 'Future' && ['ice', 'india', 'sgx', 'nyseliffe'].indexOf(tmp[1]) >= 0) {
-            intro += "\n<p>Historical data for backtesting is unavailable for " + tmp[1].toUpperCase() +
-                ". In live trading, LEAN sources this data from your <a href='https://www.quantconnect.com/docs/v2//cloud-platform/live-trading/brokerages'>brokerage</a>" +
-                " or a <a href='#21.3'>third-party data provider</a>.</p>";
-        }
-        descEl.innerHTML = intro;
-    }
-
-    renderHoursSection(prefix + '-pre-market', 'pre-market', fullname, tz, entry, 'premarket');
-    renderHoursSection(prefix + '-regular', 'regular trading', fullname, tz, entry, 'market');
-    renderHoursSection(prefix + '-post-market', 'post-market', fullname, tz, entry, 'postmarket');
-    renderHolidays(prefix + '-holidays', fullname, entry.holidays, isUsEquity);
-    renderEarlyCloses(prefix + '-early-closes', fullname, tz, entry.earlyCloses);
-    renderLateOpens(prefix + '-late-opens', fullname, tz, entry.lateOpens);
-    renderTimeZone(prefix + '-time-zone', fullname, tz);
-}
-
-function buildSymbolIndex(prefix, names) {
-    const symbolMap = {};
-    for (const key of Object.keys(DATA)) {
-        const tmp = key.split('-');
-        const symbol = tmp[tmp.length - 1];
-        if (symbol === '[*]') continue;
-        symbolMap[symbol] = key;
-    }
-
-    const datalist = document.getElementById(prefix + '-symbols');
-    if (datalist) {
-        const symbols = Object.keys(symbolMap).sort();
-        for (const symbol of symbols) {
-            const key = symbolMap[symbol];
-            const tmp = key.split('-');
-            var exchange = tmp[1].toUpperCase();
-            if (exchange === 'INTERACTIVEBROKERS') exchange = 'IBKR';
-            const name = (names && names[symbol]) || symbol;
-            const option = document.createElement('option');
-            option.value = symbol + ' \u2014 ' + name + ' (' + exchange + ')';
-            datalist.appendChild(option);
-        }
-    }
-
-    return symbolMap;
-}
-
-function renderDefault() {
-    const hasSymbols = Object.keys(DATA).length > 1;
-    const names = (typeof NAMES !== 'undefined') ? NAMES : {};
-    const isUsEquity = DEFAULT_KEY.startsWith('Equity-usa');
-
-    render(DEFAULT_KEY, ID_PREFIX, names, isUsEquity);
-
-    if (hasSymbols) {
-        const symbolMap = buildSymbolIndex(ID_PREFIX, names);
-        const input = document.getElementById(ID_PREFIX + '-symbol-search');
-        if (input) {
-            function resolveSymbol(raw) {
-                var s = raw.trim().toUpperCase();
-                // Extract symbol before the dash: "6S — Swiss Franc Futures (CME)" -> "6S"
-                var idx = s.indexOf(' \u2014 ');
-                if (idx > 0) s = s.substring(0, idx).trim();
-                return s;
-            }
-
-            input.addEventListener('input', function () {
-                const val = resolveSymbol(this.value);
-                if (symbolMap[val]) {
-                    render(symbolMap[val], ID_PREFIX, names, false);
-                    if (window.history && window.history.replaceState) {
-                        window.history.replaceState(null, '', '#' + val);
-                    }
-                } else if (val === '' || val === '[*]') {
-                    render(DEFAULT_KEY, ID_PREFIX, names, isUsEquity);
-                    if (window.history && window.history.replaceState) {
-                        window.history.replaceState(null, '', window.location.pathname);
-                    }
-                }
-            });
-
-            // Check URL hash on load
-            const hash = window.location.hash.replace('#', '').trim().toUpperCase();
-            if (hash && symbolMap[hash]) {
-                input.value = hash;
-                render(symbolMap[hash], ID_PREFIX, names, false);
-            }
-        }
-    }
-}
-const DATA = {
-  "Equity-india-[*]": {
-    "exchangeTimeZone": "Asia/Kolkata",
-    "monday": [
-      {
-        "start": "09:00:00",
-        "end": "09:15:00",
-        "state": "premarket"
-      },
-      {
-        "start": "09:15:00",
-        "end": "15:30:00",
-        "state": "market"
-      },
-      {
-        "start": "15:40:00",
-        "end": "16:00:00",
-        "state": "postmarket"
-      }
-    ],
-    "tuesday": [
-      {
-        "start": "09:00:00",
-        "end": "09:15:00",
-        "state": "premarket"
-      },
-      {
-        "start": "09:15:00",
-        "end": "15:30:00",
-        "state": "market"
-      },
-      {
-        "start": "15:40:00",
-        "end": "16:00:00",
-        "state": "postmarket"
-      }
-    ],
-    "wednesday": [
-      {
-        "start": "09:00:00",
-        "end": "09:15:00",
-        "state": "premarket"
-      },
-      {
-        "start": "09:15:00",
-        "end": "15:30:00",
-        "state": "market"
-      },
-      {
-        "start": "15:40:00",
-        "end": "16:00:00",
-        "state": "postmarket"
-      }
-    ],
-    "thursday": [
-      {
-        "start": "09:00:00",
-        "end": "09:15:00",
-        "state": "premarket"
-      },
-      {
-        "start": "09:15:00",
-        "end": "15:30:00",
-        "state": "market"
-      },
-      {
-        "start": "15:40:00",
-        "end": "16:00:00",
-        "state": "postmarket"
-      }
-    ],
-    "friday": [
-      {
-        "start": "09:00:00",
-        "end": "09:15:00",
-        "state": "premarket"
-      },
-      {
-        "start": "09:15:00",
-        "end": "15:30:00",
-        "state": "market"
-      },
-      {
-        "start": "15:40:00",
-        "end": "16:00:00",
-        "state": "postmarket"
-      }
-    ],
-    "holidays": [
-      "1/26/2004",
-      "4/14/2004",
-      "1/26/2005",
-      "4/14/2005",
-      "8/15/2005",
-      "1/26/2006",
-      "4/14/2006",
-      "5/1/2006",
-      "8/15/2006",
-      "10/2/2006",
-      "12/25/2006",
-      "1/26/2007",
-      "5/1/2007",
-      "8/15/2007",
-      "10/2/2007",
-      "12/25/2007",
-      "4/14/2008",
-      "5/1/2008",
-      "8/15/2008",
-      "10/2/2008",
-      "12/25/2008",
-      "1/26/2009",
-      "4/14/2009",
-      "5/1/2009",
-      "10/2/2009",
-      "12/25/2009",
-      "1/26/2010",
-      "4/14/2010",
-      "1/26/2011",
-      "3/2/2011",
-      "4/12/2011",
-      "4/14/2011",
-      "4/22/2011",
-      "8/15/2011",
-      "8/31/2011",
-      "9/1/2011",
-      "10/6/2011",
-      "10/26/2011",
-      "10/27/2011",
-      "11/7/2011",
-      "11/10/2011",
-      "12/6/2011",
-      "1/26/2012",
-      "2/20/2012",
-      "3/8/2012",
-      "4/5/2012",
-      "4/6/2012",
-      "5/1/2012",
-      "8/15/2012",
-      "8/20/2012",
-      "9/19/2012",
-      "10/2/2012",
-      "10/24/2012",
-      "11/14/2012",
-      "11/28/2012",
-      "12/25/2012",
-      "3/27/2013",
-      "3/29/2013",
-      "4/19/2013",
-      "4/24/2013",
-      "5/1/2013",
-      "8/9/2013",
-      "8/15/2013",
-      "9/9/2013",
-      "10/2/2013",
-      "10/16/2013",
-      "11/4/2013",
-      "11/15/2013",
-      "12/25/2013",
-      "2/27/2014",
-      "3/17/2014",
-      "4/8/2014",
-      "4/14/2014",
-      "4/18/2014",
-      "4/24/2014",
-      "5/1/2014",
-      "7/29/2014",
-      "8/15/2014",
-      "8/29/2014",
-      "10/2/2014",
-      "10/3/2014",
-      "10/6/2014",
-      "10/15/2014",
-      "10/24/2014",
-      "11/4/2014",
-      "11/6/2014",
-      "12/25/2014",
-      "1/26/2015",
-      "2/17/2015",
-      "3/6/2015",
-      "4/2/2015",
-      "4/3/2015",
-      "4/14/2015",
-      "5/1/2015",
-      "9/17/2015",
-      "9/25/2015",
-      "10/2/2015",
-      "10/22/2015",
-      "11/12/2015",
-      "11/25/2015",
-      "12/25/2015",
-      "1/26/2016",
-      "3/7/2016",
-      "3/24/2016",
-      "3/25/2016",
-      "4/14/2016",
-      "4/15/2016",
-      "4/19/2016",
-      "7/6/2016",
-      "8/15/2016",
-      "9/5/2016",
-      "9/13/2016",
-      "10/11/2016",
-      "10/12/2016",
-      "10/31/2016",
-      "11/14/2016",
-      "1/26/2017",
-      "2/24/2017",
-      "3/13/2017",
-      "4/4/2017",
-      "4/14/2017",
-      "5/1/2017",
-      "6/26/2017",
-      "8/15/2017",
-      "8/25/2017",
-      "10/2/2017",
-      "10/20/2017",
-      "12/25/2017",
-      "1/26/2018",
-      "2/13/2018",
-      "3/2/2018",
-      "3/29/2018",
-      "3/30/2018",
-      "5/1/2018",
-      "8/15/2018",
-      "8/22/2018",
-      "9/13/2018",
-      "9/20/2018",
-      "10/2/2018",
-      "10/18/2018",
-      "11/8/2018",
-      "11/23/2018",
-      "12/25/2018",
-      "3/4/2019",
-      "3/21/2019",
-      "4/17/2019",
-      "4/19/2019",
-      "4/29/2019",
-      "5/1/2019",
-      "6/5/2019",
-      "8/12/2019",
-      "8/15/2019",
-      "9/2/2019",
-      "9/10/2019",
-      "10/2/2019",
-      "10/8/2019",
-      "10/21/2019",
-      "10/28/2019",
-      "11/12/2019",
-      "12/25/2019",
-      "2/21/2020",
-      "3/10/2020",
-      "4/2/2020",
-      "4/6/2020",
-      "4/10/2020",
-      "4/14/2020",
-      "5/1/2020",
-      "5/25/2020",
-      "10/2/2020",
-      "11/16/2020",
-      "11/30/2020",
-      "12/25/2020",
-      "1/26/2021",
-      "3/11/2021",
-      "3/29/2021",
-      "4/2/2021",
-      "4/14/2021",
-      "4/21/2021",
-      "5/13/2021",
-      "7/21/2021",
-      "8/19/2021",
-      "9/10/2021",
-      "10/15/2021",
-      "11/5/2021",
-      "11/19/2021",
-      "1/26/2022",
-      "4/14/2022",
-      "8/15/2022",
-      "1/26/2023",
-      "4/14/2023",
-      "5/1/2023",
-      "8/15/2023",
-      "10/2/2023",
-      "12/25/2023",
-      "1/26/2024",
-      "5/1/2024",
-      "8/15/2024",
-      "10/2/2024",
-      "12/25/2024",
-      "4/14/2025",
-      "4/18/2025",
-      "5/1/2025",
-      "8/15/2025",
-      "10/2/2025",
-      "12/25/2025",
-      "1/26/2026",
-      "4/14/2026",
-      "5/1/2026",
-      "10/2/2026",
-      "12/25/2026",
-      "1/26/2027",
-      "4/14/2027",
-      "1/26/2028",
-      "4/14/2028",
-      "5/1/2028",
-      "8/15/2028",
-      "10/2/2028",
-      "12/25/2028",
-      "1/26/2029",
-      "5/1/2029",
-      "8/15/2029",
-      "10/2/2029",
-      "12/25/2029",
-      "5/1/2030",
-      "8/15/2030",
-      "10/2/2030",
-      "12/25/2030"
-    ],
-    "earlyCloses": {}
-  }
-};
-
-const NAMES = {};
-
-const DEFAULT_KEY = 'Equity-india-[*]';
-const ID_PREFIX = 'india-equity';
-renderDefault();
-  </script>
- </body>
-</html>
-
-<p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Portfolio</p>
 <div class='page-heading'>
     <section id="4">
@@ -163904,8 +163190,7 @@ public class SelectionData
    </a>
    .
   </p>
-  <iframe src="https://cdn.quantconnect.com/i/tu/qc_migration_atlas_v3.html" style="width: 100%; min-height: 800px; border: none;">
-  </iframe>
+  <p><a href="https://cdn.quantconnect.com/i/tu/qc_migration_atlas_v3.html">https://cdn.quantconnect.com/i/tu/qc_migration_atlas_v3.html</a></p>
  </body>
 </html>
 
@@ -168688,7 +167973,7 @@ public class OptionHistoryAlgorithm : QCAlgorithm
   </p>
   <p>
    Only the
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    CFD integration supports trading Stock-CFD products. 
@@ -444407,7 +443692,7 @@ quote_bar_df = self.pandas_converter.get_data_frame[QuoteBar](list(self._quote_b
    When you deploy a live algorithm, you can add multiple data provider. 
      If you use multiple data providers, the order you select them in defines their order of precedence in Lean. 
      For example, if you set QuantConnect as the first provider and
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers (IB)
    </a>
    as the second provider, Lean only uses the IB data provider for securities that aren't available from the QuantConnect data provider. 
@@ -483959,7 +483244,7 @@ trading_days = self.trading_calendar.get_trading_days(start_date, end_date)</pre
  <body>
   <p>
    Financial Advisor accounts enable certified professionals to use a single trading algorithm to manage several client accounts. Our
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    integration enables you to place FA group orders if your IB account code starts with F, FA, or I.
@@ -484149,7 +483434,7 @@ self.limit_order(self._symbol, quantity, limit_price, order_properties=order_pro
  <body>
   <p>
    To use FA group orders through our
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    integration, you need to connect as a member of a Trading Firm and Institution organization. If you aren't currently on either of these tiers,
@@ -505884,7 +505169,11 @@ self.set_brokerage_model(BrokerageName.QUANT_CONNECT_BROKERAGE, AccountType.MARG
 }
   </style>
   <p>
-   In live trading, Option orders require a third-party data provider that supports Options.
+   In live trading, the
+   <a href="https://www.quantconnect.com/docs/v2//cloud-platform/datasets/quantconnect">
+    QuantConnect data provider
+   </a>
+   supplies US Equity Options and US Index Options data. Future Options orders require a third-party data provider that supports Future Options.
      To view the data providers that support Options, see their respective documentation in
    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/datasets">
     Cloud Platform
@@ -506732,7 +506021,7 @@ self.set_brokerage_model(BrokerageName.INTERACTIVE_BROKERS_FIX, AccountType.MARG
     InteractiveBrokersBrokerageModel
    </code>
    supports: supports. For specific details about each order type, refer to the
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     IB
    </a>
    documentation.
@@ -507872,7 +507161,7 @@ def on_data(self, slice: Slice) -&gt; None:
     InteractiveBrokersFeeModel
    </a>
    with the default argument values. We model current
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    fees on all assets.
@@ -508282,7 +507571,7 @@ security.set_settlement_model(ImmediateSettlementModel())</pre>
 <html>
  <body>
   <p>
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     IB
    </a>
    supports FA accounts for Trading Firm and Institution organizations. FA accounts enable certified professionals to use a single trading algorithm to manage several client accounts.
@@ -525267,7 +524556,7 @@ class MySettlementModel:
   </h4>
   <p>
    The following algorithm simulates
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    cash account. According to IB's website, cash positions will be settled in 48 hours. Thus, we can implement
@@ -530319,7 +529608,7 @@ class MyMarginInterestRateModel:
   </h4>
   <p>
    The following algorithm buys and holds SPY, with 2x leverage and holds 1.5x of portfolio value. Hence, funds will be borrowed from the broker and are susceptible to margin interest. We implement a custom margin interest rate model to simulate the
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    margin interest deduction. While following daily accrual and monthly accounting of the margin interest, we simplify the rate from tiered to fixed at 1% above the current interest rate.
@@ -566230,7 +565519,7 @@ def _rebalancing_code(self) -&gt; None:
 <html>
  <body>
   <p>
-   This indicator creates a moving average (middle band) with an upper band and lower band fixed at k standard deviations above and below the moving average.
+   This indicator computes the Know Sure Thing (KST) momentum oscillator: the weighted sum of four smoothed rates of change over increasing periods, with a moving average of the sum as the signal line.
   </p>
   <p>
    To view the implementation of this indicator, see the
@@ -594701,7 +593990,7 @@ Log(xmlSample.ToString());</pre>
    <code>
     Bytes
    </code>
-   object (for example, zipped data), call the
+   object, call the
    <code class="csharp">
     SaveBytes
    </code>
@@ -594711,14 +594000,8 @@ Log(xmlSample.ToString());</pre>
    method.
   </p>
   <div class="section-example-container">
-   <pre class="csharp">var saveSuccessful = ObjectStore.SaveBytes($"{ProjectId}/bytesKey", bytesSample)
-
-var zippedDataSample = Compression.ZipBytes(Encoding.UTF8.GetBytes(stringSample), "data");
-var saveSuccessful = ObjectStore.SaveBytes($"{ProjectId}/bytesKey.zip", zippedDataSample);</pre>
-   <pre class="python">save_successful = self.object_store.save_bytes(f"{self.project_id}/bytes_key", bytes_sample)
-
-zipped_data_sample = Compression.zip_bytes(bytes(string_sample, "utf-8"), "data")
-zip_save_successful = self.object_store.save_bytes(f"{self.project_id}/bytesKey.zip", zipped_data_sample)</pre>
+   <pre class="csharp">var saveSuccessful = ObjectStore.SaveBytes($"{ProjectId}/bytesKey", bytesSample);</pre>
+   <pre class="python">save_successful = self.object_store.save_bytes(f"{self.project_id}/bytes_key", bytes_sample)</pre>
   </div>
  </body>
 </html>
@@ -631475,7 +630758,7 @@ public class AddSecurityInitializerExampleAlgorithm : QCAlgorithm
  <body>
   <p>
    Financial Advisor accounts enable certified professionals to use a single trading algorithm to manage several client accounts. Our
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    integration enables you to place FA group orders if your IB account code starts with F, FA, or I.
@@ -631665,7 +630948,7 @@ self.limit_order(self._symbol, quantity, limit_price, order_properties=order_pro
  <body>
   <p>
    To use FA group orders through our
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    integration, you need to connect as a member of a Trading Firm and Institution organization. If you aren't currently on either of these tiers,
@@ -639755,7 +639038,7 @@ class Algorithm(QCAlgorithm):
   </p>
   <p>
    The default fee model on QuantConnect depends on the security type and the brokerage. For instance, the default fee model for equity is the
-   <a href="https://qnt.co/interactivebrokers" rel="nofollow" target="_blank">
+   <a href="https://qnt.co/interactive-brokers" rel="nofollow" target="_blank">
     Interactive Brokers
    </a>
    fee model.
