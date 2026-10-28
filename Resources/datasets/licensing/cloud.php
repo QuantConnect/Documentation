@@ -24,7 +24,7 @@ $location = $cloudPlatform ? "in the Algorithm Lab" : "by using the <a href='/do
 <ol>
     <li>Open the <a href="/docs/v2/cloud-platform/organizations/administration#05-View-the-Organization-Homepage">organization homepage</a>.</li>
     <li>Click <span class='button-name'>Edit Plan</span>.</li>
-    <li>On the pricing page, click the <span class='tab-name'>Customize Plan > Build Your Own Pack > Data</span> tab.</li>
+    <li>On the pricing page, click the <span class='tab-name'>Customize Plan > Data</span> tab.</li>
     <li>In the <span class='page-section-name'>Datasets Subscriptions</span> section, next to the name of the dataset you want to remove, click <span class='button-name'>Added</span>.</li>
     <li>Click <span class='button-name'>Proceed to Checkout</span>.</li>
 </ol>

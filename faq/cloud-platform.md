@@ -760,7 +760,7 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/datasets/licensing#04
 
 ### How do I cancel a dataset subscription?
 
-Open the organization homepage and click **Edit Plan**. On the **Customize Plan > Build Your Own Pack > Data** tab, click **Added** next to the dataset, and then click **Proceed to Checkout**.
+Open the organization homepage and click **Edit Plan**. On the **Customize Plan > Data** tab, click **Added** next to the dataset, and then click **Proceed to Checkout**.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/datasets/licensing#03-Cloud>
 
