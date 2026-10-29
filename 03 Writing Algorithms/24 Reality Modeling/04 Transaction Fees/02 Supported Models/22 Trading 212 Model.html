@@ -1,0 +1,49 @@
+<p>The <code>Trading212FeeModel</code> models the fees of Trading 212. Trading 212 is commission free, so the model charges an FX fee and the US regulatory fees on Equity sales.</p>
+
+<div class="section-example-container">
+<pre class="csharp">security.SetFeeModel(new Trading212FeeModel());</pre>
+<pre class="python">security.set_fee_model(Trading212FeeModel())</pre>
+</div>
+
+<p>The following table describes the fees:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Fee</th>
+            <th>Amount</th>
+            <th>Applies to</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>FX</td>
+            <td>0.15% of the converted notional</td>
+            <td>Buys and sells of instruments that are priced in a currency other than your account currency</td>
+        </tr>
+        <tr>
+            <td><a rel="nofollow" target="_blank" href="https://www.sec.gov/rules-regulations/fee-rate-advisories/2026-2">SEC Section 31</a></td>
+            <td>0.206 basis points ($20.60 per $1,000,000) of the sale value</td>
+            <td>Sales of US-listed Equities</td>
+        </tr>
+        <tr>
+            <td><a rel="nofollow" target="_blank" href="https://www.finra.org/rules-guidance/rule-filings/sr-finra-2024-019/fee-adjustment-schedule">FINRA trading activity</a></td>
+            <td>$0.000195 per share, capped at $9.79 per trade</td>
+            <td>Sales of US-listed Equities</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The SEC Section 31 rate applies from April 4, 2026 and the FINRA trading activity fee applies from January 1, 2026. Both agencies reset the rates on a published schedule.</p>
+
+<p>The model settles the fees in your account currency, so a fee never leaves a balance in the instrument's quote currency.</p>
+
+<p>The model assumes a GBP account currency by default, which matches a UK Stocks and Shares ISA. If your account uses a different currency, pass that currency to the constructor:</p>
+
+<div class="section-example-container">
+<pre class="csharp">security.SetFeeModel(new Trading212FeeModel(Currencies.USD));</pre>
+<pre class="python">security.set_fee_model(Trading212FeeModel(Currencies.USD))</pre>
+</div>
+
+<p class='csharp'>For more information about this model, see the <a target="_blank" rel="nofollow" href="https://www.lean.io/docs/v2/lean-engine/class-reference/cs/classQuantConnect_1_1Orders_1_1Fees_1_1Trading212FeeModel.html">class reference</a> and <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fees/Trading212FeeModel.cs">implementation</a>.</p>
+<p class='python'>For more information about this model, see the <a target="_blank" rel="nofollow" href="https://www.lean.io/docs/v2/lean-engine/class-reference/py/QuantConnect/Orders/Fees/Trading212FeeModel/">class reference</a> and <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fees/Trading212FeeModel.cs">implementation</a>.</p>
