@@ -70,8 +70,10 @@ caps are the number of nodes the organization may subscribe to.
 Notes that customers ask about:
 
 - **Free tier:** one free B-MICRO backtest node (20-second launch delay, 200
-  backtests a day), one free R1-4 research node and one free A-MICRO agent node
-  (100,000 tokens a month). Free data in the cloud covers every asset class at
+  backtests a day), one free R-MICRO research node and one free A-MICRO agent node
+  (100,000 tokens a month). Upgrading keeps all three: each stays until a paid
+  node of the same type replaces it, so a paid organization always has a
+  backtesting, research and agent node. Free data in the cloud covers every asset class at
   minute to daily resolution. Free cannot buy anything: every add-on (nodes,
   storage, datasets, QCC-funded features) needs a paid organization first.
   Free has no live nodes, so it cannot paper trade: every live deployment,
