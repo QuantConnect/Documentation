@@ -1,5 +1,5 @@
 <?
 $orderType = "MOO orders";
-$brokerageNameCs = "QuantConnectBrokerage"; $brokerageNamePy = "QUANTCONNECT_BROKERAGE";
+$brokerageNameCs = "QuantConnectBrokerage"; $brokerageNamePy = "QUANT_CONNECT_BROKERAGE";
 include(DOCS_RESOURCES."/order-types/brokerage-restrictions.php");
 ?>
