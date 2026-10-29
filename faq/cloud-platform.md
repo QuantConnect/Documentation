@@ -142,6 +142,12 @@ The Quant Researcher tier adds API access, the LEAN CLI, second and tick resolut
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features#03-Quant-Researcher-Tier>
 
+### Do I keep the free nodes when I upgrade to a paid tier?
+
+Yes. The free B-MICRO backtesting node, R-MICRO research node, and A-MICRO agent node stay in your organization after you upgrade. Each one stays until you add a paid node of the same type, which replaces it, so you always have a backtesting, research, and agent node.
+
+Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers>
+
 ### Which tier do I need to collaborate with other people?
 
 You need the Team tier or higher. The Free and Quant Researcher tiers only allow one member per organization. Team organizations can have up to 10 members, and Trading Firm and Institution organizations have no member limit.
@@ -526,7 +532,7 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/research/deployment#0
 
 ### Which research node do I get for free?
 
-Your first organization includes one free R1-4 research node. When you subscribe to a paid research node in that organization, the paid node replaces it. GPU research nodes are shared among up to three members.
+Your first organization includes one free R-MICRO research node. When you subscribe to a paid research node in that organization, the paid node replaces it. GPU research nodes are shared among up to three members.
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/research/deployment#02-Resources>
 
