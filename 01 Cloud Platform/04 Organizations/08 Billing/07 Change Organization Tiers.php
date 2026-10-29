@@ -14,6 +14,8 @@
     <li>Click <span class='button-name'>Update Subscriptions</span> or <span class='button-name'>Subscribe Now</span>.</li>
 </ol>
 
+<p>When you upgrade, your organization keeps its free B-MICRO backtesting node, R-MICRO research node, and A-MICRO agent node. Each free node stays until you add a paid node of the same type, which replaces it, so your organization always has a backtesting, research, and agent node.</p>
+
 
 <h4>Free Tier</h4>
 
