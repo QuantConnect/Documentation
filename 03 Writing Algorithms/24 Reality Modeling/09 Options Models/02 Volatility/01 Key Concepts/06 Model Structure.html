@@ -46,7 +46,7 @@ public class MyVolatilityModel : BaseVolatilityModel
     def initialize(self) -&gt; None:
         underlying_security = self.add_index("VIX")
         # Apply custom volatility model for specific underlyings, often they are synthetic products or with different market calendar
-        underlying_security.volatility_model = MyVolatilityModel()
+        underlying_security.set_volatility_model(MyVolatilityModel())
 
 # Define the custom volatility model outside of the algorithm
 class MyVolatilityModel(BaseVolatilityModel):
@@ -64,7 +64,7 @@ class MyVolatilityModel(BaseVolatilityModel):
             security: Security,
             utc_time: datetime | date,
             resolution: Resolution | None = None,
-            bar_count: int = 0) -> Iterable[HistoryRequest]:
-        return super().get_history_requirements(security, utc_time, resolution, bar_count)</pre>
+            bar_count: int = 0) -> list[HistoryRequest]:
+        return list(super().get_history_requirements(security, utc_time, resolution, bar_count))</pre>
 </div>
 
