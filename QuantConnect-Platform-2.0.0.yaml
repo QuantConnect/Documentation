@@ -571,7 +571,7 @@ paths:
         - 02 Read Backtest
         - 03 Orders
       summary: Read out the orders of a backtest.
-      description: "This endpoint returns a page of orders with all their properties. To get all the orders of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-orders'>/backtests/export/orders</a> endpoint, which returns them as a CSV file."
+      description: "This endpoint returns a page of orders with all their properties. To get all the orders of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-orders'>/backtests/export/orders</a> endpoint, which returns them as a CSV file. While the API prepares the orders, the response has a <code>status</code> of <code>loading</code> and a <code>progress</code> value. Send the request again until the response has no <code>status</code> field."
       requestBody:
         description: Fetch the orders of a backtest for the project Id, backtest Id and steps provided.
         content:
@@ -585,7 +585,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BacktestOrdersResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/LoadingResponse'
+                  - $ref: '#/components/schemas/BacktestOrdersResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readBacktestOrders
@@ -598,7 +600,7 @@ paths:
         - 02 Read Backtest
         - 04 Trades
       summary: Read out the closed trades of a backtest.
-      description: "This endpoint returns a page of closed trades with all their properties. To get all the closed trades of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-trades'>/backtests/export/trades</a> endpoint, which returns them as a CSV file."
+      description: "This endpoint returns a page of closed trades with all their properties. To get all the closed trades of the backtest in one request, call the <a href='/docs/v2/cloud-platform/api-reference/backtest-management/read-backtest/export-trades'>/backtests/export/trades</a> endpoint, which returns them as a CSV file. While the API prepares the closed trades, the response has a <code>status</code> of <code>loading</code> and a <code>progress</code> value. Send the request again until the response has no <code>status</code> field."
       requestBody:
         description: Fetch the closed trades of a backtest for the project Id, backtest Id and steps provided.
         content:
@@ -612,7 +614,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BacktestTradesResponse'
+                oneOf:
+                  - $ref: '#/components/schemas/LoadingResponse'
+                  - $ref: '#/components/schemas/BacktestTradesResponse'
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: readBacktestTrades
