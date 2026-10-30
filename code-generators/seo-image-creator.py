@@ -1,7 +1,9 @@
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime as dt
 from pathlib import Path
+from threading import Lock
 from PIL import Image, ImageDraw, ImageFont
 from _code_generation_helpers import get_lean_cli_commands
 
@@ -57,8 +59,13 @@ LEAN_CLI_COMMAND_GROUPS = {
 }
 
 class ImageGenerator:
+    # The fonts are shared across threads and FreeType faces are not thread-safe.
+    _font_lock = Lock()
+
     def __init__(self, fonts: list, template: str):
         self.canvas = Image.open(template)
+        # Image.open is lazy, so decode now to avoid concurrent decoding in copy().
+        self.canvas.load()
         self.fonts = fonts
         self.x = 63
         self.y = 256
@@ -73,10 +80,11 @@ class ImageGenerator:
 
         image = self.canvas.copy()
         I1 = ImageDraw.Draw(image)
-        for i, line in enumerate(lines):
-            xy = (self.x + i * dx, self.y + i * dy)
-            max_x = self.artwork_x if xy[1] < self.artwork_bottom else self.max_x
-            I1.text(xy, self._fit(line, font, max_x - xy[0]), fill='#000', font=font)
+        with self._font_lock:
+            for i, line in enumerate(lines):
+                xy = (self.x + i * dx, self.y + i * dy)
+                max_x = self.artwork_x if xy[1] < self.artwork_bottom else self.max_x
+                I1.text(xy, self._fit(line, font, max_x - xy[0]), fill='#000', font=font)
         image.save(f'{outputfile}.png')
         image.close()
 
@@ -1687,6 +1695,9 @@ if __name__ == '__main__':
     location = f"Resources/social/"
     fonts = [ ImageFont.FreeTypeFont(f'{location}Inter-Bold.ttf', size) for size in [ 62, 50, 42 ] ]
     missing_metadata = []
+    # PNG compression takes most of the runtime and releases the GIL.
+    pool = ThreadPoolExecutor()
+    futures = []
 
     for product in PRODUCTS:
         name = '-'.join(product.lower().split(' ')[1:])
@@ -1709,7 +1720,7 @@ if __name__ == '__main__':
             outputfile = Path(location + outputfile)
             outputfile.parent.mkdir(parents=True, exist_ok=True)
 
-            image_generator.AddTextToImage(lines[1:], outputfile)
+            futures.append(pool.submit(image_generator.AddTextToImage, lines[1:], outputfile))
             counter += 1
 
             with open(f"{dir}/metadata.json", mode='r') as fp:
@@ -1722,6 +1733,11 @@ if __name__ == '__main__':
 
             with open(f"{dir}/metadata.json", mode='w') as fp:
                 fp.writelines(lines)
+
+    # Finish the text images first because the steps below overwrite some of them
+    for future in futures:
+        future.result()
+    pool.shutdown()
 
     # Generate LEAN CLI cheat sheet after all SEO images (overwrites lean-cli.png)
     _generate_lean_cli_cheat_sheet(location)
