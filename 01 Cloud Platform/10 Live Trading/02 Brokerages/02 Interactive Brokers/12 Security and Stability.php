@@ -12,5 +12,8 @@ include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
 <h4>SMS 2FA</h4>
 <p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS, the Online Security Code Card, or third-party authenticator apps (e.g., Microsoft Authenticator and Google Authenticator). Use the <a rel="nofollow" target="_blank" href="https://ibkrguides.com/securelogin/sls/ibkrmobile.htm">IB Key Security via IBKR Mobile</a> instead.</p>
 
+<h4>Passkeys</h4>
+<p>Our IB Gateway integration doesn't support passkey login, and we don't plan to add it. If IB requires a passkey in your jurisdiction, use the <a href='/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#03-FIX-Integration'>IB FIX integration</a> or <a href='/docs/v2/cloud-platform/live-trading/brokerages'>another brokerage</a>.</p>
+
 <h4>IP Restrictions</h4>
 <p>If you have <a rel='nofollow' target="_blank" href='https://www.ibkrguides.com/brokerportal/usersettings/iprestrictions.htm'>IP restrictions</a> enabled on your IB account, ensure to whitelist our IP address 207.182.16.137.</p>
