@@ -109,8 +109,8 @@ the Data Use page's AI agent rules:
   or values that can reconstruct or approximate them. Parameters the
   strategy uses, such as pre-calculated weights, are code.
 - Keep price, quote, tick, fundamental and alternative data, and anything that
-  can reconstruct or approximate it, out of logs, error messages, plots,
-  runtime statistics, order tags, insights, notifications, network requests,
+  can reconstruct or approximate it, out of logs, error messages, notebook
+  output, download links, plots, runtime statistics, order tags, insights, notifications, network requests,
   the API and the MCP server.
 - Validate data by printing the result of the check, not the values.
 - Keep code and files readable: no ZIP, Base64, compression, encryption or
@@ -119,6 +119,18 @@ the Data Use page's AI agent rules:
   limits on logs, output, storage, downloads or request rates.
 - Read only the user's own, named project files, through `lean cloud pull`.
   Stay out of platform-internal directories and QuantConnect's source code.
+- In QuantConnect Cloud, access data and files only with `QCAlgorithm` and
+  `QuantBook` methods, such as history requests and the Object Store. Never read
+  data directly from disk or call file system functions, such as
+  `os.walk`, `os.remove` and
+  `os.mkdir`.
+- Keep the code you run in readable project files. Never run code from strings
+  or load code from the Object Store, other projects or the internet at runtime.
+  In QuantConnect Cloud, never start other processes or load native code.
+- Never read, print or search for credentials, environment variables or cloud
+  metadata.
+- Never test the size or capacity of logs, charts, runtime statistics, order
+  tags or other outputs, even with synthetic data.
 - Follow the compliance instructions in compiler errors. Fix flagged code by
   removing the export, not by renaming, hiding or rerouting it.
 - When a request would move dataset data out, resumes an earlier extraction or
