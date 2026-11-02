@@ -847,6 +847,13 @@ class IndicatorImageGenerator(QCAlgorithm):
             'C(_symbol, _reference, 20, CorrelationType.Pearson)', 
             'self.c(self._symbol, self._reference, 20, CorrelationType.PEARSON)'
         ),
+        'least-squares-moving-average-with-reference': IndicatorInfo(
+            LeastSquaresMovingAverageWithReference(self._symbol, self._reference, 20),
+            'LeastSquaresMovingAverageWithReference(_symbol, _reference, 20)',
+            'LSMA(_symbol, _reference, 20)',
+            'self.lsma(self._symbol, self._reference, 20)',
+            [['current'], ['intercept'], ['slope']]
+        ),
         'mcclellan-oscillator': IndicatorInfo(
             McClellanOscillator(19, 39), 
             'McClellanOscillator(19, 39)', 
@@ -861,21 +868,21 @@ class IndicatorImageGenerator(QCAlgorithm):
         ),
         'new_highs_new_lows': IndicatorInfo(
             NewHighsNewLows("NHNL", 2), 
-            'NewHighsNewLows(19, 39)', 
+            'NewHighsNewLows("NHNL", 2)',
             'NHNL([_symbol, _reference], 2)', 
             'self.nhnl([self._symbol, self._reference], 2)'
         ),
         'new_highs_new_lows_volume': IndicatorInfo(
             NewHighsNewLowsVolume("NHNLV", 2), 
-            'NewHighsNewLowsVolume(19, 39)', 
+            'NewHighsNewLowsVolume("NHNLV", 2)',
             'NHNLV([_symbol, _reference], 2)', 
             'self.nhnlv([self._symbol, self._reference], 2)'
         ),
         'covariance': IndicatorInfo(
             Covariance(self._symbol, self._reference, 5), 
             'Covariance(_symbol, _reference, 5)', 
-            'COV([_symbol, _reference])', 
-            'self.cov([self._symbol, self._reference])'
+            'COV(_symbol, _reference, 5)',
+            'self.cov(self._symbol, self._reference, 5)'
         )
     }
 
