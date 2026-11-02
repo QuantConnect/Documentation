@@ -32,6 +32,8 @@ def _format_introduction(type_name: str, text: str) -> str:
     if 'CandlestickPatterns' in type_name:
         return f"Create a new {text} to indicate the pattern's presence."
 
+    # LEAN's doc comments name members as <see cref="T:Namespace.Member" />, which browsers drop.
+    text = sub(r'<see cref="\w:(?:[\w.]+\.)?(\w+)(?:\([^"]*\))?"\s*/>', r'<code>\1</code>', text)
     text = text.replace("Represents", "This indicator represents")
     if "Source: " in text:
         link_split = text.split("http")
@@ -210,8 +212,7 @@ class IndicatorProcessor:
 <img class='docs-image' style="width: 100%" alt='{self._info["type-name"]} line plot.' src='{src}'>""")
 
     def _generate_metadata(self, key, description, image):
-        if description.find('<see cref=\"T:') > 0:
-            description = description.replace('<see cref=\"T:','').replace('\" />','')
+        description = sub(r'</?code>', '', description)
         description = sub(r'<a href=".*?">(.*?)</a>', r'\1', description)
         description = sub(r'<sup>(.*?)</sup>', "", description)
         if len(description) > 127:
@@ -240,13 +241,13 @@ class IndicatorProcessor:
         self._process_properties()
 
         universe_code = '' if not self._info.get('is-universe', False) else f'''
-<p>To create an automatic indicator for <code>{self._info["type-name"]}</code> using universe constituents, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In this case, you should call the helper method in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.<p>
+<p>To create an automatic indicator for <code>{self._info["type-name"]}</code> using universe constituents, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can use it in your algorithm. In this case, you should call the helper method in the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> method.</p>
 <div class="section-example-container testable">
 <pre class="csharp">{self._get_csharp_universe_code()}</pre>
 <pre class="python">{self._get_python_universe_code()}</pre></div>'''
 
         with open(self._path / f"02 Using {self._method_csharp} Indicator.html", mode='w') as f:
-            f.write(f'''<p>To create an automatic indicator for <code>{self._info["type-name"]}</code>, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+            f.write(f'''<p>To create an automatic indicator for <code>{self._info["type-name"]}</code>, call the <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>{self._method_csharp}</code><code class='python'>{self._method_python}</code> method creates a <code>{self._info["type-name"]}</code> object, hooks it up for automatic updates, and returns it so you can use it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.</p>
 <div class="section-example-container testable">
 <pre class="csharp">{self._get_csharp_code()}</pre>
 <pre class="python">{self._get_python_code()}</pre></div>{universe_code}
@@ -318,8 +319,8 @@ class IndicatorProcessor:
             // or _{variable}.Current.Value
             Plot("{type_name}", "{variable}", _{variable});"""
         if properties:
-            code += """
-            // Plot all properties of abands"""
+            code += f"""
+            // Plot all properties of _{variable}"""
             for property in properties:
                 code += f"""
             Plot("{type_name}", "{property.lower()}", _{variable}.{property});"""
@@ -786,9 +787,11 @@ def _download_object_store_zip(organization_id, names):
     print(f'object/get URL not available after 10 minutes: {last_response}')
     return None
 
+def _missing_images():
+    return sorted(name for name in _extract_image_names() if not (IMAGES_DIR / f'{name}.png').exists())
+
 def _generate_missing_images():
-    expected = _extract_image_names()
-    missing = sorted(name for name in expected if not (IMAGES_DIR / f'{name}.png').exists())
+    missing = _missing_images()
     if not missing:
         print('All indicator images are present.')
         return
@@ -884,7 +887,8 @@ def main():
 
     _generate_missing_images()
 
-    return len(undocumented)
+    # A page without its image is a failure, even though the image steps only print their errors.
+    return len(undocumented) + len(_missing_images())
 
 if __name__ == "__main__":
     from sys import argv
@@ -894,7 +898,7 @@ if __name__ == "__main__":
         if force:
             rmtree(IMAGES_DIR, ignore_errors=True)
         _generate_missing_images()
-        exit(0)
+        exit(len(_missing_images()))
     # DELETE ALL FILES
     rmtree(INDICATORS, ignore_errors=True)
     exit(main())
