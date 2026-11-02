@@ -1,4 +1,4 @@
-<p>To create an automatic indicator for <code>Covariance</code>, call the <code class='csharp'>COV</code><code class='python'>cov</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>COV</code><code class='python'>cov</code> method creates a <code>Covariance</code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.<p>
+<p>To create an automatic indicator for <code>Covariance</code>, call the <code class='csharp'>COV</code><code class='python'>cov</code> helper method from the <code>QCAlgorithm</code> class. The <code class='csharp'>COV</code><code class='python'>cov</code> method creates a <code>Covariance</code> object, hooks it up for automatic updates, and returns it so you can use it in your algorithm. In most cases, you should call the helper method in the <code class="csharp">Initialize</code><code class="python">initialize</code> method.</p>
 <div class="section-example-container testable">
 <pre class="csharp">public class CovarianceAlgorithm : QCAlgorithm
 {
@@ -9,7 +9,7 @@
     {
         _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
         _reference = AddEquity("SPY", Resolution.Daily).Symbol;
-        _cov = COV([_symbol, _reference]);
+        _cov = COV(_symbol, _reference, 5);
     }
 
     public override void OnData(Slice data)
@@ -27,7 +27,7 @@
     def initialize(self) -> None:
         self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
         self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
-        self._cov = self.cov([self._symbol, self._reference])
+        self._cov = self.cov(self._symbol, self._reference, 5)
 
     def on_data(self, slice: Slice) -> None:
 

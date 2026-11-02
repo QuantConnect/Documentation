@@ -10,7 +10,7 @@
     {
         _symbol = AddEquity("QQQ", Resolution.Daily).Symbol;
         _reference = AddEquity("SPY", Resolution.Daily).Symbol;
-        _cov = COV([_symbol, _reference]);
+        _cov = COV(_symbol, _reference, 5);
 
         var indicatorHistory = IndicatorHistory(_cov, new[] { _symbol, _reference }, 100, Resolution.Minute);
         var timeSpanIndicatorHistory = IndicatorHistory(_cov, new[] { _symbol, _reference }, TimeSpan.FromDays(10), Resolution.Minute);
@@ -21,7 +21,7 @@
     def initialize(self) -> None:
         self._symbol = self.add_equity("QQQ", Resolution.DAILY).symbol
         self._reference = self.add_equity("SPY", Resolution.DAILY).symbol
-        self._cov = self.cov([self._symbol, self._reference])
+        self._cov = self.cov(self._symbol, self._reference, 5)
 
         indicator_history = self.indicator_history(self._cov, [ self._symbol, self._reference ], 100, Resolution.MINUTE)
         timedelta_indicator_history = self.indicator_history(self._cov, [ self._symbol, self._reference ], timedelta(days=10), Resolution.MINUTE)
