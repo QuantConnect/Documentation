@@ -110,6 +110,23 @@
         </tr>
         <tr>
             <td>
+                <div class="error-messages">PermissionError: [Errno 13] Permission denied: '/LeanCLI/__pycache__'</div>
+                <br>
+                <div class="error-messages">Access to the path '/Results/log.txt' is denied.</div>
+            </td>
+            <td>
+                The LEAN Docker container runs as the root user and can't write to your <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace directory</a>.
+                These errors can occur when the directory is on a network folder, such as an NFS share, that maps the root user to an unprivileged user.
+                To fix the error, use one of the following options:
+                <ul>
+                    <li>Move your organization workspace directory to a local disk.</li>
+                    <li>Ask the administrator of the network folder to disable root squashing for the share, for example with the <code>no_root_squash</code> NFS export option.</li>
+                    <li>In your organization workspace directory, run <code>chmod -R a+rwX .</code> to let all users write to it. Then, in the terminal where you run the CLI, run <code>umask 000</code> so all users can also write to the output directories that the CLI creates.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <div class="error-messages">Docker wants access to &lt;path&gt;</div>
             </td>
             <td>
