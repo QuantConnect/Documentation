@@ -66,3 +66,31 @@
 
 <h4>Report Data Issues</h4>
 <p>If you suspect a data issue, report it to our Data Team. Only our Data Team can correct a dataset. A short example in your report is enough for the team to investigate, and a detailed probe of the data doesn't speed up the fix. Your orders can reveal the issue, such as a position that opens and closes at the same price. To report it, see <a href="/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues">Report New Issues</a>. AI agents can report issues with the <a href="/docs/v2/cloud-platform/api-reference/data-issues/create-data-issue">Create Data Issue</a> endpoint.</p>
+
+<h4>Account Suspensions</h4>
+<p>An automated security review screens your projects, and each build can receive its own review. When a review flags a project, we stop the backtests, optimizations, and research notebooks that are running in the project. If your account collects too many reviews, we suspend it. We count the reviews across all your projects, starting from your sign up or the end of your last suspension, whichever is later.</p>
+<p>The organization that owns the flagged project determines the number of reviews and the length of the suspension. The following table shows the rules:</p>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Organization</th>
+            <th>Reviews Before a Suspension</th>
+            <th>Suspension Lengths in Hours</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Free</td>
+            <td>3</td>
+            <td>5, 8, 13, 21, 34, 55, and so on</td>
+        </tr>
+        <tr>
+            <td>Paid</td>
+            <td>5</td>
+            <td>1, 1, 2, 3, 5, 8, and so on</td>
+        </tr>
+    </tbody>
+</table>
+<p>Each new suspension uses the next length in the sequence, and each length is the sum of the previous two. If the next length exceeds six months, the suspension continues until we lift it. We can terminate your accounts for exporting data even if we never suspended them.</p>
+<p>While your account is suspended, the website redirects you to a page with the flagged project, the time we lift the suspension, and the review report. We don't send a separate email. API requests return an error, and the flagged project is read-only.</p>
+<p>Reviews filed during a suspension don't count toward the next one, but the flagged code stays in the project until you change it. Before you or an AI agent builds the project again, remove the code that the review report describes. If you build the same code again, new reviews can lead to a longer suspension.</p>
