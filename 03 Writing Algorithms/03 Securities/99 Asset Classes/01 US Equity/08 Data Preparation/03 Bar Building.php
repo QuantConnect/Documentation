@@ -1,3 +1,5 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/data-feeds/bar-building.html"); ?>
 
+<? include(DOCS_RESOURCES."/data-feeds/us-equity-quote-bars.html"); ?>
+
 <? include(DOCS_RESOURCES."/data-feeds/excluded-ticks.php"); ?>
