@@ -28,6 +28,7 @@ class Config:
     MAX_LOG_LINES = 500
     MAX_LOG_ATTEMPTS = 12
     MAX_RETRY_ATTEMPTS = 5
+    NODE_WAIT_SECONDS = 15
 
     # Directories to skip
     SKIP_DIRECTORIES = [
