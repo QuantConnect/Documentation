@@ -89,9 +89,11 @@ class APIClient:
 
     def create_backtest(self, project_id, compile_id, backtest_name):
         """Create a backtest and return the backtest Id."""
-        for _ in range(Config.MAX_RETRY_ATTEMPTS):
+        failed_attempts = 0
+        seconds_waiting_for_node = 0
+        while True:
             response = self._post(
-                "backtests/create", 
+                "backtests/create",
                 {
                     "projectId": project_id,
                     "compileId": compile_id,
@@ -99,6 +101,23 @@ class APIClient:
                 }
             )
             if response.get("success"):
+                break
+            # When every backtest node is busy, wait for one to free up.
+            errors = response.get("errors", [])
+            if any("no spare nodes" in error for error in errors):
+                time.sleep(Config.NODE_WAIT_SECONDS)
+                seconds_waiting_for_node += Config.NODE_WAIT_SECONDS
+                # Log every 10 minutes so a stuck run shows in the log.
+                if seconds_waiting_for_node % 600 == 0:
+                    print(
+                        f"{backtest_name} has waited "
+                        f"{seconds_waiting_for_node // 60} minutes "
+                        "for a free backtest node",
+                        flush=True
+                    )
+                continue
+            failed_attempts += 1
+            if failed_attempts == Config.MAX_RETRY_ATTEMPTS:
                 break
             time.sleep(3)
         return response
