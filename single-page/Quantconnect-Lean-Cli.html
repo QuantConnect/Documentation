@@ -928,6 +928,49 @@ Started backtest named 'Swimming Orange Lemur' for project 'Project Name'
     <tr>
      <td>
       <div class="error-messages">
+       PermissionError: [Errno 13] Permission denied: '/LeanCLI/__pycache__'
+      </div>
+      <br/>
+      <div class="error-messages">
+       Access to the path '/Results/log.txt' is denied.
+      </div>
+     </td>
+     <td>
+      The LEAN Docker container runs as the root user and can't write to your
+      <a href="#3.2">
+       organization workspace directory
+      </a>
+      .
+                These errors can occur when the directory is on a network folder, such as an NFS share, that maps the root user to an unprivileged user.
+                To fix the error, use one of the following options:
+      <ul>
+       <li>
+        Move your organization workspace directory to a local disk.
+       </li>
+       <li>
+        Ask the administrator of the network folder to disable root squashing for the share, for example with the
+        <code>
+         no_root_squash
+        </code>
+        NFS export option.
+       </li>
+       <li>
+        In your organization workspace directory, run
+        <code>
+         chmod -R a+rwX .
+        </code>
+        to let all users write to it. Then, in the terminal where you run the CLI, run
+        <code>
+         umask 000
+        </code>
+        so all users can also write to the output directories that the CLI creates.
+       </li>
+      </ul>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <div class="error-messages">
        Docker wants access to &lt;path&gt;
       </div>
      </td>
@@ -39560,7 +39603,7 @@ if __name__ == '__main__':
        <br/>
        Local
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Bybit
        <br/>
@@ -40000,17 +40043,17 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-connection-type &lt;enum: DAPI|SAPI&gt;
+       --terminal-link-connection-type &lt;enum: DAPI|SAPI&gt;
       </code>
      </td>
      <td>
-      Quant Bridge Connection Type [DAPI, SAPI]
+      Terminal Link Connection Type [DAPI, SAPI]
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-environment &lt;enum: Production|Beta&gt;
+       --terminal-link-environment &lt;enum: Production|Beta&gt;
       </code>
      </td>
      <td>
@@ -40020,27 +40063,27 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-host &lt;string&gt;
+       --terminal-link-server-host &lt;string&gt;
       </code>
      </td>
      <td>
-      The host of the QuantBridge server
+      The host of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-port &lt;integer&gt;
+       --terminal-link-server-port &lt;integer&gt;
       </code>
      </td>
      <td>
-      The port of the QuantBridge server
+      The port of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-openfigi-api-key &lt;string&gt;
+       --terminal-link-openfigi-api-key &lt;string&gt;
       </code>
      </td>
      <td>
@@ -40050,11 +40093,11 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-auth-id &lt;string&gt;
+       --terminal-link-server-auth-id &lt;string&gt;
       </code>
      </td>
      <td>
-      The Auth ID of the QuantBridge server
+      The Auth ID of the TerminalLink server
      </td>
     </tr>
     <tr>
@@ -42252,7 +42295,7 @@ if __name__ == '__main__':
        <br/>
        Samco
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Trading Technologies
        <br/>
@@ -42304,7 +42347,7 @@ if __name__ == '__main__':
        <br/>
        Samco
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Trading Technologies
        <br/>
@@ -42672,17 +42715,17 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-auth-id &lt;string&gt;
+       --terminal-link-server-auth-id &lt;string&gt;
       </code>
      </td>
      <td>
-      The Auth ID of the QuantBridge server
+      The Auth ID of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-environment &lt;enum: Production|Beta&gt;
+       --terminal-link-environment &lt;enum: Production|Beta&gt;
       </code>
      </td>
      <td>
@@ -42692,27 +42735,27 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-host &lt;string&gt;
+       --terminal-link-server-host &lt;string&gt;
       </code>
      </td>
      <td>
-      The host of the EMSX API Server
+      The host of the SAPI server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-port &lt;integer&gt;
+       --terminal-link-server-port &lt;integer&gt;
       </code>
      </td>
      <td>
-      The port of the EMSX API Server
+      The port of the SAPI server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-emsx-broker &lt;string&gt;
+       --terminal-link-emsx-broker &lt;string&gt;
       </code>
      </td>
      <td>
@@ -42722,7 +42765,7 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-emsx-account &lt;string&gt;
+       --terminal-link-emsx-account &lt;string&gt;
       </code>
      </td>
      <td>
@@ -42732,7 +42775,7 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-emsx-team &lt;string&gt;
+       --terminal-link-emsx-team &lt;string&gt;
       </code>
      </td>
      <td>
@@ -42742,7 +42785,7 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-openfigi-api-key &lt;string&gt;
+       --terminal-link-openfigi-api-key &lt;string&gt;
       </code>
      </td>
      <td>
@@ -46211,7 +46254,7 @@ if __name__ == '__main__':
        <br/>
        Local
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Bybit
        <br/>
@@ -46651,17 +46694,17 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-connection-type &lt;enum: DAPI|SAPI&gt;
+       --terminal-link-connection-type &lt;enum: DAPI|SAPI&gt;
       </code>
      </td>
      <td>
-      Quant Bridge Connection Type [DAPI, SAPI]
+      Terminal Link Connection Type [DAPI, SAPI]
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-environment &lt;enum: Production|Beta&gt;
+       --terminal-link-environment &lt;enum: Production|Beta&gt;
       </code>
      </td>
      <td>
@@ -46671,27 +46714,27 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-host &lt;string&gt;
+       --terminal-link-server-host &lt;string&gt;
       </code>
      </td>
      <td>
-      The host of the QuantBridge server
+      The host of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-port &lt;integer&gt;
+       --terminal-link-server-port &lt;integer&gt;
       </code>
      </td>
      <td>
-      The port of the QuantBridge server
+      The port of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-openfigi-api-key &lt;string&gt;
+       --terminal-link-openfigi-api-key &lt;string&gt;
       </code>
      </td>
      <td>
@@ -46701,11 +46744,11 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-auth-id &lt;string&gt;
+       --terminal-link-server-auth-id &lt;string&gt;
       </code>
      </td>
      <td>
-      The Auth ID of the QuantBridge server
+      The Auth ID of the TerminalLink server
      </td>
     </tr>
     <tr>
@@ -50926,7 +50969,7 @@ if __name__ == '__main__':
        <br/>
        Samco
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Trading Technologies
        <br/>
@@ -50976,7 +51019,7 @@ if __name__ == '__main__':
        <br/>
        Samco
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Trading Technologies
        <br/>
@@ -51408,17 +51451,17 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-connection-type &lt;enum: DAPI|SAPI&gt;
+       --terminal-link-connection-type &lt;enum: DAPI|SAPI&gt;
       </code>
      </td>
      <td>
-      Quant Bridge Connection Type [DAPI, SAPI]
+      Terminal Link Connection Type [DAPI, SAPI]
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-environment &lt;enum: Production|Beta&gt;
+       --terminal-link-environment &lt;enum: Production|Beta&gt;
       </code>
      </td>
      <td>
@@ -51428,27 +51471,27 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-host &lt;string&gt;
+       --terminal-link-server-host &lt;string&gt;
       </code>
      </td>
      <td>
-      The host of the QuantBridge server
+      The host of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-port &lt;integer&gt;
+       --terminal-link-server-port &lt;integer&gt;
       </code>
      </td>
      <td>
-      The port of the QuantBridge server
+      The port of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-emsx-broker &lt;string&gt;
+       --terminal-link-emsx-broker &lt;string&gt;
       </code>
      </td>
      <td>
@@ -51458,7 +51501,7 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-emsx-account &lt;string&gt;
+       --terminal-link-emsx-account &lt;string&gt;
       </code>
      </td>
      <td>
@@ -51468,7 +51511,7 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-emsx-team &lt;string&gt;
+       --terminal-link-emsx-team &lt;string&gt;
       </code>
      </td>
      <td>
@@ -51478,7 +51521,7 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-openfigi-api-key &lt;string&gt;
+       --terminal-link-openfigi-api-key &lt;string&gt;
       </code>
      </td>
      <td>
@@ -51488,11 +51531,11 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-auth-id &lt;string&gt;
+       --terminal-link-server-auth-id &lt;string&gt;
       </code>
      </td>
      <td>
-      The Auth ID of the QuantBridge server
+      The Auth ID of the TerminalLink server
      </td>
     </tr>
     <tr>
@@ -54905,7 +54948,7 @@ if __name__ == '__main__':
        <br/>
        Local
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Bybit
        <br/>
@@ -55435,17 +55478,17 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-connection-type &lt;enum: DAPI|SAPI&gt;
+       --terminal-link-connection-type &lt;enum: DAPI|SAPI&gt;
       </code>
      </td>
      <td>
-      Quant Bridge Connection Type [DAPI, SAPI]
+      Terminal Link Connection Type [DAPI, SAPI]
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-environment &lt;enum: Production|Beta&gt;
+       --terminal-link-environment &lt;enum: Production|Beta&gt;
       </code>
      </td>
      <td>
@@ -55455,27 +55498,27 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-host &lt;string&gt;
+       --terminal-link-server-host &lt;string&gt;
       </code>
      </td>
      <td>
-      The host of the QuantBridge server
+      The host of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-port &lt;integer&gt;
+       --terminal-link-server-port &lt;integer&gt;
       </code>
      </td>
      <td>
-      The port of the QuantBridge server
+      The port of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-openfigi-api-key &lt;string&gt;
+       --terminal-link-openfigi-api-key &lt;string&gt;
       </code>
      </td>
      <td>
@@ -55485,11 +55528,11 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-auth-id &lt;string&gt;
+       --terminal-link-server-auth-id &lt;string&gt;
       </code>
      </td>
      <td>
-      The Auth ID of the QuantBridge server
+      The Auth ID of the TerminalLink server
      </td>
     </tr>
     <tr>
@@ -57503,7 +57546,7 @@ if __name__ == '__main__':
        <br/>
        Local
        <br/>
-       Quant Bridge
+       Terminal Link
        <br/>
        Bybit
        <br/>
@@ -57943,17 +57986,17 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-connection-type &lt;enum: DAPI|SAPI&gt;
+       --terminal-link-connection-type &lt;enum: DAPI|SAPI&gt;
       </code>
      </td>
      <td>
-      Quant Bridge Connection Type [DAPI, SAPI]
+      Terminal Link Connection Type [DAPI, SAPI]
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-environment &lt;enum: Production|Beta&gt;
+       --terminal-link-environment &lt;enum: Production|Beta&gt;
       </code>
      </td>
      <td>
@@ -57963,27 +58006,27 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-host &lt;string&gt;
+       --terminal-link-server-host &lt;string&gt;
       </code>
      </td>
      <td>
-      The host of the QuantBridge server
+      The host of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-port &lt;integer&gt;
+       --terminal-link-server-port &lt;integer&gt;
       </code>
      </td>
      <td>
-      The port of the QuantBridge server
+      The port of the TerminalLink server
      </td>
     </tr>
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-openfigi-api-key &lt;string&gt;
+       --terminal-link-openfigi-api-key &lt;string&gt;
       </code>
      </td>
      <td>
@@ -57993,11 +58036,11 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
-       --quant-bridge-server-auth-id &lt;string&gt;
+       --terminal-link-server-auth-id &lt;string&gt;
       </code>
      </td>
      <td>
-      The Auth ID of the QuantBridge server
+      The Auth ID of the TerminalLink server
      </td>
     </tr>
     <tr>
