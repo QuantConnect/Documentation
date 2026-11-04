@@ -545,7 +545,7 @@ def _manage_github_issue(results: dict[str, list[str]], has_errors: bool):
                     ["gh", "issue", "create",
                      "--title", ISSUE_TITLE,
                      "--body", body,
-                     "--label", "bug"],
+                     "--label", "kronos:develop"],
                     capture_output=True, text=True, cwd=BASE_PATH
                 )
                 if result.returncode == 0:
