@@ -6,5 +6,8 @@
 <h4>Opening and Closing Auctions</h4>
 <? include(DOCS_RESOURCES."/datasets/opening-and-closing-auctions.html"); ?>
 
+<h4>Quote Bars</h4>
+<? include(DOCS_RESOURCES."/data-feeds/us-equity-quote-bars.html"); ?>
+
 <h4>Excluded Ticks</h4>
 <? include(DOCS_RESOURCES."/data-feeds/excluded-ticks.php"); ?>
