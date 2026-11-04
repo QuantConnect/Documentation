@@ -274,7 +274,7 @@ Page: https://www.quantconnect.com/datasets/quantconnect-factors/pricing · list
 
 | SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Factors - Cloud Access | Short Description | Free |  |  |  |  | yes |  |  |
+| Factors - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 
 ## Fama French (QuantConnect)
 
@@ -534,6 +534,14 @@ Page: https://www.quantconnect.com/datasets/quiver-quantitative-congress-trading
 | Congress Trading Universe Download by Quiver Quantitative | Download Universe On Premise | 5 QCC/file |  |  |  |  |  | yes | yes |
 
 The Pricing page catalog carries no per-tier price for Congress Trading Universe by Quiver Quantitative; every tier column shows the price quoted to the generating organization.
+
+## US Congress Trading (QuantConnect)
+
+Page: https://www.quantconnect.com/datasets/quantconnect-us-congress-trading/pricing · listed as "Free in Cloud"
+
+| SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| US Congress Trading - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 
 ## US Electricity (Energy Information Administration)
 
@@ -803,6 +811,15 @@ Page: https://www.quantconnect.com/datasets/us-security-exchange-commission-fili
 | SEC Filings - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
 | SEC Filings - On Premise Download | Download On Premise | 10 QCC/file |  |  |  |  |  | yes | yes |
 
+## US Treasury Auctions (Treasury Department)
+
+Page: https://www.quantconnect.com/datasets/us-treasury-auctions/pricing · listed as "Free in Cloud"
+
+| SKU | Kind | Price | Quant Researcher | Team | Trading Firm | Institution | Cloud | CLI | Buyable |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| US Treasury Auctions - Cloud Access | Cloud Access | Free |  |  |  |  | yes |  |  |
+| US Treasury Auctions - Download On Premise | Download On Premise | 5 QCC/file |  |  |  |  |  | yes | yes |
+
 ## US Treasury Yield Curve (Treasury Department)
 
 Page: https://www.quantconnect.com/datasets/us-treasury-yield-curve/pricing · listed as "Free"
@@ -910,3 +927,4 @@ What `lean data download` charges per file (`/data/prices`, the table the CLI it
 | US Future Options Minute Download by AlgoSeek | AlgoSeek | 50 | $0.50 |
 | Wikipedia Page Views Analysis Download by Brain Co | Brain | 100 | $1.00 |
 | US Electricity - On Premise Download | Energy Information Administration | 5 | $0.05 |
+| US Treasury Auctions - Download On Premise | Treasury Department | 5 | $0.05 |
