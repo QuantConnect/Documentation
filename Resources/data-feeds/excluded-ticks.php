@@ -13,7 +13,7 @@
     <li>The first tick of the day that passes the condition flag rules in the preceding list has a price of at least $5. We check the price only once per day, so if this tick is below $5, FINRA filtering stays inactive for the rest of the day.</li>
     <li>The dollar volume of the trades that pass the condition flag rules reaches $5,000,000. The count starts with the first trade of the day, including pre-market trades.</li>
 </ul>
-<p>After FINRA filtering becomes active, FINRA trades don't set the price of the bar for the rest of the day. Their volume is still aggregated in the bar. FINRA quotes don't set the bid, ask, or sizes of the bar for the rest of the day either. Before FINRA filtering becomes active, a FINRA tick sets the price of the bar if it passes the condition flag rules.</p>
+<p>While FINRA filtering is active, FINRA trades don't set the price of the bar. Their volume is still aggregated in the bar. FINRA quotes don't set the bid, ask, or sizes of the bar either. While FINRA filtering is inactive, a FINRA tick sets the price of the bar if it passes the condition flag rules.</p>
 
 <p>The following table shows the <code>TradeConditionFlags</code> that the bar-building process uses:</p>
 <? include(DOCS_RESOURCES."/data-feeds/trade-condition-flags-table.html"); ?>
