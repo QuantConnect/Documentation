@@ -1,4 +1,12 @@
-<p>Stale fills occur when you fill an order with price data that is timestamped an hour or more into the past. Stale fills usually only occur if you trade illiquid assets or if your algorithm uses daily data but you trade intraday with Scheduled Events. If your order is filled with stale data, the fill price may not be realistic. The pre-built fill models can only fill market orders with stale data. To adjust the length of time that needs to pass before an order is considered stale, set the <code class="csharp">StalePriceTimeSpan</code><code class="python">stale_price_time_span</code> setting.</p>
+<p>Stale fills occur when you fill an order with price data that is timestamped an hour or more into the past. Stale fills usually only occur if you trade illiquid assets or if your algorithm uses daily data but you trade intraday with Scheduled Events. If your order is filled with stale data, the fill price may not be realistic. Of all the order types, the pre-built fill models only fill market orders with stale data. The finest resolution of the security's subscriptions determines whether a market order with stale data waits for new data or fills at the stale price:</p>
+
+<ul>
+    <li>Tick: The order fills at the stale price, and the order event message contains a stale price warning.</li>
+    <li>Second or minute: If the latest data is more than one bar older than the order time, the order waits for new data. Otherwise, it fills at the stale price with the warning.</li>
+    <li>Hour or daily: The order waits for the next bar.</li>
+</ul>
+
+<p>While a market order waits, its status stays <code class="csharp">OrderStatus.Submitted</code><code class="python">OrderStatus.SUBMITTED</code>. When new data arrives, the order fills at a price from the new data. To adjust the length of time that needs to pass before an order is considered stale, set the <code class="csharp">StalePriceTimeSpan</code><code class="python">stale_price_time_span</code> setting.</p>
 
 <div class="section-example-container">
 <pre class="csharp">public override void Initialize()
