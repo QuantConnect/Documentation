@@ -1894,12 +1894,6 @@ Locking a project lets you edit it when the project has collaborators or when an
 
 Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/api-reference/project-management/collaboration/lock-project>
 
-### How do I apply a code change to a project file through the API?
-
-Use the `/files/patch` endpoint with a patch in unified diff format, such as the output of `git diff`. A patch can change one or more files in the project.
-
-Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/api-reference/file-management/patch-file>
-
 ### How do I let a project choose its backtest node automatically through the API?
 
 Call the update project nodes endpoint without any nodes. All the nodes become inactive, and `autoSelectNode` becomes true. If you pass nodes, the endpoint activates those nodes.

@@ -411,31 +411,6 @@ paths:
         "401":
           $ref: '#/components/responses/UnauthorizedErrorResponse'
       operationId: deleteFile
-  /files/patch:
-    post:
-      tags:
-        - 01 Cloud Platform
-        - 99 API Reference
-        - 03 File Management
-        - 05 Patch File
-      summary: Apply a patch (unified diff) to a file in a project.
-      requestBody:
-        description: Project Id and patch content in unified diff format.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchFileRequest'
-        required: true
-      responses:
-        "200":
-          description: Base API response class.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/RestResponse'
-        "401":
-          $ref: '#/components/responses/UnauthorizedErrorResponse'
-      operationId: patchFile
   /compile/create:
     post:
       tags:
@@ -4972,76 +4947,6 @@ components:
             - MCP Server
           description: Name of the environment that's creating the request.
       description: Request to delete a file in a project.
-    PatchFileRequest:
-      type: object
-      required:
-        - projectId
-        - patch
-      properties:
-        projectId:
-          type: integer
-          examples:
-            - 23456789
-          description: Id of the project that contains the file.
-        patch:
-          type: string
-          examples:
-            - |
-              diff --git a/main.py b/main.py
-              index 5a38b08..72c8d1e 100644
-              --- a/main.py
-              +++ b/main.py
-              @@ -2,4 +2,4 @@
-               from AlgorithmImports import *
-               # endregion
-
-              -a = 1
-              +a = 2
-
-            - |
-              diff --git a/Main.cs b/Main.cs
-              index 460447c..2fe2f42 100644
-              --- a/Main.cs
-              +++ b/Main.cs
-              @@ -5,6 +5,6 @@ public class MyAlgorithm : QCAlgorithm
-               {
-                   public override void Initialize()
-                   {
-              -        var a = 1;
-              +        var a = 2;
-                   }
-               }
-
-          description: |
-            A patch string in **unified diff format** (as produced by `git diff`). It specifies changes to apply to one or more files in the project.
-
-            **Required format:**
-            - Must include `diff --git a/filename b/filename` header
-            - Must include `index` line (can use placeholder hashes like `1234567..abcdefg`)
-            - Must include `--- a/filename` and `+++ b/filename` lines
-            - Must include `@@` hunk headers with line numbers and context counts
-            - Include context lines before and after changes when possible
-            - Use exact line content from the file (whitespace sensitive)
-
-            **CRITICAL: The patch must match the EXACT file content including:**
-            - Exact whitespace (spaces vs tabs)
-            - Exact line endings
-            - Exact indentation
-            - All characters must match precisely
-
-            **Recommended approach:**
-            1. Read the current file content first
-            2. Use 3+ lines of context before and after the change
-            3. Copy exact text from the file for context lines
-            4. Only modify the specific line(s) that need changing
-
-            See examples for the complete structure required.
-        codeSourceId:
-          type: string
-          examples:
-            - MCP Server
-          description: Name of the environment that's creating the request.
-      description: Request to apply a patch (unified diff) to a file in a project.
     DeleteProjectRequest:
       type: object
       required:
