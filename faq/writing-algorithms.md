@@ -12,7 +12,7 @@ Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/gett
 
 ### What does "Algorithm took longer than 10 minutes on a single time loop" mean?
 
-LEAN lets your algorithm spend up to 10 minutes on each time slice, unless you call the `train` (`Train`) method for the work. If a single event handler, universe selection, or `initialize` (`Initialize`) call runs longer, LEAN stops the algorithm. Common causes are bulk history requests in `initialize`, unbounded universes, and model training inside data handlers. Move training into the `train` method and cut the data each step processes.
+LEAN lets your algorithm spend up to 10 minutes on each time slice. Scheduled Events, including training sessions from the `train` (`Train`) method, can run longer by drawing on your training quota, and LEAN stops the algorithm when that quota runs out. If a single event handler, universe selection, or `initialize` (`Initialize`) call runs longer, LEAN stops the algorithm. Common causes are bulk history requests in `initialize`, unbounded universes, and model training inside data handlers. Move training into the `train` method and cut the data each step processes.
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/algorithm-engine#06-Event-Flow>
 
@@ -1940,7 +1940,7 @@ Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/scheduled-events>
 
 ### Why does my algorithm time out inside a Scheduled Event?
 
-A Scheduled Event that runs for more than 10 minutes makes the algorithm time out. Several events that LEAN runs together in a backtest share this limit too. To run long tasks such as model training, replace the Scheduled Event with a training session through `self.train` (`Train`).
+Each minute a Scheduled Event runs past its first minute draws one minute from your training quota. The algorithm times out when the quota is empty and the event needs another minute. A training session through `self.train` (`Train`) draws from the same quota, so replacing the Scheduled Event with one doesn't add time. To fix the timeout, make the event do less work or run less often, or train the model in the Research Environment and load it from the Object Store.
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/scheduled-events>
 
@@ -2146,7 +2146,7 @@ Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/machine-learning/
 
 ### How do I train a model without hitting the 10-minute timeout?
 
-Call `self.train` (`Train`) with your training method. Algorithms usually must process each time slice within 10 minutes, but `train` extends the time up to your training quota. To schedule training, pass `DateRules` and `TimeRules` arguments. We recommend you schedule training while the market is closed.
+Call `self.train` (`Train`) with your training method. Algorithms usually must process each time slice within 10 minutes, but a training session runs past that limit for as long as your training quota lasts. To schedule training, pass `DateRules` and `TimeRules` arguments. We recommend you schedule training while the market is closed.
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/machine-learning/training-models>
 
