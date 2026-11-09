@@ -78,10 +78,10 @@ history = history.droplevel([0, 1])
 history = history[["askhigh", "asklow", "asksize", "bidhigh", "bidlow", "bidsize"]].resample("5T").agg({
     "askhigh": "max",       # Get the highest ask price in the last 5 mintues
     "asklow": "min",        # Get the lowest ask price in the last 5 mintues
-    "asksize": "sum",       # Get the total ask volume in the last 5 mintues
+    "asksize": "last",      # Get the last ask size in the last 5 minutes
     "bidhigh": "max",       # Get the highest bid price in the last 5 mintues
     "bidlow": "min",        # Get the lowest bid price in the last 5 mintues
-    "bidsize": "sum"        # Get the total bid volume in the last 5 mintues
+    "bidsize": "last"       # Get the last bid size in the last 5 minutes
 })
 # Take the average of the highest and lowest price in the last 5 mintues as the estimated average price.
 history["ask_dollar_volume"] = (history["askhigh"] + history["asklow"]) * 0.5 * history["asksize"]
