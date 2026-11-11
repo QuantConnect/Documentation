@@ -4,17 +4,18 @@
     <pre><? include(DOCS_RESOURCES."/qc-api/get_headers.py"); ?>
 
 ### List Data Issues
-# Send a POST request to the /community/data-library/issues/list endpoint to find open issues for SPY
+# Send a POST request to the /community/data-library/issues/list endpoint to find open issues for SPY minute data
 response = post(f'{BASE_URL}/community/data-library/issues/list', headers=get_headers(), json={
-    "status": "open",  # open or closed
-    "start": 0,        # Index of the first issue to return
-    "end": 20,         # Index after the last issue to return
-    "search": "SPY"    # Exact ticker match
+    "status": "open",        # open or closed
+    "start": 0,              # Index of the first issue to return
+    "end": 20,               # Index after the last issue to return
+    "ticker": "SPY",         # Exact ticker match, not case-sensitive
+    "resolution": "Minute"   # Optional. Also filter by security, market, or resolution
 })
 # Parse the JSON response into python managable dict
 result = response.json()
 # Keep the open issues that already cover SPY minute data
-existing = [i for i in result.get('results', []) if i['resolution'] == 'Minute']
+existing = result.get('results', [])
 # Check if the request was successful and print the issues
 if result['success']:
     print("Open Data Issues:")
