@@ -18,7 +18,6 @@
 <?
     $optionUniverseUrl = $optionUniverseUrl ?? "/docs/v2/writing-algorithms/universes/equity-options";
     include(DOCS_RESOURCES."/securities/option-chain-filters.php");
-    include(DOCS_RESOURCES."/securities/option-chain-selection.html");
 ?>
 
 <h4>Properties</h4>

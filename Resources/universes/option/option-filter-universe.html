@@ -12,6 +12,45 @@
             </tr>
             <tr>
                 <td>
+                    <code class="csharp">Strikes(IEnumerable&lt;decimal&gt; strikes)</code><code class="python">strikes(strikes: list[float])</code>
+                    <p class="property-description">Selects the contracts with any of the given strike prices.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">StrikesAbove(decimal price)</code><code class="python">strikes_above(price: float)</code>
+                    <p class="property-description">Selects the contracts with strike prices above the given price. The price itself is excluded.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">StrikesBelow(decimal price)</code><code class="python">strikes_below(price: float)</code>
+                    <p class="property-description">Selects the contracts with strike prices below the given price. The price itself is excluded.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">OutOfTheMoney()</code><code class="python">out_of_the_money()</code><br>
+                    <code class="csharp">OTM()</code><code class="python">otm()</code>
+                    <p class="property-description">Selects the out-of-the-money contracts: calls with strikes above the underlying price and puts with strikes below it. Selects nothing when the underlying price is unknown.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">InTheMoney()</code><code class="python">in_the_money()</code><br>
+                    <code class="csharp">ITM()</code><code class="python">itm()</code>
+                    <p class="property-description">Selects the in-the-money contracts: calls with strikes below the underlying price and puts with strikes above it. Selects nothing when the underlying price is unknown.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">AtTheMoney(decimal? maxStrikeDistance = null)</code><code class="python">at_the_money(max_strike_distance: float = None)</code><br>
+                    <code class="csharp">ATM(decimal? maxStrikeDistance = null)</code><code class="python">atm(max_strike_distance: float = None)</code>
+                    <p class="property-description">Selects the at-the-money contracts. By default, it selects the strikes on either side of the underlying price, each only when it is within <code class="csharp">OptionFilterUniverse.DefaultAtTheMoneyStrikeDistance</code><code class="python">OptionFilterUniverse.default_at_the_money_strike_distance</code> (2%) of the price. With <code class="csharp">maxStrikeDistance</code><code class="python">max_strike_distance</code>, it selects every strike within that distance of the price, in price units. Selects nothing when the underlying price is unknown.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <code class="csharp">CallsOnly()</code><code class="python">calls_only()</code>
                     <p class="property-description">Selects call contracts.</p>
                 </td>
@@ -54,8 +93,38 @@
             </tr>
             <tr>
                 <td>
+                    <code class="csharp">FarthestExpiration()</code><code class="python">farthest_expiration()</code>
+                    <p class="property-description">Selects the contracts with the farthest expiration date.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <code class="csharp">Expiration(int minExpiryDays, int maxExpiryDays)</code><code class="python">expiration(min_expiryDays: int, max_expiryDays: int)</code>
                     <p class="property-description">Selects contracts that expire within a range of dates relative to the current day.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">Expiration(IEnumerable&lt;DateTime&gt; expiries)</code><code class="python">expiration(expiries: list[datetime])</code>
+                    <p class="property-description">Selects the contracts that expire on any of the given dates. The time of day is ignored.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">ExpiringAfter(DateTime date)</code><code class="python">expiring_after(date: datetime)</code>
+                    <p class="property-description">Selects the contracts that expire after the given date. The date itself is excluded and the time of day is ignored.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">ExpiringBefore(DateTime date)</code><code class="python">expiring_before(date: datetime)</code>
+                    <p class="property-description">Selects the contracts that expire before the given date. The date itself is excluded and the time of day is ignored.</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <code class="csharp">ZeroDte()</code><code class="python">zero_dte()</code>
+                    <p class="property-description">Selects the contracts that expire today.</p>
                 </td>
             </tr>
             <tr>
