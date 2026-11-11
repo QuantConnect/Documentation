@@ -443,6 +443,11 @@ class APIReferenceGenerator:
         """
         type_label = self._normalize_type(prop.get("type", "object")) if isinstance(prop, dict) else "object"
         desc = prop.get("description", "/") if isinstance(prop, dict) else "/"
+        # Read before dispatch, which can replace *prop* with the resolved $ref schema
+        nullable = False
+        if isinstance(prop, dict):
+            types = [prop.get("type")] + [variant.get("type") for variant in prop.get("oneOf", [])]
+            nullable = any(t == "null" or (isinstance(t, list) and "null" in t) for t in types)
         tab = "  " * indent
 
         # --- dispatch by type ---
@@ -472,6 +477,10 @@ class APIReferenceGenerator:
         # --- required annotation ---
         if isinstance(prop, dict) and prop.get("required"):
             type_label += "<br/><i><sub>required</sub></i>"
+
+        # --- nullable annotation ---
+        if nullable:
+            type_label += "<br/><i><sub>nullable</sub></i>"
 
         # --- example annotation (overrides json_value) ---
         eg = self._get_example(prop)
@@ -938,7 +947,8 @@ class APIReferenceGenerator:
 #  Entry point                                                         #
 # ------------------------------------------------------------------ #
 
-for section, spec_path in SPECS.items():
-    generator = APIReferenceGenerator(spec_path)
-    generator.generate()
-    print(f"Documentation of {section} is generated and inplace!")
+if __name__ == "__main__":
+    for section, spec_path in SPECS.items():
+        generator = APIReferenceGenerator(spec_path)
+        generator.generate()
+        print(f"Documentation of {section} is generated and inplace!")
