@@ -32,9 +32,16 @@ The <code>/backtests/list</code> API provides a response in the following format
       "backtestId": "26c7bb06b8487cff1c7b3c44652b30f1",
       "status": "Completed.",
       "name": "string",
+      "note": "string",
       "created": "2021-11-26T15:18:27.693Z",
+      "completed": true,
       "progress": 0,
+      "result": "string",
+      "error": "string",
+      "stacktrace": "string",
+      "projectId": 23456789,
       "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+      "sparkline": "string",
       "tradeableDates": 0,
       "parameterSet": ,
       "snapshotId": 0,
@@ -54,7 +61,11 @@ The <code>/backtests/list</code> API provides a response in the following format
       "sortinoRatio": 0,
       "trades": 0,
       "treynorRatio": 0,
-      "winRate": 0
+      "winRate": 0,
+      "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+      "outOfSampleDays": 0,
+      "nodeName": "string",
+      "public": true
     }
   ],
   "count": 0,
@@ -82,13 +93,34 @@ The <code>/backtests/list</code> API provides a response in the following format
 <td width="20%">name</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Name of the backtest.</td>
 </tr>
 <tr>
+<td width="20%">note</td> <td> <code>string</code> <br/> Note on the backtest attached by the user.</td>
+</tr>
+<tr>
 <td width="20%">created</td> <td> <code>string($date-time)<br/><i><sub>required</sub></i></code> <br/> Backtest creation date and time.</td>
+</tr>
+<tr>
+<td width="20%">completed</td> <td> <code>boolean<br/><i><sub>required</sub></i></code> <br/> Boolean true when the backtest is completed. The <code>status</code> and <code>progress</code> can change before this value is true.</td>
 </tr>
 <tr>
 <td width="20%">progress</td> <td> <code>number<br/><i><sub>required</sub></i></code> <br/> Progress of the backtest in percent 0-1.</td>
 </tr>
 <tr>
+<td width="20%">result</td> <td> <code>string</code> <br/> Result data stored with the backtest, usually null. To get the backtest results, call the <code>/backtests/read</code> endpoint.</td>
+</tr>
+<tr>
+<td width="20%">error</td> <td> <code>string</code> <br/> Backtest error message.</td>
+</tr>
+<tr>
+<td width="20%">stacktrace</td> <td> <code>string</code> <br/> Backtest error stacktrace.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>example: 23456789</sub></i></code> <br/> Id of the project.</td>
+</tr>
+<tr>
 <td width="20%">optimizationId</td> <td> <code>string<br/><i><sub>example: O-401d3d40b5a0e9f8c46c954a303f3ddd</sub></i></code> <br/> Optimization task ID, if the backtest is part of an optimization.</td>
+</tr>
+<tr>
+<td width="20%">sparkline</td> <td> <code>string</code> <br/> Sparkline data of the backtest.</td>
 </tr>
 <tr>
 <td width="20%">tradeableDates</td> <td> <code>integer<br/><i><sub>required</sub></i></code> <br/> Number of tradeable days.</td>
@@ -145,6 +177,18 @@ The <code>/backtests/list</code> API provides a response in the following format
 <td width="20%">winRate</td> <td> <code>number</code> <br/> The ratio of the number of winning trades to the total number of trades.</td>
 </tr>
 <tr>
+<td width="20%">outOfSampleMaxEndDate</td> <td> <code>string($date-time)</code> <br/> Latest permitted backtest end date after applying the out-of-sample holdout period.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleDays</td> <td> <code>integer</code> <br/> Number of out of sample days.</td>
+</tr>
+<tr>
+<td width="20%">nodeName</td> <td> <code>string</code> <br/> The backtest node name.</td>
+</tr>
+<tr>
+<td width="20%">public</td> <td> <code>boolean</code> <br/> Boolean true when the backtest is public.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -152,9 +196,16 @@ The <code>/backtests/list</code> API provides a response in the following format
   "backtestId": "26c7bb06b8487cff1c7b3c44652b30f1",
   "status": "Completed.",
   "name": "string",
+  "note": "string",
   "created": "2021-11-26T15:18:27.693Z",
+  "completed": true,
   "progress": 0,
+  "result": "string",
+  "error": "string",
+  "stacktrace": "string",
+  "projectId": 23456789,
   "optimizationId": "O-401d3d40b5a0e9f8c46c954a303f3ddd",
+  "sparkline": "string",
   "tradeableDates": 0,
   "parameterSet": ,
   "snapshotId": 0,
@@ -174,7 +225,11 @@ The <code>/backtests/list</code> API provides a response in the following format
   "sortinoRatio": 0,
   "trades": 0,
   "treynorRatio": 0,
-  "winRate": 0
+  "winRate": 0,
+  "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+  "outOfSampleDays": 0,
+  "nodeName": "string",
+  "public": true
 }</pre>
 </div>
 </td>

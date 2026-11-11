@@ -520,6 +520,7 @@ paths:
         - 05 Backtest Management
         - 05 List Backtests
       summary: List all the backtests for a project.
+      description: To check if a backtest has finished, read its <code>completed</code> field. The <code>status</code> and <code>progress</code> fields can change before <code>completed</code> is <code>true</code>.
       requestBody:
         description: Fetch the backtest results for the project Id provided.
         content:
@@ -3092,6 +3093,7 @@ components:
         - status
         - name
         - created
+        - completed
         - progress
         - tradeableDates
         - parameterSet
@@ -3113,19 +3115,42 @@ components:
         name:
           type: string
           description: Name of the backtest.
+        note:
+          type: [string, "null"]
+          description: Note on the backtest attached by the user.
         created:
           type: string
           description: Backtest creation date and time.
           format: date-time
+        completed:
+          type: boolean
+          description: Boolean true when the backtest is completed. The <code>status</code> and <code>progress</code> can change before this value is true.
         progress:
           type: number
           description: Progress of the backtest in percent 0-1.
           format: float
+        result:
+          type: [string, "null"]
+          description: Result data stored with the backtest, usually null. To get the backtest results, call the <code>/backtests/read</code> endpoint.
+        error:
+          type: [string, "null"]
+          description: Backtest error message.
+        stacktrace:
+          type: [string, "null"]
+          description: Backtest error stacktrace.
+        projectId:
+          type: integer
+          examples:
+            - 23456789
+          description: Id of the project.
         optimizationId:
           type: [string, "null"]
           examples:
             - O-401d3d40b5a0e9f8c46c954a303f3ddd
           description: Optimization task ID, if the backtest is part of an optimization.
+        sparkline:
+          type: [string, "null"]
+          description: Sparkline data of the backtest.
         tradeableDates:
           type: [integer, "null"]
           description: Number of tradeable days
@@ -3182,6 +3207,19 @@ components:
         winRate:
           type: [number, "null"]
           description: The ratio of the number of winning trades to the total number of trades.
+        outOfSampleMaxEndDate:
+          type: [string, "null"]
+          description: Latest permitted backtest end date after applying the out-of-sample holdout period.
+          format: date-time
+        outOfSampleDays:
+          type: [integer, "null"]
+          description: Number of out of sample days.
+        nodeName:
+          type: [string, "null"]
+          description: The backtest node name.
+        public:
+          type: boolean
+          description: Boolean true when the backtest is public.
       description: Result object class for the List Backtest response from the API.
     BaseLiveAlgorithmSettings:
       type: object
