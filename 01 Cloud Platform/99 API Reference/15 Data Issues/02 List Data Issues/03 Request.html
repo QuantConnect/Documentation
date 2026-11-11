@@ -5,7 +5,7 @@ Filters and range of the data issues to list. The <code>/community/data-library/
 <table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>ListDataIssuesRequest</code> Model - Request body to list data issues.</th>
+<th colspan="2"><code>ListDataIssuesRequest</code> Model - Request body to list data issues. The filters combine, and a <code>security</code>, <code>market</code>, or <code>resolution</code> value that isn't supported returns an error that lists the valid values.</th>
 </tr>
 </thead>
 <tr>
@@ -18,7 +18,19 @@ Filters and range of the data issues to list. The <code>/community/data-library/
 <td width="20%">end</td> <td> <code>integer<br/><i><sub>example: 20</sub></i></code> <br/> Index after the last issue to return. The default value is 20.</td>
 </tr>
 <tr>
-<td width="20%">search</td> <td> <code>string<br/><i><sub>example: SPY</sub></i></code> <br/> Ticker to filter the issues by. The ticker must match exactly, but the match isn't case-sensitive.</td>
+<td width="20%">search</td> <td> <code>string<br/><i><sub>example: SPY</sub></i></code> <br/> Words to search for in the issue titles. The search doesn't find words shorter than 3 characters. To filter by ticker, use the <code>ticker</code> property.</td>
+</tr>
+<tr>
+<td width="20%">ticker</td> <td> <code>string<br/><i><sub>example: NQ</sub></i></code> <br/> Ticker to filter the issues by. The ticker must match one of the issue's tickers exactly, but the match isn't case-sensitive.</td>
+</tr>
+<tr>
+<td width="20%">security</td> <td> <code>string<br/><i><sub>example: Future</sub></i></code> <br/> Asset class to filter the issues by, as its name or its short form, such as <code>Future Option</code> or <code>futureoption</code>. The match isn't case-sensitive.</td>
+</tr>
+<tr>
+<td width="20%">market</td> <td> <code>string<br/><i><sub>example: CME</sub></i></code> <br/> Market to filter the issues by, such as <code>CME</code> or <code>Binance</code>. The match isn't case-sensitive.</td>
+</tr>
+<tr>
+<td width="20%">resolution</td> <td> <code>string<br/><i><sub>example: Minute</sub></i></code> <br/> Resolution to filter the issues by, such as <code>Minute</code> or <code>Daily</code>. The match isn't case-sensitive.</td>
 </tr>
 <tr>
 <td width="20%">subscribed</td> <td> <code>boolean</code> <br/> If true, list only the issues you're subscribed to.</td>
@@ -32,6 +44,10 @@ Filters and range of the data issues to list. The <code>/community/data-library/
   "start": 0,
   "end": 20,
   "search": "SPY",
+  "ticker": "NQ",
+  "security": "Future",
+  "market": "CME",
+  "resolution": "Minute",
   "subscribed": true
 }</pre>
 </div>

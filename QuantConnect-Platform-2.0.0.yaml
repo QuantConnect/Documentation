@@ -9676,12 +9676,28 @@ components:
           example: 20
         search:
           type: string
-          description: Ticker to filter the issues by. The ticker must match exactly, but the match isn't case-sensitive.
+          description: Words to search for in the issue titles. The search doesn't find words shorter than 3 characters. To filter by ticker, use the <code>ticker</code> property.
           example: SPY
+        ticker:
+          type: string
+          description: Ticker to filter the issues by. The ticker must match one of the issue's tickers exactly, but the match isn't case-sensitive.
+          example: NQ
+        security:
+          type: string
+          description: Asset class to filter the issues by, as its name or its short form, such as <code>Future Option</code> or <code>futureoption</code>. The match isn't case-sensitive.
+          example: Future
+        market:
+          type: string
+          description: Market to filter the issues by, such as <code>CME</code> or <code>Binance</code>. The match isn't case-sensitive.
+          example: CME
+        resolution:
+          type: string
+          description: Resolution to filter the issues by, such as <code>Minute</code> or <code>Daily</code>. The match isn't case-sensitive.
+          example: Minute
         subscribed:
           type: boolean
           description: If true, list only the issues you're subscribed to.
-      description: Request body to list data issues.
+      description: Request body to list data issues. The filters combine, and a <code>security</code>, <code>market</code>, or <code>resolution</code> value that isn't supported returns an error that lists the valid values.
     DataIssueListResponse:
       type: object
       properties:
@@ -9772,6 +9788,12 @@ components:
         reported:
           type: integer
           description: Unix timestamp of when the issue was reported.
+        comments:
+          type: integer
+          description: Number of comments on the issue.
+        updated:
+          type: integer
+          description: Unix timestamp of when the issue last changed, including when someone commented on it.
         subscribed:
           type: boolean
           description: True if you're subscribed to the issue.
