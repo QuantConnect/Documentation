@@ -1,7 +1,8 @@
-<p>Note the following differences between the Local Platform and Cloud Platform deployment targets.</p>
+<p>Note the following differences between the Local Platform and Cloud Platform deployment targets. The differences also apply when you run LEAN yourself on a server or a virtual private server (VPS) with the <a href='/docs/v2/lean-cli'>Lean CLI</a>.</p>
 
 <h4>Data</h4>
 <p>The Local Platform target uses your <a href='/docs/v2/local-platform/datasets/getting-started'>on-premises data</a>. The Cloud Platform target has access to the data in the <a href='/datasets'>Dataset Market</a>. Both targets enable you to <a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>import custom datasets</a>.</p>
+<p>In QuantConnect Cloud, the data is already on the servers and the QuantConnect team keeps it up to date. In local deployments, you license, download, and refresh the data yourself, even for live trading with a brokerage data provider. Live data providers such as Interactive Brokers serve raw prices. To trade US Equities with adjusted prices, download the <a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli'>US Equity Security Master</a>. To trade <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>, download the <a href='https://www.quantconnect.com/datasets/quantconnect-us-futures-security-master/cli'>US Futures Security Master</a>.</p>
 
 <h4>Compute</h4>
 <p>The Local Platform target uses your on-premises hardware. The Cloud Platform target uses the QuantConnect Cloud compute. For more information about the backtesting, research, and live trading nodes in QuantConnect Cloud, see <a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>.</p>
@@ -11,3 +12,21 @@
 
 <h4>Hardware Procurement</h4>
 <p>The Local Platform target uses your on-premises hardware, so it requires you to procure and management your own hardware. The Cloud Platform target uses the hardware in QuantConnect Cloud, so you don't need to procure or manage any of the hardware.</p>
+
+<h4>Engine Updates</h4>
+<p>QuantConnect Cloud runs the latest version of LEAN and the brokerage integrations. In local deployments, you update the LEAN image yourself, and you rebuild any custom LEAN builds you run. For example, to pull the latest image when you deploy a live algorithm with the CLI, pass the <code>--update</code> option to the <a href='/docs/v2/lean-cli/api-reference/lean-live-deploy'><code>lean live deploy</code></a> command.</p>
+
+<h4>User Interface</h4>
+<p>The Cloud Platform target gives you the web IDE, the <a href='/docs/v2/cloud-platform/backtesting/results'>backtest results</a> page, and the <a href='/docs/v2/cloud-platform/live-trading/results'>live results</a> page, which you can open in any browser. In local deployments, the results are on the computer that runs LEAN.</p>
+
+<h4>Live Operations</h4>
+<p>QuantConnect Cloud provides the following live trading features that local deployments don't have:</p>
+<ul>
+    <li><a href='/docs/v2/cloud-platform/live-trading/deployment#07-Automatic-Restarts'>Automatic restarts</a> after a runtime error or an API disconnection.</li>
+    <li>An <a href='/docs/v2/cloud-platform/live-trading/results#15-Errors'>email</a> when your live algorithm stops because of a runtime error.</li>
+    <li>For Interactive Brokers, an email with a <span class="button-name">Connect</span> button when you miss the <a href='/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#13-System-Resets'>weekly re-authentication</a>, so you can reconnect before the market opens.</li>
+</ul>
+<p>In local deployments, you monitor the computer, Docker, and the algorithm yourself. The algorithm runs only while the computer runs.</p>
+
+<h4>Support</h4>
+<p>In QuantConnect Cloud, the <a href='/docs/v2/cloud-platform/organizations/support'>Support Team</a> can review the logs of your deployments and report any bug they expose to the engineering team. In local deployments, the logs stay on your computer, so you share them with the Support Team yourself.</p>
