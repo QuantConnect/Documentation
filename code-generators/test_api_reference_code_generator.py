@@ -5,6 +5,7 @@ Usage:
 """
 
 import importlib.util
+import json
 import pathlib
 import tempfile
 import unittest
@@ -83,6 +84,41 @@ class NullableTypeTests(unittest.TestCase):
 
     def test_non_nullable_ref(self):
         self.assert_cell("plainRef", "Detail object", required=False, nullable=False)
+
+
+
+class ExampleRefTests(unittest.TestCase):
+
+    def _example(self, schemas, properties):
+        with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
+            yaml.safe_dump({"components": {"schemas": schemas}}, f)
+        self.addCleanup(pathlib.Path(f.name).unlink)
+        json_str, _, _ = _module.APIReferenceGenerator(f.name)._build_properties(properties, [])
+        return json.loads(json_str)
+
+    def test_ref_to_oneof_schema_is_valid_json(self):
+        schemas = {
+            "ParameterSet": {
+                "oneOf": [
+                    {"type": "array", "maxItems": 0},
+                    {
+                        "type": "object",
+                        "additionalProperties": {
+                            "oneOf": [{"type": "string"}, {"type": "number"}]
+                        },
+                    },
+                ]
+            }
+        }
+        example = self._example(
+            schemas, {"parameterSet": {"$ref": "#/components/schemas/ParameterSet"}}
+        )
+        self.assertEqual({"parameterSet": {"key": 0}}, example)
+
+    def test_ref_to_oneof_schema_without_object_variant_uses_first_variant(self):
+        schemas = {"Name": {"oneOf": [{"type": "string"}, {"type": "null"}]}}
+        example = self._example(schemas, {"name": {"$ref": "#/components/schemas/Name"}})
+        self.assertEqual({"name": "string"}, example)
 
 
 if __name__ == "__main__":

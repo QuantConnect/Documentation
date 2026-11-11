@@ -628,6 +628,12 @@ class APIReferenceGenerator:
             return inner, type_label, desc, prop
         if ref_schema and "type" in ref_schema:
             return "", self._normalize_type(ref_schema["type"]), ref_schema.get("description", desc), ref_schema
+        if ref_schema and "oneOf" in ref_schema:
+            variants = [v for v in ref_schema["oneOf"] if v.get("type") != "null"]
+            # An object variant shows the schema's keys, where an empty-list variant shows none
+            variant = next((v for v in variants if v.get("type") == "object"), variants[0])
+            _, _, json_value, _ = self._process_property("", variant, ref_queue, indent)
+            return json_value, type_label, ref_schema.get("description", desc), prop
         return "", type_label, desc, prop
 
     def _example_key_value(self, prop, ref_queue, indent):
