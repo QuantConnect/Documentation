@@ -6,7 +6,7 @@
 </div>
 
 <p>
-  If you are live trading Equities or backtesting Equities without the adjusted <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization mode</a>, 
+  If you trade Equities live or backtest them with the <code class="csharp">Raw</code><code class="python">RAW</code> <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization mode</a>, 
   reset your consolidators when <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">splits</a> and <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#03-Dividends">dividends</a> occur. 
   When a split or dividend occurs while the consolidator is in the process of building a bar, the open, high, and low may reflect prices from before the split or dividend. 
   To avoid issues, call the consolidator's <code class="csharp">Reset</code><code class="python">reset</code> method and then warm it up with <code class="csharp">ScaledRaw</code><code class="python">SCALED_RAW</code> data from a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>.
