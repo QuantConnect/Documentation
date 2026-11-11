@@ -3155,8 +3155,10 @@ components:
           type: [integer, "null"]
           description: Number of tradeable days
         parameterSet:
+          type: array
           description: Parameters used in the backtest.
-          $ref: '#/components/schemas/ParameterSet'
+          items:
+            $ref: '#/components/schemas/BacktestParameter'
         snapshotId:
           type: integer
           description: Snapshot id of this backtest result.
@@ -6670,6 +6672,23 @@ components:
           description: The current price at order submission time.
           format: float
       description: Stores time and price information available at the time an order was submitted.
+    BacktestParameter:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        key:
+          type: [string, integer]
+          description: Name of the parameter. A numeric name is an integer.
+          examples:
+            - lookback
+        value:
+          type: [string, number, boolean, "null"]
+          description: Value of the parameter. It can be a string, number, boolean, or null.
+          examples:
+            - "20"
+      description: Parameter name and value used in a backtest.
     ParameterSet:
       oneOf:
         - type: array # an empty list
