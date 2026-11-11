@@ -594,9 +594,10 @@ class APIReferenceGenerator:
         if "oneOf" in add_prop:
             types = [self._normalize_type(t["type"]) for t in add_prop["oneOf"] if "type" in t]
             type_label = "/".join(types) + " object"
-            if "number" in types or "integer" in types:
-                return f'{{\n{tab}    "key": 0\n{tab}  }}', type_label
-            return f'{{\n{tab}    "key": "string"\n{tab}  }}', type_label
+            # 0 is both a number and an integer, which oneOf rejects, so a string value comes first
+            if "string" in types:
+                return f'{{\n{tab}    "key": "string"\n{tab}  }}', type_label
+            return f'{{\n{tab}    "key": 0\n{tab}  }}', type_label
 
         if "$ref" in add_prop:
             ref_path = self._ref_path(add_prop["$ref"])

@@ -10,6 +10,7 @@ import pathlib
 import tempfile
 import unittest
 
+import jsonschema
 import yaml
 
 _spec = importlib.util.spec_from_file_location(
@@ -96,24 +97,24 @@ class ExampleRefTests(unittest.TestCase):
         json_str, _, _ = _module.APIReferenceGenerator(f.name)._build_properties(properties, [])
         return json.loads(json_str)
 
-    def test_ref_to_oneof_schema_is_valid_json(self):
-        schemas = {
-            "ParameterSet": {
-                "oneOf": [
-                    {"type": "array", "maxItems": 0},
-                    {
-                        "type": "object",
-                        "additionalProperties": {
-                            "oneOf": [{"type": "string"}, {"type": "number"}]
-                        },
+    def test_ref_to_oneof_schema_conforms_to_schema(self):
+        parameter_set = {
+            "oneOf": [
+                {"type": "array", "maxItems": 0},
+                {
+                    "type": "object",
+                    "additionalProperties": {
+                        "oneOf": [{"type": "string"}, {"type": "number"}, {"type": "integer"}]
                     },
-                ]
-            }
+                },
+            ]
         }
         example = self._example(
-            schemas, {"parameterSet": {"$ref": "#/components/schemas/ParameterSet"}}
+            {"ParameterSet": parameter_set},
+            {"parameterSet": {"$ref": "#/components/schemas/ParameterSet"}},
         )
-        self.assertEqual({"parameterSet": {"key": 0}}, example)
+        self.assertEqual({"parameterSet": {"key": "string"}}, example)
+        jsonschema.validate(example["parameterSet"], parameter_set)
 
     def test_ref_to_oneof_schema_without_object_variant_uses_first_variant(self):
         schemas = {"Name": {"oneOf": [{"type": "string"}, {"type": "null"}]}}
