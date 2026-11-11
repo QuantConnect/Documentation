@@ -1,3 +1,6 @@
 <p>
     The Lean CLI supports live trading on your local machine or in QuantConnect Cloud, which makes the transfer from backtesting to live trading as seamless as possible. You must <a href='/docs/v2/lean-cli/initialization/authentication#02-Log-In'>log in</a> using your QuantConnect account to deply your algorithm on your local machine or in QuantConnect Cloud. This page contains instructions on how to start live trading with the <?=$brokerageName?> brokerage. If the <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean Configuration file</a> in your <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> contains values for some of the command options, the CLI skips some of the prompts.
 </p>
+<p>
+    When you deploy on your own computer or server, you manage the data, the monitoring, and the restarts yourself. QuantConnect Cloud keeps the data on its servers and can restart your algorithm automatically. It also emails you when a runtime error stops your algorithm. For the full list of differences, see <a href='/docs/v2/local-platform/key-concepts/deployment-targets#05-Comparison'>Comparison</a>.
+</p>
