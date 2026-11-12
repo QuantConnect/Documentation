@@ -4,8 +4,11 @@ Usage:
     python -m unittest discover -s code-generators -p "test_*.py"
 """
 
+import contextlib
 import importlib.util
+import io
 import json
+import os
 import pathlib
 import tempfile
 import unittest
@@ -190,6 +193,28 @@ class ShapeExampleTests(ExampleTestCase):
         example = self._example({}, {"values": values})
         jsonschema.validate(example["values"], values)
 
+    def test_oneof_of_refs_uses_first_variant(self):
+        schemas = {
+            "Base": {"type": "object", "properties": {"key": {"type": "string"}}},
+            "Paper": {"type": "object", "required": ["id"], "properties": {"id": {"type": "string", "enum": ["Paper"]}}},
+            "Exchange": {
+                "allOf": [
+                    {"$ref": "#/components/schemas/Base"},
+                    {"type": "object", "properties": {"id": {"type": "string", "enum": ["Exchange"]}}},
+                ]
+            },
+        }
+        brokerage = {
+            "type": "object",
+            "oneOf": [{"$ref": "#/components/schemas/Paper"}, {"$ref": "#/components/schemas/Exchange"}],
+        }
+        example = self._example(schemas, {"brokerage": brokerage})
+        self.assertEqual({"brokerage": {"id": "Paper"}}, example)
+
+    def test_binary_string_is_json_string(self):
+        example = self._example({}, {"objectData": {"type": "string", "format": "binary"}})
+        self.assertEqual({"objectData": "Hello, world!"}, example)
+
 
 class PlatformSpecParameterTests(unittest.TestCase):
 
@@ -213,6 +238,122 @@ class PlatformSpecParameterTests(unittest.TestCase):
 
     def test_create_backtest_parameters_accept_scalar_values(self):
         self.assert_accepts_scalar_values(self.schemas["CreateBacktestRequest"]["properties"]["parameters"])
+
+    def test_files_examples_are_file_arrays(self):
+        spec = {"components": {"schemas": self.schemas}}
+        for name in ("BasicFilesRequest", "PEP8ConvertRequest"):
+            files = self.schemas[name]["properties"]["files"]
+            with self.subTest(schema=name):
+                jsonschema.Draft202012Validator({**spec, **files}).validate(files["examples"][0])
+
+
+class AllOfSchemaTests(unittest.TestCase):
+
+    def test_allof_response_merges_properties(self):
+        schemas = {
+            "RestResponse": {"type": "object", "properties": {"success": {"type": "boolean"}}},
+            "Detail": {"type": "object", "properties": {"name": {"type": "string"}}},
+            "DetailResponse": {
+                "allOf": [
+                    {"$ref": "#/components/schemas/RestResponse"},
+                    {
+                        "type": "object",
+                        "required": ["detail"],
+                        "properties": {"detail": {"$ref": "#/components/schemas/Detail"}},
+                    },
+                ],
+                "description": "Response wrapping a detail.",
+            },
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
+            yaml.safe_dump({"components": {"schemas": schemas}}, f)
+        self.addCleanup(pathlib.Path(f.name).unlink)
+        response = {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/DetailResponse"}}}}
+        tables = _module.APIReferenceGenerator(f.name)._build_schema_tables(response).split("</table>")[:-1]
+
+        self.assertEqual(2, len(tables))
+        self.assertIn("<code>DetailResponse</code> Model - Response wrapping a detail.", tables[0])
+        self.assertIn('<td width="20%">success</td> <td> <code>boolean</code>', tables[0])
+        self.assertIn(f'<td width="20%">detail</td> <td> <code>Detail object<br/>{REQUIRED}</code>', tables[0])
+        example = tables[0].split("<pre>\n")[1].split("</pre>")[0]
+        self.assertEqual({"success": True, "detail": {"name": "string"}}, json.loads(example))
+        self.assertIn("<code>Detail</code> Model", tables[1])
+
+
+class AnyOfResponseTests(unittest.TestCase):
+
+    def test_anyof_response_documents_every_variant(self):
+        schemas = {
+            "LoadingResponse": {"type": "object", "properties": {"status": {"type": "string"}}},
+            "OrdersResponse": {"type": "object", "properties": {"length": {"type": "integer"}}},
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
+            yaml.safe_dump({"components": {"schemas": schemas}}, f)
+        self.addCleanup(pathlib.Path(f.name).unlink)
+        variants = [{"$ref": "#/components/schemas/LoadingResponse"}, {"$ref": "#/components/schemas/OrdersResponse"}]
+        response = {"content": {"application/json": {"schema": {"anyOf": variants}}}}
+        tables = _module.APIReferenceGenerator(f.name)._build_schema_tables(response).split("</table>")[:-1]
+
+        self.assertEqual(2, len(tables))
+        self.assertIn("<code>LoadingResponse</code> Model", tables[0])
+        self.assertIn("<code>OrdersResponse</code> Model", tables[1])
+
+
+class PlatformSpecResponseAlternativeTests(unittest.TestCase):
+
+    LOADING = {"progress": 0, "status": "loading", "success": True}
+
+    @classmethod
+    def setUpClass(cls):
+        path = pathlib.Path(__file__).parent.parent / "QuantConnect-Platform-2.0.0.yaml"
+        cls.spec = yaml.safe_load(path.read_text())
+
+    def assert_valid(self, endpoint, example):
+        schema = self.spec["paths"][endpoint]["post"]["responses"]["200"]["content"]["application/json"]["schema"]
+        jsonschema.Draft202012Validator({**self.spec, **schema}).validate(example)
+
+    def test_loading_and_completed_responses_are_valid(self):
+        completed = {
+            "/backtests/orders/read": {"orders": [], "length": 0},
+            "/backtests/trades/read": {"trades": [], "length": 0, "success": True},
+            "/live/orders/read": {"orders": [], "length": 0, "success": True},
+            "/live/trades/read": {"trades": [], "length": 0, "success": True},
+            "/backtests/chart/read": {"chart": {"name": "Strategy Equity"}, "success": True},
+            "/live/chart/read": {"chart": {"name": "Strategy Equity"}, "success": True},
+        }
+        for endpoint, example in completed.items():
+            for response in (self.LOADING, example):
+                with self.subTest(endpoint=endpoint, response=response):
+                    self.assert_valid(endpoint, response)
+
+    def test_file_update_responses_are_valid(self):
+        self.assert_valid("/files/update", {"success": True, "errors": []})
+        self.assert_valid("/files/update", {"files": [], "success": True, "errors": []})
+
+    def test_report_responses_are_valid(self):
+        self.assert_valid("/backtests/read/report", {"report": "<html></html>", "success": True, "errors": []})
+        self.assert_valid("/backtests/read/report", {"generating": True, "success": True, "errors": []})
+
+
+class GeneratedPagesTests(unittest.TestCase):
+
+    def test_every_generated_page_is_written_by_the_generator(self):
+        root = pathlib.Path(__file__).parent.parent
+        spec_path = root / "QuantConnect-Platform-2.0.0.yaml"
+        reference = pathlib.Path("01 Cloud Platform") / "99 API Reference"
+        committed = {
+            path.relative_to(root)
+            for path in (root / reference).rglob("*.html")
+            if path.read_text().startswith(_module.GENERATED_COMMENT)
+        }
+        with tempfile.TemporaryDirectory() as folder:
+            cwd = pathlib.Path.cwd()
+            os.chdir(folder)
+            self.addCleanup(os.chdir, cwd)
+            with contextlib.redirect_stdout(io.StringIO()):
+                _module.APIReferenceGenerator(spec_path).generate()
+            written = {path.relative_to(folder) for path in (pathlib.Path(folder) / reference).rglob("*.html")}
+        self.assertEqual(set(), committed - written)
 
 
 if __name__ == "__main__":

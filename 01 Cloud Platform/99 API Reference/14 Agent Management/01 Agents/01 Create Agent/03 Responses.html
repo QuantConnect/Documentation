@@ -4,7 +4,366 @@
 The <code>/agents/create</code> API provides a response in the following format:
 </p>
 <h4>200 Success</h4>
-<h4>401 Authentication Error</h4>
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentResponse</code> Model - Response wrapping a single agent.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
+</tr>
+<tr>
+<td width="20%">errors</td> <td> <code>string Array</code> <br/> List of errors with the API call.</td>
+</tr>
+<tr>
+<td width="20%">agent</td> <td> <code>Agent object</code> <br/> An agent definition.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "success": true,
+  "errors": [
+    "string"
+  ],
+  "agent": {
+    "id": 105,
+    "name": "Creative Fluorescent Orange Parrot",
+    "description": "Customize your assistant's capabilities.",
+    "profileImage": "383f0047f1238ca1773795440.png",
+    "systemPrompt": "string",
+    "reasoningEffort": "high",
+    "maxTurns": 100,
+    "toolChoice": "auto",
+    "tools": [
+      "string"
+    ],
+    "public": true,
+    "model": "claude-opus-4-7",
+    "pipeline": "string",
+    "outputSchema": {},
+    "created": "2026-05-12 17:08:53",
+    "updated": "2026-05-12 17:08:53",
+    "author": {
+      "publicId": "alexandre_catarino",
+      "name": "Alexandre Catarino",
+      "image": "e76004d3a79bb421536616863.jpeg"
+    },
+    "organization": {
+      "id": "3b137fed57f2326cc68e746f4eb99639",
+      "name": "QuantConnect",
+      "profile": "167df5c7cd6b3171771270587.png"
+    },
+    "chainedAgents": [
+      {
+        "agentId": 105,
+        "step": 1,
+        "agent": {}
+      }
+    ],
+    "subAgents": [
+      {
+        "agentId": 105,
+        "callableCount": 1
+      }
+    ],
+    "token": {
+      "llmApiTokenUser": "sk-ant-api03-u78VgglQR-EkS-ymkG0QPoSJMl7G0z6mwC5Z3LrpAZ88TCdGpAVa1TQ4SzKIhh3aPhmrmI_A-tznXzcKcRQTBTkXaiVv4AA",
+      "llmProviderApi": "anthropic"
+    },
+    "useQCC": true,
+    "node": {
+      "id": 0,
+      "sku": "A-8"
+    }
+  }
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Agent</code> Model - An agent definition.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>integer<br/><i><sub>example: 105</sub></i></code> <br/> Identifier of the agent.</td>
+</tr>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>example: Creative Fluorescent Orange Parrot</sub></i></code> <br/> Name of the agent.</td>
+</tr>
+<tr>
+<td width="20%">description</td> <td> <code>string<br/><i><sub>example: Customize your assistant's capabilities.</sub></i></code> <br/> Short description of the agent.</td>
+</tr>
+<tr>
+<td width="20%">profileImage</td> <td> <code>string<br/><i><sub>example: 383f0047f1238ca1773795440.png</sub></i></code> <br/> Filename of the agent's profile image.</td>
+</tr>
+<tr>
+<td width="20%">systemPrompt</td> <td> <code>string</code> <br/> System prompt that defines the agent's behavior.</td>
+</tr>
+<tr>
+<td width="20%">reasoningEffort</td> <td> <code>string Enum<br/><i><sub>example: high</sub></i></code> <br/> Reasoning effort applied by the underlying model. Options : ['low', 'medium', 'high']</td>
+</tr>
+<tr>
+<td width="20%">maxTurns</td> <td> <code>integer<br/><i><sub>example: 100</sub></i></code> <br/> Maximum number of agent turns allowed in a single deployment.</td>
+</tr>
+<tr>
+<td width="20%">toolChoice</td> <td> <code>string<br/><i><sub>example: auto</sub></i></code> <br/> Tool selection policy for the agent.</td>
+</tr>
+<tr>
+<td width="20%">tools</td> <td> <code>string Array</code> <br/> Identifiers of the tools available to the agent.</td>
+</tr>
+<tr>
+<td width="20%">public</td> <td> <code>boolean</code> <br/> Whether the agent is shared publicly within the organization.</td>
+</tr>
+<tr>
+<td width="20%">model</td> <td> <code>string<br/><i><sub>nullable</sub></i><br/><i><sub>example: claude-opus-4-7</sub></i></code> <br/> Model identifier the agent runs on, or null to use the organization default.</td>
+</tr>
+<tr>
+<td width="20%">pipeline</td> <td> <code>string<br/><i><sub>nullable</sub></i></code> <br/> Pipeline assigned to the agent, when set.</td>
+</tr>
+<tr>
+<td width="20%">outputSchema</td> <td> <code>object<br/><i><sub>nullable</sub></i></code> <br/> JSON schema describing the agent's structured output, when set.</td>
+</tr>
+<tr>
+<td width="20%">created</td> <td> <code>string<br/><i><sub>example: 2026-05-12 17:08:53</sub></i></code> <br/> Creation timestamp.</td>
+</tr>
+<tr>
+<td width="20%">updated</td> <td> <code>string<br/><i><sub>example: 2026-05-12 17:08:53</sub></i></code> <br/> Last-updated timestamp.</td>
+</tr>
+<tr>
+<td width="20%">author</td> <td> <code>AgentTaskOwner object</code> <br/> Owner of an agent task.</td>
+</tr>
+<tr>
+<td width="20%">organization</td> <td> <code>AgentOrganization object</code> <br/> Organization summary embedded on an agent.</td>
+</tr>
+<tr>
+<td width="20%">chainedAgents</td> <td> <code>AgentChainedEntry Array</code> <br/> Agents chained after this one in a multi-agent pipeline.</td>
+</tr>
+<tr>
+<td width="20%">subAgents</td> <td> <code>AgentSubAgentEntry Array</code> <br/> Sub-agents invoked by this agent.</td>
+</tr>
+<tr>
+<td width="20%">token</td> <td> <code>AgentToken object<br/><i><sub>nullable</sub></i></code> <br/> User-supplied LLM provider credentials attached to an agent.</td>
+</tr>
+<tr>
+<td width="20%">useQCC</td> <td> <code>boolean</code> <br/> Whether the agent runs on the QuantConnect Cloud LLM provider instead of a user-supplied token.</td>
+</tr>
+<tr>
+<td width="20%">node</td> <td> <code>AgentNode object</code> <br/> Compute node bound to an agent.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": 105,
+  "name": "Creative Fluorescent Orange Parrot",
+  "description": "Customize your assistant's capabilities.",
+  "profileImage": "383f0047f1238ca1773795440.png",
+  "systemPrompt": "string",
+  "reasoningEffort": "high",
+  "maxTurns": 100,
+  "toolChoice": "auto",
+  "tools": [
+    "string"
+  ],
+  "public": true,
+  "model": "claude-opus-4-7",
+  "pipeline": "string",
+  "outputSchema": {},
+  "created": "2026-05-12 17:08:53",
+  "updated": "2026-05-12 17:08:53",
+  "author": {
+    "publicId": "alexandre_catarino",
+    "name": "Alexandre Catarino",
+    "image": "e76004d3a79bb421536616863.jpeg"
+  },
+  "organization": {
+    "id": "3b137fed57f2326cc68e746f4eb99639",
+    "name": "QuantConnect",
+    "profile": "167df5c7cd6b3171771270587.png"
+  },
+  "chainedAgents": [
+    {
+      "agentId": 105,
+      "step": 1,
+      "agent": {}
+    }
+  ],
+  "subAgents": [
+    {
+      "agentId": 105,
+      "callableCount": 1
+    }
+  ],
+  "token": {
+    "llmApiTokenUser": "sk-ant-api03-u78VgglQR-EkS-ymkG0QPoSJMl7G0z6mwC5Z3LrpAZ88TCdGpAVa1TQ4SzKIhh3aPhmrmI_A-tznXzcKcRQTBTkXaiVv4AA",
+    "llmProviderApi": "anthropic"
+  },
+  "useQCC": true,
+  "node": {
+    "id": 0,
+    "sku": "A-8"
+  }
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentTaskOwner</code> Model - Owner of an agent task.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">publicId</td> <td> <code>string<br/><i><sub>example: alexandre_catarino</sub></i></code> <br/> Public profile slug of the user.</td>
+</tr>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>example: Alexandre Catarino</sub></i></code> <br/> Display name of the user.</td>
+</tr>
+<tr>
+<td width="20%">image</td> <td> <code>string<br/><i><sub>example: e76004d3a79bb421536616863.jpeg</sub></i></code> <br/> Filename of the user's profile image.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "publicId": "alexandre_catarino",
+  "name": "Alexandre Catarino",
+  "image": "e76004d3a79bb421536616863.jpeg"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentOrganization</code> Model - Organization summary embedded on an agent.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string<br/><i><sub>example: 3b137fed57f2326cc68e746f4eb99639</sub></i></code> <br/> Identifier of the organization.</td>
+</tr>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>example: QuantConnect</sub></i></code> <br/> Display name of the organization.</td>
+</tr>
+<tr>
+<td width="20%">profile</td> <td> <code>string<br/><i><sub>example: 167df5c7cd6b3171771270587.png</sub></i></code> <br/> Filename of the organization's profile image.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "3b137fed57f2326cc68e746f4eb99639",
+  "name": "QuantConnect",
+  "profile": "167df5c7cd6b3171771270587.png"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentChainedEntry</code> Model - One entry in an agent's chain of follow-up agents.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">agentId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 105</sub></i></code> <br/> Identifier of the chained agent.</td>
+</tr>
+<tr>
+<td width="20%">step</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 1</sub></i></code> <br/> Ordinal position of the agent in the chain.</td>
+</tr>
+<tr>
+<td width="20%">agent</td> <td> <code>object</code> <br/> Embedded agent definition, populated when the chain entry is expanded.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "agentId": 105,
+  "step": 1,
+  "agent": {}
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentSubAgentEntry</code> Model - One sub-agent reference attached to an agent.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">agentId</td> <td> <code>integer<br/><i><sub>required</sub></i><br/><i><sub>example: 105</sub></i></code> <br/> Identifier of the sub-agent.</td>
+</tr>
+<tr>
+<td width="20%">callableCount</td> <td> <code>integer<br/><i><sub>example: 1</sub></i></code> <br/> Maximum number of times this sub-agent can be invoked per deployment.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "agentId": 105,
+  "callableCount": 1
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentToken</code> Model - User-supplied LLM provider credentials attached to an agent.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">llmApiTokenUser</td> <td> <code>string<br/><i><sub>example: sk-ant-api03-u78VgglQR-EkS-ymkG0QPoSJMl7G0z6mwC5Z3LrpAZ88TCdGpAVa1TQ4SzKIhh3aPhmrmI_A-tznXzcKcRQTBTkXaiVv4AA</sub></i></code> <br/> API token supplied by the user for the chosen LLM provider.</td>
+</tr>
+<tr>
+<td width="20%">llmProviderApi</td> <td> <code>string<br/><i><sub>example: anthropic</sub></i></code> <br/> Identifier of the LLM provider the token is for.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "llmApiTokenUser": "sk-ant-api03-u78VgglQR-EkS-ymkG0QPoSJMl7G0z6mwC5Z3LrpAZ88TCdGpAVa1TQ4SzKIhh3aPhmrmI_A-tznXzcKcRQTBTkXaiVv4AA",
+  "llmProviderApi": "anthropic"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentNode</code> Model - Compute node bound to an agent.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>integer<br/><i><sub>example: 0</sub></i></code> <br/> Identifier of the compute node assigned to the agent, or 0 when not pinned.</td>
+</tr>
+<tr>
+<td width="20%">sku</td> <td> <code>string<br/><i><sub>example: A-8</sub></i></code> <br/> SKU of the compute node assigned to the agent.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": 0,
+  "sku": "A-8"
+}</pre>
+</div>
+</td>
+</tr>
+</table><h4>401 Authentication Error</h4>
 <table class="table qc-table">
 <thead>
 <tr>

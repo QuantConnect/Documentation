@@ -224,11 +224,11 @@ class APIReferenceGenerator:
                 root_paths = [self._ref_path(component["items"]["$ref"])]
                 is_array = True
                 order = 1
-            elif "oneOf" in component:
+            elif "oneOf" in component or "anyOf" in component:
                 # The response is one of several models. Document all of them.
                 root_paths = [
                     self._ref_path(variant["$ref"])
-                    for variant in component["oneOf"]
+                    for variant in component.get("oneOf") or component["anyOf"]
                     if "$ref" in variant
                 ]
                 if not root_paths:
@@ -257,9 +257,9 @@ class APIReferenceGenerator:
                 idx += 1
                 continue
 
-            # Top-level oneOf → enqueue each variant
-            if "oneOf" in schema:
-                for variant in schema["oneOf"]:
+            # Top-level oneOf/anyOf → enqueue each variant
+            if "oneOf" in schema or "anyOf" in schema:
+                for variant in schema.get("oneOf") or schema["anyOf"]:
                     if "$ref" in variant:
                         queue.append(self._ref_path(variant["$ref"]))
                     elif "type" in variant and variant["type"] != "null":
@@ -311,7 +311,7 @@ class APIReferenceGenerator:
         """Extract the properties dict from a schema, handling edge cases.
 
         Returns the properties dict, or None if the schema should be skipped.
-        Redirects (content, allOf) are enqueued and return None.
+        Content redirects are enqueued and return None. allOf parts are merged.
         """
         if "properties" in schema:
             properties = dict(schema["properties"])  # shallow copy
@@ -319,6 +319,14 @@ class APIReferenceGenerator:
                 if req in properties:
                     properties[req] = dict(properties[req])
                     properties[req]["required"] = True
+            return properties
+
+        if "allOf" in schema:
+            properties = {}
+            for part in schema["allOf"]:
+                part = self._navigate(self._ref_path(part["$ref"])) if "$ref" in part else part
+                if "properties" in part or "allOf" in part:
+                    properties.update(self._extract_properties(part, queue))
             return properties
 
         if "content" in schema:
@@ -506,7 +514,7 @@ class APIReferenceGenerator:
         if not fmt:
             return '"string"', type_label
         if fmt == "binary":
-            return 'b"Hello, world!"', "binary"
+            return '"Hello, world!"', "binary"
         return '"2021-11-26T15:18:27.693Z"', f"{type_label}(${fmt})"
 
     def _example_array(self, prop, ref_queue, indent):
@@ -648,42 +656,16 @@ class APIReferenceGenerator:
         return inner, "object"
 
     def _example_oneof(self, prop, ref_queue, indent):
-        """Handle a property with oneOf variants."""
-        tab = "  " * indent
-        json_value = "{\n"
-
-        for variant in prop["oneOf"]:
-            if "$ref" not in variant:
-                continue
-            path = self._ref_path(variant["$ref"])
-            vname = path[-1]
-            if vname.startswith("_"):
-                continue
-            ref_queue.append(path)
-
-            ref_schema = self._navigate(path)
-            if not ref_schema:
-                continue
-
-            if "type" in ref_schema:
-                json_value += tab + f'  "{vname}": {self._normalize_type(ref_schema["type"])},\n'
-            elif "allOf" in ref_schema:
-                json_value += tab + f'  "{vname}": {{\n'
-                for part in ref_schema["allOf"]:
-                    if "$ref" not in part:
-                        continue
-                    sub_path = self._ref_path(part["$ref"])
-                    ref_queue.append(sub_path)
-                    sub = self._navigate(sub_path)
-                    if sub and "properties" in sub:
-                        inner, _, ref_queue = self._build_properties(
-                            sub["properties"], ref_queue, indent=indent + 2
-                        )
-                        json_value += inner + ",\n"
-                json_value += tab + "  },\n"
-
-        json_value += tab + "}"
-        return json_value, "object"
+        """Handle a property with oneOf variants: table every variant, exemplify the first."""
+        paths = [
+            self._ref_path(variant["$ref"])
+            for variant in prop["oneOf"]
+            if "$ref" in variant and not self._ref_name(variant["$ref"]).startswith("_")
+        ]
+        ref_queue.extend(paths)
+        properties = self._extract_properties(self._navigate(paths[0]), ref_queue) or {}
+        inner, _, ref_queue = self._build_properties(properties, ref_queue, indent=indent + 1)
+        return inner, "object"
 
     def _example_allof(self, prop, ref_queue, indent):
         """Handle a property with allOf (schema composition)."""

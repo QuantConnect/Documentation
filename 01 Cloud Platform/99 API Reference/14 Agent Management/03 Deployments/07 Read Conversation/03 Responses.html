@@ -4,7 +4,260 @@
 The <code>/agents/deployments/conversation/read</code> API provides a response in the following format:
 </p>
 <h4>200 Success</h4>
-<h4>401 Authentication Error</h4>
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentConversationResponse</code> Model - Response wrapping the conversation transcript of an agent deployment.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
+</tr>
+<tr>
+<td width="20%">errors</td> <td> <code>string Array</code> <br/> List of errors with the API call.</td>
+</tr>
+<tr>
+<td width="20%">conversation</td> <td> <code>AgentConversation object</code> <br/> Full conversation transcript and metadata for an agent deployment.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "success": true,
+  "errors": [
+    "string"
+  ],
+  "conversation": {
+    "id": "string",
+    "userId": 0,
+    "organizationId": "string",
+    "channel": "string",
+    "projectId": 0,
+    "prompt": "string",
+    "agents": [
+      {}
+    ],
+    "notificationTargets": [
+      {}
+    ],
+    "messages": [
+      {
+        "id": "string",
+        "role": "user",
+        "parts": [
+          {
+            "type": "text",
+            "text": "string",
+            "state": "string",
+            "toolName": "string",
+            "input": {},
+            "output": {},
+            "messages": [
+              {}
+            ]
+          }
+        ],
+        "time": "string"
+      }
+    ],
+    "agentProperties": {},
+    "chatMessages": [
+      {}
+    ],
+    "inputTokens": 0,
+    "outputTokens": 0,
+    "aggregateStatus": "Running"
+  }
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentConversation</code> Model - Full conversation transcript and metadata for an agent deployment.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Identifier of the deployment this conversation belongs to.</td>
+</tr>
+<tr>
+<td width="20%">userId</td> <td> <code>integer</code> <br/> Identifier of the user that owns the deployment.</td>
+</tr>
+<tr>
+<td width="20%">organizationId</td> <td> <code>string</code> <br/> Identifier of the organization that owns the deployment.</td>
+</tr>
+<tr>
+<td width="20%">channel</td> <td> <code>string</code> <br/> Internal pub/sub channel of the deployment.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> Identifier of the project the deployment runs against.</td>
+</tr>
+<tr>
+<td width="20%">prompt</td> <td> <code>string</code> <br/> Prompt the deployment is executing.</td>
+</tr>
+<tr>
+<td width="20%">agents</td> <td> <code>object Array</code> <br/> Agent definitions participating in the conversation.</td>
+</tr>
+<tr>
+<td width="20%">notificationTargets</td> <td> <code>object Array</code> <br/> Notification targets configured for the deployment.</td>
+</tr>
+<tr>
+<td width="20%">messages</td> <td> <code>AgentConversationMessage Array</code> <br/> Conversation messages, in order.</td>
+</tr>
+<tr>
+<td width="20%">agentProperties</td> <td> <code>object</code> <br/> Per-agent runtime properties.</td>
+</tr>
+<tr>
+<td width="20%">chatMessages</td> <td> <code>object Array</code> <br/> Flat chat-style transcript of the conversation.</td>
+</tr>
+<tr>
+<td width="20%">inputTokens</td> <td> <code>integer</code> <br/> Total input tokens consumed by the deployment so far.</td>
+</tr>
+<tr>
+<td width="20%">outputTokens</td> <td> <code>integer</code> <br/> Total output tokens produced by the deployment so far.</td>
+</tr>
+<tr>
+<td width="20%">aggregateStatus</td> <td> <code>string<br/><i><sub>example: Running</sub></i></code> <br/> Aggregate status of the deployment.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "userId": 0,
+  "organizationId": "string",
+  "channel": "string",
+  "projectId": 0,
+  "prompt": "string",
+  "agents": [
+    {}
+  ],
+  "notificationTargets": [
+    {}
+  ],
+  "messages": [
+    {
+      "id": "string",
+      "role": "user",
+      "parts": [
+        {
+          "type": "text",
+          "text": "string",
+          "state": "string",
+          "toolName": "string",
+          "input": {},
+          "output": {},
+          "messages": [
+            {}
+          ]
+        }
+      ],
+      "time": "string"
+    }
+  ],
+  "agentProperties": {},
+  "chatMessages": [
+    {}
+  ],
+  "inputTokens": 0,
+  "outputTokens": 0,
+  "aggregateStatus": "Running"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentConversationMessage</code> Model - One message in an agent conversation.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>string</code> <br/> Identifier of the message.</td>
+</tr>
+<tr>
+<td width="20%">role</td> <td> <code>string<br/><i><sub>example: user</sub></i></code> <br/> Author of the message.</td>
+</tr>
+<tr>
+<td width="20%">parts</td> <td> <code>AgentConversationMessagePart Array</code> <br/> Ordered parts that make up the message.</td>
+</tr>
+<tr>
+<td width="20%">time</td> <td> <code>string</code> <br/> Timestamp the message was produced.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": "string",
+  "role": "user",
+  "parts": [
+    {
+      "type": "text",
+      "text": "string",
+      "state": "string",
+      "toolName": "string",
+      "input": {},
+      "output": {},
+      "messages": [
+        {}
+      ]
+    }
+  ],
+  "time": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentConversationMessagePart</code> Model - One part of a conversation message.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">type</td> <td> <code>string<br/><i><sub>example: text</sub></i></code> <br/> Kind of part (text, reasoning, dynamic-tool, step-start, etc.).</td>
+</tr>
+<tr>
+<td width="20%">text</td> <td> <code>string</code> <br/> Text content, when the part is text or reasoning.</td>
+</tr>
+<tr>
+<td width="20%">state</td> <td> <code>string</code> <br/> State of a tool-call part, when applicable.</td>
+</tr>
+<tr>
+<td width="20%">toolName</td> <td> <code>string</code> <br/> Name of the invoked tool, for dynamic-tool parts.</td>
+</tr>
+<tr>
+<td width="20%">input</td> <td> <code>object</code> <br/> Input passed to the tool, for dynamic-tool parts.</td>
+</tr>
+<tr>
+<td width="20%">output</td> <td> <code>object</code> <br/> Output returned by the tool, for dynamic-tool parts.</td>
+</tr>
+<tr>
+<td width="20%">messages</td> <td> <code>object Array</code> <br/> Sub-messages produced by the part, when applicable.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "type": "text",
+  "text": "string",
+  "state": "string",
+  "toolName": "string",
+  "input": {},
+  "output": {},
+  "messages": [
+    {}
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><h4>401 Authentication Error</h4>
 <table class="table qc-table">
 <thead>
 <tr>

@@ -70,73 +70,22 @@ Project, compile, and brokerage login information for deploying a live algorithm
   },
   "dataHandler": "string",
   "brokerage": {
-  "QuantConnectBrokerageSettings": object,
-  "InteractiveBrokersBrokerageSettings": object,
-  "TradierBrokerageSettings": object,
-  "BitfinexSettings": object,
-  "CoinbaseBrokerageSettings": {
-{
-      "id": "CoinbaseBrokerage",
-      "coinbase-api-name": "string",
-      "coinbase-api-private-key": "string"
-    },
+    "id": "QuantConnectBrokerage",
+    "holdings": [
+      {
+        "symbolId": "BTCUSD 2XR",
+        "symbol": "BTCUSD",
+        "quantity": 0,
+        "averagePrice": 0
+      }
+    ],
+    "cash": [
+      {
+        "amount": 0,
+        "currency": "string"
+      }
+    ]
   },
-  "BinanceBrokerageSettings": {
-{
-      "id": "BinanceBrokerage",
-      "binance-exchange-name": "Binance",
-      "binance-api-key": "string",
-      "binance-api-secret": "string",
-      "binance-use-testnet": "live"
-    },
-  },
-  "BinanceUSBrokerageSettings": {
-{
-      "id": "BinanceBrokerage",
-      "binance-exchange-name": "BinanceUS",
-      "binanceus-api-key": "string",
-      "binanceus-api-secret": "string"
-    },
-  },
-  "BinanceUSDMFuturesBrokerageSettings": {
-{
-      "id": "BinanceBrokerage",
-      "binance-exchange-name": "Binance-USDM-Futures",
-      "binance-api-key": "string",
-      "binance-api-secret": "string"
-    },
-  },
-  "BinanceCOINFuturesBrokerageSettings": {
-{
-      "id": "BinanceBrokerage",
-      "binance-exchange-name": "Binance-COIN-Futures",
-      "binance-api-key": "string",
-      "binance-api-secret": "string"
-    },
-  },
-  "TradingTechnologiesBrokerageSettings": object,
-  "KrakenSettings": object,
-  "BybitBrokerageSettings": {
-{
-      "id": "BybitBrokerage",
-      "bybit-api-key": "string",
-      "bybit-api-secret": "string",
-      "bybit-vip-level": "VIP0"
-    },
-  },
-  "OandaSettings": object,
-  "WolverineSettings": object,
-  "CharlesSchwabSettings": object,
-  "RBIBrokerageSettings": object,
-  "QuantBridgeSettings": object,
-  "TradeStationSettings": object,
-  "TastytradeSettings": object,
-  "AlpacaBrokerageSettings": object,
-  "WebullBrokerageSettings": object,
-  "PublicBrokerageSettings": object,
-  "ClearStreetBrokerageSettings": object,
-  "BloombergFixSettings": object,
-},
   "dataProviders": {}
 }</pre>
 </div>
@@ -313,7 +262,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>CoinbaseBrokerageAndDataProviderSettings</code> Model</th>
+<th colspan="2"><code>CoinbaseBrokerageSettings</code> Model - Settings for using Coinbase Advanced Trade as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
 <tr>
@@ -326,13 +275,24 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">coinbase-api-private-key</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Your Coinbase Advanced Trade API private key.</td>
 </tr>
 <tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
   "id": "CoinbaseBrokerage",
   "coinbase-api-name": "string",
-  "coinbase-api-private-key": "string"
+  "coinbase-api-private-key": "string",
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
@@ -340,7 +300,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BinanceBrokerageAndDataProviderSettings</code> Model</th>
+<th colspan="2"><code>BinanceBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
 <tr>
@@ -359,6 +319,9 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">binance-use-testnet</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> Whether the testnet should be used. Options : ['live', 'paper']</td>
 </tr>
 <tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -367,7 +330,15 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "binance-exchange-name": "Binance",
   "binance-api-key": "string",
   "binance-api-secret": "string",
-  "binance-use-testnet": "live"
+  "binance-use-testnet": "live",
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
@@ -375,7 +346,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BinanceUSBrokerageAndDataProviderSettings</code> Model</th>
+<th colspan="2"><code>BinanceUSBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
 <tr>
@@ -391,6 +362,9 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">binanceus-api-secret</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Your Binance API secret.</td>
 </tr>
 <tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -398,7 +372,15 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "id": "BinanceBrokerage",
   "binance-exchange-name": "BinanceUS",
   "binanceus-api-key": "string",
-  "binanceus-api-secret": "string"
+  "binanceus-api-secret": "string",
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
@@ -406,7 +388,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BinanceUSDMFuturesBrokerageAndDataProviderSettings</code> Model</th>
+<th colspan="2"><code>BinanceUSDMFuturesBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
 <tr>
@@ -422,6 +404,9 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">binance-api-secret</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Your Binance API secret.</td>
 </tr>
 <tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -429,7 +414,15 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "id": "BinanceBrokerage",
   "binance-exchange-name": "Binance-USDM-Futures",
   "binance-api-key": "string",
-  "binance-api-secret": "string"
+  "binance-api-secret": "string",
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
@@ -437,7 +430,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BinanceCOINFuturesBrokerageAndDataProviderSettings</code> Model</th>
+<th colspan="2"><code>BinanceCOINFuturesBrokerageSettings</code> Model - Settings for using Binance as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
 <tr>
@@ -453,6 +446,9 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">binance-api-secret</td> <td> <code>string<br/><i><sub>required</sub></i></code> <br/> Your Binance API secret.</td>
 </tr>
 <tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -460,7 +456,15 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "id": "BinanceBrokerage",
   "binance-exchange-name": "Binance-COIN-Futures",
   "binance-api-key": "string",
-  "binance-api-secret": "string"
+  "binance-api-secret": "string",
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
@@ -555,7 +559,7 @@ Project, compile, and brokerage login information for deploying a live algorithm
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BybitBrokerageAndDataProviderSettings</code> Model</th>
+<th colspan="2"><code>BybitBrokerageSettings</code> Model - Settings for using Bybit as the brokerage for a live algorithm.</th>
 </tr>
 </thead>
 <tr>
@@ -571,6 +575,9 @@ Project, compile, and brokerage login information for deploying a live algorithm
 <td width="20%">bybit-vip-level</td> <td> <code>string Enum<br/><i><sub>required</sub></i></code> <br/> Your Bybit VIP Level. Options : ['VIP0', 'VIP1', 'VIP2', 'VIP3', 'VIP4', 'VIP5', 'SupremeVIP', 'Pro1', 'Pro2', 'Pro3', 'Pro4', 'Pro5']</td>
 </tr>
 <tr>
+<td width="20%">holdings</td> <td> <code>BrokerageHolding Array</code> <br/> List of holdings for the brokerage.</td>
+</tr>
+<tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
@@ -578,7 +585,15 @@ Project, compile, and brokerage login information for deploying a live algorithm
   "id": "BybitBrokerage",
   "bybit-api-key": "string",
   "bybit-api-secret": "string",
-  "bybit-vip-level": "VIP0"
+  "bybit-vip-level": "VIP0",
+  "holdings": [
+    {
+      "symbolId": "BTCUSD 2XR",
+      "symbol": "BTCUSD",
+      "quantity": 0,
+      "averagePrice": 0
+    }
+  ]
 }</pre>
 </div>
 </td>
