@@ -444,6 +444,7 @@ class APIReferenceGenerator:
         type_label = self._normalize_type(prop.get("type", "object")) if isinstance(prop, dict) else "object"
         desc = prop.get("description", "/") if isinstance(prop, dict) else "/"
         # Read before dispatch, which can replace *prop* with the resolved $ref schema
+        required = isinstance(prop, dict) and prop.get("required")
         nullable = False
         if isinstance(prop, dict):
             types = [prop.get("type")] + [variant.get("type") for variant in prop.get("oneOf", [])]
@@ -475,7 +476,7 @@ class APIReferenceGenerator:
             )
 
         # --- required annotation ---
-        if isinstance(prop, dict) and prop.get("required"):
+        if required:
             type_label += "<br/><i><sub>required</sub></i>"
 
         # --- nullable annotation ---
