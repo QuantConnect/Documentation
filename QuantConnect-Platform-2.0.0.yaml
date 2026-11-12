@@ -380,7 +380,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
+                anyOf:
                   - $ref: '#/components/schemas/RestResponse'
                   - $ref: '#/components/schemas/ProjectFilesResponse'
         "401":
@@ -561,7 +561,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
+                anyOf:
                   - $ref: '#/components/schemas/LoadingResponse'
                   - $ref: '#/components/schemas/BacktestOrdersResponse'
         "401":
@@ -590,7 +590,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
+                anyOf:
                   - $ref: '#/components/schemas/LoadingResponse'
                   - $ref: '#/components/schemas/BacktestTradesResponse'
         "401":
@@ -1110,7 +1110,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
+                anyOf:
                   - $ref: '#/components/schemas/LoadingResponse'
                   - $ref: '#/components/schemas/LiveOrdersResponse'
         "401":
@@ -1139,7 +1139,7 @@ paths:
           content:
             application/json:
               schema:
-                oneOf:
+                anyOf:
                   - $ref: '#/components/schemas/LoadingResponse'
                   - $ref: '#/components/schemas/LiveTradesResponse'
         "401":
@@ -2444,7 +2444,8 @@ components:
         files:
           type: array
           examples:
-            - "[{\"name\": \"file.py\", \"content\": \"fileContent\"}]"
+            - - name: file.py
+                content: fileContent
           description: Files to process.
           items:
             $ref: '#/components/schemas/File'
@@ -2590,7 +2591,8 @@ components:
         files:
           type: array
           examples:
-            - "[{\"name\": \"file.py\", \"content\": \"fileContent\"}]"
+            - - name: file.py
+                content: fileContent
           description: Files of the project.
           items:
             $ref: '#/components/schemas/File'
@@ -8717,11 +8719,11 @@ components:
         - $ref: '#/components/schemas/UpdateFileNameRequest'
         - $ref: '#/components/schemas/UpdateFileContentsRequest'
     inline_response_200_1:
-      oneOf:
-        - $ref: '#/components/responses/BacktestReport'
+      anyOf:
+        - $ref: '#/components/schemas/BacktestReport'
         - $ref: '#/components/schemas/BacktestReportGeneratingResponse'
     inline_response_200_3:
-      oneOf:
+      anyOf:
         - $ref: '#/components/schemas/LoadingResponse'
         - $ref: '#/components/schemas/ReadChartResponse'
     AgentOrganization:
@@ -10104,12 +10106,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BacktestResponse'
-    BacktestReport:
-      description: Backtest Report Response wrapper.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/BacktestReport'
     CompileResponse:
       description: Response from the compiler on a build event.
       content:
