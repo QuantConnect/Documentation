@@ -23,9 +23,10 @@ SPEC = {
     "components": {
         "schemas": {
             "Detail": {"type": "object", "properties": {"name": {"type": "string"}}},
+            "Mode": {"type": "string", "enum": ["fast", "slow"]},
             "Result": {
                 "type": "object",
-                "required": ["requiredNullable", "requiredPlain"],
+                "required": ["requiredNullable", "requiredPlain", "requiredPrimitiveRef"],
                 "properties": {
                     "requiredNullable": {"type": ["integer", "null"]},
                     "requiredPlain": {"type": "integer"},
@@ -34,6 +35,8 @@ SPEC = {
                     "nullableArray": {"type": ["array", "null"], "items": {"type": "string"}},
                     "nullableRef": {"oneOf": [{"$ref": "#/components/schemas/Detail"}, {"type": "null"}]},
                     "plainRef": {"$ref": "#/components/schemas/Detail"},
+                    "requiredPrimitiveRef": {"$ref": "#/components/schemas/Mode"},
+                    "optionalPrimitiveRef": {"$ref": "#/components/schemas/Mode"},
                 },
             },
         }
@@ -85,6 +88,12 @@ class NullableTypeTests(unittest.TestCase):
 
     def test_non_nullable_ref(self):
         self.assert_cell("plainRef", "Detail object", required=False, nullable=False)
+
+    def test_required_primitive_ref(self):
+        self.assert_cell("requiredPrimitiveRef", "string Enum", required=True, nullable=False)
+
+    def test_optional_primitive_ref(self):
+        self.assert_cell("optionalPrimitiveRef", "string Enum", required=False, nullable=False)
 
 
 
