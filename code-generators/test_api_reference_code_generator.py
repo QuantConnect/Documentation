@@ -97,7 +97,7 @@ class NullableTypeTests(unittest.TestCase):
 
 
 
-class ExampleRefTests(unittest.TestCase):
+class ExampleTestCase(unittest.TestCase):
 
     def _example(self, schemas, properties):
         with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
@@ -105,6 +105,9 @@ class ExampleRefTests(unittest.TestCase):
         self.addCleanup(pathlib.Path(f.name).unlink)
         json_str, _, _ = _module.APIReferenceGenerator(f.name)._build_properties(properties, [])
         return json.loads(json_str)
+
+
+class ExampleRefTests(ExampleTestCase):
 
     def test_ref_to_oneof_schema_conforms_to_schema(self):
         parameter_set = {
@@ -129,6 +132,59 @@ class ExampleRefTests(unittest.TestCase):
         schemas = {"Name": {"oneOf": [{"type": "string"}, {"type": "null"}]}}
         example = self._example(schemas, {"name": {"$ref": "#/components/schemas/Name"}})
         self.assertEqual({"name": "string"}, example)
+
+    def test_ref_to_object_schema_without_properties_is_empty_object(self):
+        schemas = {"Authentication": {"type": "object"}}
+        example = self._example(schemas, {"authentication": {"$ref": "#/components/schemas/Authentication"}})
+        self.assertEqual({"authentication": {}}, example)
+
+    def test_object_without_properties_is_empty_object(self):
+        example = self._example({}, {"timeInForce": {"type": "object"}})
+        self.assertEqual({"timeInForce": {}}, example)
+
+    def test_ref_to_enum_schema_uses_first_value(self):
+        schemas = {"Status": {"enum": ["new", "running"]}}
+        example = self._example(schemas, {"status": {"$ref": "#/components/schemas/Status"}})
+        self.assertEqual({"status": "new"}, example)
+
+
+class ScalarExampleTests(ExampleTestCase):
+
+    def test_string_example_with_quotes_is_escaped(self):
+        text = 'Detected near "self.set_start_date(2024, 1, 3)".'
+        example = self._example({}, {"type": {"type": "string", "examples": [text]}})
+        self.assertEqual({"type": text}, example)
+
+    def test_string_example_containing_array_has_no_closing_bracket(self):
+        example = self._example({}, {"payloadType": {"type": "string", "examples": ["StringArray"]}})
+        self.assertEqual({"payloadType": "StringArray"}, example)
+
+    def test_boolean_example_is_json_boolean(self):
+        example = self._example({}, {"write": {"type": "boolean", "examples": [False]}})
+        self.assertEqual({"write": False}, example)
+
+    def test_array_item_example_is_escaped(self):
+        prop = {"type": "array", "items": {"type": "string", "examples": ['say "hi"']}}
+        example = self._example({}, {"lines": prop})
+        self.assertEqual({"lines": ['say "hi"']}, example)
+
+    def test_integer_array_item_is_integer(self):
+        example = self._example({}, {"orderIds": {"type": "array", "items": {"type": "integer"}}})
+        self.assertEqual({"orderIds": [0]}, example)
+
+
+class ShapeExampleTests(ExampleTestCase):
+
+    def test_map_of_ref_values_has_key_level(self):
+        schemas = {"Chart": {"type": "object", "properties": {"name": {"type": "string"}}}}
+        prop = {"type": "object", "additionalProperties": {"$ref": "#/components/schemas/Chart"}}
+        example = self._example(schemas, {"charts": prop})
+        self.assertEqual({"charts": {"key": {"name": "string"}}}, example)
+
+    def test_inline_oneof_uses_first_variant(self):
+        values = {"oneOf": [{"type": "array", "items": {"type": "array"}}, {"type": "array", "items": {"type": "object"}}]}
+        example = self._example({}, {"values": values})
+        jsonschema.validate(example["values"], values)
 
 
 class PlatformSpecParameterTests(unittest.TestCase):

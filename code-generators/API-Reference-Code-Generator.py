@@ -449,6 +449,7 @@ class APIReferenceGenerator:
         if isinstance(prop, dict):
             types = [prop.get("type")] + [variant.get("type") for variant in prop.get("oneOf", [])]
             nullable = any(t == "null" or (isinstance(t, list) and "null" in t) for t in types)
+        opens_array = type_label == "array"
         tab = "  " * indent
 
         # --- dispatch by type ---
@@ -489,16 +490,10 @@ class APIReferenceGenerator:
         eg_is_sequence = isinstance(eg, (dict, list))
         if eg is not None:
             type_label += f"<br/><i><sub>example: {eg}</sub></i>"
-            if isinstance(eg, str):
-                eg = f'"{eg}"'
-            elif isinstance(eg, (dict, list)):
-                pad = "  " * (indent + 1)
-                eg = json.dumps(eg, indent=2)
-                eg = eg.replace("\n", "\n" + pad)
-            json_value = str(eg)
+            json_value = json.dumps(eg, indent=2).replace("\n", "\n" + "  " * (indent + 1))
 
         # --- array bracket closure ---
-        if "Array" in type_label and not eg_is_sequence:
+        if opens_array and not eg_is_sequence:
             json_value += "\n" + tab + "  ]"
 
         return type_label, desc, json_value, prop
@@ -521,14 +516,9 @@ class APIReferenceGenerator:
         json_value = "[\n"
 
         if "type" in items:
-            item_type = self._normalize_type(items["type"])
-            type_label = item_type + " Array"
-            item_eg = self._get_example(items)
-            if item_eg is not None:
-                item_eg = f'"{item_eg}"' if isinstance(item_eg, str) else str(item_eg)
-            else:
-                item_eg = f'"{item_type}"'
-            json_value += tab + f'    {item_eg}'
+            type_label = self._normalize_type(items["type"]) + " Array"
+            _, _, item_value, _ = self._process_property("", items, ref_queue, indent + 1)
+            json_value += tab + "    " + item_value
         elif "$ref" in items:
             ref_path = self._ref_path(items["$ref"])
             type_label = ref_path[-1] + " Array"
@@ -549,7 +539,7 @@ class APIReferenceGenerator:
         """Return (json_value, type_label, desc, prop) for an object property."""
         tab = "  " * indent
         type_label = "object"
-        json_value = ""
+        json_value = "{}"
 
         if "additionalProperties" in prop:
             json_value, type_label = self._example_additional_props(
@@ -570,6 +560,8 @@ class APIReferenceGenerator:
                 json_value, type_label, desc, prop = self._example_ref(
                     ref_prop, ref_queue, indent, desc
                 )
+            elif not any("$ref" in v for v in non_null):
+                _, _, json_value, _ = self._process_property("", non_null[0], ref_queue, indent)
             else:
                 json_value, type_label = self._example_oneof(prop, ref_queue, indent)
         elif "allOf" in prop:
@@ -608,9 +600,9 @@ class APIReferenceGenerator:
             ref_schema = self._navigate(ref_path)
             if ref_schema and "properties" in ref_schema:
                 inner, _, ref_queue = self._build_properties(
-                    ref_schema["properties"], ref_queue, indent=indent + 1
+                    ref_schema["properties"], ref_queue, indent=indent + 2
                 )
-                return inner, type_label
+                return f'{{\n{tab}    "key": {inner}\n{tab}  }}', type_label
 
         return "", "object"
 
@@ -629,7 +621,10 @@ class APIReferenceGenerator:
             )
             return inner, type_label, desc, prop
         if ref_schema and "type" in ref_schema:
-            return "", self._normalize_type(ref_schema["type"]), ref_schema.get("description", desc), ref_schema
+            _, _, json_value, _ = self._process_property("", ref_schema, ref_queue, indent)
+            return json_value, self._normalize_type(ref_schema["type"]), ref_schema.get("description", desc), ref_schema
+        if ref_schema and "enum" in ref_schema:
+            return json.dumps(ref_schema["enum"][0]), type_label, desc, prop
         if ref_schema and "oneOf" in ref_schema:
             variants = [v for v in ref_schema["oneOf"] if v.get("type") != "null"]
             # An object variant shows the schema's keys, where an empty-list variant shows none
