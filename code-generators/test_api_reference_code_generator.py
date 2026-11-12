@@ -172,6 +172,10 @@ class ScalarExampleTests(ExampleTestCase):
         example = self._example({}, {"orderIds": {"type": "array", "items": {"type": "integer"}}})
         self.assertEqual({"orderIds": [0]}, example)
 
+    def test_object_array_item_is_empty_object(self):
+        example = self._example({}, {"notifications": {"type": "array", "items": {"type": "object"}}})
+        self.assertEqual({"notifications": [{}]}, example)
+
 
 class ShapeExampleTests(ExampleTestCase):
 
