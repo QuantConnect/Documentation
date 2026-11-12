@@ -311,7 +311,7 @@ class APIReferenceGenerator:
         """Extract the properties dict from a schema, handling edge cases.
 
         Returns the properties dict, or None if the schema should be skipped.
-        Redirects (content, allOf) are enqueued and return None.
+        Content redirects are enqueued and return None. allOf parts are merged.
         """
         if "properties" in schema:
             properties = dict(schema["properties"])  # shallow copy
@@ -319,6 +319,14 @@ class APIReferenceGenerator:
                 if req in properties:
                     properties[req] = dict(properties[req])
                     properties[req]["required"] = True
+            return properties
+
+        if "allOf" in schema:
+            properties = {}
+            for part in schema["allOf"]:
+                part = self._navigate(self._ref_path(part["$ref"])) if "$ref" in part else part
+                if "properties" in part or "allOf" in part:
+                    properties.update(self._extract_properties(part, queue))
             return properties
 
         if "content" in schema:

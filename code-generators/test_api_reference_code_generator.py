@@ -215,5 +215,38 @@ class PlatformSpecParameterTests(unittest.TestCase):
         self.assert_accepts_scalar_values(self.schemas["CreateBacktestRequest"]["properties"]["parameters"])
 
 
+class AllOfSchemaTests(unittest.TestCase):
+
+    def test_allof_response_merges_properties(self):
+        schemas = {
+            "RestResponse": {"type": "object", "properties": {"success": {"type": "boolean"}}},
+            "Detail": {"type": "object", "properties": {"name": {"type": "string"}}},
+            "DetailResponse": {
+                "allOf": [
+                    {"$ref": "#/components/schemas/RestResponse"},
+                    {
+                        "type": "object",
+                        "required": ["detail"],
+                        "properties": {"detail": {"$ref": "#/components/schemas/Detail"}},
+                    },
+                ],
+                "description": "Response wrapping a detail.",
+            },
+        }
+        with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
+            yaml.safe_dump({"components": {"schemas": schemas}}, f)
+        self.addCleanup(pathlib.Path(f.name).unlink)
+        response = {"content": {"application/json": {"schema": {"$ref": "#/components/schemas/DetailResponse"}}}}
+        tables = _module.APIReferenceGenerator(f.name)._build_schema_tables(response).split("</table>")[:-1]
+
+        self.assertEqual(2, len(tables))
+        self.assertIn("<code>DetailResponse</code> Model - Response wrapping a detail.", tables[0])
+        self.assertIn('<td width="20%">success</td> <td> <code>boolean</code>', tables[0])
+        self.assertIn(f'<td width="20%">detail</td> <td> <code>Detail object<br/>{REQUIRED}</code>', tables[0])
+        example = tables[0].split("<pre>\n")[1].split("</pre>")[0]
+        self.assertEqual({"success": True, "detail": {"name": "string"}}, json.loads(example))
+        self.assertIn("<code>Detail</code> Model", tables[1])
+
+
 if __name__ == "__main__":
     unittest.main()
