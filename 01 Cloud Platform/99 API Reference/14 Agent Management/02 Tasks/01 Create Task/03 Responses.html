@@ -4,7 +4,218 @@
 The <code>/agents/tasks/create</code> API provides a response in the following format:
 </p>
 <h4>200 Success</h4>
-<h4>401 Authentication Error</h4>
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentTaskResponse</code> Model - Response wrapping a single agent task.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
+</tr>
+<tr>
+<td width="20%">errors</td> <td> <code>string Array</code> <br/> List of errors with the API call.</td>
+</tr>
+<tr>
+<td width="20%">task</td> <td> <code>AgentTask object</code> <br/> An agent task definition.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "success": true,
+  "errors": [
+    "string"
+  ],
+  "task": {
+    "id": 332,
+    "name": "Print Hello World Message",
+    "organizationId": "string",
+    "agentId": 47,
+    "prompt": "string",
+    "deployments": 0,
+    "lastDeploymentId": 0,
+    "lastDeploymentTime": "2026-05-06 19:09:52",
+    "created": "2026-05-06 19:22:25",
+    "updated": "2026-05-06 19:22:26",
+    "projectId": 0,
+    "owner": {
+      "publicId": "alexandre_catarino",
+      "name": "Alexandre Catarino",
+      "image": "e76004d3a79bb421536616863.jpeg"
+    },
+    "upcomingDeployments": [
+      {}
+    ],
+    "status": [
+      {
+        "deploymentId": "A-dc29abb48861866874f695798925f9d2",
+        "status": "Running"
+      }
+    ],
+    "schedule": "string",
+    "scheduleHuman": "string",
+    "projectPreference": "project-each-task-deployment",
+    "notifications": [
+      {}
+    ]
+  }
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentTask</code> Model - An agent task definition.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>integer<br/><i><sub>example: 332</sub></i></code> <br/> Identifier of the task.</td>
+</tr>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>example: Print Hello World Message</sub></i></code> <br/> Name of the task.</td>
+</tr>
+<tr>
+<td width="20%">organizationId</td> <td> <code>string</code> <br/> Identifier of the organization that owns the task.</td>
+</tr>
+<tr>
+<td width="20%">agentId</td> <td> <code>integer<br/><i><sub>example: 47</sub></i></code> <br/> Identifier of the agent the task uses.</td>
+</tr>
+<tr>
+<td width="20%">prompt</td> <td> <code>string</code> <br/> Prompt the agent will execute when deployed.</td>
+</tr>
+<tr>
+<td width="20%">deployments</td> <td> <code>integer</code> <br/> Number of times this task has been deployed.</td>
+</tr>
+<tr>
+<td width="20%">lastDeploymentId</td> <td> <code>integer<br/><i><sub>nullable</sub></i></code> <br/> Numeric Id of the most recent deployment, or null if never deployed.</td>
+</tr>
+<tr>
+<td width="20%">lastDeploymentTime</td> <td> <code>string<br/><i><sub>nullable</sub></i><br/><i><sub>example: 2026-05-06 19:09:52</sub></i></code> <br/> Timestamp of the most recent deployment.</td>
+</tr>
+<tr>
+<td width="20%">created</td> <td> <code>string<br/><i><sub>example: 2026-05-06 19:22:25</sub></i></code> <br/> Creation timestamp.</td>
+</tr>
+<tr>
+<td width="20%">updated</td> <td> <code>string<br/><i><sub>example: 2026-05-06 19:22:26</sub></i></code> <br/> Last-updated timestamp.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer<br/><i><sub>nullable</sub></i></code> <br/> Identifier of the project bound to the task, when one exists.</td>
+</tr>
+<tr>
+<td width="20%">owner</td> <td> <code>AgentTaskOwner object</code> <br/> Owner of an agent task.</td>
+</tr>
+<tr>
+<td width="20%">upcomingDeployments</td> <td> <code>object Array<br/><i><sub>nullable</sub></i></code> <br/> Pending scheduled deployments, when the task has a schedule.</td>
+</tr>
+<tr>
+<td width="20%">status</td> <td> <code>AgentTaskStatusEntry Array</code> <br/> Statuses of the task's currently active deployments.</td>
+</tr>
+<tr>
+<td width="20%">schedule</td> <td> <code>string<br/><i><sub>nullable</sub></i></code> <br/> Cron expression that schedules the task, when one is set.</td>
+</tr>
+<tr>
+<td width="20%">scheduleHuman</td> <td> <code>string<br/><i><sub>nullable</sub></i></code> <br/> Human-readable description of the schedule.</td>
+</tr>
+<tr>
+<td width="20%">projectPreference</td> <td> <code>string Enum</code> <br/> How projects are mapped to deployments of this task. Options : ['project-each-task-deployment', 'project-for-task']</td>
+</tr>
+<tr>
+<td width="20%">notifications</td> <td> <code>object Array</code> <br/> Notification targets configured for the task.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": 332,
+  "name": "Print Hello World Message",
+  "organizationId": "string",
+  "agentId": 47,
+  "prompt": "string",
+  "deployments": 0,
+  "lastDeploymentId": 0,
+  "lastDeploymentTime": "2026-05-06 19:09:52",
+  "created": "2026-05-06 19:22:25",
+  "updated": "2026-05-06 19:22:26",
+  "projectId": 0,
+  "owner": {
+    "publicId": "alexandre_catarino",
+    "name": "Alexandre Catarino",
+    "image": "e76004d3a79bb421536616863.jpeg"
+  },
+  "upcomingDeployments": [
+    {}
+  ],
+  "status": [
+    {
+      "deploymentId": "A-dc29abb48861866874f695798925f9d2",
+      "status": "Running"
+    }
+  ],
+  "schedule": "string",
+  "scheduleHuman": "string",
+  "projectPreference": "project-each-task-deployment",
+  "notifications": [
+    {}
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentTaskOwner</code> Model - Owner of an agent task.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">publicId</td> <td> <code>string<br/><i><sub>example: alexandre_catarino</sub></i></code> <br/> Public profile slug of the user.</td>
+</tr>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>example: Alexandre Catarino</sub></i></code> <br/> Display name of the user.</td>
+</tr>
+<tr>
+<td width="20%">image</td> <td> <code>string<br/><i><sub>example: e76004d3a79bb421536616863.jpeg</sub></i></code> <br/> Filename of the user's profile image.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "publicId": "alexandre_catarino",
+  "name": "Alexandre Catarino",
+  "image": "e76004d3a79bb421536616863.jpeg"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AgentTaskStatusEntry</code> Model - Status entry for one of a task's active deployments.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">deploymentId</td> <td> <code>string<br/><i><sub>example: A-dc29abb48861866874f695798925f9d2</sub></i></code> <br/> Identifier of an associated deployment.</td>
+</tr>
+<tr>
+<td width="20%">status</td> <td> <code>string<br/><i><sub>example: Running</sub></i></code> <br/> Current status of the deployment.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "deploymentId": "A-dc29abb48861866874f695798925f9d2",
+  "status": "Running"
+}</pre>
+</div>
+</td>
+</tr>
+</table><h4>401 Authentication Error</h4>
 <table class="table qc-table">
 <thead>
 <tr>
