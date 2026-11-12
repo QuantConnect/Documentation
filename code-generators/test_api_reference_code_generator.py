@@ -122,5 +122,29 @@ class ExampleRefTests(unittest.TestCase):
         self.assertEqual({"name": "string"}, example)
 
 
+class PlatformSpecParameterTests(unittest.TestCase):
+
+    VALUES = ["20", 20, 20.5, True, False, None]
+
+    @classmethod
+    def setUpClass(cls):
+        path = pathlib.Path(__file__).parent.parent / "QuantConnect-Platform-2.0.0.yaml"
+        cls.schemas = yaml.safe_load(path.read_text())["components"]["schemas"]
+
+    def assert_accepts_scalar_values(self, schema):
+        for value in self.VALUES:
+            with self.subTest(value=value):
+                jsonschema.validate({"key": value}, schema)
+
+    def test_parameter_set_accepts_scalar_values(self):
+        self.assert_accepts_scalar_values(self.schemas["ParameterSet"])
+
+    def test_parameter_set_accepts_empty_list(self):
+        jsonschema.validate([], self.schemas["ParameterSet"])
+
+    def test_create_backtest_parameters_accept_scalar_values(self):
+        self.assert_accepts_scalar_values(self.schemas["CreateBacktestRequest"]["properties"]["parameters"])
+
+
 if __name__ == "__main__":
     unittest.main()
