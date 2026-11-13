@@ -98,27 +98,87 @@ StopMarketOrder(symbol, -quantity, stopPrice, tag: "stop");
 ```
 
 ## Order events and status
-`OrderEvent` has no tag or time property. Read the tag from the ticket, the timestamp from py`utc_time`cs`UtcTime`, and the fee from py`order_fee.value`cs`OrderFee.Value`.
+Read the tag, fee, and order id from the event: py`order_event.tag`cs`orderEvent.Tag`, py`order_event.order_fee.amount`cs`orderEvent.OrderFee.Amount`, and py`order_event.order_id`cs`orderEvent.OrderId` (py`ticket.order_id`cs`ticket.OrderId` on a ticket). Check the status with py`is_open()`cs`IsOpen()`, py`is_closed()`cs`IsClosed()`, and py`is_fill()`cs`IsFill()`.
+`OrderStatus` has nine members: py`NEW, SUBMITTED, PARTIALLY_FILLED, FILLED, CANCELED, NONE, INVALID, CANCEL_PENDING, UPDATE_SUBMITTED`cs`New, Submitted, PartiallyFilled, Filled, Canceled, None, Invalid, CancelPending, UpdateSubmitted`. It has no py`OPEN`cs`Open` or py`REJECTED`cs`Rejected` member; a rejected order is py`INVALID`cs`Invalid`.
 <!-- python-only -->
-Python can't call the C# `OrderStatus` extension methods (`IsOpen`, `IsClosed`, `IsFill`), and `OrderStatus` has no `OPEN` member. Compare statuses instead. To cancel, call `cancel_open_orders` (plural) or `ticket.cancel()`.
+To cancel, call `cancel_open_orders` (plural) or `ticket.cancel()`.
 <!-- /python-only -->
 ```python
 def on_order_event(self, order_event: OrderEvent) -> None:
-    tag = order_event.ticket.tag
-    utc_time = order_event.utc_time
-    fee = order_event.order_fee.value.amount
-    is_closed = order_event.status in (OrderStatus.FILLED, OrderStatus.CANCELED, OrderStatus.INVALID)
-    is_fill = order_event.status in (OrderStatus.FILLED, OrderStatus.PARTIALLY_FILLED)
+    tag = order_event.tag
+    fee = order_event.order_fee.amount
+    is_open = order_event.status.is_open()
+    is_closed = order_event.status.is_closed()
+    is_fill = order_event.status.is_fill()
 ```
 ```csharp
 public override void OnOrderEvent(OrderEvent orderEvent)
 {
-    var tag = orderEvent.Ticket.Tag;
-    var utcTime = orderEvent.UtcTime;
-    var fee = orderEvent.OrderFee.Value.Amount;
+    var tag = orderEvent.Tag;
+    var fee = orderEvent.OrderFee.Amount;
+    var isOpen = orderEvent.Status.IsOpen();
     var isClosed = orderEvent.Status.IsClosed();
     var isFill = orderEvent.Status.IsFill();
 }
+```
+
+## Event times and fill order
+py`order_event.utc_time`cs`orderEvent.UtcTime` and py`order_event.time`cs`orderEvent.Time` are the same UTC time. py`self.time`cs`Time` and py`bar.end_time`cs`bar.EndTime` are in the algorithm time zone. Compare the event time with py`self.utc_time`cs`UtcTime`, or convert it to the algorithm time zone.
+<!-- python-only -->
+The event times are timezone-aware and the algorithm times are naive, so subtracting or comparing an event time with an algorithm time raises a `TypeError`.
+<!-- /python-only -->
+<!-- csharp-only -->
+Subtracting or comparing an event time with an algorithm time gives a wrong result without an error.
+<!-- /csharp-only -->
+```python
+age = self.utc_time - order_event.utc_time
+local_time = Extensions.convert_from_utc(order_event.utc_time, self.time_zone)
+```
+```csharp
+var age = UtcTime - orderEvent.UtcTime;
+var localTime = orderEvent.UtcTime.ConvertFromUtc(TimeZone);
+```
+
+In a backtest, a market order fills inside the call, so py`on_order_event`cs`OnOrderEvent` runs before py`market_order`cs`MarketOrder` returns. Assign the state the handler reads before you place the order. The handler can't read the returned ticket yet; use py`order_event.ticket`cs`orderEvent.Ticket`.
+```python
+# Wrong: on_order_event reads the old self._entry_reason.
+self.market_order(symbol, 100)
+self._entry_reason = "breakout"
+# Right
+self._entry_reason = "breakout"
+self.market_order(symbol, 100)
+```
+```csharp
+// Wrong: OnOrderEvent reads the old _entryReason.
+MarketOrder(symbol, 100);
+_entryReason = "breakout";
+// Right
+_entryReason = "breakout";
+MarketOrder(symbol, 100);
+```
+
+## Take-profit and stop-loss pairs
+Place the pair with one call. For a new entry, py`bracket_order`cs`BracketOrder` places the entry and, once it fills, a take-profit limit order and a stop-loss stop market order. It returns the tickets of the entry, the take profit, and the stop loss. For a position you already hold, pass order factory requests to py`one_cancels_other_order`cs`OneCancelsOtherOrder`. When one leg fills, LEAN cancels the other, so the algorithm doesn't cancel the sibling or handle a double fill.
+```python
+price = self.securities[symbol].price
+tickets = self.bracket_order(symbol, 100, take_profit_price=price * 1.02, stop_loss_price=price * 0.99)
+
+quantity = self.portfolio[symbol].quantity
+tickets = self.one_cancels_other_order([
+    self.order_factory.limit_order(symbol, -quantity, price * 1.02),
+    self.order_factory.stop_market_order(symbol, -quantity, price * 0.99)
+])
+```
+```csharp
+var price = Securities[symbol].Price;
+var tickets = BracketOrder(symbol, 100, takeProfitPrice: price * 1.02m, stopLossPrice: price * 0.99m);
+
+var quantity = Portfolio[symbol].Quantity;
+tickets = OneCancelsOtherOrder(new List<SubmitOrderRequest>
+{
+    OrderFactory.LimitOrder(symbol, -quantity, price * 1.02m),
+    OrderFactory.StopMarketOrder(symbol, -quantity, price * 0.99m)
+});
 ```
 
 ## Set the security leverage to match the method's sizing
