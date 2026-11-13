@@ -72,17 +72,59 @@ StopMarketOrder(symbol, -quantity, stopPrice, tag: "stop");
 ```
 
 ## Order events and status
-`OrderEvent` has no tag or time property. Read the tag from the ticket, the timestamp from `UtcTime`, and the fee from `OrderFee.Value`.
+Read the tag, fee, and order id from the event: `orderEvent.Tag`, `orderEvent.OrderFee.Amount`, and `orderEvent.OrderId` (`ticket.OrderId` on a ticket). Check the status with `IsOpen()`, `IsClosed()`, and `IsFill()`.
+`OrderStatus` has nine members: `New, Submitted, PartiallyFilled, Filled, Canceled, None, Invalid, CancelPending, UpdateSubmitted`. It has no `Open` or `Rejected` member; a rejected order is `Invalid`.
 ```csharp
 public override void OnOrderEvent(OrderEvent orderEvent)
 {
-    var tag = orderEvent.Ticket.Tag;
-    var utcTime = orderEvent.UtcTime;
-    var fee = orderEvent.OrderFee.Value.Amount;
+    var tag = orderEvent.Tag;
+    var fee = orderEvent.OrderFee.Amount;
+    var isOpen = orderEvent.Status.IsOpen();
     var isClosed = orderEvent.Status.IsClosed();
     var isFill = orderEvent.Status.IsFill();
 }
 ```
+
+## Event times and fill order
+`orderEvent.UtcTime` and `orderEvent.Time` are the same UTC time. `Time` is in the algorithm time zone, and `bar.EndTime` is in the exchange time zone of its security. Compare the event time with `UtcTime`, or convert it to the time zone of the time you compare it with.
+Subtracting or comparing an event time with `Time` or a bar time gives a wrong result without an error.
+```csharp
+var age = UtcTime - orderEvent.UtcTime;
+var localTime = orderEvent.UtcTime.ConvertFromUtc(TimeZone);
+var exchangeTime = orderEvent.UtcTime.ConvertFromUtc(Securities[symbol].Exchange.TimeZone);
+```
+
+In a backtest, `OnOrderEvent` can run inside the order call, before `MarketOrder` returns, even with `asynchronous: true`. Assign the state the handler reads before you place the order. The handler can't read the returned ticket yet; use `orderEvent.Ticket`. The order can also stay open after the call returns, for example while the fill waits for fresh data, so read the fill from the order event.
+```csharp
+// Wrong: OnOrderEvent reads the old _entryReason.
+MarketOrder(symbol, 100);
+_entryReason = "breakout";
+// Right
+_entryReason = "breakout";
+MarketOrder(symbol, 100);
+```
+
+## Take-profit and stop-loss pairs
+Place the pair with one call instead of managing a stop and a limit order by hand. Use one of the following, not both, for the same position.
+
+For a new entry, `BracketOrder` places the entry and, once it fills, a take-profit limit order and a stop-loss stop market order. It returns the tickets of the entry, the take profit, and the stop loss.
+```csharp
+var price = Securities[symbol].Price;
+var tickets = BracketOrder(symbol, 100, takeProfitPrice: price * 1.02m, stopLossPrice: price * 0.99m);
+```
+
+For a position you already hold, pass order factory requests to `OneCancelsOtherOrder`.
+```csharp
+var price = Securities[symbol].Price;
+var quantity = Portfolio[symbol].Quantity;
+var tickets = OneCancelsOtherOrder(new List<SubmitOrderRequest>
+{
+    OrderFactory.LimitOrder(symbol, -quantity, price * 1.02m),
+    OrderFactory.StopMarketOrder(symbol, -quantity, price * 0.99m)
+});
+```
+
+In a backtest, when one leg fills, even partially, LEAN cancels the other, so the algorithm doesn't cancel the sibling by hand. Live, the brokerage manages the pair and can behave differently. For example, it can reduce the other leg after a partial fill, or fill both legs in a fast market before the cancel arrives. Brokerage support also varies. Some brokerages reject contingent orders, and others accept only some order types, such as a limit entry with limit or stop limit exits. LEAN rejects the whole group when the brokerage can't take it, which leaves the position without exits, so check the order types your brokerage supports and handle an `Invalid` status.
 
 ## Set the security leverage to match the method's sizing
 If the method sizes positions above 1× notional (any use of leverage/margin — e.g. a 4× volatility target), pass `leverage:` on the subscription: `AddEquity("SPY", Resolution.Minute, leverage: 4)`. The default equity margin is ~2× (Reg-T 50% initial), so without this every order targeting more than 2× is rejected for `InsufficientBuyingPower`. Set it to the maximum leverage the method needs — it is a ceiling, not a target; the sizing formula still decides the actual exposure.
