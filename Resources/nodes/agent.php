@@ -22,6 +22,13 @@
 </p>
 
 <p>
+	The free A-MICRO agent node runs one deployment at a time per user.
+	A deployment stays active for 30 minutes after its last response, so you can continue the conversation without waiting for a new server to start.
+	During that time, you can send more prompts to the same conversation, but you can't start a new conversation on the A-MICRO node.
+	To start a new conversation sooner, <a href='/docs/v2/ai-assistance/deployments#04-Delete-Deployments'>delete the previous deployment</a> or <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a paid agent node</a>.
+</p>
+
+<p>
 	To view the status of all of your organization's nodes, see the <a href='/docs/v2/cloud-platform/projects/ide#08-Manage-Nodes'>Resources panel</a> of the IDE.
 	When you launch an agent task, it uses the best-performing resource by default, but you can <a href='/docs/v2/cloud-platform/projects/ide#08-Manage-Nodes'>select a specific resource to use</a>.
 </p>
