@@ -774,9 +774,14 @@ def _run_backtest(project_id, compile_id, name):
 
 def _download_object_store_zip(organization_id, names):
     keys = [f'{OBJECT_STORE_PATH}/{name}.png' for name in names]
-    last_response = None
+    last_response = _api_post('object/get', {'organizationId': organization_id, 'keys': keys})
+    job_id = last_response.get('jobId')
+    if not job_id:
+        print(f'object/get failed: {last_response}')
+        return None
+    # Poll the same job; requesting the keys again would start a new job each time.
     for _ in range(60):  # 60 * 10s = 10 minutes
-        last_response = _api_post('object/get', {'organizationId': organization_id, 'keys': keys})
+        last_response = _api_post('object/get', {'organizationId': organization_id, 'jobId': job_id})
         if last_response.get('success') and last_response.get('url'):
             try:
                 return urlopen(last_response['url']).read()
