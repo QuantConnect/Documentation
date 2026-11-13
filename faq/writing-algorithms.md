@@ -1598,9 +1598,9 @@ The `asynchronous` parameter comes before the `tag` parameter in the order metho
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/position-sizing>
 
-### How do I get the tag, time, and fee of an `OrderEvent`?
+### Why doesn't an `OrderEvent` have a tag or a time?
 
-To get the tag, read `order_event.tag` (`Tag`). To get the event time, read `order_event.utc_time` (`UtcTime`) or its synonym `order_event.time` (`Time`), which are in UTC. To get the fee amount, read `order_event.order_fee.amount` (`OrderFee.Amount`).
+The `OrderEvent` object doesn't store the tag or a local time. To get the tag, read `order_event.ticket.tag`. To get the event time, read `order_event.utc_time` (`UtcTime`), which is in UTC. The fee is in `order_event.order_fee.value`.
 
 Docs: <https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-events>
 
