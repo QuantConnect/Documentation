@@ -33,7 +33,7 @@ def _format_introduction(type_name: str, text: str) -> str:
         return f"Create a new {text} to indicate the pattern's presence."
 
     # LEAN's doc comments name members as <see cref="T:Namespace.Member" />, which browsers drop.
-    text = sub(r'<see cref="\w:(?:[\w.]+\.)?(\w+)(?:\([^"]*\))?"\s*/>', r'<code>\1</code>', text)
+    text = sub(r'<see cref="\w:(?:[\w.]+\.)?(\w+)(?:``\d+)?(?:\([^"]*\))?"\s*/>', r'<code>\1</code>', text)
     text = text.replace("Represents", "This indicator represents")
     if "Source: " in text:
         link_split = text.split("http")
@@ -53,8 +53,8 @@ def _extract_properties(properties: list):
         if name in PROPERTIES_EXCEPTIONS:
             return False
         full_type = x['property-full-type-name']
-        # Some properties are lists we cannot plot
-        if full_type.startswith('System.Collection'):
+        # Some properties are lists or interfaces we cannot plot
+        if full_type.startswith('System.Collection') or full_type == 'QuantConnect.Indicators.IIndicator':
             return False
         return full_type.startswith('QuantConnect')
     # Special case for true_range property
@@ -155,6 +155,8 @@ class IndicatorProcessor:
         print(f'Processing {key}...')
         info.update(self._get_type_info(_type))
         self._info = info
+        # Indicators that need more assets than a symbol and a reference use a list of symbols
+        self._has_symbols = '_symbols' in info.get('helper-csharp', '')
    
         self._path = Path(self._get_path(i, key))
         self._path.mkdir(parents=True, exist_ok=True)
@@ -282,11 +284,15 @@ class IndicatorProcessor:
                 add_symbol_to_indicator = f'''
         _{variable}.Add(_symbol);
         _{variable}.Add(_reference);'''
+        symbols_declaration = f"Symbol _symbol{',_reference' if has_reference else ''}"
+        if self._has_symbols:
+            add_subscription = '''_symbols = new[] { "QQQ", "SPY", "IWM" }.Select(ticker => AddEquity(ticker, Resolution.Daily).Symbol).ToArray();'''
+            symbols_declaration = 'Symbol[] _symbols'
         if type_name == 'IntradayVwap':
             add_subscription = add_subscription.replace('Daily', 'Minute')
         code=f"""public class {type_name}Algorithm : QCAlgorithm
 &lcub;
-    private Symbol _symbol{',_reference' if has_reference else ''};
+    private {symbols_declaration};
     private {type_name} _{variable};
 
     public override void Initialize()
@@ -302,7 +308,14 @@ class IndicatorProcessor:
 
     public override void OnData(Slice data)
     &lcub;"""
-        if method_type == 'ctor':
+        if method_type == 'ctor' and self._has_symbols:
+            code += f"""
+        foreach (var symbol in _symbols)
+        &lcub;
+            if (data.Bars.TryGetValue(symbol, out var bar))
+                _{variable}.Update({self._info['update-csharp']});
+        &rcub;"""
+        elif method_type == 'ctor':
             update_arg = self._info['update-csharp']
             code += f"""
         if (data.Bars.TryGetValue(_symbol, out var bar))
@@ -336,7 +349,7 @@ class IndicatorProcessor:
     def _get_csharp_history(self):
         code, _, variable, has_reference = self._get_csharp_initialize('helper')
         properties = self._info["properties-csharp"]
-        symbols = 'new[] { _symbol, _reference }' if has_reference else '_symbol'
+        symbols = '_symbols' if self._has_symbols else 'new[] { _symbol, _reference }' if has_reference else '_symbol'
         code += f"""
 
         var indicatorHistory = IndicatorHistory(_{variable}, {symbols}, 100, Resolution.Minute);
@@ -396,6 +409,8 @@ class IndicatorProcessor:
         self._{variable}.add(self._symbol);
         self._{variable}.add(self._reference);'''
 
+        if self._has_symbols:
+            add_subscription = '''self._symbols = [self.add_equity(ticker, Resolution.DAILY).symbol for ticker in ["QQQ", "SPY", "IWM"]]'''
         if type_name == 'IntradayVwap':
             add_subscription = add_subscription.replace('DAILY', 'MINUTE')
         
@@ -410,7 +425,13 @@ class IndicatorProcessor:
         code += f"""
 
     def on_data(self, slice: Slice) -> None:"""
-        if method_type == 'ctor':
+        if method_type == 'ctor' and self._has_symbols:
+            code += f"""
+        for symbol in self._symbols:
+            bar = slice.bars.get(symbol)
+            if bar:
+                self._{variable}.update({self._info['update-python']})"""
+        elif method_type == 'ctor':
             update_arg = self._info['update-python']
             code += f"""
         bar = slice.bars.get(self._symbol)
@@ -441,7 +462,7 @@ class IndicatorProcessor:
     def _get_python_history(self):
         code, _, variable, has_reference = self._get_python_initialize('helper')
         properties = self._info["properties-python"]
-        symbols = '[ self._symbol, self._reference ]' if has_reference else 'self._symbol'
+        symbols = 'self._symbols' if self._has_symbols else '[ self._symbol, self._reference ]' if has_reference else 'self._symbol'
         code += f"""
 
         indicator_history = self.indicator_history(self._{variable}, {symbols}, 100, Resolution.MINUTE)
