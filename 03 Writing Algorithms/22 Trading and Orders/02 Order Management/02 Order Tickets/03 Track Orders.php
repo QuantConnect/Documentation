@@ -51,5 +51,14 @@ is_closed = self._ticket.status.is_closed()
 is_fill = self._ticket.status.is_fill()</pre>
 </div>
 
+<p>You can also compare the order status to the <code>OrderStatus</code> enumeration members.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var isFilled = _ticket.Status == OrderStatus.Filled;
+var isFill = _ticket.Status is OrderStatus.Filled or OrderStatus.PartiallyFilled;</pre>
+<pre class="python">is_filled = self._ticket.status == OrderStatus.FILLED
+is_fill = self._ticket.status in (OrderStatus.FILLED, OrderStatus.PARTIALLY_FILLED)</pre>
+</div>
+
 
 <p>In addition to using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> event handler.</p>

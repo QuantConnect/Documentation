@@ -123,23 +123,25 @@ public override void OnOrderEvent(OrderEvent orderEvent)
 ```
 
 ## Event times and fill order
-py`order_event.utc_time`cs`orderEvent.UtcTime` and py`order_event.time`cs`orderEvent.Time` are the same UTC time. py`self.time`cs`Time` and py`bar.end_time`cs`bar.EndTime` are in the algorithm time zone. Compare the event time with py`self.utc_time`cs`UtcTime`, or convert it to the algorithm time zone.
+py`order_event.utc_time`cs`orderEvent.UtcTime` and py`order_event.time`cs`orderEvent.Time` are the same UTC time. py`self.time`cs`Time` is in the algorithm time zone, and py`bar.end_time`cs`bar.EndTime` is in the exchange time zone of its security. Compare the event time with py`self.utc_time`cs`UtcTime`, or convert it to the time zone of the time you compare it with.
 <!-- python-only -->
-The event times are timezone-aware and the algorithm times are naive, so subtracting or comparing an event time with an algorithm time raises a `TypeError`.
+The event times are timezone-aware, and `self.time` and bar times are naive, so subtracting or comparing them raises a `TypeError`.
 <!-- /python-only -->
 <!-- csharp-only -->
-Subtracting or comparing an event time with an algorithm time gives a wrong result without an error.
+Subtracting or comparing an event time with `Time` or a bar time gives a wrong result without an error.
 <!-- /csharp-only -->
 ```python
 age = self.utc_time - order_event.utc_time
 local_time = Extensions.convert_from_utc(order_event.utc_time, self.time_zone)
+exchange_time = Extensions.convert_from_utc(order_event.utc_time, self.securities[symbol].exchange.time_zone)
 ```
 ```csharp
 var age = UtcTime - orderEvent.UtcTime;
 var localTime = orderEvent.UtcTime.ConvertFromUtc(TimeZone);
+var exchangeTime = orderEvent.UtcTime.ConvertFromUtc(Securities[symbol].Exchange.TimeZone);
 ```
 
-In a backtest, a market order fills inside the call, so py`on_order_event`cs`OnOrderEvent` runs before py`market_order`cs`MarketOrder` returns. Assign the state the handler reads before you place the order. The handler can't read the returned ticket yet; use py`order_event.ticket`cs`orderEvent.Ticket`.
+In a backtest, a market order fills inside the call, even with py`asynchronous=True`cs`asynchronous: true`, so py`on_order_event`cs`OnOrderEvent` runs before py`market_order`cs`MarketOrder` returns. Assign the state the handler reads before you place the order. The handler can't read the returned ticket yet; use py`order_event.ticket`cs`orderEvent.Ticket`.
 ```python
 # Wrong: on_order_event reads the old self._entry_reason.
 self.market_order(symbol, 100)
