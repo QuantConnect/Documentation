@@ -8,6 +8,7 @@ from os import environ
 from base64 import b64encode
 from hashlib import sha256
 from time import time, sleep
+from datetime import datetime
 from zipfile import ZipFile
 from io import BytesIO
 from urllib.request import urlopen
@@ -772,8 +773,24 @@ def _run_backtest(project_id, compile_id, name):
     print('backtest timed out after 10 minutes')
     return None
 
-def _download_object_store_zip(organization_id, names):
+def _wait_for_objects(organization_id, keys, since):
+    # The cloud uploads a backtest's Object Store files minutes after the backtest completes.
+    pending = set(keys)
+    for _ in range(120):  # 120 * 10s = 20 minutes
+        for key in list(pending):
+            metadata = _api_post('object/properties', {'organizationId': organization_id, 'key': key}).get('metadata')
+            if metadata and datetime.fromisoformat(metadata['created'].replace('Z', '+00:00')).timestamp() >= since:
+                pending.remove(key)
+        if not pending:
+            return True
+        sleep(10)
+    print(f'Object Store files not uploaded after 20 minutes: {sorted(pending)}')
+    return False
+
+def _download_object_store_zip(organization_id, names, since):
     keys = [f'{OBJECT_STORE_PATH}/{name}.png' for name in names]
+    if not _wait_for_objects(organization_id, keys, since):
+        return None
     last_response = _api_post('object/get', {'organizationId': organization_id, 'keys': keys})
     job_id = last_response.get('jobId')
     if not job_id:
@@ -834,7 +851,7 @@ def _generate_missing_images():
             return
 
         print(f'Downloading {len(missing)} image(s) from object store...')
-        zip_bytes = _download_object_store_zip(organization_id, missing)
+        zip_bytes = _download_object_store_zip(organization_id, missing, timestamp)
         if not zip_bytes:
             print('Skipping image extraction because the download failed.')
         else:
