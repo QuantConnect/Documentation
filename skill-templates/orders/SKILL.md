@@ -158,7 +158,7 @@ MarketOrder(symbol, 100);
 ```
 
 ## Take-profit and stop-loss pairs
-Place the pair with one call. For a new entry, py`bracket_order`cs`BracketOrder` places the entry and, once it fills, a take-profit limit order and a stop-loss stop market order. It returns the tickets of the entry, the take profit, and the stop loss. For a position you already hold, pass order factory requests to py`one_cancels_other_order`cs`OneCancelsOtherOrder`. When one leg fills, LEAN cancels the other, so the algorithm doesn't cancel the sibling or handle a double fill.
+Place the pair with one call. For a new entry, py`bracket_order`cs`BracketOrder` places the entry and, once it fills, a take-profit limit order and a stop-loss stop market order. It returns the tickets of the entry, the take profit, and the stop loss. For a position you already hold, pass order factory requests to py`one_cancels_other_order`cs`OneCancelsOtherOrder`. When one leg fills, even partially, LEAN cancels the other, so the algorithm doesn't cancel the sibling or handle a double fill. After a partial fill, only the leg that filled keeps working for the rest of the position.
 ```python
 price = self.securities[symbol].price
 tickets = self.bracket_order(symbol, 100, take_profit_price=price * 1.02, stop_loss_price=price * 0.99)
