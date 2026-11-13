@@ -171,6 +171,12 @@ Your first organization includes one free A-MICRO agent node, capped at 100,000 
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/deployments#05-Quotas>
 
+### Why can't I start a new conversation on the free agent node?
+
+The free A-MICRO agent node runs one deployment at a time per user, and a deployment stays active for 30 minutes after its last response so you can continue the conversation. During that time, you can keep prompting the same conversation, but a new one is refused. To start a new conversation sooner, delete the previous deployment or add a paid agent node.
+
+Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/deployments#05-Quotas>
+
 ### What do I do when my agents reach their usage limit?
 
 The fair-use allowance on paid agent nodes is measured over a weekly rolling window, so usage frees up as the window moves forward. To keep working sooner, upgrade to the next agent node model or bring your own LLM API key.
