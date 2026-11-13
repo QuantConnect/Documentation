@@ -286,8 +286,8 @@ class IndicatorProcessor:
         _{variable}.Add(_reference);'''
         symbols_declaration = f"Symbol _symbol{',_reference' if has_reference else ''}"
         if self._has_symbols:
-            add_subscription = '''_symbols = new[] { "QQQ", "SPY", "IWM" }.Select(ticker => AddEquity(ticker, Resolution.Daily).Symbol).ToList();'''
-            symbols_declaration = 'List<Symbol> _symbols'
+            add_subscription = '''_symbols = new[] { "QQQ", "SPY", "IWM" }.Select(ticker => AddEquity(ticker, Resolution.Daily).Symbol).ToArray();'''
+            symbols_declaration = 'Symbol[] _symbols'
         if type_name == 'IntradayVwap':
             add_subscription = add_subscription.replace('Daily', 'Minute')
         code=f"""public class {type_name}Algorithm : QCAlgorithm
