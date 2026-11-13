@@ -1,53 +1,46 @@
 destination = "Resources/datasets/data-point-attributes/fundamentals/enums.html"
 exchange_ids = {
-    'NYS': "New York Stock Exchange (NYSE)",
-    'NAS': "NASDAQ", 
-    'ASE': "American Stock Exchange (AMEX)",
-    'TSE': "Tokyo Stock Exchange", 
-    'AMS': "Amsterdam Internet Exchange", 
-    'SGO': "Santiago Stock Exchange", 
-    'XMAD': "Madrid Stock Exchange", 
-    'ASX': "Australian Securities Exchange", 
-    'BVMF': "B3 (stock exchange)", 
-    'LON': "London Stock Exchange", 
-    'TKS': "Istanbul Stock Exchange Settlement and Custody Bank", 
-    'SHG': "Shanghai Exchange", 
-    'LIM': "Lima Stock Exchange", 
-    'FRA': "Frankfurt Stock Exchange", 
-    'JSE': "Johannesburg Stock Exchange", 
-    'MIL': "Milan Stock Exchange", 
-    'TAE': "Tel Aviv Stock Exchange",
-    'STO': "Stockholm Stock Exchange", 
-    'ETR': "Deutsche Boerse Xetra Core", 
-    'PAR': "Paris Stock Exchange", 
-    'BUE': "Buenos Aires Stock Exchange", 
-    'KRX': "Korea Exchange", 
-    'SWX': "SIX Swiss Exchange", 
-    'PINX': "Pink Sheets (OTC)", 
-    'CSE': "Canadian Securities Exchange", 
-    'PHS': "Philippine Stock Exchange", 
-    'MEX': "Mexican Stock Exchange", 
-    'TAI': "Taiwan Stock Exchange", 
-    'IDX': "Indonesia Stock Exchange", 
-    'OSL': "Oslo Stock Exchange", 
-    'BOG': "Colombia Stock Exchange", 
-    'NSE': "National Stock Exchange of India", 
-    'HEL': "Nasdaq Helsinki", 
-    'MISX': "Moscow Exchange", 
-    'HKG': "Hong Kong Stock Exchange", 
-    'IST': "Istanbul Stock Exchange", 
-    'BOM': "Bombay Stock Exchange", 
+    'AMEX': "NYSE American",
+    'ARCA': "NYSE Arca",
+    'ASX': "Australian Securities Exchange",
+    'BATS': "Cboe BZX Exchange",
+    'BUE': "Buenos Aires Stock Exchange",
+    'BVMF': "B3",
+    'DUB': "Euronext Dublin",
+    'DUS': "Dusseldorf Stock Exchange",
+    'FRA': "Frankfurt Stock Exchange",
+    'HKSE': "Hong Kong Stock Exchange",
+    'ISX': "Indonesia Stock Exchange",
+    'JSE': "Johannesburg Stock Exchange",
+    'LIM': "Lima Stock Exchange",
+    'LSE': "London Stock Exchange",
+    'MEX': "Mexican Stock Exchange",
+    'MIL': "Borsa Italiana",
+    'MISX': "Moscow Exchange",
+    'MUN': "Munich Stock Exchange",
+    'NAS': "Nasdaq",
+    'NEOE': "Cboe Canada",
+    'NYSE': "New York Stock Exchange",
+    'OCSE': "Nasdaq Copenhagen",
+    'OHEL': "Nasdaq Helsinki",
+    'OSL': "Oslo Stock Exchange",
+    'OSTO': "Nasdaq Stockholm",
+    'OTCM': "OTC Markets",
+    'STU': "Stuttgart Stock Exchange",
+    'TPE': "Taiwan Stock Exchange",
+    'TSE': "Tokyo Stock Exchange",
     'TSX': "Toronto Stock Exchange",
-    'BRU': "Brussels Stock Exchange", 
-    'BATS': "BATS Global Markets", 
-    'ARCX': "NYSE Arca", 
-    'GREY': "Grey Market (OTC)", 
-    'DUS': "Dusseldorf Stock Exchange", 
-    'BER': "Berlin Stock Exchange", 
-    'ROCO': "Taipei Exchange", 
-    'CNQ': "Canadian Trading and Quotation System Inc.", 
-    'BSP': "Bangko Sentral ng Pilipinas", 
-    'NEOE': "NEO Exchange"
+    'TSXV': "TSX Venture Exchange",
+    'XAMS': "Euronext Amsterdam",
+    'XBRU': "Euronext Brussels",
+    'XCNQ': "Canadian Securities Exchange",
+    'XKRX': "Korea Exchange",
+    'XMAD': "Madrid Stock Exchange",
+    'XPAR': "Euronext Paris",
+    'XSGO': "Santiago Stock Exchange",
+    'XSWX': "SIX Swiss Exchange",
+    'XTAE': "Tel Aviv Stock Exchange",
+    'XTER': "Deutsche Boerse Xetra"
 }
 
 html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter Fundamental objects, you can use the <code>MorningstarSectorCode</code>, <code>MorningstarIndustryGroupCode</code>, and <code>MorningstarIndustryCode</code> enumeration values.</p>
@@ -86,12 +79,12 @@ html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter
 <div data-tree="QuantConnect.Data.Fundamental.MorningstarIndustryCode"></div>
 
 <h4>Exchange Id Values</h4>
-<p>Exchange Id is mapped to represent the exchange that lists the Equity.  To access the exchange Id of an Equity, use the <b class="csharp">PrimaryExchangeID</b><b class="python">primary_exchange_id</b> property.</p>
+<p>Exchange Ids identify the exchange that lists the Equity. The <b class="csharp">SecurityReference.ExchangeId</b><b class="python">security_reference.exchange_id</b> property is the exchange of the share class. The <b class="csharp">CompanyReference.PrimaryExchangeID</b><b class="python">company_reference.primary_exchange_id</b> property is the exchange of the primary share of the company, which can be outside the US.</p>
 <div class="section-example-container">
-    <pre class="csharp">filtered = fundamental.Where(x =&gt; x.CompanyReference.PrimaryExchangeID == "NAS");</pre>
-    <pre class="python">filtered = [x for x in fundamental if x.company_reference.primary_exchange_id == "NAS"]</pre>
+    <pre class="csharp">filtered = fundamental.Where(x =&gt; x.SecurityReference.ExchangeId == "NYSE");</pre>
+    <pre class="python">filtered = [x for x in fundamental if x.security_reference.exchange_id == "NYSE"]</pre>
 </div>
-<p>The exchanges are represented by the following string values:</p>
+<p>The exchange Id is part of the fundamental data, so it's <code class="csharp">null</code><code class="python">None</code> when <code class="csharp">HasFundamentalData</code><code class="python">has_fundamental_data</code> is <code class="csharp">false</code><code class="python">False</code>. The share class exchange Id is one of <code>NAS</code>, <code>NYSE</code>, <code>AMEX</code>, <code>OTCM</code>, <code>ARCA</code>, or <code>BATS</code>. The primary exchange Id can be any of the following string values:</p>
 <table class="table qc-table table-reflow">
 <thead><tr><th>String Representation</th><th>Exchange</th></tr></thead>
 <tbody>
