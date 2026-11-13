@@ -40,14 +40,23 @@ def on_data(self, slice: Slice) -&gt; None:
 <p>The <code>OrderField</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Orders.OrderField"></div>
 
-<p>To check whether an order is open, closed, or filled, <span class="csharp">call the <code>IsOpen</code>, <code>IsClosed</code>, or <code>IsFill</code> extension method on the order status</span><span class="python">compare the order status to the <code>OrderStatus</code> enumeration members</span>. An order is closed when its status is filled, canceled, or invalid.</p>
+<p>To check whether an order is open, closed, or filled, call the <code class="csharp">IsOpen</code><code class="python">is_open</code>, <code class="csharp">IsClosed</code><code class="python">is_closed</code>, or <code class="csharp">IsFill</code><code class="python">is_fill</code> method on the order status. An order is closed when its status is filled, canceled, or invalid.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var isOpen = _ticket.Status.IsOpen();
 var isClosed = _ticket.Status.IsClosed();
 var isFill = _ticket.Status.IsFill();</pre>
-<pre class="python">is_closed = self._ticket.status in (OrderStatus.FILLED, OrderStatus.CANCELED, OrderStatus.INVALID)
-is_open = not is_closed
+<pre class="python">is_open = self._ticket.status.is_open()
+is_closed = self._ticket.status.is_closed()
+is_fill = self._ticket.status.is_fill()</pre>
+</div>
+
+<p>You can also compare the order status to the <code>OrderStatus</code> enumeration members.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var isFilled = _ticket.Status == OrderStatus.Filled;
+var isFill = _ticket.Status is OrderStatus.Filled or OrderStatus.PartiallyFilled;</pre>
+<pre class="python">is_filled = self._ticket.status == OrderStatus.FILLED
 is_fill = self._ticket.status in (OrderStatus.FILLED, OrderStatus.PARTIALLY_FILLED)</pre>
 </div>
 
