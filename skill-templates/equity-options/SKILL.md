@@ -55,7 +55,7 @@ _symbol = option.Symbol;                        // canonical Symbol — save it
 - **The canonical py`option.symbol`cs`option.Symbol` is not tradable** — it is the key into py`data.option_chains`cs`data.OptionChains` and the first argument of every `OptionStrategies` factory.
 - **Filter timing**: selection "usually runs at the first bar of every day"; a newly selected contract's data arrives "in the next `Slice`". So the chain can be absent on any given event — always guard: py`chain = data.option_chains.get(self._symbol); if not chain: return`cs`if (!data.OptionChains.TryGetValue(_symbol, out var chain)) return;`.
 - **Default filter** if you never call py`set_filter`cs`SetFilter`: standards + weeklys, within 1 strike of the underlying price, expiring within 35 days — almost never what a spec wants; set the filter explicitly.
-- Filter building blocks: py`strikes(min, max)`cs`Strikes(min, max)` (relative strike counts around the money, not dollars), py`expiration(min_days, max_days)`cs`Expiration(minDays, maxDays)`, py`calls_only()/puts_only()`cs`CallsOnly()/PutsOnly()`, py`weeklys_only()/standards_only()/include_weeklys()`cs`WeeklysOnly()/StandardsOnly()/IncludeWeeklys()`, py`front_month()/back_month()`cs`FrontMonth()/BackMonth()`, greek/OI filters py`delta(min, max)`cs`Delta(min, max)`, py`iv(min, max)`cs`IV(min, max)`, py`open_interest(min, max)`cs`OpenInterest(min, max)` (these compare **prior-day EOD** values — use them for coarse pre-selection, then pick precisely from live slice greeks), and strategy-shaped helpers (py`u.straddle(30)`cs`u.Straddle(30)`, py`u.iron_condor(30, 5, 10)`cs`u.IronCondor(30, 5, 10)`) that narrow the universe to exactly the legs a named strategy needs.
+- Filter building blocks: py`strikes(min, max)`cs`Strikes(min, max)` (relative strike counts around the money, not dollars), py`expiration(min_days, max_days)`cs`Expiration(minDays, maxDays)`, py`calls_only()/puts_only()`cs`CallsOnly()/PutsOnly()`, py`weeklys_only()/standards_only()/include_weeklys()`cs`WeeklysOnly()/StandardsOnly()/IncludeWeeklys()`, py`front_month()/back_month()`cs`FrontMonth()/BackMonth()`, greek/OI filters py`delta(min, max)`cs`Delta(min, max)`, py`iv(min, max)`cs`IV(min, max)`, py`open_interest(min, max)`cs`OpenInterest(min, max)` (these compare **prior-day EOD** values — use them for coarse pre-selection, then pick precisely from live slice greeks), and strategy-shaped helpers (py`u.straddle(30)`cs`u.Straddle(30)`, py`u.iron_condor(30, 5, 10)`cs`u.IronCondor(30, 5, 10)`) that narrow the universe to exactly the legs a named strategy needs. Except py`include_weeklys()`cs`IncludeWeeklys()`, the same filters also run on the slice's chain in py`on_data`cs`OnData`, and each returns a chain, empty when no contract matches.
 - **Resolution rule**: the option resolution must be ≥ the underlying Equity's resolution (minute equity → minute/hour/daily options). Contract subscriptions support minute, hour, and daily; minute is the default.
 
 Reading the chain at a decision time:
@@ -65,9 +65,12 @@ def on_data(self, data: Slice) -> None:
     chain = data.option_chains.get(self._symbol)
     if not chain:
         return
+    calls = chain.calls_only().expiration(15, 30)
+    if not calls:
+        return
     spot = chain.underlying.price
-    atm_call = min((c for c in chain if c.right == OptionRight.CALL),
-                   key=lambda c: abs(c.strike - spot))
+    atm_call = min(calls, key=lambda c: abs(c.strike - spot))
+    days_left = atm_call.days_to_expiry  # calendar days from today to expiry
     delta = atm_call.greeks.delta        # live price-model value, computed on request
     mid = (atm_call.bid_price + atm_call.ask_price) / 2
 ```
@@ -75,9 +78,11 @@ def on_data(self, data: Slice) -> None:
 public override void OnData(Slice data)
 {
     if (!data.OptionChains.TryGetValue(_symbol, out var chain)) return;
+    var calls = chain.CallsOnly().Expiration(15, 30);
+    if (!calls.Any()) return;
     var spot = chain.Underlying.Price;
-    var atmCall = chain.Where(c => c.Right == OptionRight.Call)
-        .OrderBy(c => Math.Abs(c.Strike - spot)).First();
+    var atmCall = calls.OrderBy(c => Math.Abs(c.Strike - spot)).First();
+    var daysLeft = atmCall.DaysToExpiry;  // calendar days from today to expiry
     var delta = atmCall.Greeks.Delta;    // live price-model value, computed on request
     var mid = (atmCall.BidPrice + atmCall.AskPrice) / 2;
 }

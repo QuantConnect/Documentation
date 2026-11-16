@@ -22,6 +22,11 @@ var targetContracts = Math.Round(Portfolio.TotalPortfolioValue * targetWeight / 
 var delta = targetContracts - Portfolio[symbol].Quantity; MarketOrder(symbol, delta);   // trade the delta
 ```
 
+## Continuous symbol vs mapped contract
+- py`future.symbol`cs`future.Symbol` is the continuous symbol. Use it for history, consolidators, and indicators, and to read bars in py`on_data`cs`OnData`: py`data.bars.get(future.symbol)`cs`data.Bars.TryGetValue(future.Symbol, out var bar)`. These keep receiving data across each roll.
+- py`future.mapped`cs`future.Mapped` is the contract to trade. Use it for orders and portfolio reads.
+- py`future.mapped`cs`future.Mapped` is py`None`cs`null` in py`initialize`cs`Initialize` and changes at each roll, so read it when you place the order.
+
 <!-- python-only -->
 ## History — use self.history(); do NOT rebuild a DataFrame from TradeBars
 Seeding a raw look-back buffer (e.g. an expanding regression window) is a HISTORY REQUEST, not a warm-up (warm-up pumps data through on_data and updates indicators; a history request hands you a DataFrame to process yourself).
