@@ -161,7 +161,7 @@ Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/deployments#04-Delete-
 
 ### What is an agent node, and how many agents can I run at once?
 
-Agent nodes are the servers that run your agent tasks and connect to the remote MCP server. The number of agent nodes and the node model set how many agent tasks you can run concurrently. For example, an A4-8 node runs four agents and an A16-32 node runs sixteen. See the Pricing page for the price of each model.
+Agent nodes are the servers that run your agent tasks and connect to the remote MCP server. The number of agent nodes and the node model set how many agent tasks you can run concurrently. For example, an A4-12 node runs four agents and an A16-32 node runs sixteen. See the Pricing page for the price of each model.
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/deployments#05-Quotas>
 
@@ -325,7 +325,7 @@ Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/mcp-server/claude-code
 
 ### Why does the MCP server say it requires a dedicated Assistant node?
 
-The remote MCP server requires a paid agent node, such as an A1-1, A4-8, or A16-32 node. If your organization only has the free A-MICRO agent node, the server returns this error. To resolve it, add a paid agent node to your organization.
+The remote MCP server requires a paid agent node, such as an A1-1, A4-12, or A16-32 node. If your organization only has the free A-MICRO agent node, the server returns this error. To resolve it, add a paid agent node to your organization.
 
 Docs: <https://www.quantconnect.com/docs/v2/ai-assistance/mcp-server/key-concepts#08-Troubleshooting>
 

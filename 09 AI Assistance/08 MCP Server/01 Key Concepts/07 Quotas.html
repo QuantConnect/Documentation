@@ -1,4 +1,25 @@
 <p>
-  There are no quotas on the QuantConnect API, but the client you use may have quotas. 
-  For more information about the quotas, see the <span class='page-section-name'>Quotas</span> section for one of the <a href='/docs/v2/ai-assistance/mcp-server'>supported MCP clients</a>.
+  There are no request quotas on the QuantConnect API, but the remote MCP server is limited by your <a href='/docs/v2/cloud-platform/organizations/resources#05-Agent-Nodes'>agent nodes</a> and the client you use may have quotas.
+  For more information about the client quotas, see the <span class='page-section-name'>Quotas</span> section for one of the <a href='/docs/v2/ai-assistance/mcp-server'>supported MCP clients</a>.
+</p>
+
+<h4>Agent Node Sessions</h4>
+<p>
+  The remote MCP server runs your tool calls in a session on one of your agent nodes.
+  The following rules apply to these sessions:
+</p>
+<ul>
+  <li>Each session occupies one agent node for as long as it runs.</li>
+  <li>Sessions are per project. The first tool call for a project starts a session for that project, and later calls for the same project reuse it.</li>
+  <li>The <code>list_projects</code>, <code>read_project</code>, and <code>create_project</code> tools don't use a session, so they work even when all your agent nodes are in use.</li>
+  <li>
+    Mia chats, agent tasks, and MCP sessions all use the same agent nodes.
+    While an MCP session holds a node, a Mia message or an agent task can't use that node, and while a Mia chat or an agent task holds a node, an MCP call can't start a session on it.
+    A Mia chat or an agent task can hold a node for several hours while it works.
+  </li>
+  <li>A session can take more than 60 seconds to start. Until it's ready, tool calls for the project return an error that asks you to retry.</li>
+</ul>
+<p>
+  To run MCP calls and Mia chats or agent tasks at the same time, or to work on several projects at once, <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add agent nodes</a>.
+  To see which project holds each node and to free a node, open the <a href='/docs/v2/cloud-platform/organizations/resources#18-Stop-Nodes'>Resources</a> page.
 </p>
