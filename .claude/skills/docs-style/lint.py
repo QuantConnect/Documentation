@@ -42,20 +42,29 @@ CHECKS = [
 
 
 def prose_lines(path):
-    """Yield (line_no, plain text) for prose, skipping code blocks and PHP."""
+    """Yield (line_no, plain text) for prose, skipping code, script, and style blocks and PHP."""
     text = path.read_text(encoding="utf-8")
-    if path.suffix == ".php":
-        for no, line in enumerate(text.splitlines(), 1):
-            m = re.search(r'"(name|text)":\s*("(?:[^"\\]|\\.)*")', line)
-            if m:
-                yield no, json.loads(m.group(2))
-        return
-    in_pre = False
+    in_php, code_end = False, None
     for no, line in enumerate(text.splitlines(), 1):
-        if "<pre" in line:
-            in_pre = True
-        if in_pre:
-            in_pre = "</pre>" not in line
+        if path.suffix == ".php":
+            # Inside <? ... ?>, only FAQ JSON name/text values are prose.
+            outside, rest = "", line
+            while rest:
+                if in_php:
+                    code, sep, rest = rest.partition("?>")
+                    m = re.search(r'"(name|text)":\s*("(?:[^"\\]|\\.)*")', code)
+                    if m:
+                        yield no, json.loads(m.group(2))
+                else:
+                    chunk, sep, rest = rest.partition("<?")
+                    outside += chunk
+                in_php = in_php != bool(sep)
+            line = outside
+        if m := re.search(r"<(pre|script|style)\b", line):
+            code_end = f"</{m.group(1)}>"
+        if code_end:
+            if code_end in line:
+                code_end = None
             continue
         yield no, line
 
