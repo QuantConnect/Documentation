@@ -2,7 +2,9 @@
 	The brokerage model of your algorithm automatically sets the margin call model for the portfolio. 
 	The default brokerage model is the <code>DefaultBrokerageModel</code>, which sets the <code>DefaultMarginCallModel</code>. 
 	The <code>DefaultMarginCallModel</code> issues margin call warnings when the margin remaining in your portfolio is less than or equal to 5% of the total portfolio value. 
-	When your total margin used exceeds 10% of the total portfolio value, this model creates one margin call order for each position group.
+	When your margin remaining is zero or less, the model subtracts the margin that open margin call orders release from your total margin used.
+	If the result exceeds the total portfolio value plus the margin buffer, the model creates one margin call order for each position group.
+	The default margin buffer is 10%, so margin call orders start when the result exceeds 110% of the total portfolio value.
 	It sizes each order for the deficit that the open margin call orders leave.
 	It sorts the orders in ascending order by their unrealized profit and then synchronously executes each order until your portfolio is within the margin requirements.
 	After an earlier order fills or stays open, the model reduces each later order to the smallest quantity that covers the remaining deficit.
