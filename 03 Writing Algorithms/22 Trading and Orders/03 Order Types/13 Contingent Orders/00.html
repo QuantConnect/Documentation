@@ -1,13 +1,15 @@
 <div class="sub-heading-content">
     <div class="sub-heading-landing">
         <div class="internal-content">
-          <p>Contingent orders are sets of orders with related lifecycles. When an order in the set fills or you cancel it, the brokerage triggers, cancels, or resizes the other orders in the set. The brokerage manages the whole set, so a fill and a cancel request can't race each other and leave a position without its exit orders. LEAN supports the following contingency types:</p>
+          <p>Contingent orders are sets of orders with related lifecycles. When an order in the set fills or you cancel it, the other orders in the set trigger, cancel, or resize. In live trading, LEAN sends the whole set to the brokerage, and the brokerage manages it. LEAN supports the following contingency types, which follow these rules in backtests:</p>
 
           <ul>
               <li>One Cancels Other (OCO) orders cancel the rest of the set when one of them fills, even partially.</li>
               <li>One Triggers Other (OTO) orders hold the child orders until the parent order completely fills.</li>
               <li>One Updates Other (OUO) orders reduce the remaining quantity of the rest of the set when one of them partially fills.</li>
           </ul>
+
+          <p>In live trading, the partial-fill and cancellation rules depend on the brokerage. For example, a brokerage can reduce the stop-loss quantity when the take-profit order partially fills. In fast markets, both exit orders can fill before the brokerage cancels one of them.</p>
 
           <p>You can combine these types. For example, a bracket order is an entry order that triggers a take-profit order and a stop-loss order, which cancel each other. The members of a set can be <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>combo orders</a>.</p>
         </div>
