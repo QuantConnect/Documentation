@@ -315,7 +315,7 @@ def resolve_market_hours_exceptions(entries: dict) -> dict:
 
         # Only wildcards processed earlier in file order are found, as in LEAN
         common = resolved.get((security_type, market, '[*]'))
-        if common:
+        if common and not entry.get('ignoreMarketWideCalendar'):
             for day, text in common['holidays'].items():
                 # LEAN makes these bank holidays, which the pages don't show
                 if day not in early_closes and day not in late_opens:
