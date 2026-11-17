@@ -335,7 +335,29 @@ class PlatformSpecResponseAlternativeTests(unittest.TestCase):
         self.assert_valid("/backtests/read/report", {"generating": True, "success": True, "errors": []})
 
 
+class RedirectResponseTests(unittest.TestCase):
+
+    def test_redirect_response_has_its_description(self):
+        with tempfile.NamedTemporaryFile("w", suffix=".yaml", delete=False) as f:
+            yaml.safe_dump({"components": {"schemas": {}}}, f)
+        self.addCleanup(pathlib.Path(f.name).unlink)
+        endpoint = {"responses": {"302": {"description": "Redirection URL in the header"}}}
+        with tempfile.TemporaryDirectory() as folder:
+            _module.APIReferenceGenerator(f.name)._write_responses("/redirect", endpoint, pathlib.Path(folder), 3)
+            page = (pathlib.Path(folder) / "03 Responses.html").read_text()
+        self.assertIn("<h4>302 Redirect</h4>\n<p>Redirection URL in the header.</p>\n", page)
+
+
 class GeneratedPagesTests(unittest.TestCase):
+
+    def test_every_endpoint_has_its_own_folder(self):
+        path = pathlib.Path(__file__).parent.parent / "QuantConnect-Platform-2.0.0.yaml"
+        folders = {}
+        for api_call, endpoint in yaml.safe_load(path.read_text())["paths"].items():
+            method = endpoint.get("post") or endpoint.get("get")
+            if method:
+                folders.setdefault(tuple(method["tags"]), []).append(api_call)
+        self.assertEqual({}, {tags: calls for tags, calls in folders.items() if len(calls) > 1})
 
     def test_every_generated_page_is_written_by_the_generator(self):
         root = pathlib.Path(__file__).parent.parent

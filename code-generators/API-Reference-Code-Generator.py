@@ -34,6 +34,7 @@ LANDING_CONTENT = {
     "07 Live Management/02 Read Live Algorithm": "lets you read your live algorithm results from our cloud servers",
     "07 Live Management/03 Update Live Algorithm": "lets you update your live algorithms on our cloud servers",
     "07 Live Management/05 Live Commands": "lets you send commands to live algorithms on our cloud servers",
+    "07 Live Management/06 External Connections": "lets you authorize connections to brokerages and data providers for your live algorithms",
     "08 Optimization Management": "lets you manage your optimizations on our cloud servers",
     "09 Object Store Management": "lets you manage the files in your Object Store on our cloud servers",
     "10 AI Assistance": "lets you use AI tools to assist with coding tasks",
@@ -894,6 +895,10 @@ class APIReferenceGenerator:
                         " <td> <code>string</code> <br/> Header</td>\n"
                         "</tr>\n</table>\n"
                     )
+                    continue
+                elif code == "302":
+                    f.write("<h4>302 Redirect</h4>\n")
+                    f.write(f"<p>{self._ensure_period(props['description'])}</p>\n")
                     continue
                 elif code == "404":
                     f.write("<h4>404 Not Found Error</h4>\n")
