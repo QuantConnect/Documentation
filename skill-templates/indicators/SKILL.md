@@ -69,38 +69,41 @@ _rsi = RSI(symbol, 14, resolution: Resolution.Daily);
 ```
 
 ## Acting on a fixed intraday bar — consolidators vs scheduled events
-If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in py`on_data`cs`OnData` (py`if bar.end_time.time() in MARKS: ...`cs`if (MARKS.Contains(bar.EndTime.TimeOfDay)) ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. A **market-hour-aware** consolidator anchors intraday bars to the market open (the first 30-min bar ends 30 min after the open) and respects early-close/holiday sessions:
+If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in py`on_data`cs`OnData` (py`if bar.end_time.time() in MARKS: ...`cs`if (MARKS.Contains(bar.EndTime.TimeOfDay)) ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. py`self.consolidate(symbol, period, handler)`cs`Consolidate(symbol, period, handler)` builds the consolidator that matches the symbol's data and registers it, in one line. Its handler takes the bar only:
 
 ```python
 self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
-# 30-min TradeBars anchored to the market open (args: daily_strict_end_time, period, data_type, tick_type, extended_hours):
-self._consolidator = MarketHourAwareConsolidator(True, timedelta(minutes=30), TradeBar, TickType.TRADE, False)
-self._consolidator.data_consolidated += self._consolidation_handler
-self.subscription_manager.add_consolidator(self._symbol, self._consolidator)
+self._consolidator = self.consolidate(self._symbol, timedelta(minutes=30), self._on_bar)
 ...
-# The handler takes THREE parameters — (self, sender, bar). A 2-arg def (self, bar)
-# raises "takes 2 positional arguments but 3 were given" on the first bar. Type it:
-def _consolidation_handler(self, sender: object, consolidated_bar: TradeBar) -> None:
-    # consolidated_bar is the 30-min TradeBar — read consolidated_bar.close, decide here.
-    ...
+def _on_bar(self, bar: TradeBar) -> None:   # the 30-min TradeBar — read bar.close, decide here
 ```
-
 ```csharp
 _symbol = AddEquity("SPY", Resolution.Minute).Symbol;
-// 30-min TradeBars anchored to the market open (args: dailyStrictEndTime, period, dataType, tickType, extendedHours):
-_consolidator = new MarketHourAwareConsolidator(true, TimeSpan.FromMinutes(30), typeof(TradeBar), TickType.Trade, false);
-// The DataConsolidated event delivers the bar as an IBaseData — cast it to a TradeBar for the handler:
-_consolidator.DataConsolidated += (sender, consolidated) => ConsolidationHandler(sender, (TradeBar)consolidated);
-SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+_consolidator = Consolidate(_symbol, TimeSpan.FromMinutes(30), OnBar);
 ...
-private void ConsolidationHandler(object sender, TradeBar consolidatedBar)
-{
-    // consolidatedBar is the 30-min TradeBar — read consolidatedBar.Close, decide here.
-    ...
-}
+private void OnBar(TradeBar bar) { /* the 30-min TradeBar — read bar.Close, decide here */ }
 ```
 
-Put the trading logic where the data lands: if you read the bar directly, the py`data_consolidated`cs`DataConsolidated` handler is the home; if you trade off an indicator fed by the consolidator (py`self.register_indicator(symbol, indicator, self._consolidator)`cs`RegisterIndicator(symbol, indicator, _consolidator)`), put the logic in the indicator's own py`updated`cs`Updated` event handler instead (see "React per update" under Reading values). Sub-bar statistics need the underlying minute subscription, not the consolidated bar — and a built-in usually already exists. A session VWAP is py`self.vwap(symbol)`cs`VWAP(symbol)` (a built-in `IntradayVwap` that updates off the minute bars and resets each session) — use it. **Never** accumulate a VWAP (or any sub-bar statistic) from the 30-min consolidated bars: those are ~6 points per half-hour, not the full minute series, so the value is wrong.
+Forex and CFD have quote bars only, so a `TradeBarConsolidator` on them raises a type mismatch. py`self.consolidate`cs`Consolidate` builds a `QuoteBarConsolidator` for them, so the handler takes a `QuoteBar`.
+
+Build a `MarketHourAwareConsolidator` yourself when the subscription includes extended hours but the bars must cover the regular session only, since py`self.consolidate`cs`Consolidate` also consolidates the pre- and post-market bars. Its handler takes py`(sender, bar)`cs`(sender, bar)`:
+
+```python
+self._symbol = self.add_equity("SPY", Resolution.MINUTE, extended_market_hours=True).symbol
+# args: daily_strict_end_time, period, data_type, tick_type, extended_hours
+self._consolidator = MarketHourAwareConsolidator(True, timedelta(minutes=30), TradeBar, TickType.TRADE, False)
+self._consolidator.data_consolidated += self._on_session_bar   # (self, sender, bar); (self, bar) raises "takes 2 positional arguments but 3 were given"
+self.subscription_manager.add_consolidator(self._symbol, self._consolidator)
+```
+```csharp
+_symbol = AddEquity("SPY", Resolution.Minute, extendedMarketHours: true).Symbol;
+// args: dailyStrictEndTime, period, dataType, tickType, extendedHours
+_consolidator = new MarketHourAwareConsolidator(true, TimeSpan.FromMinutes(30), typeof(TradeBar), TickType.Trade, false);
+_consolidator.DataConsolidated += (sender, consolidated) => OnSessionBar((TradeBar)consolidated);   // the event delivers an IBaseData
+SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+```
+
+Put the trading logic where the data lands: if you read the bar directly, the consolidator's handler is the home; if you trade off an indicator fed by the consolidator (py`self.register_indicator(symbol, indicator, self._consolidator)`cs`RegisterIndicator(symbol, indicator, _consolidator)`), put the logic in the indicator's own py`updated`cs`Updated` event handler instead (see "React per update" under Reading values). Sub-bar statistics need the underlying minute subscription, not the consolidated bar — and a built-in usually already exists. A session VWAP is py`self.vwap(symbol)`cs`VWAP(symbol)` (a built-in `IntradayVwap` that updates off the minute bars and resets each session) — use it. **Never** accumulate a VWAP (or any sub-bar statistic) from the 30-min consolidated bars: those are ~6 points per half-hour, not the full minute series, so the value is wrong.
 
 The handler fires once per consolidated bar, so **that bar is your cadence** — don't ALSO keep a parallel set of target times (or re-check the clock), neither to decide whether to act (the consolidator already only emits at those marks, plus the session-close bar) nor as the keys for per-time-of-day state. When you need a separate statistic per intra-session slot (a band/mean/stat keyed by time-of-day), do NOT enumerate the slot times in py`initialize`cs`Initialize`: derive each bar's key from its own py`bar.end_time.time()`cs`bar.EndTime.TimeOfDay` and look it up lazily, so the key set builds itself from the bars that actually arrive — automatically matching early-close/holiday/DST sessions, where an enumerated list would be stale. Each slot's rolling stat **accumulates across days under its own key**, so you never need the list to pre-build or backfill the slots:
 
@@ -119,24 +122,21 @@ if (!_slot.ContainsKey(slot))
 _slot[slot].Update(bar.EndTime, value);        // one bar per slot per day accumulates here
 ```
 
-If a particular emitted bar must be skipped — e.g. a market-hour-aware consolidator emits a final bar at the session close that you don't want to trade on — gate the handler on the session-close test py`security.exchange.hours.is_open(bar.end_time, False)`cs`security.Exchange.Hours.IsOpen(bar.EndTime, false)` (py`True`cs`true` for every intraday mark, py`False`cs`false` only for that session-close bar — on normal and early-close days alike; py`security.exchange.exchange_open`cs`security.Exchange.ExchangeOpen` and py`self.is_market_open(symbol)`cs`IsMarketOpen(symbol)` agree), not on an enumerated list of bars. To turn a value you compute each bar into a rolling statistic (a mean/std over the last N of those bars), feed it to an indicator in the handler — see "Rolling mean / std of a value you compute".
+If a particular emitted bar must be skipped — e.g. the consolidator emits a final bar at the session close that you don't want to trade on — gate the handler on the session-close test py`security.exchange.hours.is_open(bar.end_time, False)`cs`security.Exchange.Hours.IsOpen(bar.EndTime, false)` (py`True`cs`true` for every intraday mark, py`False`cs`false` only for that session-close bar — on normal and early-close days alike; py`security.exchange.exchange_open`cs`security.Exchange.ExchangeOpen` and py`self.is_market_open(symbol)`cs`IsMarketOpen(symbol)` agree), not on an enumerated list of bars. To turn a value you compute each bar into a rolling statistic (a mean/std over the last N of those bars), feed it to an indicator in the handler — see "Rolling mean / std of a value you compute".
 
-**Seeding handler-built state — replay history through the consolidator, not a parallel loop.** When per-asset state is built inside a py`data_consolidated`cs`DataConsolidated` handler and must be ready before live trading (so the strategy doesn't idle), seed it by feeding that asset's history **through the same consolidator**, so the same handler builds the same state from the same bars:
+**Seeding handler-built state — replay history through the consolidator, not a parallel loop.** When per-asset state is built inside a consolidator handler and must be ready before live trading (so the strategy doesn't idle), seed it by feeding that asset's history **through the same consolidator**, so the same handler builds the same state from the same bars:
 
 ```python
-self._consolidator.data_consolidated += self._on_bar
-self.subscription_manager.add_consolidator(symbol, self._consolidator)
+self._consolidator = self.consolidate(symbol, timedelta(minutes=30), self._on_bar)
 self._seeding = True
-for bar in self.history[TradeBar](symbol, timedelta(days=N), Resolution.MINUTE):
+for bar in self.history[TradeBar](symbol, timedelta(days=N), Resolution.MINUTE):   # QuoteBar for forex and CFD
     self._consolidator.update(bar)   # drives _on_bar with the SAME bars/marks it sees live
 self._seeding = False
 ```
-
 ```csharp
-_consolidator.DataConsolidated += (sender, consolidated) => OnBar(sender, (TradeBar)consolidated);
-SubscriptionManager.AddConsolidator(symbol, _consolidator);
+_consolidator = Consolidate(symbol, TimeSpan.FromMinutes(30), OnBar);
 _seeding = true;
-foreach (var bar in History<TradeBar>(symbol, TimeSpan.FromDays(N), Resolution.Minute))
+foreach (var bar in History<TradeBar>(symbol, TimeSpan.FromDays(N), Resolution.Minute))   // QuoteBar for forex and CFD
     _consolidator.Update(bar);   // drives OnBar with the SAME bars/marks it sees live
 _seeding = false;
 ```
