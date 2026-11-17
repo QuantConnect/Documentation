@@ -49,7 +49,7 @@ _symbol = option.Symbol;                        // canonical Symbol — save it
 - **The canonical `option.Symbol` is not tradable** — it is the key into `data.OptionChains` and the first argument of every `OptionStrategies` factory.
 - **Filter timing**: selection "usually runs at the first bar of every day"; a newly selected contract's data arrives "in the next `Slice`". So the chain can be absent on any given event — always guard: `if (!data.OptionChains.TryGetValue(_symbol, out var chain)) return;`.
 - **Default filter** if you never call `SetFilter`: standards + weeklys, within 1 strike of the underlying price, expiring within 35 days — almost never what a spec wants; set the filter explicitly.
-- Filter building blocks: `Strikes(min, max)` (relative strike counts around the money, not dollars), `Expiration(minDays, maxDays)`, `CallsOnly()/PutsOnly()`, `WeeklysOnly()/StandardsOnly()/IncludeWeeklys()`, `FrontMonth()/BackMonth()`, greek/OI filters `Delta(min, max)`, `IV(min, max)`, `OpenInterest(min, max)` (these compare **prior-day EOD** values — use them for coarse pre-selection, then pick precisely from live slice greeks), and strategy-shaped helpers (`u.Straddle(30)`, `u.IronCondor(30, 5, 10)`) that narrow the universe to exactly the legs a named strategy needs.
+- Filter building blocks: `Strikes(min, max)` (relative strike counts around the money, not dollars), `Expiration(minDays, maxDays)`, `CallsOnly()/PutsOnly()`, `WeeklysOnly()/StandardsOnly()/IncludeWeeklys()`, `FrontMonth()/BackMonth()`, greek/OI filters `Delta(min, max)`, `IV(min, max)`, `OpenInterest(min, max)` (these compare **prior-day EOD** values — use them for coarse pre-selection, then pick precisely from live slice greeks), and strategy-shaped helpers (`u.Straddle(30)`, `u.IronCondor(30, 5, 10)`) that narrow the universe to exactly the legs a named strategy needs. Except `IncludeWeeklys()`, the same filters also run on the slice's chain in `OnData`, and each returns a chain, empty when no contract matches. On the chain, `Delta(min, max)` and the other greek filters read the live greeks.
 - **Resolution rule**: the option resolution must be ≥ the underlying Equity's resolution (minute equity → minute/hour/daily options). Contract subscriptions support minute, hour, and daily; minute is the default.
 
 Reading the chain at a decision time:
@@ -58,9 +58,11 @@ Reading the chain at a decision time:
 public override void OnData(Slice data)
 {
     if (!data.OptionChains.TryGetValue(_symbol, out var chain)) return;
+    var calls = chain.CallsOnly().Expiration(15, 30);
+    if (!calls.Any()) return;
     var spot = chain.Underlying.Price;
-    var atmCall = chain.Where(c => c.Right == OptionRight.Call)
-        .OrderBy(c => Math.Abs(c.Strike - spot)).First();
+    var atmCall = calls.OrderBy(c => Math.Abs(c.Strike - spot)).First();
+    var daysLeft = atmCall.DaysToExpiry;  // calendar days from today to expiry
     var delta = atmCall.Greeks.Delta;    // live price-model value, computed on request
     var mid = (atmCall.BidPrice + atmCall.AskPrice) / 2;
 }
