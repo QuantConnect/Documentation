@@ -135,8 +135,10 @@ def run_syntax_check(target_files: list[str]) -> list[bool]:
                 log(f"{target_file}\n{filtered_output}")
             results.append(tmp_file is not None and not filtered_output)
 
-        # Exit code 2 (a crash, or a blocking error such as invalid syntax) means mypy didn't check every template
-        if algorithm_result.returncode > 1:
+        # Exit code 2 (a crash, or a blocking error such as invalid syntax) means mypy didn't check every template.
+        # Exit code 1 with no template in the output means mypy didn't run, e.g. it isn't installed.
+        mypy_ran = any(f"{tmp_file}:" in output for tmp_file in files_to_check)
+        if algorithm_result.returncode > 1 or (algorithm_result.returncode == 1 and not mypy_ran):
             log(f"mypy stopped with exit code {algorithm_result.returncode}\n{output}")
             return [False] * len(target_files)
         return results
