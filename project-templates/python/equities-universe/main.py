@@ -54,4 +54,4 @@ class SelectionData:
 
     def scaled_delta(self) -> float:
         fast, slow = self.fast.current.value, self.slow.current.value
-        return (fast-slow)/((fast + slow)/2)
+        return float((fast-slow)/((fast + slow)/2))

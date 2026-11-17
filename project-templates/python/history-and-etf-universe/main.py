@@ -19,7 +19,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         def get_atr(symbol: Symbol) -> float:
             atr = AverageTrueRange(14)
             self.warm_up_indicator(symbol, atr, Resolution.DAILY)
-            return atr.current.value
+            return float(atr.current.value)
 
         # Select all QQQ constituents by high ATR value
         atr_by_symbol = {c.symbol: get_atr(c.symbol) for c in constituents if c.weight}
