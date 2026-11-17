@@ -46,24 +46,28 @@ _rsi = RSI(symbol, 14, resolution: Resolution.Daily);
 ```
 
 ## Acting on a fixed intraday bar — consolidators vs scheduled events
-If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in `OnData` (`if (MARKS.Contains(bar.EndTime.TimeOfDay)) ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. A **market-hour-aware** consolidator anchors intraday bars to the market open (the first 30-min bar ends 30 min after the open) and respects early-close/holiday sessions:
+If you only need to ACT at a fixed time (no bar or indicator data required), a **Scheduled Event** is simplest — see the scheduled-events skill. But when the decision happens on a fixed intraday bar cadence and uses that bar — read the price at each half-hour mark, then act — **drive it off a consolidator**: do NOT replicate the cadence by filtering minute bars in `OnData` (`if (MARKS.Contains(bar.EndTime.TimeOfDay)) ...`), which is hand-written plumbing for what a consolidator does natively. Register the consolidator and put the per-bar logic in its handler — either you read the consolidated bar's OHLCV directly, or the bar updates an indicator you trade off. `Consolidate(symbol, period, handler)` builds the consolidator that matches the symbol's data and registers it, in one line. Its handler takes the bar only:
 
 ```csharp
 _symbol = AddEquity("SPY", Resolution.Minute).Symbol;
-// 30-min TradeBars anchored to the market open (args: dailyStrictEndTime, period, dataType, tickType, extendedHours):
-_consolidator = new MarketHourAwareConsolidator(true, TimeSpan.FromMinutes(30), typeof(TradeBar), TickType.Trade, false);
-// The DataConsolidated event delivers the bar as an IBaseData — cast it to a TradeBar for the handler:
-_consolidator.DataConsolidated += (sender, consolidated) => ConsolidationHandler(sender, (TradeBar)consolidated);
-SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+_consolidator = Consolidate(_symbol, TimeSpan.FromMinutes(30), OnBar);
 ...
-private void ConsolidationHandler(object sender, TradeBar consolidatedBar)
-{
-    // consolidatedBar is the 30-min TradeBar — read consolidatedBar.Close, decide here.
-    ...
-}
+private void OnBar(TradeBar bar) { /* the 30-min TradeBar — read bar.Close, decide here */ }
 ```
 
-Put the trading logic where the data lands: if you read the bar directly, the `DataConsolidated` handler is the home; if you trade off an indicator fed by the consolidator (`RegisterIndicator(symbol, indicator, _consolidator)`), put the logic in the indicator's own `Updated` event handler instead (see "React per update" under Reading values). Sub-bar statistics need the underlying minute subscription, not the consolidated bar — and a built-in usually already exists. A session VWAP is `VWAP(symbol)` (a built-in `IntradayVwap` that updates off the minute bars and resets each session) — use it. **Never** accumulate a VWAP (or any sub-bar statistic) from the 30-min consolidated bars: those are ~6 points per half-hour, not the full minute series, so the value is wrong.
+Forex and CFD have quote bars only, so a `TradeBarConsolidator` on them raises a type mismatch. `Consolidate` builds a `QuoteBarConsolidator` for them, so the handler takes a `QuoteBar`.
+
+Build a `MarketHourAwareConsolidator` yourself when the subscription includes extended hours but the bars must cover the regular session only, since `Consolidate` also consolidates the pre- and post-market bars. Its handler takes `(sender, bar)`:
+
+```csharp
+_symbol = AddEquity("SPY", Resolution.Minute, extendedMarketHours: true).Symbol;
+// args: dailyStrictEndTime, period, dataType, tickType, extendedHours
+_consolidator = new MarketHourAwareConsolidator(true, TimeSpan.FromMinutes(30), typeof(TradeBar), TickType.Trade, false);
+_consolidator.DataConsolidated += (sender, consolidated) => OnSessionBar((TradeBar)consolidated);   // the event delivers an IBaseData
+SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+```
+
+Put the trading logic where the data lands: if you read the bar directly, the consolidator's handler is the home; if you trade off an indicator fed by the consolidator (`RegisterIndicator(symbol, indicator, _consolidator)`), put the logic in the indicator's own `Updated` event handler instead (see "React per update" under Reading values). Sub-bar statistics need the underlying minute subscription, not the consolidated bar — and a built-in usually already exists. A session VWAP is `VWAP(symbol)` (a built-in `IntradayVwap` that updates off the minute bars and resets each session) — use it. **Never** accumulate a VWAP (or any sub-bar statistic) from the 30-min consolidated bars: those are ~6 points per half-hour, not the full minute series, so the value is wrong.
 
 The handler fires once per consolidated bar, so **that bar is your cadence** — don't ALSO keep a parallel set of target times (or re-check the clock), neither to decide whether to act (the consolidator already only emits at those marks, plus the session-close bar) nor as the keys for per-time-of-day state. When you need a separate statistic per intra-session slot (a band/mean/stat keyed by time-of-day), do NOT enumerate the slot times in `Initialize`: derive each bar's key from its own `bar.EndTime.TimeOfDay` and look it up lazily, so the key set builds itself from the bars that actually arrive — automatically matching early-close/holiday/DST sessions, where an enumerated list would be stale. Each slot's rolling stat **accumulates across days under its own key**, so you never need the list to pre-build or backfill the slots:
 
@@ -75,15 +79,14 @@ if (!_slot.ContainsKey(slot))
 _slot[slot].Update(bar.EndTime, value);        // one bar per slot per day accumulates here
 ```
 
-If a particular emitted bar must be skipped — e.g. a market-hour-aware consolidator emits a final bar at the session close that you don't want to trade on — gate the handler on the session-close test `security.Exchange.Hours.IsOpen(bar.EndTime, false)` (`true` for every intraday mark, `false` only for that session-close bar — on normal and early-close days alike; `security.Exchange.ExchangeOpen` and `IsMarketOpen(symbol)` agree), not on an enumerated list of bars. To turn a value you compute each bar into a rolling statistic (a mean/std over the last N of those bars), feed it to an indicator in the handler — see "Rolling mean / std of a value you compute".
+If a particular emitted bar must be skipped — e.g. the consolidator emits a final bar at the session close that you don't want to trade on — gate the handler on the session-close test `security.Exchange.Hours.IsOpen(bar.EndTime, false)` (`true` for every intraday mark, `false` only for that session-close bar — on normal and early-close days alike; `security.Exchange.ExchangeOpen` and `IsMarketOpen(symbol)` agree), not on an enumerated list of bars. To turn a value you compute each bar into a rolling statistic (a mean/std over the last N of those bars), feed it to an indicator in the handler — see "Rolling mean / std of a value you compute".
 
-**Seeding handler-built state — replay history through the consolidator, not a parallel loop.** When per-asset state is built inside a `DataConsolidated` handler and must be ready before live trading (so the strategy doesn't idle), seed it by feeding that asset's history **through the same consolidator**, so the same handler builds the same state from the same bars:
+**Seeding handler-built state — replay history through the consolidator, not a parallel loop.** When per-asset state is built inside a consolidator handler and must be ready before live trading (so the strategy doesn't idle), seed it by feeding that asset's history **through the same consolidator**, so the same handler builds the same state from the same bars:
 
 ```csharp
-_consolidator.DataConsolidated += (sender, consolidated) => OnBar(sender, (TradeBar)consolidated);
-SubscriptionManager.AddConsolidator(symbol, _consolidator);
+_consolidator = Consolidate(symbol, TimeSpan.FromMinutes(30), OnBar);
 _seeding = true;
-foreach (var bar in History<TradeBar>(symbol, TimeSpan.FromDays(N), Resolution.Minute))
+foreach (var bar in History<TradeBar>(symbol, TimeSpan.FromDays(N), Resolution.Minute))   // QuoteBar for forex and CFD
     _consolidator.Update(bar);   // drives OnBar with the SAME bars/marks it sees live
 _seeding = false;
 ```

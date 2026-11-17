@@ -15,6 +15,20 @@ target_contracts = round(self.portfolio.total_portfolio_value * target_weight / 
 delta = target_contracts - self.portfolio[symbol].quantity; self.market_order(symbol, delta)   # trade the delta
 ```
 
+## Continuous symbol vs mapped contract
+- `future.symbol` is the continuous symbol. Use it for history, consolidators, and indicators, and to read bars in `on_data`: `data.bars.get(future.symbol)`. These keep receiving data across each roll.
+- `future.mapped` is the contract to trade. Use it for orders and portfolio reads.
+- `future.mapped` is `None` in `initialize` and changes at each roll, so read it when you place the order.
+- A roll leaves your position in the old contract, and a portfolio read on the new `future.mapped` returns 0. Move the position to the new contract in `on_symbol_changed_events`:
+
+```python
+def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -> None:
+    for changed in symbol_changed_events.values():
+        quantity = self.portfolio[changed.old_symbol].quantity
+        self.liquidate(changed.old_symbol)
+        if quantity:
+            self.market_order(changed.new_symbol, quantity)
+```
 ## History — use self.history(); do NOT rebuild a DataFrame from TradeBars
 Seeding a raw look-back buffer (e.g. an expanding regression window) is a HISTORY REQUEST, not a warm-up (warm-up pumps data through on_data and updates indicators; a history request hands you a DataFrame to process yourself).
 - Request continuous-contract history on the canonical `future.symbol`. Roll behavior is set by the `data_mapping_mode` / `data_normalization_mode` / `contract_depth_offset` passed to `add_future` (e.g. `DataNormalizationMode.BACKWARDS_RATIO` for a roll-adjusted price/return series).
