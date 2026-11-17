@@ -42,6 +42,20 @@ class ResolveMarketHoursExceptionsTests(unittest.TestCase):
         self.assertCountEqual(es['holidays'], ['7/4/2025', '12/25/2025'])
         self.assertEqual(es['earlyCloses'], {'1/20/2025': '12:00:00', '11/28/2025': '12:15:00', '12/24/2025': '12:00:00'})
 
+    def test_named_entry_can_ignore_wildcard(self):
+        wildcard = entry('America/New_York', ['11/27/2025'], {'11/28/2025': '13:00:00'}, {'12/26/2025': '10:00:00'})
+        ibde40 = entry('UTC', ['12/25/2025'])
+        ibde40['ignoreMarketWideCalendar'] = True
+        resolved = resolve_market_hours_exceptions({
+            'Cfd-interactivebrokers-[*]': wildcard,
+            'Cfd-interactivebrokers-IBDE40': ibde40,
+        })
+        self.assertEqual(resolved['Cfd-interactivebrokers-IBDE40'], {
+            'holidays': ['12/25/2025'],
+            'earlyCloses': {},
+            'lateOpens': {},
+        })
+
     def test_option_inherits_underlying_in_its_time_zone(self):
         # Options are listed first to check they resolve after their underlying.
         resolved = resolve_market_hours_exceptions({
