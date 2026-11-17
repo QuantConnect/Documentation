@@ -26,6 +26,27 @@ var delta = targetContracts - Portfolio[symbol].Quantity; MarketOrder(symbol, de
 - py`future.symbol`cs`future.Symbol` is the continuous symbol. Use it for history, consolidators, and indicators, and to read bars in py`on_data`cs`OnData`: py`data.bars.get(future.symbol)`cs`data.Bars.TryGetValue(future.Symbol, out var bar)`. These keep receiving data across each roll.
 - py`future.mapped`cs`future.Mapped` is the contract to trade. Use it for orders and portfolio reads.
 - py`future.mapped`cs`future.Mapped` is py`None`cs`null` in py`initialize`cs`Initialize` and changes at each roll, so read it when you place the order.
+- A roll leaves your position in the old contract, and a portfolio read on the new py`future.mapped`cs`future.Mapped` returns 0. Move the position to the new contract in py`on_symbol_changed_events`cs`OnSymbolChangedEvents`:
+
+```python
+def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -> None:
+    for changed in symbol_changed_events.values():
+        quantity = self.portfolio[changed.old_symbol].quantity
+        self.liquidate(changed.old_symbol)
+        if quantity:
+            self.market_order(changed.new_symbol, quantity)
+```
+```csharp
+public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+{
+    foreach (var changed in symbolChangedEvents.Values)
+    {
+        var quantity = Portfolio[changed.OldSymbol].Quantity;
+        Liquidate(changed.OldSymbol);
+        if (quantity != 0) MarketOrder(changed.NewSymbol, quantity);
+    }
+}
+```
 
 <!-- python-only -->
 ## History — use self.history(); do NOT rebuild a DataFrame from TradeBars
