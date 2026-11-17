@@ -48,7 +48,7 @@ self._symbol = option.symbol                    # canonical Symbol — save it
 - **The canonical `option.symbol` is not tradable** — it is the key into `data.option_chains` and the first argument of every `OptionStrategies` factory.
 - **Filter timing**: selection "usually runs at the first bar of every day"; a newly selected contract's data arrives "in the next `Slice`". So the chain can be absent on any given event — always guard: `chain = data.option_chains.get(self._symbol); if not chain: return`.
 - **Default filter** if you never call `set_filter`: standards + weeklys, within 1 strike of the underlying price, expiring within 35 days — almost never what a spec wants; set the filter explicitly.
-- Filter building blocks: `strikes(min, max)` (relative strike counts around the money, not dollars), `expiration(min_days, max_days)`, `calls_only()/puts_only()`, `weeklys_only()/standards_only()/include_weeklys()`, `front_month()/back_month()`, greek/OI filters `delta(min, max)`, `iv(min, max)`, `open_interest(min, max)` (these compare **prior-day EOD** values — use them for coarse pre-selection, then pick precisely from live slice greeks), and strategy-shaped helpers (`u.straddle(30)`, `u.iron_condor(30, 5, 10)`) that narrow the universe to exactly the legs a named strategy needs.
+- Filter building blocks: `strikes(min, max)` (relative strike counts around the money, not dollars), `expiration(min_days, max_days)`, `calls_only()/puts_only()`, `weeklys_only()/standards_only()/include_weeklys()`, `front_month()/back_month()`, greek/OI filters `delta(min, max)`, `iv(min, max)`, `open_interest(min, max)` (these compare **prior-day EOD** values — use them for coarse pre-selection, then pick precisely from live slice greeks), and strategy-shaped helpers (`u.straddle(30)`, `u.iron_condor(30, 5, 10)`) that narrow the universe to exactly the legs a named strategy needs. Except `include_weeklys()`, the same filters also run on the slice's chain in `on_data`, and each returns a chain, empty when no contract matches. On the chain, `delta(min, max)` and the other greek filters read the live greeks.
 - **Resolution rule**: the option resolution must be ≥ the underlying Equity's resolution (minute equity → minute/hour/daily options). Contract subscriptions support minute, hour, and daily; minute is the default.
 
 Reading the chain at a decision time:
@@ -58,9 +58,12 @@ def on_data(self, data: Slice) -> None:
     chain = data.option_chains.get(self._symbol)
     if not chain:
         return
+    calls = chain.calls_only().expiration(15, 30)
+    if not calls:
+        return
     spot = chain.underlying.price
-    atm_call = min((c for c in chain if c.right == OptionRight.CALL),
-                   key=lambda c: abs(c.strike - spot))
+    atm_call = min(calls, key=lambda c: abs(c.strike - spot))
+    days_left = atm_call.days_to_expiry  # calendar days from today to expiry
     delta = atm_call.greeks.delta        # live price-model value, computed on request
     mid = (atm_call.bid_price + atm_call.ask_price) / 2
 ```

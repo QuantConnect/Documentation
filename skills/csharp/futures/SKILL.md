@@ -15,6 +15,24 @@ var targetContracts = Math.Round(Portfolio.TotalPortfolioValue * targetWeight / 
 var delta = targetContracts - Portfolio[symbol].Quantity; MarketOrder(symbol, delta);   // trade the delta
 ```
 
+## Continuous symbol vs mapped contract
+- `future.Symbol` is the continuous symbol. Use it for history, consolidators, and indicators, and to read bars in `OnData`: `data.Bars.TryGetValue(future.Symbol, out var bar)`. These keep receiving data across each roll.
+- `future.Mapped` is the contract to trade. Use it for orders and portfolio reads.
+- `future.Mapped` is `null` in `Initialize` and changes at each roll, so read it when you place the order.
+- A roll leaves your position in the old contract, and a portfolio read on the new `future.Mapped` returns 0. Move the position to the new contract in `OnSymbolChangedEvents`:
+
+```csharp
+public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+{
+    foreach (var changed in symbolChangedEvents.Values)
+    {
+        var quantity = Portfolio[changed.OldSymbol].Quantity;
+        Liquidate(changed.OldSymbol);
+        if (quantity != 0) MarketOrder(changed.NewSymbol, quantity);
+    }
+}
+```
+
 ## History — use `History<TradeBar>()`; do NOT hand-build any other structure from the bars
 Seeding a raw look-back buffer (e.g. an expanding regression window) is a HISTORY REQUEST, not a warm-up (warm-up pumps data through OnData and updates indicators; a history request hands you the bars to process yourself).
 - Request continuous-contract history on the canonical `future.Symbol`. Roll behavior is set by the `dataMappingMode` / `dataNormalizationMode` / `contractDepthOffset` passed to `AddFuture` (e.g. `DataNormalizationMode.BackwardsRatio` for a roll-adjusted price/return series).
