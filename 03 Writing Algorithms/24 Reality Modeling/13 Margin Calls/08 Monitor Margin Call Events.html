@@ -10,8 +10,8 @@
 </div>
 
 <p>Before we send the orders that the margin call model produces, we notify your algorithm through the <code class="csharp">OnMarginCall</code><code class="python">on_margin_call</code> event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of <code>SubmitOrderRequest</code> objects the event handler receives.
-The <code>DefaultMarginCallModel</code> reduces each order after the first one to cover only the remaining deficit.
-Extra quantity you add only applies to the first order it executes.</p>
+After an earlier order fills or stays open, the <code>DefaultMarginCallModel</code> reduces each later order to cover only the remaining deficit.
+Extra quantity you add stays only on the orders the model doesn't reduce, such as the first order it executes.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCall(List&lt;SubmitOrderRequest&gt; requests)
