@@ -7,29 +7,17 @@ import tempfile
 import re
 from pathlib import Path
 from subprocess import run
-from multiprocessing import Pool, Lock, freeze_support
-from multiprocessing.synchronize import Lock as LockType
 
 target_files: list[str] = []
-lock: LockType | None = None
 start_time = time.time()
 
 LOG_PATH = Path(__file__).resolve().parent / "syntax-check.log"
 
 
-def init_pool(l: LockType) -> None:
-    global lock
-    lock = l
-
 def log(message: str) -> None:
     print(message)
     with open(LOG_PATH, "a") as file:
         file.write(message)
-
-def sync_log(message: str) -> None:
-    assert lock is not None
-    with lock:
-        log(message)
 
 for subdir, dirs, files_in_folder in os.walk("./project-templates/python"):
     for file_name in files_in_folder:
@@ -38,18 +26,20 @@ for subdir, dirs, files_in_folder in os.walk("./project-templates/python"):
             target_files.append(file_path)
 target_files.sort()
 
-def adjust_file_contents(target_file: str) -> tempfile._TemporaryFileWrapper[bytes] | None:
+def adjust_file_contents(target_file: str, tmp_dir: str, index: int) -> str | None:
     try:
         file = Path(target_file)
         file_content = file.read_text(encoding='utf-8')
         adjusted_import = 'from AlgorithmImports import *;from datetime import date, time, datetime, timedelta;import pandas as pd;import numpy as np;import math;import json;import os;'
 
-        tmp_file = tempfile.NamedTemporaryFile(prefix=f"{file.name}_", delete=False)
-        Path(tmp_file.name).write_text("# mypy: disable-error-code=\"no-redef\"\n" + file_content.replace("from AlgorithmImports import *", adjusted_import), encoding='utf-8')
+        # Every template is a main.py, so each copy needs its own module name in the shared mypy run.
+        # The name must also change between runs, or --skip-cache-mtime-checks reuses the cached result and hides errors.
+        tmp_file = os.path.join(tmp_dir, f"{Path(tmp_dir).name}_{index}.py")
+        Path(tmp_file).write_text("# mypy: disable-error-code=\"no-redef\"\n" + file_content.replace("from AlgorithmImports import *", adjusted_import), encoding='utf-8')
         return tmp_file
     except:
         import traceback
-        sync_log(f"{target_file} failed An exception occurred: {traceback.format_exc()}")
+        log(f"{target_file} failed An exception occurred: {traceback.format_exc()}")
         return None
 
 specific_order_attributes = ['limit_price', 'trigger_price', 'trigger_touched', 'stop_price', 'stop_triggered', 'trailing_amount', 'trailing_as_percentage']
@@ -114,50 +104,49 @@ def should_ignore(line: str, prev_line_ignored: bool) -> bool:
     return False
 
 
-def run_syntax_check(target_file: str) -> bool:
-    tmp_file = adjust_file_contents(target_file)
-    if not tmp_file:
-        return False
+def filter_output(output: str, tmp_file: str) -> str:
+    filtered_output = ''
+    prev_line_ignored = False
+    for line in output.splitlines():
+        ignored = not line.startswith(f"{tmp_file}:") or should_ignore(line, prev_line_ignored)
+        if not ignored:
+            filtered_output += f"{line}\n"
+        prev_line_ignored = ignored
+    return filtered_output
 
-    try:
+
+def run_syntax_check(target_files: list[str]) -> list[bool]:
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp_files = [adjust_file_contents(target_file, tmp_dir, i) for i, target_file in enumerate(target_files)]
+        files_to_check = [tmp_file for tmp_file in tmp_files if tmp_file]
+        if not files_to_check:
+            return [False] * len(target_files)
+
+        # One run for all templates: each template pulls in thousands of site-packages modules,
+        # which a separate process per template re-checks every time
         algorithm_result = run([sys.executable, "-m", "mypy", "--strict", "--skip-cache-mtime-checks", "--skip-version-check", "--show-error-codes",
-            "--no-error-summary", "--no-color-output", "--ignore-missing-imports", "--check-untyped-defs",  tmp_file.name], capture_output=True, text=True)
+            "--no-error-summary", "--no-color-output", "--ignore-missing-imports", "--check-untyped-defs", *files_to_check], capture_output=True, text=True)
 
-        output = ''
-        if algorithm_result.stderr:
-            output += algorithm_result.stderr
-        if algorithm_result.stdout:
-            output += algorithm_result.stdout
+        output = algorithm_result.stderr + algorithm_result.stdout
+        results = []
+        for target_file, tmp_file in zip(target_files, tmp_files):
+            filtered_output = filter_output(output, tmp_file) if tmp_file else ''
+            if filtered_output:
+                log(f"{target_file}\n{filtered_output}")
+            results.append(tmp_file is not None and not filtered_output)
 
-        filtered_output = ''
-        prev_line_ignored = False
-        for line in output.splitlines():
-            ignored = not line.startswith(tmp_file.name) or should_ignore(line, prev_line_ignored)
-            if not ignored:
-                filtered_output += f"{line}\n"
-            prev_line_ignored = ignored
-
-        if filtered_output:
-            sync_log(f"{target_file}\n{filtered_output}")
-            return False
-        return True
-    except:
-        import traceback
-        sync_log(f"{target_file} failed An exception occurred: {traceback.format_exc()}")
-    finally:
-        tmp_file.close()
-        os.unlink(tmp_file.name)
-    return False
+        # Exit code 2 (a crash, or a blocking error such as invalid syntax) means mypy didn't check every template
+        if algorithm_result.returncode > 1:
+            log(f"mypy stopped with exit code {algorithm_result.returncode}\n{output}")
+            return [False] * len(target_files)
+        return results
 
 if __name__ == '__main__':
-    freeze_support()
-
-    with Pool(4, initializer=init_pool, initargs=(Lock(),)) as pool:
-        if len(sys.argv) > 1:
-            target_files = [target for target in target_files if sys.argv[1] in target]
-        result = pool.map(run_syntax_check, target_files)
-        log(f"TEMPLATES: {target_files}")
-        log(str(result))
-        success_rate = round((sum(result) / len(result)) * 100, 1)
-        log(f"SUCCESS RATE {success_rate}% took {time.time() - start_time}s")
-        exit(0 if success_rate >= 100 else 1)
+    if len(sys.argv) > 1:
+        target_files = [target for target in target_files if sys.argv[1] in target]
+    result = run_syntax_check(target_files)
+    log(f"TEMPLATES: {target_files}")
+    log(str(result))
+    success_rate = round((sum(result) / len(result)) * 100, 1)
+    log(f"SUCCESS RATE {success_rate}% took {time.time() - start_time}s")
+    exit(0 if success_rate >= 100 else 1)
