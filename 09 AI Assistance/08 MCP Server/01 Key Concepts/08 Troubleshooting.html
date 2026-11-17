@@ -2,13 +2,26 @@
 
 <h4>Service Outages</h4>
 <p>
-  The MCP server relies on the QuantConnect API and the client application. 
-  To check the status of the QuantConnect API, see our <a href='https://status.quantconnect.com/'>Status</a> page. 
+  The MCP server relies on the QuantConnect API and the client application.
+  To check the status of the QuantConnect API, see our <a href='https://status.quantconnect.com/'>Status</a> page.
   To check the status of your client and the LLM, see their status page.
 </p>
 
 <h4>Missing Agent Node</h4>
 <p>If your organization only has the free A-MICRO agent node, the MCP server returns the following error message:</p>
-<div class='error-messages'>The QuantConnect Remote MCP Server requires a dedicated Assistant node (A1-1, A4-8, or A16-32). Purchase nodes on the pricing page.</div>
+<div class='error-messages'>The QuantConnect Remote MCP Server requires a dedicated Assistant node (A1-1, A4-12, A16-32). Purchase nodes on the pricing page.</div>
 <p>To resolve this issue, <a href='/docs/v2/cloud-platform/organizations/resources#15-Add-Nodes'>add a paid agent node</a> to your organization.</p>
 
+<h4>Agent Nodes in Use</h4>
+<p>If a tool call needs to start a session for a project and all your agent nodes are in use, the MCP server returns the following error message:</p>
+<div class='error-messages'>All your Assistant nodes are currently in use. Stop a running assistant to free one up, or purchase more nodes in the pricing page.</div>
+<p>
+  The node can be held by an MCP session for another project, a Mia chat, or an agent task, and retrying the call doesn't help until that session ends.
+  To resolve this issue, finish working with one project before you move to the next, wait for the Mia chat or agent task to finish, or <a href='/docs/v2/cloud-platform/organizations/resources#18-Stop-Nodes'>stop the node</a>.
+  For more information about how sessions share agent nodes, see <a href='/docs/v2/ai-assistance/mcp-server/key-concepts#07-Quotas'>Quotas</a>.
+</p>
+
+<h4>Server Still Starting</h4>
+<p>If the session for a project takes more than 60 seconds to start, the MCP server returns the following error message:</p>
+<div class='error-messages'>The project's MCP server is still starting, retry the call in a few seconds</div>
+<p>To resolve this issue, retry the call. The session keeps starting in the background, and once it's ready, the call succeeds.</p>
