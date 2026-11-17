@@ -1,6 +1,6 @@
 from json import dumps
 from pathlib import Path
-from _code_generation_helpers import SPDB, MHDB, get_json_content, get_text_content
+from _code_generation_helpers import SPDB, MHDB, get_json_content, get_text_content, resolve_market_hours_exceptions
 
 root = Path("Resources/datasets/market-hours")
 root.mkdir(exist_ok=True, parents=True)
@@ -29,6 +29,7 @@ contracts_real.update({
 # Fetch and parse MHDB
 raw_dict = get_json_content(MHDB)
 entries = raw_dict["entries"]
+exceptions = resolve_market_hours_exceptions(entries)
 
 SKIP = ["IndexOption-usa-RUTW", "IndexOption-usa-SPXW"]
 EXCEPTIONS = ['base', 'crypto', 'equity-india', 'index-india', 'option-india-', 'fxcm', 'spxw']
@@ -65,29 +66,15 @@ for key, entry in entries.items():
     for day in days:
         if day in entry and entry[day]:
             clean[day] = entry[day]
-    if 'holidays' in entry:
-        clean['holidays'] = entry['holidays']
-    if 'earlyCloses' in entry:
-        clean['earlyCloses'] = entry['earlyCloses']
-    if 'lateOpens' in entry:
-        clean['lateOpens'] = entry['lateOpens']
+    for field, value in exceptions[key].items():
+        if value or field in entry:
+            clean[field] = value
 
     # Forex: only keep the generic [*] entry (no symbol search)
     if js_file == 'forex-market-hours.js' and tmp[-1] != '[*]':
         continue
 
     grouped.setdefault(js_file, {})[key] = clean
-
-# Resolve holiday/earlyClose/lateOpen fallbacks
-# Option-usa-[*] and Index-usa-[*] fall back to Equity-usa-[*]
-equity_usa = grouped.get('us-equity-market-hours.js', {}).get('Equity-usa-[*]', {})
-for fallback_key in ['Option-usa-[*]', 'Index-usa-[*]']:
-    for data in grouped.values():
-        if fallback_key in data:
-            entry = data[fallback_key]
-            for field in ['holidays', 'earlyCloses', 'lateOpens']:
-                if not entry.get(field) and equity_usa.get(field):
-                    entry[field] = equity_usa[field]
 
 # Build NAMES maps per JS file (symbol -> display name)
 # Known market/exchange identifiers that shouldn't be used as display names
