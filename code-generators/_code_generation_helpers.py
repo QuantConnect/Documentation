@@ -1,5 +1,6 @@
 from base64 import b64encode
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from json import dumps, loads
 from os import environ
@@ -7,6 +8,7 @@ from re import findall, finditer
 from time import time
 from typing import List
 from urllib.request import Request, urlopen
+from zoneinfo import ZoneInfo
 
 WRITING_ALGORITHMS = '03 Writing Algorithms'
 INDICATORS = f'{WRITING_ALGORITHMS}/28 Indicators/01 Supported Indicators'
@@ -265,3 +267,71 @@ def generate_landing_page(start: int, stop: int, path: str, heading: str, conten
     }
     with open(f'{path}/00.json', 'w', encoding='utf-8') as fp:
         fp.write(dumps(landing, indent=4))
+
+
+# LEAN's FutureOption mapping is omitted because the MHDB has no FutureOption entries
+_OPTION_UNDERLYING_TYPES = {'option': 'equity', 'indexoption': 'index'}
+_INDEX_OPTION_TO_INDEX = {'rutw': 'rut', 'spxw': 'spx', 'vixw': 'vix', 'ndxp': 'ndx', 'nqx': 'ndx'}
+
+def _convert_time_zone(times: dict, source: str, target: str) -> dict:
+    if source == target:
+        return times
+    result = {}
+    for day, (_, time) in times.items():
+        hours, minutes, seconds = map(int, time.split(':'))
+        local = datetime(day.year, day.month, day.day) + timedelta(hours=hours, minutes=minutes, seconds=seconds)
+        # fold=1 matches LEAN's lenient resolver, which takes the later offset for ambiguous times
+        converted = local.replace(tzinfo=ZoneInfo(source), fold=1).astimezone(timezone.utc).astimezone(ZoneInfo(target))
+        result[converted.date()] = (f'{converted.month}/{converted.day}/{converted.year}', converted.strftime('%H:%M:%S'))
+    return result
+
+def resolve_market_hours_exceptions(entries: dict) -> dict:
+    """Resolve each MHDB entry's holidays, earlyCloses and lateOpens with the inheritance rules of
+    LEAN's MarketHoursDatabaseJsonConverter, in the entry's exchange time zone."""
+    def parse(text):
+        return datetime.strptime(text, '%m/%d/%Y').date()
+
+    keys = [(key, *key.lower().split('-')) for key in entries]
+    # LEAN also sorts wildcards first, but its keys never hold a null symbol, so only this sort applies
+    keys.sort(key=lambda x: x[1] in _OPTION_UNDERLYING_TYPES)
+
+    resolved = {}
+    for key, security_type, market, symbol in keys:
+        entry = entries[key]
+        time_zone = entry['exchangeTimeZone']
+        holidays = {parse(x): x for x in entry.get('holidays', [])}
+        early_closes = {parse(k): (k, v) for k, v in entry.get('earlyCloses', {}).items()}
+        late_opens = {parse(k): (k, v) for k, v in entry.get('lateOpens', {}).items()}
+
+        underlying = None
+        if security_type in _OPTION_UNDERLYING_TYPES:
+            underlying_type = _OPTION_UNDERLYING_TYPES[security_type]
+            underlying_symbol = _INDEX_OPTION_TO_INDEX.get(symbol, symbol) if security_type == 'indexoption' else symbol
+            underlying = resolved.get((underlying_type, market, underlying_symbol))                 or resolved.get((underlying_type, market, '[*]'))
+        if underlying:
+            holidays = holidays or dict(underlying['holidays'])
+            early_closes = early_closes or _convert_time_zone(underlying['earlyCloses'], underlying['timeZone'], time_zone)
+            late_opens = late_opens or _convert_time_zone(underlying['lateOpens'], underlying['timeZone'], time_zone)
+
+        # Only wildcards processed earlier in file order are found, as in LEAN
+        common = resolved.get((security_type, market, '[*]'))
+        if common:
+            for day, text in common['holidays'].items():
+                # LEAN makes these bank holidays, which the pages don't show
+                if day not in early_closes and day not in late_opens:
+                    holidays.setdefault(day, text)
+            if common['earlyCloses']:
+                early_closes = {**_convert_time_zone(common['earlyCloses'], common['timeZone'], time_zone), **early_closes}
+            if common['lateOpens']:
+                late_opens = {**_convert_time_zone(common['lateOpens'], common['timeZone'], time_zone), **late_opens}
+
+        resolved[(security_type, market, symbol)] = {
+            'key': key, 'timeZone': time_zone,
+            'holidays': holidays, 'earlyCloses': early_closes, 'lateOpens': late_opens}
+
+    return {
+        x['key']: {
+            'holidays': list(x['holidays'].values()),
+            'earlyCloses': dict(x['earlyCloses'].values()),
+            'lateOpens': dict(x['lateOpens'].values()),
+        } for x in resolved.values()}
