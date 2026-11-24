@@ -76,6 +76,13 @@ class IndicatorImageGenerator(QCAlgorithm):
             error = info.generate(history.data_frame, self.object_store.get_file_path(f"indicators/images/{name}.png"))
             self.debug(f'Processed: {name}' + (f' :: {error=}' if error else ''))
 
+        # The cross-sectional indicators need at least three assets
+        self._symbols = [self._symbol, self._reference, self.add_equity("IWM", Resolution.DAILY).symbol]
+        for name, info in self.get_cross_sectional_indicators().items():
+            history = self.indicator_history(info.code, self._symbols, timedelta(365), Resolution.DAILY)
+            error = info.generate(history.data_frame, self.object_store.get_file_path(f"indicators/images/{name}.png"))
+            self.debug(f'Processed: {name}' + (f' :: {error=}' if error else ''))
+
     def get_indicators(self) -> dict[str,IndicatorInfo]:
         return {
         'intraday-vwap': IndicatorInfo(
@@ -665,6 +672,12 @@ class IndicatorImageGenerator(QCAlgorithm):
             'TSF(_symbol, 3)', 
             'self.tsf(self._symbol, 3)'
         ),
+        'time-series-information-coefficient': IndicatorInfo(
+            TimeSeriesInformationCoefficient(RateOfChange(5), 20),
+            'TimeSeriesInformationCoefficient(new RateOfChange(5), 20)',
+            'TSIC(_symbol, new RateOfChange(5), 20)',
+            'self.tsic(self._symbol, RateOfChange(5), 20)'
+        ),
         'time-profile': IndicatorInfo(
             TimeProfile(3, 0.70, 0.05), 
             'TimeProfile(3, 0.70m, 0.05m)', 
@@ -883,6 +896,16 @@ class IndicatorImageGenerator(QCAlgorithm):
             'Covariance(_symbol, _reference, 5)', 
             'COV(_symbol, _reference, 5)',
             'self.cov(self._symbol, self._reference, 5)'
+        )
+    }
+
+    def get_cross_sectional_indicators(self) -> dict[str,IndicatorInfo]:
+        return {
+        'cross-sectional-information-coefficient': IndicatorInfo(
+            CrossSectionalInformationCoefficient(self._symbols, lambda symbol: RateOfChange(5)),
+            'CrossSectionalInformationCoefficient(_symbols, symbol => new RateOfChange(5))',
+            'CSIC(_symbols, symbol => new RateOfChange(5))',
+            'self.csic(self._symbols, lambda symbol: RateOfChange(5))'
         )
     }
 
