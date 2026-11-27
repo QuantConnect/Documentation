@@ -63,7 +63,8 @@ if ($isBrokerage) {
       "dYdX",
       "Webull",
       "Public",
-      "Clear Street"
+      "Clear Street",
+      "eToro"
   );
   $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 }
@@ -123,6 +124,7 @@ Select a brokerage:
 20) Webull
 21) Public
 22) Clear Street
+23) eToro
 </div>
 </li>
 
