@@ -284,7 +284,7 @@ Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/billing
 
 Yes. On the Downgrade page, click **Pause for 1 month** or **Pause for 2 months**. Pausing suspends access to your account but keeps your cloud configuration and project files. To resume early, click **Resume** on the Billing page, and the credit you receive is pro-rated for the pause.
 
-Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/billing#08-Pause-and-Resume-Subscriptions>
+Docs: <https://www.quantconnect.com/docs/v2/cloud-platform/organizations/billing#09-Pause-and-Resume-Subscriptions>
 
 ### Does QuantConnect store my credit card details?
 

@@ -3,8 +3,7 @@
 <p>Follow these steps to change to a paid organization tier:</p>
 
 <ol>
-    <li>In the left navigation bar, click <a href="/organization" class="menu-name">Organization &gt; Home</a>.</li>
-    <li>On the organization homepage, click <span class='button-name'>Edit Plan</span>.</li>
+    <li>In the top navigation bar, click <a href="/pricing" class="menu-name">Pricing</a>.</li>
     <li>Click the <span class='tab-name'>Choose a Plan</span> tab.</li>
     <li>Click <span class='button-name'>CHOOSE TIER</span> under the organization tier you want.</li>
     <li><span class='qualifier'>(Optional)</span> To change the recommended pack, click <span class='tab-name'>Customize Plan</span> and then add or remove seats, nodes, add-ons, data, and support.</li>
@@ -16,11 +15,10 @@
 
 <p>When you upgrade, your organization keeps its free B-MICRO backtesting node, R-MICRO research node, and A-MICRO agent node. Each free node stays until you add a paid node of the same type, which replaces it, so your organization always has a backtesting, research, and agent node.</p>
 
-
 <h4>Free Tier</h4>
 
 <div class="highlight">
-    <p>Downgrading to the Free tier deletes data. If your goal is to lower your bill instead of leaving the platform, downgrade to the <a href="/docs/v2/cloud-platform/organizations/tier-features#03-Quant-Researcher-Tier">Quant Researcher</a> tier and remove every subscription except the seat. It's the lowest-cost paid tier, so your projects, backtest results, logs, and <a href="/docs/v2/cloud-platform/object-store">Object Store</a> data are preserved. If you only need a short break, <a href="/docs/v2/cloud-platform/organizations/billing#08-Pause-and-Resume-Subscriptions">pause your subscriptions</a> instead, which keeps your organization as it is.</p>
+    <p>Downgrading to the Free tier deletes data. If your goal is to lower your bill instead of leaving the platform, downgrade to the <a href="/docs/v2/cloud-platform/organizations/tier-features#03-Quant-Researcher-Tier">Quant Researcher</a> tier and remove every subscription except the seat. It's the lowest-cost paid tier, so your projects, backtest results, logs, and <a href="/docs/v2/cloud-platform/object-store">Object Store</a> data are preserved. If you only need a short break, <a href="/docs/v2/cloud-platform/organizations/billing#09-Pause-and-Resume-Subscriptions">pause your subscriptions</a> instead, which keeps your organization as it is.</p>
 </div>
 
 <p>Follow these steps to downgrade to the Free tier:</p>
