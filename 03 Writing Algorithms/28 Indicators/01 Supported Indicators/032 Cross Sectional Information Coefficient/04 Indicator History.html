@@ -1,0 +1,27 @@
+<p>To get the historical data of the <code>CrossSectionalInformationCoefficient</code> indicator, call the <code class="csharp">IndicatorHistory</code><code class="python">self.indicator_history</code> method. This method resets your indicator, makes a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>, and updates the indicator with the historical data. Just like with regular history requests, the <code class="csharp">IndicatorHistory</code><code class="python">indicator_history</code> method supports time periods based on a trailing number of bars, a trailing period of time, or a defined period of time. If you don't provide a <code>resolution</code> argument, it defaults to match the resolution of the security subscription.
+</p>
+<div class="section-example-container testable">
+<pre class="csharp">public class CrossSectionalInformationCoefficientAlgorithm : QCAlgorithm
+{
+    private Symbol[] _symbols;
+    private CrossSectionalInformationCoefficient _csic;
+
+    public override void Initialize()
+    {
+        _symbols = new[] { "QQQ", "SPY", "IWM" }.Select(ticker => AddEquity(ticker, Resolution.Daily).Symbol).ToArray();
+        _csic = CSIC(_symbols, symbol => new RateOfChange(5));
+
+        var indicatorHistory = IndicatorHistory(_csic, _symbols, 100, Resolution.Minute);
+        var timeSpanIndicatorHistory = IndicatorHistory(_csic, _symbols, TimeSpan.FromDays(10), Resolution.Minute);
+        var timePeriodIndicatorHistory = IndicatorHistory(_csic, _symbols, new DateTime(2024, 7, 1), new DateTime(2024, 7, 5), Resolution.Minute);
+    }
+}</pre>
+<pre class="python">class CrossSectionalInformationCoefficientAlgorithm(QCAlgorithm):
+    def initialize(self) -> None:
+        self._symbols = [self.add_equity(ticker, Resolution.DAILY).symbol for ticker in ["QQQ", "SPY", "IWM"]]
+        self._csic = self.csic(self._symbols, lambda symbol: RateOfChange(5))
+
+        indicator_history = self.indicator_history(self._csic, self._symbols, 100, Resolution.MINUTE)
+        timedelta_indicator_history = self.indicator_history(self._csic, self._symbols, timedelta(days=10), Resolution.MINUTE)
+        time_period_indicator_history = self.indicator_history(self._csic, self._symbols, datetime(2024, 7, 1), datetime(2024, 7, 5), Resolution.MINUTE)
+    </pre></div>
